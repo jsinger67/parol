@@ -9,20 +9,2062 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use crate::oberon_0_grammar::Oberon0Grammar;
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result, Token};
-///
-/// The `Oberon0GrammarTrait` trait is automatically generated for the
-/// given grammar.
+
+/// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
+pub trait Oberon0GrammarTrait<'t> {
+    /// Semantic action for non-terminal 'Selector'
+    fn selector(&mut self, _arg: &Selector<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'SelectorList'
+    fn selector_list(&mut self, _arg: &SelectorList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Factor'
+    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Term'
+    fn term(&mut self, _arg: &Term<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'MulExpression'
+    fn mul_expression(&mut self, _arg: &MulExpression<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'SimpleExpression'
+    fn simple_expression(&mut self, _arg: &SimpleExpression<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'AddExpression'
+    fn add_expression(&mut self, _arg: &AddExpression<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'AssignOp'
+    fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RelationOp'
+    fn relation_op(&mut self, _arg: &RelationOp<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RelationalOps'
+    fn relational_ops(&mut self, _arg: &RelationalOps<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Expression'
+    fn expression(&mut self, _arg: &Expression<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Assignment'
+    fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ActualParameters'
+    fn actual_parameters(&mut self, _arg: &ActualParameters<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ExpressionListRest'
+    fn expression_list_rest(&mut self, _arg: &ExpressionListRest<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ProcedureCall'
+    fn procedure_call(&mut self, _arg: &ProcedureCall<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'IfStatement'
+    fn if_statement(&mut self, _arg: &IfStatement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'IfPrefix'
+    fn if_prefix(&mut self, _arg: &IfPrefix<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ElseIfList'
+    fn else_if_list(&mut self, _arg: &ElseIfList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'WhileStatement'
+    fn while_statement(&mut self, _arg: &WhileStatement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RepeatStatement'
+    fn repeat_statement(&mut self, _arg: &RepeatStatement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Statement'
+    fn statement(&mut self, _arg: &Statement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'StatementSequence'
+    fn statement_sequence(&mut self, _arg: &StatementSequence<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'StatementSequenceRest'
+    fn statement_sequence_rest(&mut self, _arg: &StatementSequenceRest<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'IdentList'
+    fn ident_list(&mut self, _arg: &IdentList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'IdentListRest'
+    fn ident_list_rest(&mut self, _arg: &IdentListRest<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ArrayType'
+    fn array_type(&mut self, _arg: &ArrayType<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'FieldList'
+    fn field_list(&mut self, _arg: &FieldList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RecordType'
+    fn record_type(&mut self, _arg: &RecordType<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'FieldListRest'
+    fn field_list_rest(&mut self, _arg: &FieldListRest<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Type'
+    fn r#type(&mut self, _arg: &Type<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'FPSection'
+    fn f_p_section(&mut self, _arg: &FPSection<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'FormalParameters'
+    fn formal_parameters(&mut self, _arg: &FormalParameters<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'FPSectionRest'
+    fn f_p_section_rest(&mut self, _arg: &FPSectionRest<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ProcedureHeading'
+    fn procedure_heading(&mut self, _arg: &ProcedureHeading<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ProcedureBody'
+    fn procedure_body(&mut self, _arg: &ProcedureBody<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ProcedureDeclaration'
+    fn procedure_declaration(&mut self, _arg: &ProcedureDeclaration<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Declarations'
+    fn declarations(&mut self, _arg: &Declarations<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ProcedureDeclarationList'
+    fn procedure_declaration_list(&mut self, _arg: &ProcedureDeclarationList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ConstDecls'
+    fn const_decls(&mut self, _arg: &ConstDecls<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'TypeDecls'
+    fn type_decls(&mut self, _arg: &TypeDecls<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'VarDecls'
+    fn var_decls(&mut self, _arg: &VarDecls<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Module'
+    fn module(&mut self, _arg: &Module<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'MulOperator'
+    fn mul_operator(&mut self, _arg: &MulOperator<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'AddOperator'
+    fn add_operator(&mut self, _arg: &AddOperator<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'UnaryOp'
+    fn unary_op(&mut self, _arg: &UnaryOp<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Ident'
+    fn ident(&mut self, _arg: &Ident<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Integer'
+    fn integer(&mut self, _arg: &Integer<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// This method provides skipped language comments.
+    /// If you need comments please provide your own implementation of this method.
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+}
+
+// -------------------------------------------------------------------------------------------------
+//
+// Output Types of productions deduced from the structure of the transformed grammar
+//
+
 ///
-pub trait Oberon0GrammarTrait {
+/// Type derived for production 1
+///
+/// `SelectorList: "\." Ident SelectorList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct SelectorListDotIdentSelectorList<'t> {
+    pub dot: Token<'t>, /* \. */
+    pub ident: Ident<'t>,
+    pub selector_list: Box<SelectorList<'t>>,
+}
+
+///
+/// Type derived for production 2
+///
+/// `SelectorList: "\[" Expression "]" SelectorList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct SelectorListLBracketExpressionRBracketSelectorList<'t> {
+    pub l_bracket: Token<'t>, /* \[ */
+    pub expression: Box<Expression<'t>>,
+    pub r_bracket: Token<'t>, /* ] */
+    pub selector_list: Box<SelectorList<'t>>,
+}
+
+///
+/// Type derived for production 3
+///
+/// `SelectorList: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct SelectorListSelectorListEmpty {}
+
+///
+/// Type derived for production 4
+///
+/// `Factor: Ident Selector;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FactorIdentSelector<'t> {
+    pub ident: Ident<'t>,
+    pub selector: Box<Selector<'t>>,
+}
+
+///
+/// Type derived for production 5
+///
+/// `Factor: Integer;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FactorInteger<'t> {
+    pub integer: Integer<'t>,
+}
+
+///
+/// Type derived for production 6
+///
+/// `Factor: "\(" Expression "\)";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FactorLParenExpressionRParen<'t> {
+    pub l_paren: Token<'t>, /* \( */
+    pub expression: Box<Expression<'t>>,
+    pub r_paren: Token<'t>, /* \) */
+}
+
+///
+/// Type derived for production 7
+///
+/// `Factor: "~" Factor;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FactorTildeFactor<'t> {
+    pub tilde: Token<'t>, /* ~ */
+    pub factor: Box<Factor<'t>>,
+}
+
+///
+/// Type derived for production 8
+///
+/// `Factor: UnaryOp Factor;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FactorUnaryOpFactor<'t> {
+    pub unary_op: UnaryOp<'t>,
+    pub factor: Box<Factor<'t>>,
+}
+
+///
+/// Type derived for production 10
+///
+/// `MulExpression: MulOperator Factor MulExpression;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct MulExpressionMulOperatorFactorMulExpression<'t> {
+    pub mul_operator: MulOperator<'t>,
+    pub factor: Box<Factor<'t>>,
+    pub mul_expression: Box<MulExpression<'t>>,
+}
+
+///
+/// Type derived for production 11
+///
+/// `MulExpression: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct MulExpressionMulExpressionEmpty {}
+
+///
+/// Type derived for production 13
+///
+/// `AddExpression: AddOperator Term AddExpression;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct AddExpressionAddOperatorTermAddExpression<'t> {
+    pub add_operator: AddOperator<'t>,
+    pub term: Box<Term<'t>>,
+    pub add_expression: Box<AddExpression<'t>>,
+}
+
+///
+/// Type derived for production 14
+///
+/// `AddExpression: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct AddExpressionAddExpressionEmpty {}
+
+///
+/// Type derived for production 15
+///
+/// `AssignOp: ":=";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct AssignOpColonEqu<'t> {
+    pub colon_equ: Token<'t>, /* := */
+}
+
+///
+/// Type derived for production 16
+///
+/// `RelationOp: AssignOp;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct RelationOpAssignOp<'t> {
+    pub assign_op: AssignOp<'t>,
+}
+
+///
+/// Type derived for production 17
+///
+/// `RelationOp: RelationalOps;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct RelationOpRelationalOps<'t> {
+    pub relational_ops: RelationalOps<'t>,
+}
+
+///
+/// Type derived for production 19
+///
+/// `AssignOp: "=";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct AssignOpEqu<'t> {
+    pub equ: Token<'t>, /* = */
+}
+
+///
+/// Type derived for production 21
+///
+/// `ExpressionSuffix: RelationOp SimpleExpression;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ExpressionSuffixRelationOpSimpleExpression<'t> {
+    pub relation_op: RelationOp<'t>,
+    pub simple_expression: Box<SimpleExpression<'t>>,
+}
+
+///
+/// Type derived for production 22
+///
+/// `ExpressionSuffix: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ExpressionSuffixExpressionSuffixEmpty {}
+
+///
+/// Type derived for production 25
+///
+/// `ActualParametersSuffix: "\)";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ActualParametersSuffixRParen<'t> {
+    pub r_paren: Token<'t>, /* \) */
+}
+
+///
+/// Type derived for production 26
+///
+/// `ActualParametersSuffix: Expression ExpressionListRest "\)";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ActualParametersSuffixExpressionExpressionListRestRParen<'t> {
+    pub expression: Expression<'t>,
+    pub expression_list_rest: ExpressionListRest<'t>,
+    pub r_paren: Token<'t>, /* \) */
+}
+
+///
+/// Type derived for production 27
+///
+/// `ExpressionListRest: "," Expression ExpressionListRest;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ExpressionListRestCommaExpressionExpressionListRest<'t> {
+    pub comma: Token<'t>, /* , */
+    pub expression: Expression<'t>,
+    pub expression_list_rest: Box<ExpressionListRest<'t>>,
+}
+
+///
+/// Type derived for production 28
+///
+/// `ExpressionListRest: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ExpressionListRestExpressionListRestEmpty {}
+
+///
+/// Type derived for production 30
+///
+/// `ProcedureCallSuffix: ActualParameters;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureCallSuffixActualParameters<'t> {
+    pub actual_parameters: ActualParameters<'t>,
+}
+
+///
+/// Type derived for production 31
+///
+/// `ProcedureCallSuffix: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureCallSuffixProcedureCallSuffixEmpty {}
+
+///
+/// Type derived for production 33
+///
+/// `IfStatementSuffix: "ELSE" StatementSequence "END";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IfStatementSuffixELSEStatementSequenceEND<'t> {
+    pub e_l_s_e: Token<'t>, /* ELSE */
+    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub e_n_d: Token<'t>, /* END */
+}
+
+///
+/// Type derived for production 34
+///
+/// `IfStatementSuffix: "END";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IfStatementSuffixEND<'t> {
+    pub e_n_d: Token<'t>, /* END */
+}
+
+///
+/// Type derived for production 36
+///
+/// `ElseIfList: "ELSIF" Expression "THEN" StatementSequence ElseIfList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t> {
+    pub e_l_s_i_f: Token<'t>, /* ELSIF */
+    pub expression: Expression<'t>,
+    pub t_h_e_n: Token<'t>, /* THEN */
+    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub else_if_list: Box<ElseIfList<'t>>,
+}
+
+///
+/// Type derived for production 37
+///
+/// `ElseIfList: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ElseIfListElseIfListEmpty {}
+
+///
+/// Type derived for production 40
+///
+/// `Statement: Assignment;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementAssignment<'t> {
+    pub assignment: Assignment<'t>,
+}
+
+///
+/// Type derived for production 41
+///
+/// `Statement: ProcedureCall;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementProcedureCall<'t> {
+    pub procedure_call: ProcedureCall<'t>,
+}
+
+///
+/// Type derived for production 42
+///
+/// `Statement: IfStatement;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementIfStatement<'t> {
+    pub if_statement: Box<IfStatement<'t>>,
+}
+
+///
+/// Type derived for production 43
+///
+/// `Statement: WhileStatement;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementWhileStatement<'t> {
+    pub while_statement: Box<WhileStatement<'t>>,
+}
+
+///
+/// Type derived for production 44
+///
+/// `Statement: RepeatStatement;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementRepeatStatement<'t> {
+    pub repeat_statement: Box<RepeatStatement<'t>>,
+}
+
+///
+/// Type derived for production 45
+///
+/// `Statement: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementStatementEmpty {}
+
+///
+/// Type derived for production 47
+///
+/// `StatementSequenceRest: ";" Statement StatementSequenceRest;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementSequenceRestSemicolonStatementStatementSequenceRest<'t> {
+    pub semicolon: Token<'t>, /* ; */
+    pub statement: Box<Statement<'t>>,
+    pub statement_sequence_rest: Box<StatementSequenceRest<'t>>,
+}
+
+///
+/// Type derived for production 48
+///
+/// `StatementSequenceRest: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementSequenceRestStatementSequenceRestEmpty {}
+
+///
+/// Type derived for production 50
+///
+/// `IdentListRest: "," Ident IdentListRest;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IdentListRestCommaIdentIdentListRest<'t> {
+    pub comma: Token<'t>, /* , */
+    pub ident: Ident<'t>,
+    pub ident_list_rest: Box<IdentListRest<'t>>,
+}
+
+///
+/// Type derived for production 51
+///
+/// `IdentListRest: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IdentListRestIdentListRestEmpty {}
+
+///
+/// Type derived for production 53
+///
+/// `FieldList: IdentList ":" Type;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FieldListIdentListColonType<'t> {
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Box<Type<'t>>,
+}
+
+///
+/// Type derived for production 54
+///
+/// `FieldList: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FieldListFieldListEmpty {}
+
+///
+/// Type derived for production 56
+///
+/// `FieldListRest: ";" FieldList FieldListRest;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FieldListRestSemicolonFieldListFieldListRest<'t> {
+    pub semicolon: Token<'t>, /* ; */
+    pub field_list: FieldList<'t>,
+    pub field_list_rest: Box<FieldListRest<'t>>,
+}
+
+///
+/// Type derived for production 57
+///
+/// `FieldListRest: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FieldListRestFieldListRestEmpty {}
+
+///
+/// Type derived for production 58
+///
+/// `Type: Ident;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct TypeIdent<'t> {
+    pub ident: Ident<'t>,
+}
+
+///
+/// Type derived for production 59
+///
+/// `Type: ArrayType;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct TypeArrayType<'t> {
+    pub array_type: Box<ArrayType<'t>>,
+}
+
+///
+/// Type derived for production 60
+///
+/// `Type: RecordType;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct TypeRecordType<'t> {
+    pub record_type: Box<RecordType<'t>>,
+}
+
+///
+/// Type derived for production 61
+///
+/// `FPSection: "VAR" IdentList ":" Type;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FPSectionVARIdentListColonType<'t> {
+    pub v_a_r: Token<'t>, /* VAR */
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Type<'t>,
+}
+
+///
+/// Type derived for production 62
+///
+/// `FPSection: IdentList ":" Type;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FPSectionIdentListColonType<'t> {
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Type<'t>,
+}
+
+///
+/// Type derived for production 64
+///
+/// `FormalParametersSuffix: "\)";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FormalParametersSuffixRParen<'t> {
+    pub r_paren: Token<'t>, /* \) */
+}
+
+///
+/// Type derived for production 65
+///
+/// `FormalParametersSuffix: FPSection FPSectionRest "\)";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FormalParametersSuffixFPSectionFPSectionRestRParen<'t> {
+    pub f_p_section: FPSection<'t>,
+    pub f_p_section_rest: FPSectionRest<'t>,
+    pub r_paren: Token<'t>, /* \) */
+}
+
+///
+/// Type derived for production 66
+///
+/// `FPSectionRest: ";" FPSection FPSectionRest;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FPSectionRestSemicolonFPSectionFPSectionRest<'t> {
+    pub semicolon: Token<'t>, /* ; */
+    pub f_p_section: FPSection<'t>,
+    pub f_p_section_rest: Box<FPSectionRest<'t>>,
+}
+
+///
+/// Type derived for production 67
+///
+/// `FPSectionRest: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FPSectionRestFPSectionRestEmpty {}
+
+///
+/// Type derived for production 69
+///
+/// `ProcedureHeadingSuffix: FormalParameters;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureHeadingSuffixFormalParameters<'t> {
+    pub formal_parameters: FormalParameters<'t>,
+}
+
+///
+/// Type derived for production 70
+///
+/// `ProcedureHeadingSuffix: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureHeadingSuffixProcedureHeadingSuffixEmpty {}
+
+///
+/// Type derived for production 72
+///
+/// `ProcedureBodySuffix0: "BEGIN" StatementSequence ProcedureBodySuffix;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix<'t> {
+    pub b_e_g_i_n: Token<'t>, /* BEGIN */
+    pub statement_sequence: StatementSequence<'t>,
+    pub procedure_body_suffix: ProcedureBodySuffix<'t>,
+}
+
+///
+/// Type derived for production 73
+///
+/// `ProcedureBodySuffix0: "RETURN" Expression "END" Ident;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureBodySuffix0RETURNExpressionENDIdent<'t> {
+    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
+    pub expression: Expression<'t>,
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
+}
+
+///
+/// Type derived for production 74
+///
+/// `ProcedureBodySuffix0: "END" Ident;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureBodySuffix0ENDIdent<'t> {
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
+}
+
+///
+/// Type derived for production 75
+///
+/// `ProcedureBodySuffix: "RETURN" Expression "END" Ident;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureBodySuffixRETURNExpressionENDIdent<'t> {
+    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
+    pub expression: Expression<'t>,
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
+}
+
+///
+/// Type derived for production 76
+///
+/// `ProcedureBodySuffix: "END" Ident;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureBodySuffixENDIdent<'t> {
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
+}
+
+///
+/// Type derived for production 78
+///
+/// `Declarations: "TYPE" TypeDecls DeclarationsSuffix1;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsTYPETypeDeclsDeclarationsSuffix1<'t> {
+    pub t_y_p_e: Token<'t>, /* TYPE */
+    pub type_decls: TypeDecls<'t>,
+    pub declarations_suffix1: Box<DeclarationsSuffix1<'t>>,
+}
+
+///
+/// Type derived for production 79
+///
+/// `Declarations: "CONST" ConstDecls DeclarationsSuffix0;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsCONSTConstDeclsDeclarationsSuffix0<'t> {
+    pub c_o_n_s_t: Token<'t>, /* CONST */
+    pub const_decls: ConstDecls<'t>,
+    pub declarations_suffix0: Box<DeclarationsSuffix0<'t>>,
+}
+
+///
+/// Type derived for production 80
+///
+/// `DeclarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsSuffix1VARVarDeclsProcedureDeclarationList<'t> {
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+}
+
+///
+/// Type derived for production 81
+///
+/// `DeclarationsSuffix1: ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsSuffix1ProcedureDeclarationList<'t> {
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
+}
+
+///
+/// Type derived for production 82
+///
+/// `Declarations: "VAR" VarDecls ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsVARVarDeclsProcedureDeclarationList<'t> {
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+}
+
+///
+/// Type derived for production 83
+///
+/// `Declarations: ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsProcedureDeclarationList<'t> {
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+}
+
+///
+/// Type derived for production 84
+///
+/// `DeclarationsSuffix0: "TYPE" TypeDecls DeclarationsSuffix;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t> {
+    pub t_y_p_e: Token<'t>, /* TYPE */
+    pub type_decls: TypeDecls<'t>,
+    pub declarations_suffix: Box<DeclarationsSuffix<'t>>,
+}
+
+///
+/// Type derived for production 85
+///
+/// `DeclarationsSuffix0: "VAR" VarDecls ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsSuffix0VARVarDeclsProcedureDeclarationList<'t> {
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+}
+
+///
+/// Type derived for production 86
+///
+/// `DeclarationsSuffix0: ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsSuffix0ProcedureDeclarationList<'t> {
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
+}
+
+///
+/// Type derived for production 87
+///
+/// `DeclarationsSuffix: "VAR" VarDecls ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsSuffixVARVarDeclsProcedureDeclarationList<'t> {
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+}
+
+///
+/// Type derived for production 88
+///
+/// `DeclarationsSuffix: ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationsSuffixProcedureDeclarationList<'t> {
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
+}
+
+///
+/// Type derived for production 89
+///
+/// `ProcedureDeclarationList: ProcedureDeclaration ";" ProcedureDeclarationList;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclarationList<'t> {
+    pub procedure_declaration: ProcedureDeclaration<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+}
+
+///
+/// Type derived for production 90
+///
+/// `ProcedureDeclarationList: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureDeclarationListProcedureDeclarationListEmpty {}
+
+///
+/// Type derived for production 91
+///
+/// `ConstDecls: Ident AssignOp Expression ";" ConstDecls;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ConstDeclsIdentAssignOpExpressionSemicolonConstDecls<'t> {
+    pub ident: Ident<'t>,
+    pub assign_op: AssignOp<'t>,
+    pub expression: Expression<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub const_decls: Box<ConstDecls<'t>>,
+}
+
+///
+/// Type derived for production 92
+///
+/// `ConstDecls: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ConstDeclsConstDeclsEmpty {}
+
+///
+/// Type derived for production 93
+///
+/// `TypeDecls: Ident AssignOp Type ";" TypeDecls;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct TypeDeclsIdentAssignOpTypeSemicolonTypeDecls<'t> {
+    pub ident: Ident<'t>,
+    pub assign_op: AssignOp<'t>,
+    pub r#type: Type<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub type_decls: Box<TypeDecls<'t>>,
+}
+
+///
+/// Type derived for production 94
+///
+/// `TypeDecls: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct TypeDeclsTypeDeclsEmpty {}
+
+///
+/// Type derived for production 95
+///
+/// `VarDecls: IdentList ":" Type ";" VarDecls;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct VarDeclsIdentListColonTypeSemicolonVarDecls<'t> {
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Type<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub var_decls: Box<VarDecls<'t>>,
+}
+
+///
+/// Type derived for production 96
+///
+/// `VarDecls: ;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct VarDeclsVarDeclsEmpty {}
+
+///
+/// Type derived for production 98
+///
+/// `ModuleSuffix: "BEGIN" StatementSequence "END" Ident "\.";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ModuleSuffixBEGINStatementSequenceENDIdentDot<'t> {
+    pub b_e_g_i_n: Token<'t>, /* BEGIN */
+    pub statement_sequence: StatementSequence<'t>,
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
+    pub dot: Token<'t>, /* \. */
+}
+
+///
+/// Type derived for production 99
+///
+/// `ModuleSuffix: "END" Ident "\.";`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ModuleSuffixENDIdentDot<'t> {
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
+    pub dot: Token<'t>, /* \. */
+}
+
+// -------------------------------------------------------------------------------------------------
+//
+// Types of non-terminals deduced from the structure of the transformed grammar
+//
+
+///
+/// Type derived for non-terminal ActualParameters
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ActualParameters<'t> {
+    pub l_paren: Token<'t>, /* \( */
+    pub actual_parameters_suffix: ActualParametersSuffix<'t>,
+}
+
+///
+/// Type derived for non-terminal ActualParametersSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ActualParametersSuffix<'t> {
+    RParen(ActualParametersSuffixRParen<'t>),
+    ExpressionExpressionListRestRParen(
+        ActualParametersSuffixExpressionExpressionListRestRParen<'t>,
+    ),
+}
+
+///
+/// Type derived for non-terminal AddExpression
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum AddExpression<'t> {
+    AddOperatorTermAddExpression(Box<AddExpressionAddOperatorTermAddExpression<'t>>),
+    AddExpressionEmpty(AddExpressionAddExpressionEmpty),
+}
+
+///
+/// Type derived for non-terminal AddOperator
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct AddOperator<'t> {
+    pub add_operator: Token<'t>, /* \+|-|OR */
+}
+
+///
+/// Type derived for non-terminal ArrayType
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ArrayType<'t> {
+    pub a_r_r_a_y: Token<'t>, /* ARRAY */
+    pub expression: Expression<'t>,
+    pub o_f: Token<'t>, /* OF */
+    pub r#type: Type<'t>,
+}
+
+///
+/// Type derived for non-terminal AssignOp
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum AssignOp<'t> {
+    ColonEqu(AssignOpColonEqu<'t>),
+    Equ(AssignOpEqu<'t>),
+}
+
+///
+/// Type derived for non-terminal Assignment
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Assignment<'t> {
+    pub ident: Ident<'t>,
+    pub selector: Selector<'t>,
+    pub assign_op: AssignOp<'t>,
+    pub expression: Expression<'t>,
+}
+
+///
+/// Type derived for non-terminal ConstDecls
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ConstDecls<'t> {
+    IdentAssignOpExpressionSemicolonConstDecls(
+        ConstDeclsIdentAssignOpExpressionSemicolonConstDecls<'t>,
+    ),
+    ConstDeclsEmpty(ConstDeclsConstDeclsEmpty),
+}
+
+///
+/// Type derived for non-terminal Declarations
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Declarations<'t> {
+    TYPETypeDeclsDeclarationsSuffix1(DeclarationsTYPETypeDeclsDeclarationsSuffix1<'t>),
+    CONSTConstDeclsDeclarationsSuffix0(DeclarationsCONSTConstDeclsDeclarationsSuffix0<'t>),
+    VARVarDeclsProcedureDeclarationList(DeclarationsVARVarDeclsProcedureDeclarationList<'t>),
+    ProcedureDeclarationList(DeclarationsProcedureDeclarationList<'t>),
+}
+
+///
+/// Type derived for non-terminal DeclarationsSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum DeclarationsSuffix<'t> {
+    VARVarDeclsProcedureDeclarationList(DeclarationsSuffixVARVarDeclsProcedureDeclarationList<'t>),
+    ProcedureDeclarationList(DeclarationsSuffixProcedureDeclarationList<'t>),
+}
+
+///
+/// Type derived for non-terminal DeclarationsSuffix0
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum DeclarationsSuffix0<'t> {
+    TYPETypeDeclsDeclarationsSuffix(DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t>),
+    VARVarDeclsProcedureDeclarationList(DeclarationsSuffix0VARVarDeclsProcedureDeclarationList<'t>),
+    ProcedureDeclarationList(DeclarationsSuffix0ProcedureDeclarationList<'t>),
+}
+
+///
+/// Type derived for non-terminal DeclarationsSuffix1
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum DeclarationsSuffix1<'t> {
+    VARVarDeclsProcedureDeclarationList(DeclarationsSuffix1VARVarDeclsProcedureDeclarationList<'t>),
+    ProcedureDeclarationList(DeclarationsSuffix1ProcedureDeclarationList<'t>),
+}
+
+///
+/// Type derived for non-terminal ElseIfList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ElseIfList<'t> {
+    ELSIFExpressionTHENStatementSequenceElseIfList(
+        Box<ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t>>,
+    ),
+    ElseIfListEmpty(ElseIfListElseIfListEmpty),
+}
+
+///
+/// Type derived for non-terminal Expression
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Expression<'t> {
+    pub simple_expression: Box<SimpleExpression<'t>>,
+    pub expression_suffix: Box<ExpressionSuffix<'t>>,
+}
+
+///
+/// Type derived for non-terminal ExpressionListRest
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ExpressionListRest<'t> {
+    CommaExpressionExpressionListRest(ExpressionListRestCommaExpressionExpressionListRest<'t>),
+    ExpressionListRestEmpty(ExpressionListRestExpressionListRestEmpty),
+}
+
+///
+/// Type derived for non-terminal ExpressionSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ExpressionSuffix<'t> {
+    RelationOpSimpleExpression(Box<ExpressionSuffixRelationOpSimpleExpression<'t>>),
+    ExpressionSuffixEmpty(ExpressionSuffixExpressionSuffixEmpty),
+}
+
+///
+/// Type derived for non-terminal FPSection
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum FPSection<'t> {
+    VARIdentListColonType(FPSectionVARIdentListColonType<'t>),
+    IdentListColonType(FPSectionIdentListColonType<'t>),
+}
+
+///
+/// Type derived for non-terminal FPSectionRest
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum FPSectionRest<'t> {
+    SemicolonFPSectionFPSectionRest(FPSectionRestSemicolonFPSectionFPSectionRest<'t>),
+    FPSectionRestEmpty(FPSectionRestFPSectionRestEmpty),
+}
+
+///
+/// Type derived for non-terminal Factor
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Factor<'t> {
+    IdentSelector(Box<FactorIdentSelector<'t>>),
+    Integer(FactorInteger<'t>),
+    LParenExpressionRParen(Box<FactorLParenExpressionRParen<'t>>),
+    TildeFactor(FactorTildeFactor<'t>),
+    UnaryOpFactor(FactorUnaryOpFactor<'t>),
+}
+
+///
+/// Type derived for non-terminal FieldList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum FieldList<'t> {
+    IdentListColonType(FieldListIdentListColonType<'t>),
+    FieldListEmpty(FieldListFieldListEmpty),
+}
+
+///
+/// Type derived for non-terminal FieldListRest
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum FieldListRest<'t> {
+    SemicolonFieldListFieldListRest(FieldListRestSemicolonFieldListFieldListRest<'t>),
+    FieldListRestEmpty(FieldListRestFieldListRestEmpty),
+}
+
+///
+/// Type derived for non-terminal FormalParameters
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FormalParameters<'t> {
+    pub l_paren: Token<'t>, /* \( */
+    pub formal_parameters_suffix: FormalParametersSuffix<'t>,
+}
+
+///
+/// Type derived for non-terminal FormalParametersSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum FormalParametersSuffix<'t> {
+    RParen(FormalParametersSuffixRParen<'t>),
+    FPSectionFPSectionRestRParen(FormalParametersSuffixFPSectionFPSectionRestRParen<'t>),
+}
+
+///
+/// Type derived for non-terminal Ident
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Ident<'t> {
+    pub ident: Token<'t>, /* [a-zA-Z][a-zA-Z0-9]* */
+}
+
+///
+/// Type derived for non-terminal IdentList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IdentList<'t> {
+    pub ident: Ident<'t>,
+    pub ident_list_rest: IdentListRest<'t>,
+}
+
+///
+/// Type derived for non-terminal IdentListRest
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum IdentListRest<'t> {
+    CommaIdentIdentListRest(IdentListRestCommaIdentIdentListRest<'t>),
+    IdentListRestEmpty(IdentListRestIdentListRestEmpty),
+}
+
+///
+/// Type derived for non-terminal IfPrefix
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IfPrefix<'t> {
+    pub i_f: Token<'t>, /* IF */
+    pub expression: Expression<'t>,
+    pub t_h_e_n: Token<'t>, /* THEN */
+    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub else_if_list: ElseIfList<'t>,
+}
+
+///
+/// Type derived for non-terminal IfStatement
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IfStatement<'t> {
+    pub if_prefix: IfPrefix<'t>,
+    pub if_statement_suffix: IfStatementSuffix<'t>,
+}
+
+///
+/// Type derived for non-terminal IfStatementSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum IfStatementSuffix<'t> {
+    ELSEStatementSequenceEND(IfStatementSuffixELSEStatementSequenceEND<'t>),
+    END(IfStatementSuffixEND<'t>),
+}
+
+///
+/// Type derived for non-terminal Integer
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Integer<'t> {
+    pub integer: Token<'t>, /* [0-9]+ */
+}
+
+///
+/// Type derived for non-terminal Module
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Module<'t> {
+    pub m_o_d_u_l_e: Token<'t>, /* MODULE */
+    pub ident: Ident<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub declarations: Declarations<'t>,
+    pub module_suffix: ModuleSuffix<'t>,
+}
+
+///
+/// Type derived for non-terminal ModuleSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ModuleSuffix<'t> {
+    BEGINStatementSequenceENDIdentDot(ModuleSuffixBEGINStatementSequenceENDIdentDot<'t>),
+    ENDIdentDot(ModuleSuffixENDIdentDot<'t>),
+}
+
+///
+/// Type derived for non-terminal MulExpression
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum MulExpression<'t> {
+    MulOperatorFactorMulExpression(Box<MulExpressionMulOperatorFactorMulExpression<'t>>),
+    MulExpressionEmpty(MulExpressionMulExpressionEmpty),
+}
+
+///
+/// Type derived for non-terminal MulOperator
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct MulOperator<'t> {
+    pub mul_operator: Token<'t>, /* \*|/|DIV|MOD|& */
+}
+
+///
+/// Type derived for non-terminal ProcedureBody
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureBody<'t> {
+    pub declarations: Declarations<'t>,
+    pub procedure_body_suffix0: ProcedureBodySuffix0<'t>,
+}
+
+///
+/// Type derived for non-terminal ProcedureBodySuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ProcedureBodySuffix<'t> {
+    RETURNExpressionENDIdent(ProcedureBodySuffixRETURNExpressionENDIdent<'t>),
+    ENDIdent(ProcedureBodySuffixENDIdent<'t>),
+}
+
+///
+/// Type derived for non-terminal ProcedureBodySuffix0
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ProcedureBodySuffix0<'t> {
+    BEGINStatementSequenceProcedureBodySuffix(
+        ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix<'t>,
+    ),
+    RETURNExpressionENDIdent(ProcedureBodySuffix0RETURNExpressionENDIdent<'t>),
+    ENDIdent(ProcedureBodySuffix0ENDIdent<'t>),
+}
+
+///
+/// Type derived for non-terminal ProcedureCall
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureCall<'t> {
+    pub ident: Ident<'t>,
+    pub procedure_call_suffix: ProcedureCallSuffix<'t>,
+}
+
+///
+/// Type derived for non-terminal ProcedureCallSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ProcedureCallSuffix<'t> {
+    ActualParameters(ProcedureCallSuffixActualParameters<'t>),
+    ProcedureCallSuffixEmpty(ProcedureCallSuffixProcedureCallSuffixEmpty),
+}
+
+///
+/// Type derived for non-terminal ProcedureDeclaration
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureDeclaration<'t> {
+    pub procedure_heading: ProcedureHeading<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub procedure_body: ProcedureBody<'t>,
+}
+
+///
+/// Type derived for non-terminal ProcedureDeclarationList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ProcedureDeclarationList<'t> {
+    ProcedureDeclarationSemicolonProcedureDeclarationList(
+        ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclarationList<'t>,
+    ),
+    ProcedureDeclarationListEmpty(ProcedureDeclarationListProcedureDeclarationListEmpty),
+}
+
+///
+/// Type derived for non-terminal ProcedureHeading
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ProcedureHeading<'t> {
+    pub p_r_o_c_e_d_u_r_e: Token<'t>, /* PROCEDURE */
+    pub ident: Ident<'t>,
+    pub procedure_heading_suffix: ProcedureHeadingSuffix<'t>,
+}
+
+///
+/// Type derived for non-terminal ProcedureHeadingSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ProcedureHeadingSuffix<'t> {
+    FormalParameters(ProcedureHeadingSuffixFormalParameters<'t>),
+    ProcedureHeadingSuffixEmpty(ProcedureHeadingSuffixProcedureHeadingSuffixEmpty),
+}
+
+///
+/// Type derived for non-terminal RecordType
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct RecordType<'t> {
+    pub r_e_c_o_r_d: Token<'t>, /* RECORD */
+    pub field_list: FieldList<'t>,
+    pub field_list_rest: FieldListRest<'t>,
+    pub e_n_d: Token<'t>, /* END */
+}
+
+///
+/// Type derived for non-terminal RelationOp
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum RelationOp<'t> {
+    AssignOp(RelationOpAssignOp<'t>),
+    RelationalOps(RelationOpRelationalOps<'t>),
+}
+
+///
+/// Type derived for non-terminal RelationalOps
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct RelationalOps<'t> {
+    pub relational_ops: Token<'t>, /* >=|<=|\#|<|> */
+}
+
+///
+/// Type derived for non-terminal RepeatStatement
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct RepeatStatement<'t> {
+    pub r_e_p_e_a_t: Token<'t>, /* REPEAT */
+    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub u_n_t_i_l: Token<'t>, /* UNTIL */
+    pub expression: Expression<'t>,
+}
+
+///
+/// Type derived for non-terminal Selector
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Selector<'t> {
+    pub selector_list: Box<SelectorList<'t>>,
+}
+
+///
+/// Type derived for non-terminal SelectorList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum SelectorList<'t> {
+    DotIdentSelectorList(SelectorListDotIdentSelectorList<'t>),
+    LBracketExpressionRBracketSelectorList(
+        Box<SelectorListLBracketExpressionRBracketSelectorList<'t>>,
+    ),
+    SelectorListEmpty(SelectorListSelectorListEmpty),
+}
+
+///
+/// Type derived for non-terminal SimpleExpression
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct SimpleExpression<'t> {
+    pub term: Box<Term<'t>>,
+    pub add_expression: AddExpression<'t>,
+}
+
+///
+/// Type derived for non-terminal Statement
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Statement<'t> {
+    Assignment(StatementAssignment<'t>),
+    ProcedureCall(StatementProcedureCall<'t>),
+    IfStatement(StatementIfStatement<'t>),
+    WhileStatement(Box<StatementWhileStatement<'t>>),
+    RepeatStatement(StatementRepeatStatement<'t>),
+    StatementEmpty(StatementStatementEmpty),
+}
+
+///
+/// Type derived for non-terminal StatementSequence
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StatementSequence<'t> {
+    pub statement: Statement<'t>,
+    pub statement_sequence_rest: StatementSequenceRest<'t>,
+}
+
+///
+/// Type derived for non-terminal StatementSequenceRest
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum StatementSequenceRest<'t> {
+    SemicolonStatementStatementSequenceRest(
+        StatementSequenceRestSemicolonStatementStatementSequenceRest<'t>,
+    ),
+    StatementSequenceRestEmpty(StatementSequenceRestStatementSequenceRestEmpty),
+}
+
+///
+/// Type derived for non-terminal Term
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Term<'t> {
+    pub factor: Factor<'t>,
+    pub mul_expression: MulExpression<'t>,
+}
+
+///
+/// Type derived for non-terminal Type
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Type<'t> {
+    Ident(TypeIdent<'t>),
+    ArrayType(TypeArrayType<'t>),
+    RecordType(TypeRecordType<'t>),
+}
+
+///
+/// Type derived for non-terminal TypeDecls
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum TypeDecls<'t> {
+    IdentAssignOpTypeSemicolonTypeDecls(TypeDeclsIdentAssignOpTypeSemicolonTypeDecls<'t>),
+    TypeDeclsEmpty(TypeDeclsTypeDeclsEmpty),
+}
+
+///
+/// Type derived for non-terminal UnaryOp
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct UnaryOp<'t> {
+    pub unary_op: Token<'t>, /* \+|- */
+}
+
+///
+/// Type derived for non-terminal VarDecls
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum VarDecls<'t> {
+    IdentListColonTypeSemicolonVarDecls(VarDeclsIdentListColonTypeSemicolonVarDecls<'t>),
+    VarDeclsEmpty(VarDeclsVarDeclsEmpty),
+}
+
+///
+/// Type derived for non-terminal WhileStatement
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct WhileStatement<'t> {
+    pub w_h_i_l_e: Token<'t>, /* WHILE */
+    pub expression: Expression<'t>,
+    pub d_o: Token<'t>, /* DO */
+    pub statement_sequence: StatementSequence<'t>,
+    pub e_n_d: Token<'t>, /* END */
+}
+
+// -------------------------------------------------------------------------------------------------
+
+///
+/// Deduced ASTType of expanded grammar
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ASTType<'t> {
+    ActualParameters(ActualParameters<'t>),
+    ActualParametersSuffix(ActualParametersSuffix<'t>),
+    AddExpression(AddExpression<'t>),
+    AddOperator(AddOperator<'t>),
+    ArrayType(ArrayType<'t>),
+    AssignOp(AssignOp<'t>),
+    Assignment(Assignment<'t>),
+    ConstDecls(ConstDecls<'t>),
+    Declarations(Declarations<'t>),
+    DeclarationsSuffix(DeclarationsSuffix<'t>),
+    DeclarationsSuffix0(DeclarationsSuffix0<'t>),
+    DeclarationsSuffix1(DeclarationsSuffix1<'t>),
+    ElseIfList(ElseIfList<'t>),
+    Expression(Expression<'t>),
+    ExpressionListRest(ExpressionListRest<'t>),
+    ExpressionSuffix(ExpressionSuffix<'t>),
+    FPSection(FPSection<'t>),
+    FPSectionRest(FPSectionRest<'t>),
+    Factor(Factor<'t>),
+    FieldList(FieldList<'t>),
+    FieldListRest(FieldListRest<'t>),
+    FormalParameters(FormalParameters<'t>),
+    FormalParametersSuffix(FormalParametersSuffix<'t>),
+    Ident(Ident<'t>),
+    IdentList(IdentList<'t>),
+    IdentListRest(IdentListRest<'t>),
+    IfPrefix(IfPrefix<'t>),
+    IfStatement(IfStatement<'t>),
+    IfStatementSuffix(IfStatementSuffix<'t>),
+    Integer(Integer<'t>),
+    Module(Module<'t>),
+    ModuleSuffix(ModuleSuffix<'t>),
+    MulExpression(MulExpression<'t>),
+    MulOperator(MulOperator<'t>),
+    ProcedureBody(ProcedureBody<'t>),
+    ProcedureBodySuffix(ProcedureBodySuffix<'t>),
+    ProcedureBodySuffix0(ProcedureBodySuffix0<'t>),
+    ProcedureCall(ProcedureCall<'t>),
+    ProcedureCallSuffix(ProcedureCallSuffix<'t>),
+    ProcedureDeclaration(ProcedureDeclaration<'t>),
+    ProcedureDeclarationList(ProcedureDeclarationList<'t>),
+    ProcedureHeading(ProcedureHeading<'t>),
+    ProcedureHeadingSuffix(ProcedureHeadingSuffix<'t>),
+    RecordType(RecordType<'t>),
+    RelationOp(RelationOp<'t>),
+    RelationalOps(RelationalOps<'t>),
+    RepeatStatement(RepeatStatement<'t>),
+    Selector(Selector<'t>),
+    SelectorList(SelectorList<'t>),
+    SimpleExpression(SimpleExpression<'t>),
+    Statement(Statement<'t>),
+    StatementSequence(StatementSequence<'t>),
+    StatementSequenceRest(StatementSequenceRest<'t>),
+    Term(Term<'t>),
+    Type(Type<'t>),
+    TypeDecls(TypeDecls<'t>),
+    UnaryOp(UnaryOp<'t>),
+    VarDecls(VarDecls<'t>),
+    WhileStatement(WhileStatement<'t>),
+}
+
+/// Auto-implemented adapter grammar
+///
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+/// The lifetime parameter `'u` refers to the lifetime of user grammar object.
+///
+#[allow(dead_code)]
+pub struct Oberon0GrammarAuto<'t, 'u>
+where
+    't: 'u,
+{
+    // Mutable reference of the actual user grammar to be able to call the semantic actions on it
+    user_grammar: &'u mut dyn Oberon0GrammarTrait<'t>,
+    // Stack to construct the AST on it
+    item_stack: Vec<ASTType<'t>>,
+}
+
+///
+/// The `Oberon0GrammarAuto` impl is automatically generated for the
+/// given grammar.
+///
+impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
+    pub fn new(user_grammar: &'u mut dyn Oberon0GrammarTrait<'t>) -> Self {
+        Self {
+            user_grammar,
+            item_stack: Vec::new(),
+        }
+    }
+
+    #[allow(dead_code)]
+    fn push(&mut self, item: ASTType<'t>, context: &str) {
+        trace!("push    {}: {:?}", context, item);
+        self.item_stack.push(item)
+    }
+
+    #[allow(dead_code)]
+    fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
+        let item = self.item_stack.pop();
+        if let Some(ref item) = item {
+            trace!("pop     {}: {:?}", context, item);
+        }
+        item
+    }
+
+    #[allow(dead_code)]
+    // Use this function for debugging purposes:
+    // trace!("{}", self.trace_item_stack(context));
+    fn trace_item_stack(&self, context: &str) -> std::string::String {
+        format!(
+            "Item stack at {}:\n{}",
+            context,
+            self.item_stack
+                .iter()
+                .rev()
+                .map(|s| format!("  {:?}", s))
+                .collect::<Vec<std::string::String>>()
+                .join("\n")
+        )
+    }
+
     /// Semantic action for production 0:
     ///
     /// `Selector: SelectorList;`
     ///
-    fn selector(&mut self, _selector_list: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn selector(&mut self, _selector_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let selector_list = pop_item!(self, selector_list, SelectorList, context);
+        let selector_built = Selector {
+            selector_list: Box::new(selector_list),
+        };
+        // Calling user action here
+        self.user_grammar.selector(&selector_built)?;
+        self.push(ASTType::Selector(selector_built), context);
         Ok(())
     }
 
@@ -30,12 +2072,27 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `SelectorList: "\." Ident SelectorList;`
     ///
+    #[parol_runtime::function_name::named]
     fn selector_list_0(
         &mut self,
-        _dot: &ParseTreeType,
-        _ident: &ParseTreeType,
-        _selector_list: &ParseTreeType,
+        dot: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        _selector_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let dot = dot.token()?.clone();
+        let selector_list = pop_item!(self, selector_list, SelectorList, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let selector_list_0_built = SelectorListDotIdentSelectorList {
+            dot,
+            ident,
+            selector_list: Box::new(selector_list),
+        };
+        let selector_list_0_built = SelectorList::DotIdentSelectorList(selector_list_0_built);
+        // Calling user action here
+        self.user_grammar.selector_list(&selector_list_0_built)?;
+        self.push(ASTType::SelectorList(selector_list_0_built), context);
         Ok(())
     }
 
@@ -43,13 +2100,31 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `SelectorList: "\[" Expression "]" SelectorList;`
     ///
+    #[parol_runtime::function_name::named]
     fn selector_list_1(
         &mut self,
-        _l_bracket: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _r_bracket: &ParseTreeType,
-        _selector_list: &ParseTreeType,
+        l_bracket: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        r_bracket: &ParseTreeType<'t>,
+        _selector_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_bracket = l_bracket.token()?.clone();
+        let r_bracket = r_bracket.token()?.clone();
+        let selector_list = pop_item!(self, selector_list, SelectorList, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let selector_list_1_built = SelectorListLBracketExpressionRBracketSelectorList {
+            l_bracket,
+            expression: Box::new(expression),
+            r_bracket,
+            selector_list: Box::new(selector_list),
+        };
+        let selector_list_1_built =
+            SelectorList::LBracketExpressionRBracketSelectorList(Box::new(selector_list_1_built));
+        // Calling user action here
+        self.user_grammar.selector_list(&selector_list_1_built)?;
+        self.push(ASTType::SelectorList(selector_list_1_built), context);
         Ok(())
     }
 
@@ -57,7 +2132,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `SelectorList: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn selector_list_2(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let selector_list_2_built = SelectorListSelectorListEmpty {};
+        let selector_list_2_built = SelectorList::SelectorListEmpty(selector_list_2_built);
+        // Calling user action here
+        self.user_grammar.selector_list(&selector_list_2_built)?;
+        self.push(ASTType::SelectorList(selector_list_2_built), context);
         Ok(())
     }
 
@@ -65,7 +2148,24 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Factor: Ident Selector;`
     ///
-    fn factor_0(&mut self, _ident: &ParseTreeType, _selector: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn factor_0(
+        &mut self,
+        _ident: &ParseTreeType<'t>,
+        _selector: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let selector = pop_item!(self, selector, Selector, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let factor_0_built = FactorIdentSelector {
+            ident,
+            selector: Box::new(selector),
+        };
+        let factor_0_built = Factor::IdentSelector(Box::new(factor_0_built));
+        // Calling user action here
+        self.user_grammar.factor(&factor_0_built)?;
+        self.push(ASTType::Factor(factor_0_built), context);
         Ok(())
     }
 
@@ -73,7 +2173,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Factor: Integer;`
     ///
-    fn factor_1(&mut self, _integer: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn factor_1(&mut self, _integer: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let integer = pop_item!(self, integer, Integer, context);
+        let factor_1_built = FactorInteger { integer };
+        let factor_1_built = Factor::Integer(factor_1_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_1_built)?;
+        self.push(ASTType::Factor(factor_1_built), context);
         Ok(())
     }
 
@@ -81,12 +2190,27 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Factor: "\(" Expression "\)";`
     ///
+    #[parol_runtime::function_name::named]
     fn factor_2(
         &mut self,
-        _l_paren: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _r_paren: &ParseTreeType,
+        l_paren: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_paren = l_paren.token()?.clone();
+        let r_paren = r_paren.token()?.clone();
+        let expression = pop_item!(self, expression, Expression, context);
+        let factor_2_built = FactorLParenExpressionRParen {
+            l_paren,
+            expression: Box::new(expression),
+            r_paren,
+        };
+        let factor_2_built = Factor::LParenExpressionRParen(Box::new(factor_2_built));
+        // Calling user action here
+        self.user_grammar.factor(&factor_2_built)?;
+        self.push(ASTType::Factor(factor_2_built), context);
         Ok(())
     }
 
@@ -94,7 +2218,20 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Factor: "~" Factor;`
     ///
-    fn factor_3(&mut self, _tilde: &ParseTreeType, _factor: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn factor_3(&mut self, tilde: &ParseTreeType<'t>, _factor: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let tilde = tilde.token()?.clone();
+        let factor = pop_item!(self, factor, Factor, context);
+        let factor_3_built = FactorTildeFactor {
+            tilde,
+            factor: Box::new(factor),
+        };
+        let factor_3_built = Factor::TildeFactor(factor_3_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_3_built)?;
+        self.push(ASTType::Factor(factor_3_built), context);
         Ok(())
     }
 
@@ -102,7 +2239,24 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Factor: UnaryOp Factor;`
     ///
-    fn factor_4(&mut self, _unary_op: &ParseTreeType, _factor: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn factor_4(
+        &mut self,
+        _unary_op: &ParseTreeType<'t>,
+        _factor: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let factor = pop_item!(self, factor, Factor, context);
+        let unary_op = pop_item!(self, unary_op, UnaryOp, context);
+        let factor_4_built = FactorUnaryOpFactor {
+            unary_op,
+            factor: Box::new(factor),
+        };
+        let factor_4_built = Factor::UnaryOpFactor(factor_4_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_4_built)?;
+        self.push(ASTType::Factor(factor_4_built), context);
         Ok(())
     }
 
@@ -110,7 +2264,23 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Term: Factor MulExpression;`
     ///
-    fn term(&mut self, _factor: &ParseTreeType, _mul_expression: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn term(
+        &mut self,
+        _factor: &ParseTreeType<'t>,
+        _mul_expression: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mul_expression = pop_item!(self, mul_expression, MulExpression, context);
+        let factor = pop_item!(self, factor, Factor, context);
+        let term_built = Term {
+            factor,
+            mul_expression,
+        };
+        // Calling user action here
+        self.user_grammar.term(&term_built)?;
+        self.push(ASTType::Term(term_built), context);
         Ok(())
     }
 
@@ -118,12 +2288,28 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `MulExpression: MulOperator Factor MulExpression;`
     ///
+    #[parol_runtime::function_name::named]
     fn mul_expression_0(
         &mut self,
-        _mul_operator: &ParseTreeType,
-        _factor: &ParseTreeType,
-        _mul_expression: &ParseTreeType,
+        _mul_operator: &ParseTreeType<'t>,
+        _factor: &ParseTreeType<'t>,
+        _mul_expression: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mul_expression = pop_item!(self, mul_expression, MulExpression, context);
+        let factor = pop_item!(self, factor, Factor, context);
+        let mul_operator = pop_item!(self, mul_operator, MulOperator, context);
+        let mul_expression_0_built = MulExpressionMulOperatorFactorMulExpression {
+            mul_operator,
+            factor: Box::new(factor),
+            mul_expression: Box::new(mul_expression),
+        };
+        let mul_expression_0_built =
+            MulExpression::MulOperatorFactorMulExpression(Box::new(mul_expression_0_built));
+        // Calling user action here
+        self.user_grammar.mul_expression(&mul_expression_0_built)?;
+        self.push(ASTType::MulExpression(mul_expression_0_built), context);
         Ok(())
     }
 
@@ -131,7 +2317,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `MulExpression: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn mul_expression_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mul_expression_1_built = MulExpressionMulExpressionEmpty {};
+        let mul_expression_1_built = MulExpression::MulExpressionEmpty(mul_expression_1_built);
+        // Calling user action here
+        self.user_grammar.mul_expression(&mul_expression_1_built)?;
+        self.push(ASTType::MulExpression(mul_expression_1_built), context);
         Ok(())
     }
 
@@ -139,11 +2333,24 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `SimpleExpression: Term AddExpression;`
     ///
+    #[parol_runtime::function_name::named]
     fn simple_expression(
         &mut self,
-        _term: &ParseTreeType,
-        _add_expression: &ParseTreeType,
+        _term: &ParseTreeType<'t>,
+        _add_expression: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let add_expression = pop_item!(self, add_expression, AddExpression, context);
+        let term = pop_item!(self, term, Term, context);
+        let simple_expression_built = SimpleExpression {
+            term: Box::new(term),
+            add_expression,
+        };
+        // Calling user action here
+        self.user_grammar
+            .simple_expression(&simple_expression_built)?;
+        self.push(ASTType::SimpleExpression(simple_expression_built), context);
         Ok(())
     }
 
@@ -151,12 +2358,28 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `AddExpression: AddOperator Term AddExpression;`
     ///
+    #[parol_runtime::function_name::named]
     fn add_expression_0(
         &mut self,
-        _add_operator: &ParseTreeType,
-        _term: &ParseTreeType,
-        _add_expression: &ParseTreeType,
+        _add_operator: &ParseTreeType<'t>,
+        _term: &ParseTreeType<'t>,
+        _add_expression: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let add_expression = pop_item!(self, add_expression, AddExpression, context);
+        let term = pop_item!(self, term, Term, context);
+        let add_operator = pop_item!(self, add_operator, AddOperator, context);
+        let add_expression_0_built = AddExpressionAddOperatorTermAddExpression {
+            add_operator,
+            term: Box::new(term),
+            add_expression: Box::new(add_expression),
+        };
+        let add_expression_0_built =
+            AddExpression::AddOperatorTermAddExpression(Box::new(add_expression_0_built));
+        // Calling user action here
+        self.user_grammar.add_expression(&add_expression_0_built)?;
+        self.push(ASTType::AddExpression(add_expression_0_built), context);
         Ok(())
     }
 
@@ -164,7 +2387,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `AddExpression: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn add_expression_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let add_expression_1_built = AddExpressionAddExpressionEmpty {};
+        let add_expression_1_built = AddExpression::AddExpressionEmpty(add_expression_1_built);
+        // Calling user action here
+        self.user_grammar.add_expression(&add_expression_1_built)?;
+        self.push(ASTType::AddExpression(add_expression_1_built), context);
         Ok(())
     }
 
@@ -172,7 +2403,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `AssignOp: ":=";`
     ///
-    fn assign_op_0(&mut self, _colon_equ: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn assign_op_0(&mut self, colon_equ: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let colon_equ = colon_equ.token()?.clone();
+        let assign_op_0_built = AssignOpColonEqu { colon_equ };
+        let assign_op_0_built = AssignOp::ColonEqu(assign_op_0_built);
+        // Calling user action here
+        self.user_grammar.assign_op(&assign_op_0_built)?;
+        self.push(ASTType::AssignOp(assign_op_0_built), context);
         Ok(())
     }
 
@@ -180,7 +2420,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `RelationOp: AssignOp;`
     ///
-    fn relation_op_0(&mut self, _assign_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn relation_op_0(&mut self, _assign_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let assign_op = pop_item!(self, assign_op, AssignOp, context);
+        let relation_op_0_built = RelationOpAssignOp { assign_op };
+        let relation_op_0_built = RelationOp::AssignOp(relation_op_0_built);
+        // Calling user action here
+        self.user_grammar.relation_op(&relation_op_0_built)?;
+        self.push(ASTType::RelationOp(relation_op_0_built), context);
         Ok(())
     }
 
@@ -188,7 +2437,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `RelationOp: RelationalOps;`
     ///
-    fn relation_op_1(&mut self, _relational_ops: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn relation_op_1(&mut self, _relational_ops: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let relational_ops = pop_item!(self, relational_ops, RelationalOps, context);
+        let relation_op_1_built = RelationOpRelationalOps { relational_ops };
+        let relation_op_1_built = RelationOp::RelationalOps(relation_op_1_built);
+        // Calling user action here
+        self.user_grammar.relation_op(&relation_op_1_built)?;
+        self.push(ASTType::RelationOp(relation_op_1_built), context);
         Ok(())
     }
 
@@ -196,7 +2454,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `RelationalOps: ">=|<=|\#|<|>";`
     ///
-    fn relational_ops(&mut self, _relational_ops: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn relational_ops(&mut self, relational_ops: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let relational_ops = relational_ops.token()?.clone();
+        let relational_ops_built = RelationalOps { relational_ops };
+        // Calling user action here
+        self.user_grammar.relational_ops(&relational_ops_built)?;
+        self.push(ASTType::RelationalOps(relational_ops_built), context);
         Ok(())
     }
 
@@ -204,7 +2470,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `AssignOp: "=";`
     ///
-    fn assign_op_1(&mut self, _equ: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn assign_op_1(&mut self, equ: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let equ = equ.token()?.clone();
+        let assign_op_1_built = AssignOpEqu { equ };
+        let assign_op_1_built = AssignOp::Equ(assign_op_1_built);
+        // Calling user action here
+        self.user_grammar.assign_op(&assign_op_1_built)?;
+        self.push(ASTType::AssignOp(assign_op_1_built), context);
         Ok(())
     }
 
@@ -212,11 +2487,23 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Expression: SimpleExpression ExpressionSuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn expression(
         &mut self,
-        _simple_expression: &ParseTreeType,
-        _expression_suffix: &ParseTreeType,
+        _simple_expression: &ParseTreeType<'t>,
+        _expression_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let expression_suffix = pop_item!(self, expression_suffix, ExpressionSuffix, context);
+        let simple_expression = pop_item!(self, simple_expression, SimpleExpression, context);
+        let expression_built = Expression {
+            simple_expression: Box::new(simple_expression),
+            expression_suffix: Box::new(expression_suffix),
+        };
+        // Calling user action here
+        self.user_grammar.expression(&expression_built)?;
+        self.push(ASTType::Expression(expression_built), context);
         Ok(())
     }
 
@@ -224,11 +2511,26 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ExpressionSuffix: RelationOp SimpleExpression;`
     ///
+    #[parol_runtime::function_name::named]
     fn expression_suffix_0(
         &mut self,
-        _relation_op: &ParseTreeType,
-        _simple_expression: &ParseTreeType,
+        _relation_op: &ParseTreeType<'t>,
+        _simple_expression: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let simple_expression = pop_item!(self, simple_expression, SimpleExpression, context);
+        let relation_op = pop_item!(self, relation_op, RelationOp, context);
+        let expression_suffix_0_built = ExpressionSuffixRelationOpSimpleExpression {
+            relation_op,
+            simple_expression: Box::new(simple_expression),
+        };
+        let expression_suffix_0_built =
+            ExpressionSuffix::RelationOpSimpleExpression(Box::new(expression_suffix_0_built));
+        self.push(
+            ASTType::ExpressionSuffix(expression_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -236,7 +2538,17 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ExpressionSuffix: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn expression_suffix_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let expression_suffix_1_built = ExpressionSuffixExpressionSuffixEmpty {};
+        let expression_suffix_1_built =
+            ExpressionSuffix::ExpressionSuffixEmpty(expression_suffix_1_built);
+        self.push(
+            ASTType::ExpressionSuffix(expression_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -244,13 +2556,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Assignment: Ident Selector AssignOp Expression;`
     ///
+    #[parol_runtime::function_name::named]
     fn assignment(
         &mut self,
-        _ident: &ParseTreeType,
-        _selector: &ParseTreeType,
-        _assign_op: &ParseTreeType,
-        _expression: &ParseTreeType,
+        _ident: &ParseTreeType<'t>,
+        _selector: &ParseTreeType<'t>,
+        _assign_op: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let expression = pop_item!(self, expression, Expression, context);
+        let assign_op = pop_item!(self, assign_op, AssignOp, context);
+        let selector = pop_item!(self, selector, Selector, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let assignment_built = Assignment {
+            ident,
+            selector,
+            assign_op,
+            expression,
+        };
+        // Calling user action here
+        self.user_grammar.assignment(&assignment_built)?;
+        self.push(ASTType::Assignment(assignment_built), context);
         Ok(())
     }
 
@@ -258,11 +2586,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ActualParameters: "\(" ActualParametersSuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn actual_parameters(
         &mut self,
-        _l_paren: &ParseTreeType,
-        _actual_parameters_suffix: &ParseTreeType,
+        l_paren: &ParseTreeType<'t>,
+        _actual_parameters_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_paren = l_paren.token()?.clone();
+        let actual_parameters_suffix = pop_item!(
+            self,
+            actual_parameters_suffix,
+            ActualParametersSuffix,
+            context
+        );
+        let actual_parameters_built = ActualParameters {
+            l_paren,
+            actual_parameters_suffix,
+        };
+        // Calling user action here
+        self.user_grammar
+            .actual_parameters(&actual_parameters_built)?;
+        self.push(ASTType::ActualParameters(actual_parameters_built), context);
         Ok(())
     }
 
@@ -270,7 +2616,18 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ActualParametersSuffix: "\)";`
     ///
-    fn actual_parameters_suffix_0(&mut self, _r_paren: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn actual_parameters_suffix_0(&mut self, r_paren: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_paren = r_paren.token()?.clone();
+        let actual_parameters_suffix_0_built = ActualParametersSuffixRParen { r_paren };
+        let actual_parameters_suffix_0_built =
+            ActualParametersSuffix::RParen(actual_parameters_suffix_0_built);
+        self.push(
+            ASTType::ActualParametersSuffix(actual_parameters_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -278,12 +2635,33 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ActualParametersSuffix: Expression ExpressionListRest "\)";`
     ///
+    #[parol_runtime::function_name::named]
     fn actual_parameters_suffix_1(
         &mut self,
-        _expression: &ParseTreeType,
-        _expression_list_rest: &ParseTreeType,
-        _r_paren: &ParseTreeType,
+        _expression: &ParseTreeType<'t>,
+        _expression_list_rest: &ParseTreeType<'t>,
+        r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_paren = r_paren.token()?.clone();
+        let expression_list_rest =
+            pop_item!(self, expression_list_rest, ExpressionListRest, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let actual_parameters_suffix_1_built =
+            ActualParametersSuffixExpressionExpressionListRestRParen {
+                expression,
+                expression_list_rest,
+                r_paren,
+            };
+        let actual_parameters_suffix_1_built =
+            ActualParametersSuffix::ExpressionExpressionListRestRParen(
+                actual_parameters_suffix_1_built,
+            );
+        self.push(
+            ASTType::ActualParametersSuffix(actual_parameters_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -291,12 +2669,33 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ExpressionListRest: "," Expression ExpressionListRest;`
     ///
+    #[parol_runtime::function_name::named]
     fn expression_list_rest_0(
         &mut self,
-        _comma: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _expression_list_rest: &ParseTreeType,
+        comma: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        _expression_list_rest: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let comma = comma.token()?.clone();
+        let expression_list_rest =
+            pop_item!(self, expression_list_rest, ExpressionListRest, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let expression_list_rest_0_built = ExpressionListRestCommaExpressionExpressionListRest {
+            comma,
+            expression,
+            expression_list_rest: Box::new(expression_list_rest),
+        };
+        let expression_list_rest_0_built =
+            ExpressionListRest::CommaExpressionExpressionListRest(expression_list_rest_0_built);
+        // Calling user action here
+        self.user_grammar
+            .expression_list_rest(&expression_list_rest_0_built)?;
+        self.push(
+            ASTType::ExpressionListRest(expression_list_rest_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -304,7 +2703,20 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ExpressionListRest: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn expression_list_rest_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let expression_list_rest_1_built = ExpressionListRestExpressionListRestEmpty {};
+        let expression_list_rest_1_built =
+            ExpressionListRest::ExpressionListRestEmpty(expression_list_rest_1_built);
+        // Calling user action here
+        self.user_grammar
+            .expression_list_rest(&expression_list_rest_1_built)?;
+        self.push(
+            ASTType::ExpressionListRest(expression_list_rest_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -312,11 +2724,24 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureCall: Ident ProcedureCallSuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_call(
         &mut self,
-        _ident: &ParseTreeType,
-        _procedure_call_suffix: &ParseTreeType,
+        _ident: &ParseTreeType<'t>,
+        _procedure_call_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_call_suffix =
+            pop_item!(self, procedure_call_suffix, ProcedureCallSuffix, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let procedure_call_built = ProcedureCall {
+            ident,
+            procedure_call_suffix,
+        };
+        // Calling user action here
+        self.user_grammar.procedure_call(&procedure_call_built)?;
+        self.push(ASTType::ProcedureCall(procedure_call_built), context);
         Ok(())
     }
 
@@ -324,7 +2749,19 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureCallSuffix: ActualParameters;`
     ///
-    fn procedure_call_suffix_0(&mut self, _actual_parameters: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn procedure_call_suffix_0(&mut self, _actual_parameters: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let actual_parameters = pop_item!(self, actual_parameters, ActualParameters, context);
+        let procedure_call_suffix_0_built =
+            ProcedureCallSuffixActualParameters { actual_parameters };
+        let procedure_call_suffix_0_built =
+            ProcedureCallSuffix::ActualParameters(procedure_call_suffix_0_built);
+        self.push(
+            ASTType::ProcedureCallSuffix(procedure_call_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -332,7 +2769,17 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureCallSuffix: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_call_suffix_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_call_suffix_1_built = ProcedureCallSuffixProcedureCallSuffixEmpty {};
+        let procedure_call_suffix_1_built =
+            ProcedureCallSuffix::ProcedureCallSuffixEmpty(procedure_call_suffix_1_built);
+        self.push(
+            ASTType::ProcedureCallSuffix(procedure_call_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -340,11 +2787,23 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `IfStatement: IfPrefix IfStatementSuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn if_statement(
         &mut self,
-        _if_prefix: &ParseTreeType,
-        _if_statement_suffix: &ParseTreeType,
+        _if_prefix: &ParseTreeType<'t>,
+        _if_statement_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let if_statement_suffix = pop_item!(self, if_statement_suffix, IfStatementSuffix, context);
+        let if_prefix = pop_item!(self, if_prefix, IfPrefix, context);
+        let if_statement_built = IfStatement {
+            if_prefix,
+            if_statement_suffix,
+        };
+        // Calling user action here
+        self.user_grammar.if_statement(&if_statement_built)?;
+        self.push(ASTType::IfStatement(if_statement_built), context);
         Ok(())
     }
 
@@ -352,12 +2811,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `IfStatementSuffix: "ELSE" StatementSequence "END";`
     ///
+    #[parol_runtime::function_name::named]
     fn if_statement_suffix_0(
         &mut self,
-        _e_l_s_e: &ParseTreeType,
-        _statement_sequence: &ParseTreeType,
-        _e_n_d: &ParseTreeType,
+        e_l_s_e: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let e_l_s_e = e_l_s_e.token()?.clone();
+        let e_n_d = e_n_d.token()?.clone();
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let if_statement_suffix_0_built = IfStatementSuffixELSEStatementSequenceEND {
+            e_l_s_e,
+            statement_sequence: Box::new(statement_sequence),
+            e_n_d,
+        };
+        let if_statement_suffix_0_built =
+            IfStatementSuffix::ELSEStatementSequenceEND(if_statement_suffix_0_built);
+        self.push(
+            ASTType::IfStatementSuffix(if_statement_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -365,7 +2841,17 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `IfStatementSuffix: "END";`
     ///
-    fn if_statement_suffix_1(&mut self, _e_n_d: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn if_statement_suffix_1(&mut self, e_n_d: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let e_n_d = e_n_d.token()?.clone();
+        let if_statement_suffix_1_built = IfStatementSuffixEND { e_n_d };
+        let if_statement_suffix_1_built = IfStatementSuffix::END(if_statement_suffix_1_built);
+        self.push(
+            ASTType::IfStatementSuffix(if_statement_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -373,14 +2859,32 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `IfPrefix: "IF" Expression "THEN" StatementSequence ElseIfList;`
     ///
+    #[parol_runtime::function_name::named]
     fn if_prefix(
         &mut self,
-        _i_f: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _t_h_e_n: &ParseTreeType,
-        _statement_sequence: &ParseTreeType,
-        _else_if_list: &ParseTreeType,
+        i_f: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        t_h_e_n: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+        _else_if_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let i_f = i_f.token()?.clone();
+        let t_h_e_n = t_h_e_n.token()?.clone();
+        let else_if_list = pop_item!(self, else_if_list, ElseIfList, context);
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let if_prefix_built = IfPrefix {
+            i_f,
+            expression,
+            t_h_e_n,
+            statement_sequence: Box::new(statement_sequence),
+            else_if_list,
+        };
+        // Calling user action here
+        self.user_grammar.if_prefix(&if_prefix_built)?;
+        self.push(ASTType::IfPrefix(if_prefix_built), context);
         Ok(())
     }
 
@@ -388,14 +2892,35 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ElseIfList: "ELSIF" Expression "THEN" StatementSequence ElseIfList;`
     ///
+    #[parol_runtime::function_name::named]
     fn else_if_list_0(
         &mut self,
-        _e_l_s_i_f: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _t_h_e_n: &ParseTreeType,
-        _statement_sequence: &ParseTreeType,
-        _else_if_list: &ParseTreeType,
+        e_l_s_i_f: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        t_h_e_n: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+        _else_if_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let e_l_s_i_f = e_l_s_i_f.token()?.clone();
+        let t_h_e_n = t_h_e_n.token()?.clone();
+        let else_if_list = pop_item!(self, else_if_list, ElseIfList, context);
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let else_if_list_0_built = ElseIfListELSIFExpressionTHENStatementSequenceElseIfList {
+            e_l_s_i_f,
+            expression,
+            t_h_e_n,
+            statement_sequence: Box::new(statement_sequence),
+            else_if_list: Box::new(else_if_list),
+        };
+        let else_if_list_0_built = ElseIfList::ELSIFExpressionTHENStatementSequenceElseIfList(
+            Box::new(else_if_list_0_built),
+        );
+        // Calling user action here
+        self.user_grammar.else_if_list(&else_if_list_0_built)?;
+        self.push(ASTType::ElseIfList(else_if_list_0_built), context);
         Ok(())
     }
 
@@ -403,7 +2928,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ElseIfList: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn else_if_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let else_if_list_1_built = ElseIfListElseIfListEmpty {};
+        let else_if_list_1_built = ElseIfList::ElseIfListEmpty(else_if_list_1_built);
+        // Calling user action here
+        self.user_grammar.else_if_list(&else_if_list_1_built)?;
+        self.push(ASTType::ElseIfList(else_if_list_1_built), context);
         Ok(())
     }
 
@@ -411,14 +2944,32 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `WhileStatement: "WHILE" Expression "DO" StatementSequence "END";`
     ///
+    #[parol_runtime::function_name::named]
     fn while_statement(
         &mut self,
-        _w_h_i_l_e: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _d_o: &ParseTreeType,
-        _statement_sequence: &ParseTreeType,
-        _e_n_d: &ParseTreeType,
+        w_h_i_l_e: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        d_o: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let w_h_i_l_e = w_h_i_l_e.token()?.clone();
+        let d_o = d_o.token()?.clone();
+        let e_n_d = e_n_d.token()?.clone();
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let while_statement_built = WhileStatement {
+            w_h_i_l_e,
+            expression,
+            d_o,
+            statement_sequence,
+            e_n_d,
+        };
+        // Calling user action here
+        self.user_grammar.while_statement(&while_statement_built)?;
+        self.push(ASTType::WhileStatement(while_statement_built), context);
         Ok(())
     }
 
@@ -426,13 +2977,30 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `RepeatStatement: "REPEAT" StatementSequence "UNTIL" Expression;`
     ///
+    #[parol_runtime::function_name::named]
     fn repeat_statement(
         &mut self,
-        _r_e_p_e_a_t: &ParseTreeType,
-        _statement_sequence: &ParseTreeType,
-        _u_n_t_i_l: &ParseTreeType,
-        _expression: &ParseTreeType,
+        r_e_p_e_a_t: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+        u_n_t_i_l: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_e_p_e_a_t = r_e_p_e_a_t.token()?.clone();
+        let u_n_t_i_l = u_n_t_i_l.token()?.clone();
+        let expression = pop_item!(self, expression, Expression, context);
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let repeat_statement_built = RepeatStatement {
+            r_e_p_e_a_t,
+            statement_sequence: Box::new(statement_sequence),
+            u_n_t_i_l,
+            expression,
+        };
+        // Calling user action here
+        self.user_grammar
+            .repeat_statement(&repeat_statement_built)?;
+        self.push(ASTType::RepeatStatement(repeat_statement_built), context);
         Ok(())
     }
 
@@ -440,7 +3008,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Statement: Assignment;`
     ///
-    fn statement_0(&mut self, _assignment: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn statement_0(&mut self, _assignment: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let assignment = pop_item!(self, assignment, Assignment, context);
+        let statement_0_built = StatementAssignment { assignment };
+        let statement_0_built = Statement::Assignment(statement_0_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_0_built)?;
+        self.push(ASTType::Statement(statement_0_built), context);
         Ok(())
     }
 
@@ -448,7 +3025,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Statement: ProcedureCall;`
     ///
-    fn statement_1(&mut self, _procedure_call: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn statement_1(&mut self, _procedure_call: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_call = pop_item!(self, procedure_call, ProcedureCall, context);
+        let statement_1_built = StatementProcedureCall { procedure_call };
+        let statement_1_built = Statement::ProcedureCall(statement_1_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_1_built)?;
+        self.push(ASTType::Statement(statement_1_built), context);
         Ok(())
     }
 
@@ -456,7 +3042,18 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Statement: IfStatement;`
     ///
-    fn statement_2(&mut self, _if_statement: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn statement_2(&mut self, _if_statement: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let if_statement = pop_item!(self, if_statement, IfStatement, context);
+        let statement_2_built = StatementIfStatement {
+            if_statement: Box::new(if_statement),
+        };
+        let statement_2_built = Statement::IfStatement(statement_2_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_2_built)?;
+        self.push(ASTType::Statement(statement_2_built), context);
         Ok(())
     }
 
@@ -464,7 +3061,18 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Statement: WhileStatement;`
     ///
-    fn statement_3(&mut self, _while_statement: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn statement_3(&mut self, _while_statement: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let while_statement = pop_item!(self, while_statement, WhileStatement, context);
+        let statement_3_built = StatementWhileStatement {
+            while_statement: Box::new(while_statement),
+        };
+        let statement_3_built = Statement::WhileStatement(Box::new(statement_3_built));
+        // Calling user action here
+        self.user_grammar.statement(&statement_3_built)?;
+        self.push(ASTType::Statement(statement_3_built), context);
         Ok(())
     }
 
@@ -472,7 +3080,18 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Statement: RepeatStatement;`
     ///
-    fn statement_4(&mut self, _repeat_statement: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn statement_4(&mut self, _repeat_statement: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let repeat_statement = pop_item!(self, repeat_statement, RepeatStatement, context);
+        let statement_4_built = StatementRepeatStatement {
+            repeat_statement: Box::new(repeat_statement),
+        };
+        let statement_4_built = Statement::RepeatStatement(statement_4_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_4_built)?;
+        self.push(ASTType::Statement(statement_4_built), context);
         Ok(())
     }
 
@@ -480,7 +3099,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Statement: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn statement_5(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_5_built = StatementStatementEmpty {};
+        let statement_5_built = Statement::StatementEmpty(statement_5_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_5_built)?;
+        self.push(ASTType::Statement(statement_5_built), context);
         Ok(())
     }
 
@@ -488,11 +3115,32 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `StatementSequence: Statement StatementSequenceRest;`
     ///
+    #[parol_runtime::function_name::named]
     fn statement_sequence(
         &mut self,
-        _statement: &ParseTreeType,
-        _statement_sequence_rest: &ParseTreeType,
+        _statement: &ParseTreeType<'t>,
+        _statement_sequence_rest: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_sequence_rest = pop_item!(
+            self,
+            statement_sequence_rest,
+            StatementSequenceRest,
+            context
+        );
+        let statement = pop_item!(self, statement, Statement, context);
+        let statement_sequence_built = StatementSequence {
+            statement,
+            statement_sequence_rest,
+        };
+        // Calling user action here
+        self.user_grammar
+            .statement_sequence(&statement_sequence_built)?;
+        self.push(
+            ASTType::StatementSequence(statement_sequence_built),
+            context,
+        );
         Ok(())
     }
 
@@ -500,12 +3148,40 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `StatementSequenceRest: ";" Statement StatementSequenceRest;`
     ///
+    #[parol_runtime::function_name::named]
     fn statement_sequence_rest_0(
         &mut self,
-        _semicolon: &ParseTreeType,
-        _statement: &ParseTreeType,
-        _statement_sequence_rest: &ParseTreeType,
+        semicolon: &ParseTreeType<'t>,
+        _statement: &ParseTreeType<'t>,
+        _statement_sequence_rest: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let statement_sequence_rest = pop_item!(
+            self,
+            statement_sequence_rest,
+            StatementSequenceRest,
+            context
+        );
+        let statement = pop_item!(self, statement, Statement, context);
+        let statement_sequence_rest_0_built =
+            StatementSequenceRestSemicolonStatementStatementSequenceRest {
+                semicolon,
+                statement: Box::new(statement),
+                statement_sequence_rest: Box::new(statement_sequence_rest),
+            };
+        let statement_sequence_rest_0_built =
+            StatementSequenceRest::SemicolonStatementStatementSequenceRest(
+                statement_sequence_rest_0_built,
+            );
+        // Calling user action here
+        self.user_grammar
+            .statement_sequence_rest(&statement_sequence_rest_0_built)?;
+        self.push(
+            ASTType::StatementSequenceRest(statement_sequence_rest_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -513,7 +3189,20 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `StatementSequenceRest: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn statement_sequence_rest_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_sequence_rest_1_built = StatementSequenceRestStatementSequenceRestEmpty {};
+        let statement_sequence_rest_1_built =
+            StatementSequenceRest::StatementSequenceRestEmpty(statement_sequence_rest_1_built);
+        // Calling user action here
+        self.user_grammar
+            .statement_sequence_rest(&statement_sequence_rest_1_built)?;
+        self.push(
+            ASTType::StatementSequenceRest(statement_sequence_rest_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -521,11 +3210,23 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `IdentList: Ident IdentListRest;`
     ///
+    #[parol_runtime::function_name::named]
     fn ident_list(
         &mut self,
-        _ident: &ParseTreeType,
-        _ident_list_rest: &ParseTreeType,
+        _ident: &ParseTreeType<'t>,
+        _ident_list_rest: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let ident_list_rest = pop_item!(self, ident_list_rest, IdentListRest, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let ident_list_built = IdentList {
+            ident,
+            ident_list_rest,
+        };
+        // Calling user action here
+        self.user_grammar.ident_list(&ident_list_built)?;
+        self.push(ASTType::IdentList(ident_list_built), context);
         Ok(())
     }
 
@@ -533,12 +3234,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `IdentListRest: "," Ident IdentListRest;`
     ///
+    #[parol_runtime::function_name::named]
     fn ident_list_rest_0(
         &mut self,
-        _comma: &ParseTreeType,
-        _ident: &ParseTreeType,
-        _ident_list_rest: &ParseTreeType,
+        comma: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        _ident_list_rest: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let comma = comma.token()?.clone();
+        let ident_list_rest = pop_item!(self, ident_list_rest, IdentListRest, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let ident_list_rest_0_built = IdentListRestCommaIdentIdentListRest {
+            comma,
+            ident,
+            ident_list_rest: Box::new(ident_list_rest),
+        };
+        let ident_list_rest_0_built =
+            IdentListRest::CommaIdentIdentListRest(ident_list_rest_0_built);
+        // Calling user action here
+        self.user_grammar
+            .ident_list_rest(&ident_list_rest_0_built)?;
+        self.push(ASTType::IdentListRest(ident_list_rest_0_built), context);
         Ok(())
     }
 
@@ -546,7 +3264,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `IdentListRest: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn ident_list_rest_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let ident_list_rest_1_built = IdentListRestIdentListRestEmpty {};
+        let ident_list_rest_1_built = IdentListRest::IdentListRestEmpty(ident_list_rest_1_built);
+        // Calling user action here
+        self.user_grammar
+            .ident_list_rest(&ident_list_rest_1_built)?;
+        self.push(ASTType::IdentListRest(ident_list_rest_1_built), context);
         Ok(())
     }
 
@@ -554,13 +3281,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ArrayType: "ARRAY" Expression "OF" Type;`
     ///
+    #[parol_runtime::function_name::named]
     fn array_type(
         &mut self,
-        _a_r_r_a_y: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _o_f: &ParseTreeType,
-        _type: &ParseTreeType,
+        a_r_r_a_y: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        o_f: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let a_r_r_a_y = a_r_r_a_y.token()?.clone();
+        let o_f = o_f.token()?.clone();
+        let r#type = pop_item!(self, r#type, Type, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let array_type_built = ArrayType {
+            a_r_r_a_y,
+            expression,
+            o_f,
+            r#type,
+        };
+        // Calling user action here
+        self.user_grammar.array_type(&array_type_built)?;
+        self.push(ASTType::ArrayType(array_type_built), context);
         Ok(())
     }
 
@@ -568,12 +3311,27 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FieldList: IdentList ":" Type;`
     ///
+    #[parol_runtime::function_name::named]
     fn field_list_0(
         &mut self,
-        _ident_list: &ParseTreeType,
-        _colon: &ParseTreeType,
-        _type: &ParseTreeType,
+        _ident_list: &ParseTreeType<'t>,
+        colon: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let colon = colon.token()?.clone();
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
+        let field_list_0_built = FieldListIdentListColonType {
+            ident_list,
+            colon,
+            r#type: Box::new(r#type),
+        };
+        let field_list_0_built = FieldList::IdentListColonType(field_list_0_built);
+        // Calling user action here
+        self.user_grammar.field_list(&field_list_0_built)?;
+        self.push(ASTType::FieldList(field_list_0_built), context);
         Ok(())
     }
 
@@ -581,7 +3339,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FieldList: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn field_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let field_list_1_built = FieldListFieldListEmpty {};
+        let field_list_1_built = FieldList::FieldListEmpty(field_list_1_built);
+        // Calling user action here
+        self.user_grammar.field_list(&field_list_1_built)?;
+        self.push(ASTType::FieldList(field_list_1_built), context);
         Ok(())
     }
 
@@ -589,13 +3355,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `RecordType: "RECORD" FieldList FieldListRest "END";`
     ///
+    #[parol_runtime::function_name::named]
     fn record_type(
         &mut self,
-        _r_e_c_o_r_d: &ParseTreeType,
-        _field_list: &ParseTreeType,
-        _field_list_rest: &ParseTreeType,
-        _e_n_d: &ParseTreeType,
+        r_e_c_o_r_d: &ParseTreeType<'t>,
+        _field_list: &ParseTreeType<'t>,
+        _field_list_rest: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_e_c_o_r_d = r_e_c_o_r_d.token()?.clone();
+        let e_n_d = e_n_d.token()?.clone();
+        let field_list_rest = pop_item!(self, field_list_rest, FieldListRest, context);
+        let field_list = pop_item!(self, field_list, FieldList, context);
+        let record_type_built = RecordType {
+            r_e_c_o_r_d,
+            field_list,
+            field_list_rest,
+            e_n_d,
+        };
+        // Calling user action here
+        self.user_grammar.record_type(&record_type_built)?;
+        self.push(ASTType::RecordType(record_type_built), context);
         Ok(())
     }
 
@@ -603,12 +3385,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FieldListRest: ";" FieldList FieldListRest;`
     ///
+    #[parol_runtime::function_name::named]
     fn field_list_rest_0(
         &mut self,
-        _semicolon: &ParseTreeType,
-        _field_list: &ParseTreeType,
-        _field_list_rest: &ParseTreeType,
+        semicolon: &ParseTreeType<'t>,
+        _field_list: &ParseTreeType<'t>,
+        _field_list_rest: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let field_list_rest = pop_item!(self, field_list_rest, FieldListRest, context);
+        let field_list = pop_item!(self, field_list, FieldList, context);
+        let field_list_rest_0_built = FieldListRestSemicolonFieldListFieldListRest {
+            semicolon,
+            field_list,
+            field_list_rest: Box::new(field_list_rest),
+        };
+        let field_list_rest_0_built =
+            FieldListRest::SemicolonFieldListFieldListRest(field_list_rest_0_built);
+        // Calling user action here
+        self.user_grammar
+            .field_list_rest(&field_list_rest_0_built)?;
+        self.push(ASTType::FieldListRest(field_list_rest_0_built), context);
         Ok(())
     }
 
@@ -616,7 +3415,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FieldListRest: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn field_list_rest_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let field_list_rest_1_built = FieldListRestFieldListRestEmpty {};
+        let field_list_rest_1_built = FieldListRest::FieldListRestEmpty(field_list_rest_1_built);
+        // Calling user action here
+        self.user_grammar
+            .field_list_rest(&field_list_rest_1_built)?;
+        self.push(ASTType::FieldListRest(field_list_rest_1_built), context);
         Ok(())
     }
 
@@ -624,7 +3432,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Type: Ident;`
     ///
-    fn type_0(&mut self, _ident: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn type_0(&mut self, _ident: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let ident = pop_item!(self, ident, Ident, context);
+        let type_0_built = TypeIdent { ident };
+        let type_0_built = Type::Ident(type_0_built);
+        // Calling user action here
+        self.user_grammar.r#type(&type_0_built)?;
+        self.push(ASTType::Type(type_0_built), context);
         Ok(())
     }
 
@@ -632,7 +3449,18 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Type: ArrayType;`
     ///
-    fn type_1(&mut self, _array_type: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn type_1(&mut self, _array_type: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let array_type = pop_item!(self, array_type, ArrayType, context);
+        let type_1_built = TypeArrayType {
+            array_type: Box::new(array_type),
+        };
+        let type_1_built = Type::ArrayType(type_1_built);
+        // Calling user action here
+        self.user_grammar.r#type(&type_1_built)?;
+        self.push(ASTType::Type(type_1_built), context);
         Ok(())
     }
 
@@ -640,7 +3468,18 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Type: RecordType;`
     ///
-    fn type_2(&mut self, _record_type: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn type_2(&mut self, _record_type: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let record_type = pop_item!(self, record_type, RecordType, context);
+        let type_2_built = TypeRecordType {
+            record_type: Box::new(record_type),
+        };
+        let type_2_built = Type::RecordType(type_2_built);
+        // Calling user action here
+        self.user_grammar.r#type(&type_2_built)?;
+        self.push(ASTType::Type(type_2_built), context);
         Ok(())
     }
 
@@ -648,13 +3487,30 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FPSection: "VAR" IdentList ":" Type;`
     ///
+    #[parol_runtime::function_name::named]
     fn f_p_section_0(
         &mut self,
-        _v_a_r: &ParseTreeType,
-        _ident_list: &ParseTreeType,
-        _colon: &ParseTreeType,
-        _type: &ParseTreeType,
+        v_a_r: &ParseTreeType<'t>,
+        _ident_list: &ParseTreeType<'t>,
+        colon: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let v_a_r = v_a_r.token()?.clone();
+        let colon = colon.token()?.clone();
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
+        let f_p_section_0_built = FPSectionVARIdentListColonType {
+            v_a_r,
+            ident_list,
+            colon,
+            r#type,
+        };
+        let f_p_section_0_built = FPSection::VARIdentListColonType(f_p_section_0_built);
+        // Calling user action here
+        self.user_grammar.f_p_section(&f_p_section_0_built)?;
+        self.push(ASTType::FPSection(f_p_section_0_built), context);
         Ok(())
     }
 
@@ -662,12 +3518,27 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FPSection: IdentList ":" Type;`
     ///
+    #[parol_runtime::function_name::named]
     fn f_p_section_1(
         &mut self,
-        _ident_list: &ParseTreeType,
-        _colon: &ParseTreeType,
-        _type: &ParseTreeType,
+        _ident_list: &ParseTreeType<'t>,
+        colon: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let colon = colon.token()?.clone();
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
+        let f_p_section_1_built = FPSectionIdentListColonType {
+            ident_list,
+            colon,
+            r#type,
+        };
+        let f_p_section_1_built = FPSection::IdentListColonType(f_p_section_1_built);
+        // Calling user action here
+        self.user_grammar.f_p_section(&f_p_section_1_built)?;
+        self.push(ASTType::FPSection(f_p_section_1_built), context);
         Ok(())
     }
 
@@ -675,11 +3546,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FormalParameters: "\(" FormalParametersSuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn formal_parameters(
         &mut self,
-        _l_paren: &ParseTreeType,
-        _formal_parameters_suffix: &ParseTreeType,
+        l_paren: &ParseTreeType<'t>,
+        _formal_parameters_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_paren = l_paren.token()?.clone();
+        let formal_parameters_suffix = pop_item!(
+            self,
+            formal_parameters_suffix,
+            FormalParametersSuffix,
+            context
+        );
+        let formal_parameters_built = FormalParameters {
+            l_paren,
+            formal_parameters_suffix,
+        };
+        // Calling user action here
+        self.user_grammar
+            .formal_parameters(&formal_parameters_built)?;
+        self.push(ASTType::FormalParameters(formal_parameters_built), context);
         Ok(())
     }
 
@@ -687,7 +3576,18 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FormalParametersSuffix: "\)";`
     ///
-    fn formal_parameters_suffix_0(&mut self, _r_paren: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn formal_parameters_suffix_0(&mut self, r_paren: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_paren = r_paren.token()?.clone();
+        let formal_parameters_suffix_0_built = FormalParametersSuffixRParen { r_paren };
+        let formal_parameters_suffix_0_built =
+            FormalParametersSuffix::RParen(formal_parameters_suffix_0_built);
+        self.push(
+            ASTType::FormalParametersSuffix(formal_parameters_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -695,12 +3595,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FormalParametersSuffix: FPSection FPSectionRest "\)";`
     ///
+    #[parol_runtime::function_name::named]
     fn formal_parameters_suffix_1(
         &mut self,
-        _f_p_section: &ParseTreeType,
-        _f_p_section_rest: &ParseTreeType,
-        _r_paren: &ParseTreeType,
+        _f_p_section: &ParseTreeType<'t>,
+        _f_p_section_rest: &ParseTreeType<'t>,
+        r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_paren = r_paren.token()?.clone();
+        let f_p_section_rest = pop_item!(self, f_p_section_rest, FPSectionRest, context);
+        let f_p_section = pop_item!(self, f_p_section, FPSection, context);
+        let formal_parameters_suffix_1_built = FormalParametersSuffixFPSectionFPSectionRestRParen {
+            f_p_section,
+            f_p_section_rest,
+            r_paren,
+        };
+        let formal_parameters_suffix_1_built =
+            FormalParametersSuffix::FPSectionFPSectionRestRParen(formal_parameters_suffix_1_built);
+        self.push(
+            ASTType::FormalParametersSuffix(formal_parameters_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -708,12 +3625,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FPSectionRest: ";" FPSection FPSectionRest;`
     ///
+    #[parol_runtime::function_name::named]
     fn f_p_section_rest_0(
         &mut self,
-        _semicolon: &ParseTreeType,
-        _f_p_section: &ParseTreeType,
-        _f_p_section_rest: &ParseTreeType,
+        semicolon: &ParseTreeType<'t>,
+        _f_p_section: &ParseTreeType<'t>,
+        _f_p_section_rest: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let f_p_section_rest = pop_item!(self, f_p_section_rest, FPSectionRest, context);
+        let f_p_section = pop_item!(self, f_p_section, FPSection, context);
+        let f_p_section_rest_0_built = FPSectionRestSemicolonFPSectionFPSectionRest {
+            semicolon,
+            f_p_section,
+            f_p_section_rest: Box::new(f_p_section_rest),
+        };
+        let f_p_section_rest_0_built =
+            FPSectionRest::SemicolonFPSectionFPSectionRest(f_p_section_rest_0_built);
+        // Calling user action here
+        self.user_grammar
+            .f_p_section_rest(&f_p_section_rest_0_built)?;
+        self.push(ASTType::FPSectionRest(f_p_section_rest_0_built), context);
         Ok(())
     }
 
@@ -721,7 +3655,16 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `FPSectionRest: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn f_p_section_rest_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let f_p_section_rest_1_built = FPSectionRestFPSectionRestEmpty {};
+        let f_p_section_rest_1_built = FPSectionRest::FPSectionRestEmpty(f_p_section_rest_1_built);
+        // Calling user action here
+        self.user_grammar
+            .f_p_section_rest(&f_p_section_rest_1_built)?;
+        self.push(ASTType::FPSectionRest(f_p_section_rest_1_built), context);
         Ok(())
     }
 
@@ -729,12 +3672,32 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureHeading: "PROCEDURE" Ident ProcedureHeadingSuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_heading(
         &mut self,
-        _p_r_o_c_e_d_u_r_e: &ParseTreeType,
-        _ident: &ParseTreeType,
-        _procedure_heading_suffix: &ParseTreeType,
+        p_r_o_c_e_d_u_r_e: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        _procedure_heading_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let p_r_o_c_e_d_u_r_e = p_r_o_c_e_d_u_r_e.token()?.clone();
+        let procedure_heading_suffix = pop_item!(
+            self,
+            procedure_heading_suffix,
+            ProcedureHeadingSuffix,
+            context
+        );
+        let ident = pop_item!(self, ident, Ident, context);
+        let procedure_heading_built = ProcedureHeading {
+            p_r_o_c_e_d_u_r_e,
+            ident,
+            procedure_heading_suffix,
+        };
+        // Calling user action here
+        self.user_grammar
+            .procedure_heading(&procedure_heading_built)?;
+        self.push(ASTType::ProcedureHeading(procedure_heading_built), context);
         Ok(())
     }
 
@@ -742,7 +3705,19 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureHeadingSuffix: FormalParameters;`
     ///
-    fn procedure_heading_suffix_0(&mut self, _formal_parameters: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn procedure_heading_suffix_0(&mut self, _formal_parameters: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let formal_parameters = pop_item!(self, formal_parameters, FormalParameters, context);
+        let procedure_heading_suffix_0_built =
+            ProcedureHeadingSuffixFormalParameters { formal_parameters };
+        let procedure_heading_suffix_0_built =
+            ProcedureHeadingSuffix::FormalParameters(procedure_heading_suffix_0_built);
+        self.push(
+            ASTType::ProcedureHeadingSuffix(procedure_heading_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -750,7 +3725,17 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureHeadingSuffix: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_heading_suffix_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_heading_suffix_1_built = ProcedureHeadingSuffixProcedureHeadingSuffixEmpty {};
+        let procedure_heading_suffix_1_built =
+            ProcedureHeadingSuffix::ProcedureHeadingSuffixEmpty(procedure_heading_suffix_1_built);
+        self.push(
+            ASTType::ProcedureHeadingSuffix(procedure_heading_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -758,11 +3743,24 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureBody: Declarations ProcedureBodySuffix0;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_body(
         &mut self,
-        _declarations: &ParseTreeType,
-        _procedure_body_suffix0: &ParseTreeType,
+        _declarations: &ParseTreeType<'t>,
+        _procedure_body_suffix0: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_body_suffix0 =
+            pop_item!(self, procedure_body_suffix0, ProcedureBodySuffix0, context);
+        let declarations = pop_item!(self, declarations, Declarations, context);
+        let procedure_body_built = ProcedureBody {
+            declarations,
+            procedure_body_suffix0,
+        };
+        // Calling user action here
+        self.user_grammar.procedure_body(&procedure_body_built)?;
+        self.push(ASTType::ProcedureBody(procedure_body_built), context);
         Ok(())
     }
 
@@ -770,12 +3768,33 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureBodySuffix0: "BEGIN" StatementSequence ProcedureBodySuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_body_suffix0_0(
         &mut self,
-        _b_e_g_i_n: &ParseTreeType,
-        _statement_sequence: &ParseTreeType,
-        _procedure_body_suffix: &ParseTreeType,
+        b_e_g_i_n: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+        _procedure_body_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let b_e_g_i_n = b_e_g_i_n.token()?.clone();
+        let procedure_body_suffix =
+            pop_item!(self, procedure_body_suffix, ProcedureBodySuffix, context);
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let procedure_body_suffix0_0_built =
+            ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix {
+                b_e_g_i_n,
+                statement_sequence,
+                procedure_body_suffix,
+            };
+        let procedure_body_suffix0_0_built =
+            ProcedureBodySuffix0::BEGINStatementSequenceProcedureBodySuffix(
+                procedure_body_suffix0_0_built,
+            );
+        self.push(
+            ASTType::ProcedureBodySuffix0(procedure_body_suffix0_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -783,13 +3802,32 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureBodySuffix0: "RETURN" Expression "END" Ident;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_body_suffix0_1(
         &mut self,
-        _r_e_t_u_r_n: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _e_n_d: &ParseTreeType,
-        _ident: &ParseTreeType,
+        r_e_t_u_r_n: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_e_t_u_r_n = r_e_t_u_r_n.token()?.clone();
+        let e_n_d = e_n_d.token()?.clone();
+        let ident = pop_item!(self, ident, Ident, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let procedure_body_suffix0_1_built = ProcedureBodySuffix0RETURNExpressionENDIdent {
+            r_e_t_u_r_n,
+            expression,
+            e_n_d,
+            ident,
+        };
+        let procedure_body_suffix0_1_built =
+            ProcedureBodySuffix0::RETURNExpressionENDIdent(procedure_body_suffix0_1_built);
+        self.push(
+            ASTType::ProcedureBodySuffix0(procedure_body_suffix0_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -797,11 +3835,23 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureBodySuffix0: "END" Ident;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_body_suffix0_2(
         &mut self,
-        _e_n_d: &ParseTreeType,
-        _ident: &ParseTreeType,
+        e_n_d: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let e_n_d = e_n_d.token()?.clone();
+        let ident = pop_item!(self, ident, Ident, context);
+        let procedure_body_suffix0_2_built = ProcedureBodySuffix0ENDIdent { e_n_d, ident };
+        let procedure_body_suffix0_2_built =
+            ProcedureBodySuffix0::ENDIdent(procedure_body_suffix0_2_built);
+        self.push(
+            ASTType::ProcedureBodySuffix0(procedure_body_suffix0_2_built),
+            context,
+        );
         Ok(())
     }
 
@@ -809,13 +3859,32 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureBodySuffix: "RETURN" Expression "END" Ident;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_body_suffix_0(
         &mut self,
-        _r_e_t_u_r_n: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _e_n_d: &ParseTreeType,
-        _ident: &ParseTreeType,
+        r_e_t_u_r_n: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_e_t_u_r_n = r_e_t_u_r_n.token()?.clone();
+        let e_n_d = e_n_d.token()?.clone();
+        let ident = pop_item!(self, ident, Ident, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let procedure_body_suffix_0_built = ProcedureBodySuffixRETURNExpressionENDIdent {
+            r_e_t_u_r_n,
+            expression,
+            e_n_d,
+            ident,
+        };
+        let procedure_body_suffix_0_built =
+            ProcedureBodySuffix::RETURNExpressionENDIdent(procedure_body_suffix_0_built);
+        self.push(
+            ASTType::ProcedureBodySuffix(procedure_body_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -823,11 +3892,23 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureBodySuffix: "END" Ident;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_body_suffix_1(
         &mut self,
-        _e_n_d: &ParseTreeType,
-        _ident: &ParseTreeType,
+        e_n_d: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let e_n_d = e_n_d.token()?.clone();
+        let ident = pop_item!(self, ident, Ident, context);
+        let procedure_body_suffix_1_built = ProcedureBodySuffixENDIdent { e_n_d, ident };
+        let procedure_body_suffix_1_built =
+            ProcedureBodySuffix::ENDIdent(procedure_body_suffix_1_built);
+        self.push(
+            ASTType::ProcedureBodySuffix(procedure_body_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -835,12 +3916,30 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureDeclaration: ProcedureHeading ";" ProcedureBody;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_declaration(
         &mut self,
-        _procedure_heading: &ParseTreeType,
-        _semicolon: &ParseTreeType,
-        _procedure_body: &ParseTreeType,
+        _procedure_heading: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _procedure_body: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let procedure_body = pop_item!(self, procedure_body, ProcedureBody, context);
+        let procedure_heading = pop_item!(self, procedure_heading, ProcedureHeading, context);
+        let procedure_declaration_built = ProcedureDeclaration {
+            procedure_heading,
+            semicolon,
+            procedure_body,
+        };
+        // Calling user action here
+        self.user_grammar
+            .procedure_declaration(&procedure_declaration_built)?;
+        self.push(
+            ASTType::ProcedureDeclaration(procedure_declaration_built),
+            context,
+        );
         Ok(())
     }
 
@@ -848,12 +3947,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Declarations: "TYPE" TypeDecls DeclarationsSuffix1;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_0(
         &mut self,
-        _t_y_p_e: &ParseTreeType,
-        _type_decls: &ParseTreeType,
-        _declarations_suffix1: &ParseTreeType,
+        t_y_p_e: &ParseTreeType<'t>,
+        _type_decls: &ParseTreeType<'t>,
+        _declarations_suffix1: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let t_y_p_e = t_y_p_e.token()?.clone();
+        let declarations_suffix1 =
+            pop_item!(self, declarations_suffix1, DeclarationsSuffix1, context);
+        let type_decls = pop_item!(self, type_decls, TypeDecls, context);
+        let declarations_0_built = DeclarationsTYPETypeDeclsDeclarationsSuffix1 {
+            t_y_p_e,
+            type_decls,
+            declarations_suffix1: Box::new(declarations_suffix1),
+        };
+        let declarations_0_built =
+            Declarations::TYPETypeDeclsDeclarationsSuffix1(declarations_0_built);
+        // Calling user action here
+        self.user_grammar.declarations(&declarations_0_built)?;
+        self.push(ASTType::Declarations(declarations_0_built), context);
         Ok(())
     }
 
@@ -861,12 +3977,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Declarations: "CONST" ConstDecls DeclarationsSuffix0;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_1(
         &mut self,
-        _c_o_n_s_t: &ParseTreeType,
-        _const_decls: &ParseTreeType,
-        _declarations_suffix0: &ParseTreeType,
+        c_o_n_s_t: &ParseTreeType<'t>,
+        _const_decls: &ParseTreeType<'t>,
+        _declarations_suffix0: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let c_o_n_s_t = c_o_n_s_t.token()?.clone();
+        let declarations_suffix0 =
+            pop_item!(self, declarations_suffix0, DeclarationsSuffix0, context);
+        let const_decls = pop_item!(self, const_decls, ConstDecls, context);
+        let declarations_1_built = DeclarationsCONSTConstDeclsDeclarationsSuffix0 {
+            c_o_n_s_t,
+            const_decls,
+            declarations_suffix0: Box::new(declarations_suffix0),
+        };
+        let declarations_1_built =
+            Declarations::CONSTConstDeclsDeclarationsSuffix0(declarations_1_built);
+        // Calling user action here
+        self.user_grammar.declarations(&declarations_1_built)?;
+        self.push(ASTType::Declarations(declarations_1_built), context);
         Ok(())
     }
 
@@ -874,12 +4007,34 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `DeclarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_suffix1_0(
         &mut self,
-        _v_a_r: &ParseTreeType,
-        _var_decls: &ParseTreeType,
-        _procedure_declaration_list: &ParseTreeType,
+        v_a_r: &ParseTreeType<'t>,
+        _var_decls: &ParseTreeType<'t>,
+        _procedure_declaration_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let v_a_r = v_a_r.token()?.clone();
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let var_decls = pop_item!(self, var_decls, VarDecls, context);
+        let declarations_suffix1_0_built = DeclarationsSuffix1VARVarDeclsProcedureDeclarationList {
+            v_a_r,
+            var_decls,
+            procedure_declaration_list: Box::new(procedure_declaration_list),
+        };
+        let declarations_suffix1_0_built =
+            DeclarationsSuffix1::VARVarDeclsProcedureDeclarationList(declarations_suffix1_0_built);
+        self.push(
+            ASTType::DeclarationsSuffix1(declarations_suffix1_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -887,10 +4042,28 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `DeclarationsSuffix1: ProcedureDeclarationList;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_suffix1_1(
         &mut self,
-        _procedure_declaration_list: &ParseTreeType,
+        _procedure_declaration_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let declarations_suffix1_1_built = DeclarationsSuffix1ProcedureDeclarationList {
+            procedure_declaration_list,
+        };
+        let declarations_suffix1_1_built =
+            DeclarationsSuffix1::ProcedureDeclarationList(declarations_suffix1_1_built);
+        self.push(
+            ASTType::DeclarationsSuffix1(declarations_suffix1_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -898,12 +4071,33 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Declarations: "VAR" VarDecls ProcedureDeclarationList;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_2(
         &mut self,
-        _v_a_r: &ParseTreeType,
-        _var_decls: &ParseTreeType,
-        _procedure_declaration_list: &ParseTreeType,
+        v_a_r: &ParseTreeType<'t>,
+        _var_decls: &ParseTreeType<'t>,
+        _procedure_declaration_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let v_a_r = v_a_r.token()?.clone();
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let var_decls = pop_item!(self, var_decls, VarDecls, context);
+        let declarations_2_built = DeclarationsVARVarDeclsProcedureDeclarationList {
+            v_a_r,
+            var_decls,
+            procedure_declaration_list: Box::new(procedure_declaration_list),
+        };
+        let declarations_2_built =
+            Declarations::VARVarDeclsProcedureDeclarationList(declarations_2_built);
+        // Calling user action here
+        self.user_grammar.declarations(&declarations_2_built)?;
+        self.push(ASTType::Declarations(declarations_2_built), context);
         Ok(())
     }
 
@@ -911,7 +4105,23 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Declarations: ProcedureDeclarationList;`
     ///
-    fn declarations_3(&mut self, _procedure_declaration_list: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn declarations_3(&mut self, _procedure_declaration_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let declarations_3_built = DeclarationsProcedureDeclarationList {
+            procedure_declaration_list: Box::new(procedure_declaration_list),
+        };
+        let declarations_3_built = Declarations::ProcedureDeclarationList(declarations_3_built);
+        // Calling user action here
+        self.user_grammar.declarations(&declarations_3_built)?;
+        self.push(ASTType::Declarations(declarations_3_built), context);
         Ok(())
     }
 
@@ -919,12 +4129,29 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `DeclarationsSuffix0: "TYPE" TypeDecls DeclarationsSuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_suffix0_0(
         &mut self,
-        _t_y_p_e: &ParseTreeType,
-        _type_decls: &ParseTreeType,
-        _declarations_suffix: &ParseTreeType,
+        t_y_p_e: &ParseTreeType<'t>,
+        _type_decls: &ParseTreeType<'t>,
+        _declarations_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let t_y_p_e = t_y_p_e.token()?.clone();
+        let declarations_suffix = pop_item!(self, declarations_suffix, DeclarationsSuffix, context);
+        let type_decls = pop_item!(self, type_decls, TypeDecls, context);
+        let declarations_suffix0_0_built = DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix {
+            t_y_p_e,
+            type_decls,
+            declarations_suffix: Box::new(declarations_suffix),
+        };
+        let declarations_suffix0_0_built =
+            DeclarationsSuffix0::TYPETypeDeclsDeclarationsSuffix(declarations_suffix0_0_built);
+        self.push(
+            ASTType::DeclarationsSuffix0(declarations_suffix0_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -932,12 +4159,34 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `DeclarationsSuffix0: "VAR" VarDecls ProcedureDeclarationList;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_suffix0_1(
         &mut self,
-        _v_a_r: &ParseTreeType,
-        _var_decls: &ParseTreeType,
-        _procedure_declaration_list: &ParseTreeType,
+        v_a_r: &ParseTreeType<'t>,
+        _var_decls: &ParseTreeType<'t>,
+        _procedure_declaration_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let v_a_r = v_a_r.token()?.clone();
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let var_decls = pop_item!(self, var_decls, VarDecls, context);
+        let declarations_suffix0_1_built = DeclarationsSuffix0VARVarDeclsProcedureDeclarationList {
+            v_a_r,
+            var_decls,
+            procedure_declaration_list: Box::new(procedure_declaration_list),
+        };
+        let declarations_suffix0_1_built =
+            DeclarationsSuffix0::VARVarDeclsProcedureDeclarationList(declarations_suffix0_1_built);
+        self.push(
+            ASTType::DeclarationsSuffix0(declarations_suffix0_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -945,10 +4194,28 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `DeclarationsSuffix0: ProcedureDeclarationList;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_suffix0_2(
         &mut self,
-        _procedure_declaration_list: &ParseTreeType,
+        _procedure_declaration_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let declarations_suffix0_2_built = DeclarationsSuffix0ProcedureDeclarationList {
+            procedure_declaration_list,
+        };
+        let declarations_suffix0_2_built =
+            DeclarationsSuffix0::ProcedureDeclarationList(declarations_suffix0_2_built);
+        self.push(
+            ASTType::DeclarationsSuffix0(declarations_suffix0_2_built),
+            context,
+        );
         Ok(())
     }
 
@@ -956,12 +4223,34 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `DeclarationsSuffix: "VAR" VarDecls ProcedureDeclarationList;`
     ///
+    #[parol_runtime::function_name::named]
     fn declarations_suffix_0(
         &mut self,
-        _v_a_r: &ParseTreeType,
-        _var_decls: &ParseTreeType,
-        _procedure_declaration_list: &ParseTreeType,
+        v_a_r: &ParseTreeType<'t>,
+        _var_decls: &ParseTreeType<'t>,
+        _procedure_declaration_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let v_a_r = v_a_r.token()?.clone();
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let var_decls = pop_item!(self, var_decls, VarDecls, context);
+        let declarations_suffix_0_built = DeclarationsSuffixVARVarDeclsProcedureDeclarationList {
+            v_a_r,
+            var_decls,
+            procedure_declaration_list: Box::new(procedure_declaration_list),
+        };
+        let declarations_suffix_0_built =
+            DeclarationsSuffix::VARVarDeclsProcedureDeclarationList(declarations_suffix_0_built);
+        self.push(
+            ASTType::DeclarationsSuffix(declarations_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -969,7 +4258,28 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `DeclarationsSuffix: ProcedureDeclarationList;`
     ///
-    fn declarations_suffix_1(&mut self, _procedure_declaration_list: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn declarations_suffix_1(
+        &mut self,
+        _procedure_declaration_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let declarations_suffix_1_built = DeclarationsSuffixProcedureDeclarationList {
+            procedure_declaration_list,
+        };
+        let declarations_suffix_1_built =
+            DeclarationsSuffix::ProcedureDeclarationList(declarations_suffix_1_built);
+        self.push(
+            ASTType::DeclarationsSuffix(declarations_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -977,12 +4287,41 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureDeclarationList: ProcedureDeclaration ";" ProcedureDeclarationList;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_declaration_list_0(
         &mut self,
-        _procedure_declaration: &ParseTreeType,
-        _semicolon: &ParseTreeType,
-        _procedure_declaration_list: &ParseTreeType,
+        _procedure_declaration: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _procedure_declaration_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let procedure_declaration_list = pop_item!(
+            self,
+            procedure_declaration_list,
+            ProcedureDeclarationList,
+            context
+        );
+        let procedure_declaration =
+            pop_item!(self, procedure_declaration, ProcedureDeclaration, context);
+        let procedure_declaration_list_0_built =
+            ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclarationList {
+                procedure_declaration,
+                semicolon,
+                procedure_declaration_list: Box::new(procedure_declaration_list),
+            };
+        let procedure_declaration_list_0_built =
+            ProcedureDeclarationList::ProcedureDeclarationSemicolonProcedureDeclarationList(
+                procedure_declaration_list_0_built,
+            );
+        // Calling user action here
+        self.user_grammar
+            .procedure_declaration_list(&procedure_declaration_list_0_built)?;
+        self.push(
+            ASTType::ProcedureDeclarationList(procedure_declaration_list_0_built),
+            context,
+        );
         Ok(())
     }
 
@@ -990,7 +4329,23 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ProcedureDeclarationList: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn procedure_declaration_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_declaration_list_1_built =
+            ProcedureDeclarationListProcedureDeclarationListEmpty {};
+        let procedure_declaration_list_1_built =
+            ProcedureDeclarationList::ProcedureDeclarationListEmpty(
+                procedure_declaration_list_1_built,
+            );
+        // Calling user action here
+        self.user_grammar
+            .procedure_declaration_list(&procedure_declaration_list_1_built)?;
+        self.push(
+            ASTType::ProcedureDeclarationList(procedure_declaration_list_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -998,14 +4353,34 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ConstDecls: Ident AssignOp Expression ";" ConstDecls;`
     ///
+    #[parol_runtime::function_name::named]
     fn const_decls_0(
         &mut self,
-        _ident: &ParseTreeType,
-        _assign_op: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _semicolon: &ParseTreeType,
-        _const_decls: &ParseTreeType,
+        _ident: &ParseTreeType<'t>,
+        _assign_op: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _const_decls: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let const_decls = pop_item!(self, const_decls, ConstDecls, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let assign_op = pop_item!(self, assign_op, AssignOp, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let const_decls_0_built = ConstDeclsIdentAssignOpExpressionSemicolonConstDecls {
+            ident,
+            assign_op,
+            expression,
+            semicolon,
+            const_decls: Box::new(const_decls),
+        };
+        let const_decls_0_built =
+            ConstDecls::IdentAssignOpExpressionSemicolonConstDecls(const_decls_0_built);
+        // Calling user action here
+        self.user_grammar.const_decls(&const_decls_0_built)?;
+        self.push(ASTType::ConstDecls(const_decls_0_built), context);
         Ok(())
     }
 
@@ -1013,7 +4388,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ConstDecls: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn const_decls_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let const_decls_1_built = ConstDeclsConstDeclsEmpty {};
+        let const_decls_1_built = ConstDecls::ConstDeclsEmpty(const_decls_1_built);
+        // Calling user action here
+        self.user_grammar.const_decls(&const_decls_1_built)?;
+        self.push(ASTType::ConstDecls(const_decls_1_built), context);
         Ok(())
     }
 
@@ -1021,14 +4404,33 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `TypeDecls: Ident AssignOp Type ";" TypeDecls;`
     ///
+    #[parol_runtime::function_name::named]
     fn type_decls_0(
         &mut self,
-        _ident: &ParseTreeType,
-        _assign_op: &ParseTreeType,
-        _type: &ParseTreeType,
-        _semicolon: &ParseTreeType,
-        _type_decls: &ParseTreeType,
+        _ident: &ParseTreeType<'t>,
+        _assign_op: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _type_decls: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let type_decls = pop_item!(self, type_decls, TypeDecls, context);
+        let r#type = pop_item!(self, r#type, Type, context);
+        let assign_op = pop_item!(self, assign_op, AssignOp, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let type_decls_0_built = TypeDeclsIdentAssignOpTypeSemicolonTypeDecls {
+            ident,
+            assign_op,
+            r#type,
+            semicolon,
+            type_decls: Box::new(type_decls),
+        };
+        let type_decls_0_built = TypeDecls::IdentAssignOpTypeSemicolonTypeDecls(type_decls_0_built);
+        // Calling user action here
+        self.user_grammar.type_decls(&type_decls_0_built)?;
+        self.push(ASTType::TypeDecls(type_decls_0_built), context);
         Ok(())
     }
 
@@ -1036,7 +4438,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `TypeDecls: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn type_decls_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let type_decls_1_built = TypeDeclsTypeDeclsEmpty {};
+        let type_decls_1_built = TypeDecls::TypeDeclsEmpty(type_decls_1_built);
+        // Calling user action here
+        self.user_grammar.type_decls(&type_decls_1_built)?;
+        self.push(ASTType::TypeDecls(type_decls_1_built), context);
         Ok(())
     }
 
@@ -1044,14 +4454,33 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `VarDecls: IdentList ":" Type ";" VarDecls;`
     ///
+    #[parol_runtime::function_name::named]
     fn var_decls_0(
         &mut self,
-        _ident_list: &ParseTreeType,
-        _colon: &ParseTreeType,
-        _type: &ParseTreeType,
-        _semicolon: &ParseTreeType,
-        _var_decls: &ParseTreeType,
+        _ident_list: &ParseTreeType<'t>,
+        colon: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _var_decls: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let colon = colon.token()?.clone();
+        let semicolon = semicolon.token()?.clone();
+        let var_decls = pop_item!(self, var_decls, VarDecls, context);
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
+        let var_decls_0_built = VarDeclsIdentListColonTypeSemicolonVarDecls {
+            ident_list,
+            colon,
+            r#type,
+            semicolon,
+            var_decls: Box::new(var_decls),
+        };
+        let var_decls_0_built = VarDecls::IdentListColonTypeSemicolonVarDecls(var_decls_0_built);
+        // Calling user action here
+        self.user_grammar.var_decls(&var_decls_0_built)?;
+        self.push(ASTType::VarDecls(var_decls_0_built), context);
         Ok(())
     }
 
@@ -1059,7 +4488,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `VarDecls: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn var_decls_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let var_decls_1_built = VarDeclsVarDeclsEmpty {};
+        let var_decls_1_built = VarDecls::VarDeclsEmpty(var_decls_1_built);
+        // Calling user action here
+        self.user_grammar.var_decls(&var_decls_1_built)?;
+        self.push(ASTType::VarDecls(var_decls_1_built), context);
         Ok(())
     }
 
@@ -1067,14 +4504,32 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Module: "MODULE" Ident ";" Declarations ModuleSuffix;`
     ///
+    #[parol_runtime::function_name::named]
     fn module(
         &mut self,
-        _m_o_d_u_l_e: &ParseTreeType,
-        _ident: &ParseTreeType,
-        _semicolon: &ParseTreeType,
-        _declarations: &ParseTreeType,
-        _module_suffix: &ParseTreeType,
+        m_o_d_u_l_e: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _declarations: &ParseTreeType<'t>,
+        _module_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let m_o_d_u_l_e = m_o_d_u_l_e.token()?.clone();
+        let semicolon = semicolon.token()?.clone();
+        let module_suffix = pop_item!(self, module_suffix, ModuleSuffix, context);
+        let declarations = pop_item!(self, declarations, Declarations, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let module_built = Module {
+            m_o_d_u_l_e,
+            ident,
+            semicolon,
+            declarations,
+            module_suffix,
+        };
+        // Calling user action here
+        self.user_grammar.module(&module_built)?;
+        self.push(ASTType::Module(module_built), context);
         Ok(())
     }
 
@@ -1082,14 +4537,32 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ModuleSuffix: "BEGIN" StatementSequence "END" Ident "\.";`
     ///
+    #[parol_runtime::function_name::named]
     fn module_suffix_0(
         &mut self,
-        _b_e_g_i_n: &ParseTreeType,
-        _statement_sequence: &ParseTreeType,
-        _e_n_d: &ParseTreeType,
-        _ident: &ParseTreeType,
-        _dot: &ParseTreeType,
+        b_e_g_i_n: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        dot: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let b_e_g_i_n = b_e_g_i_n.token()?.clone();
+        let e_n_d = e_n_d.token()?.clone();
+        let dot = dot.token()?.clone();
+        let ident = pop_item!(self, ident, Ident, context);
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let module_suffix_0_built = ModuleSuffixBEGINStatementSequenceENDIdentDot {
+            b_e_g_i_n,
+            statement_sequence,
+            e_n_d,
+            ident,
+            dot,
+        };
+        let module_suffix_0_built =
+            ModuleSuffix::BEGINStatementSequenceENDIdentDot(module_suffix_0_built);
+        self.push(ASTType::ModuleSuffix(module_suffix_0_built), context);
         Ok(())
     }
 
@@ -1097,12 +4570,21 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `ModuleSuffix: "END" Ident "\.";`
     ///
+    #[parol_runtime::function_name::named]
     fn module_suffix_1(
         &mut self,
-        _e_n_d: &ParseTreeType,
-        _ident: &ParseTreeType,
-        _dot: &ParseTreeType,
+        e_n_d: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        dot: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let e_n_d = e_n_d.token()?.clone();
+        let dot = dot.token()?.clone();
+        let ident = pop_item!(self, ident, Ident, context);
+        let module_suffix_1_built = ModuleSuffixENDIdentDot { e_n_d, ident, dot };
+        let module_suffix_1_built = ModuleSuffix::ENDIdentDot(module_suffix_1_built);
+        self.push(ASTType::ModuleSuffix(module_suffix_1_built), context);
         Ok(())
     }
 
@@ -1110,7 +4592,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `MulOperator: "\*|/|DIV|MOD|&";`
     ///
-    fn mul_operator(&mut self, _mul_operator: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn mul_operator(&mut self, mul_operator: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mul_operator = mul_operator.token()?.clone();
+        let mul_operator_built = MulOperator { mul_operator };
+        // Calling user action here
+        self.user_grammar.mul_operator(&mul_operator_built)?;
+        self.push(ASTType::MulOperator(mul_operator_built), context);
         Ok(())
     }
 
@@ -1118,7 +4608,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `AddOperator: "\+|-|OR";`
     ///
-    fn add_operator(&mut self, _add_operator: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn add_operator(&mut self, add_operator: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let add_operator = add_operator.token()?.clone();
+        let add_operator_built = AddOperator { add_operator };
+        // Calling user action here
+        self.user_grammar.add_operator(&add_operator_built)?;
+        self.push(ASTType::AddOperator(add_operator_built), context);
         Ok(())
     }
 
@@ -1126,7 +4624,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `UnaryOp: "\+|-";`
     ///
-    fn unary_op(&mut self, _unary_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn unary_op(&mut self, unary_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let unary_op = unary_op.token()?.clone();
+        let unary_op_built = UnaryOp { unary_op };
+        // Calling user action here
+        self.user_grammar.unary_op(&unary_op_built)?;
+        self.push(ASTType::UnaryOp(unary_op_built), context);
         Ok(())
     }
 
@@ -1134,7 +4640,15 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Ident: "[a-zA-Z][a-zA-Z0-9]*";`
     ///
-    fn ident(&mut self, _ident: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn ident(&mut self, ident: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let ident = ident.token()?.clone();
+        let ident_built = Ident { ident };
+        // Calling user action here
+        self.user_grammar.ident(&ident_built)?;
+        self.push(ASTType::Ident(ident_built), context);
         Ok(())
     }
 
@@ -1142,19 +4656,27 @@ pub trait Oberon0GrammarTrait {
     ///
     /// `Integer: "[0-9]+";`
     ///
-    fn integer(&mut self, _integer: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn integer(&mut self, integer: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let integer = integer.token()?.clone();
+        let integer_built = Integer { integer };
+        // Calling user action here
+        self.user_grammar.integer(&integer_built)?;
+        self.push(ASTType::Integer(integer_built), context);
         Ok(())
     }
 }
 
-impl UserActionsTrait<'_> for Oberon0Grammar {
+impl<'t> UserActionsTrait<'t> for Oberon0GrammarAuto<'t, '_> {
     ///
     /// This function is implemented automatically for the user's item Oberon0Grammar.
     ///
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeType],
+        children: &[ParseTreeType<'t>],
     ) -> Result<()> {
         match prod_num {
             0 => self.selector(&children[0]),
@@ -1324,8 +4846,8 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'_>) {
-        // This is currently only supported for auto generate mode.
-        // Please, file an issue if need arises.
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
     }
 }
