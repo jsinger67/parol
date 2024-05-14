@@ -5,8 +5,12 @@
 %user_type BasicLineNumber = crate::basic_grammar::BasicLineNumber
 %user_type BasicNumber = crate::basic_grammar::BasicNumber
 
-%scanner Cmnt { %auto_newline_off }
-%scanner Expr { %auto_newline_off }
+%scanner Cmnt {
+    %auto_newline_off
+}
+%scanner Expr {
+    %auto_newline_off
+}
 
 %%
 

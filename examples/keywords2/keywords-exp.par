@@ -2,7 +2,7 @@
 %title "How to handle keywords - approach 2"
 %comment "A demonstration how to handle keywords and avoid conflicts with other identifiers"
 
-%scanner Identifier {  }
+%scanner Identifier {}
 
 %%
 

@@ -120,7 +120,7 @@ fn render_scanner_config_string(index: usize, scanner_config: &ScannerConfig) ->
     let line_comments = scanner_config
         .line_comments
         .iter()
-        .map(|c| format!("\n{}%line_comment \"{}\"", indent, c))
+        .map(|c| format!("{}%line_comment \"{}\"", indent, c))
         .collect::<Vec<String>>()
         .join(" ");
 
@@ -151,12 +151,18 @@ fn render_scanner_config_string(index: usize, scanner_config: &ScannerConfig) ->
         scanner_directives.push(format!("{}%on {} %enter {}", indent, k, v));
     });
 
-    let scanner_directives = scanner_directives.join("\n");
+    let mut scanner_directives = scanner_directives.join("\n");
 
     if index == crate::parser::parol_grammar::INITIAL_STATE {
+        if !scanner_directives.is_empty() {
+            scanner_directives = format!("\n{}", scanner_directives);
+        }
         scanner_directives.to_string()
     } else {
-        format!("%scanner {} {{\n{}\n}}", scanner_name, scanner_directives)
+        if !scanner_directives.is_empty() {
+            scanner_directives = format!("\n{}\n", scanner_directives);
+        }
+        format!("%scanner {} {{{}}}", scanner_name, scanner_directives)
     }
 }
 
