@@ -35,6 +35,7 @@ more details
     The `trim_parse_tree` option is useful if you don't need a parse tree after finishing the parse
     process. It mostly saves runtime effort and speeds up the parsing performance as well as the
     memory consumption.
+- Removed clippy warnings new in Rust 1.78.0
 
 ## 0.28.0 - 2024-04-29
 

@@ -277,14 +277,6 @@ impl Type {
         }
     }
 
-    // Used to suppress lifetime on the container types
-    pub(crate) fn is_container(&self) -> bool {
-        matches!(
-            self.entrails,
-            TypeEntrails::Box(_) | TypeEntrails::Vec(_) | TypeEntrails::Option(_)
-        )
-    }
-
     /// Returns the type id behind the symbol
     pub(crate) fn inner_type(&self) -> Option<SymbolId> {
         match self.entrails {

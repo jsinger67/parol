@@ -348,7 +348,7 @@ fn separate_alternatives(opd: TransformationOperand) -> TransformationOperand {
 // R -> x R' y        (1) - Non-terminal R' receives SymbolAttribute::RepetitionAnchor
 // R' -> R' (a)       (2) - Alternation receives ProductionAttribute::AddToCollection
 // R' ->              (2a)- Alternation receives ProductionAttribute::CollectionStart
-///
+/// Eliminate repetitions
 fn eliminate_single_rep(
     exclusions: &[String],
     alt_index: usize,

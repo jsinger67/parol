@@ -110,7 +110,7 @@ impl<'a> LanguageGenerator<'a> {
     where
         'b: 'c,
     {
-        let exist = self.cache.get(&terminal).is_some();
+        let exist = self.cache.contains_key(&terminal);
 
         if exist {
             let regex = self.cache.get(&terminal).unwrap();

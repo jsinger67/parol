@@ -82,7 +82,7 @@ pub struct SyntaxError {
 
 impl SyntaxError {
     pub(crate) fn with_cause(mut self, cause: &str) -> Self {
-        self.cause = cause.to_owned();
+        cause.clone_into(&mut self.cause);
         self
     }
 

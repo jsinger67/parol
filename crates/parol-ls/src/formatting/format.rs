@@ -129,7 +129,7 @@ impl Fmt for Alternations {
 
                 if Line::ends_with_nl(&acc) && !comments_before_or.is_empty() {
                     // Pull the comment on the line with the alternation.
-                    acc = acc.trim_end().to_owned();
+                    acc.clone_from(&acc.trim_end().to_owned());
                     // Add a space between alternation_str and the line comment.
                     acc.push(' ');
                     acc.push_str(&comments_before_or);
@@ -360,7 +360,7 @@ impl Fmt for NonTerminal {
         );
         let mut delim = String::new();
         if Line::ends_with_nl(&comments_before_identifier) {
-            delim = "      ".to_owned();
+            "      ".clone_into(&mut delim);
         }
         (
             format!(
@@ -419,10 +419,11 @@ impl Fmt for Production {
         );
 
         let mut semi_nl_opt = "";
-        alternations_str = alternations_str.trim_end().to_owned();
+        alternations_str.clone_from(&alternations_str.trim_end().to_owned());
         if options.prod_semicolon_on_nl || Line::ends_with_nl(&comments_before_semicolon) {
             if Line::ends_with_nl(&comments_before_semicolon) {
-                comments_before_semicolon = comments_before_semicolon.trim_end().to_owned();
+                comments_before_semicolon
+                    .clone_from(&comments_before_semicolon.trim_end().to_owned());
             }
             semi_nl_opt = "\n    ";
         }
@@ -722,7 +723,7 @@ impl Fmt for TokenWithStates {
             } else {
                 (String::default(), comments)
             };
-        state_list = state_list.trim().to_owned();
+        state_list.clone_from(&state_list.trim().to_owned());
         (
             format!(
                 "{}{}{}{}{}",

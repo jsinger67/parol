@@ -14,7 +14,7 @@ pub fn augment_grammar(cfg: &Cfg) -> Cfg {
         &cfg.get_non_terminal_set().iter().collect::<Vec<_>>(),
         cfg.st.clone(),
     );
-    new_cfg.st = new_start.clone();
+    new_cfg.st.clone_from(&new_start);
     new_cfg.pr.insert(
         0,
         Pr::new(
