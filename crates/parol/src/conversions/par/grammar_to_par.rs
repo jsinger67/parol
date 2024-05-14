@@ -18,39 +18,32 @@ pub fn render_par_string(
     let title = grammar_config
         .title
         .as_ref()
-        .map_or("".to_owned(), |title| format!("\n%title \"{}\"", title));
+        .map_or("".to_owned(), |title| format!("%title \"{}\"\n", title));
 
     let comment = grammar_config
         .comment
         .as_ref()
         .map_or("".to_owned(), |comment| {
-            format!("\n%comment \"{}\"", comment)
+            format!("%comment \"{}\"\n", comment)
         });
 
     let grammar_type = match grammar_config.grammar_type {
         // For compatibility reasons we do not output the grammar type for LLK grammars
         // This is no problem as the default is LLK
         GrammarType::LLK => "".to_owned(), // "\n%grammar_type 'll(k)'".to_owned(),
-        GrammarType::LALR1 => "\n%grammar_type 'lalr(1)'".to_owned(),
+        GrammarType::LALR1 => "%grammar_type 'lalr(1)'\n".to_owned(),
     };
 
     let initial_scanner_state =
         render_scanner_config_string(0, &grammar_config.scanner_configurations[0]);
 
-    let user_types_start = if grammar_config.user_type_defs.is_empty() {
-        vec![]
-    } else {
-        // We simply need a line feed which we induce by an empty entry here
-        vec![String::default()]
-    };
     let user_types = grammar_config
         .user_type_defs
         .iter()
-        .fold(user_types_start, |mut acc, (a, u)| {
-            acc.push(format!("%user_type {} = {}", a, u));
+        .fold(String::new(), |mut acc, (a, u)| {
+            acc.push_str(&format!("%user_type {} = {}\n", a, u));
             acc
-        })
-        .join("\n");
+        });
 
     let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
     let user_type_resolver = grammar_config.get_user_type_resolver();
@@ -82,14 +75,14 @@ pub fn render_par_string(
         .iter()
         .enumerate()
         .skip(1)
-        .fold(StrVec::new(0), |mut acc, (i, e)| {
-            acc.push(render_scanner_config_string(i, e));
+        .fold(String::new(), |mut acc, (i, e)| {
+            acc.push_str(&render_scanner_config_string(i, e));
+            acc.push('\n');
             acc
         });
 
     if !scanner_states.is_empty() {
-        // Add a separator to beautify the output if there exist additional scanner states.
-        scanner_states.push(String::default());
+        scanner_states.push('\n');
     }
 
     let productions = productions.drain(..).fold(StrVec::new(0), |mut acc, e| {
@@ -99,8 +92,8 @@ pub fn render_par_string(
 
     let start_symbol = grammar_config.cfg.st.clone();
     Ok(format!(
-        "%start {start_symbol}{title}{comment}{grammar_type}{initial_scanner_state}{user_types}
-
+        "%start {start_symbol}
+{title}{comment}{grammar_type}{initial_scanner_state}{user_types}
 {scanner_states}%%
 
 {productions}"
@@ -108,59 +101,40 @@ pub fn render_par_string(
 }
 
 fn render_scanner_config_string(index: usize, scanner_config: &ScannerConfig) -> String {
-    let scanner_name = scanner_config.scanner_name.clone();
+    let scanner_name = &scanner_config.scanner_name;
 
-    let mut scanner_directives = Vec::<String>::new();
+    let mut scanner_directives = String::with_capacity(1024); // Start capacity with 1KB
     let indent = if index == crate::parser::parol_grammar::INITIAL_STATE {
         ""
     } else {
         "    "
     };
 
-    let line_comments = scanner_config
-        .line_comments
-        .iter()
-        .map(|c| format!("{}%line_comment \"{}\"", indent, c))
-        .collect::<Vec<String>>()
-        .join(" ");
-
-    if !line_comments.is_empty() {
-        scanner_directives.push(line_comments);
+    for c in &scanner_config.line_comments {
+        scanner_directives.push_str(&format!("{}%line_comment \"{}\"\n", indent, c));
     }
 
-    let block_comments = scanner_config
-        .block_comments
-        .iter()
-        .map(|(s, e)| format!("{}%block_comment \"{}\" \"{}\"", indent, s, e))
-        .collect::<Vec<String>>()
-        .join(" ");
-
-    if !block_comments.is_empty() {
-        scanner_directives.push(block_comments);
+    for (s, e) in &scanner_config.block_comments {
+        scanner_directives.push_str(&format!("{}%block_comment \"{}\" \"{}\"\n", indent, s, e));
     }
 
     if !scanner_config.auto_newline {
-        scanner_directives.push(format!("{}%auto_newline_off", indent));
+        scanner_directives.push_str(&format!("{}%auto_newline_off\n", indent));
     }
 
     if !scanner_config.auto_ws {
-        scanner_directives.push(format!("{}%auto_ws_off", indent));
+        scanner_directives.push_str(&format!("{}%auto_ws_off\n", indent));
     }
 
-    scanner_config.transitions.iter().for_each(|(k, v)| {
-        scanner_directives.push(format!("{}%on {} %enter {}", indent, k, v));
-    });
-
-    let mut scanner_directives = scanner_directives.join("\n");
+    for (k, v) in &scanner_config.transitions {
+        scanner_directives.push_str(&format!("{}%on {} %enter {}\n", indent, k, v));
+    }
 
     if index == crate::parser::parol_grammar::INITIAL_STATE {
-        if !scanner_directives.is_empty() {
-            scanner_directives = format!("\n{}", scanner_directives);
-        }
-        scanner_directives.to_string()
+        scanner_directives
     } else {
         if !scanner_directives.is_empty() {
-            scanner_directives = format!("\n{}\n", scanner_directives);
+            scanner_directives.insert(0, '\n');
         }
         format!("%scanner {} {{{}}}", scanner_name, scanner_directives)
     }
