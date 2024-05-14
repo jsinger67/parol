@@ -296,7 +296,6 @@ impl<'t> LRParser<'t> {
                 self.terminal_names[terminal_index as usize]
             );
             // Get the action for the current state and the current terminal
-            // In case the terminal index is 0 (EOI) we use the eof_action (if present)
             let action = self.parse_table.states[current_state]
                 .actions
                 .get(&terminal_index);

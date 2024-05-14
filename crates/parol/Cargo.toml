@@ -119,6 +119,10 @@ name = "scanner_states"
 path = "../../examples/scanner_states/main.rs"
 
 [[example]]
+name = "scanner_states_lr"
+path = "../../examples/scanner_states_lr/main.rs"
+
+[[example]]
 name = "toml"
 path = "../../examples/toml/main.rs"
 

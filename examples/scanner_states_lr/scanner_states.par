@@ -1,0 +1,67 @@
+%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states"
+
+// The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/"
+
+// Switch to scanner state 'String' when we encounter a double quote in scanner state INITIAL
+%on StringDelimiter %enter String
+
+// Here we introduce a new scanner state 'String'
+// Switch back to scanner state INITIAL when we encounter a double quote in scanner state 'String'
+%scanner String {
+    %auto_newline_off
+    %auto_ws_off
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+
+Content
+    : Identifier
+    | StringDelimiter StringContent StringDelimiter
+    ;
+
+StringContent
+    : StringElement StringContent
+    |
+    ;
+
+StringElement
+    : Escaped
+    | EscapedLineEnd
+    | NoneQuote
+    ;
+
+Identifier
+    // This terminal is only valid in scanner state INITIAL (implicitly)
+    : "[a-zA-Z_]\w*"
+    ;
+
+Escaped
+    // This terminal is only valid in scanner state 'String'
+    : <String>"\u{5c}[\u{22}\u{5c}bfnt]"
+    ;
+
+EscapedLineEnd
+    // This terminal is only valid in scanner state 'String'
+    // NOTE: [\s^\n\r] matches all whitespace characters *except* \r and \n
+    // Otherwise, the regex will greedily pickup newlines See issue #5
+    : <String>"\u{5c}[\s^\n\r]*\r?\n"
+    ;
+
+NoneQuote
+    // This terminal is only valid in scanner state 'String'
+    : <String>"[^\u{22}\u{5c}]+"
+    ;
+
+StringDelimiter
+    // This terminal is valid in both scanner states INITIAL and 'String'
+    : <String, INITIAL>"\u{22}"
+    ;

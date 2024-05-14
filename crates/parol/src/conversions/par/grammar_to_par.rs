@@ -34,31 +34,8 @@ pub fn render_par_string(
         GrammarType::LALR1 => "\n%grammar_type 'lalr(1)'".to_owned(),
     };
 
-    let line_comments = grammar_config.scanner_configurations[0]
-        .line_comments
-        .iter()
-        .map(|c| format!("\n%line_comment \"{}\"", c))
-        .collect::<Vec<String>>()
-        .join("\n");
-
-    let block_comments = grammar_config.scanner_configurations[0]
-        .block_comments
-        .iter()
-        .map(|(s, e)| format!("\n%block_comment \"{}\" \"{}\"", s, e))
-        .collect::<Vec<String>>()
-        .join("\n");
-
-    let auto_newline_off = if grammar_config.scanner_configurations[0].auto_newline {
-        String::new()
-    } else {
-        "\n%auto_newline_off".to_owned()
-    };
-
-    let auto_ws_off = if grammar_config.scanner_configurations[0].auto_ws {
-        String::new()
-    } else {
-        "\n%auto_ws_off".to_owned()
-    };
+    let initial_scanner_state =
+        render_scanner_config_string(0, &grammar_config.scanner_configurations[0]);
 
     let user_types_start = if grammar_config.user_type_defs.is_empty() {
         vec![]
@@ -100,15 +77,15 @@ pub fn render_par_string(
             .collect();
     }
 
-    let mut scanner_states =
-        grammar_config
-            .scanner_configurations
-            .iter()
-            .skip(1)
-            .fold(StrVec::new(0), |mut acc, e| {
-                acc.push(render_scanner_config_string(e));
-                acc
-            });
+    let mut scanner_states = grammar_config
+        .scanner_configurations
+        .iter()
+        .enumerate()
+        .skip(1)
+        .fold(StrVec::new(0), |mut acc, (i, e)| {
+            acc.push(render_scanner_config_string(i, e));
+            acc
+        });
 
     if !scanner_states.is_empty() {
         // Add a separator to beautify the output if there exist additional scanner states.
@@ -122,7 +99,7 @@ pub fn render_par_string(
 
     let start_symbol = grammar_config.cfg.st.clone();
     Ok(format!(
-        "%start {start_symbol}{title}{comment}{grammar_type}{line_comments}{block_comments}{auto_newline_off}{auto_ws_off}{user_types}
+        "%start {start_symbol}{title}{comment}{grammar_type}{initial_scanner_state}{user_types}
 
 {scanner_states}%%
 
@@ -130,15 +107,20 @@ pub fn render_par_string(
     ))
 }
 
-fn render_scanner_config_string(scanner_config: &ScannerConfig) -> String {
+fn render_scanner_config_string(index: usize, scanner_config: &ScannerConfig) -> String {
     let scanner_name = scanner_config.scanner_name.clone();
 
     let mut scanner_directives = Vec::<String>::new();
+    let indent = if index == crate::parser::parol_grammar::INITIAL_STATE {
+        ""
+    } else {
+        "    "
+    };
 
     let line_comments = scanner_config
         .line_comments
         .iter()
-        .map(|c| format!("%line_comment \"{}\"", c))
+        .map(|c| format!("\n{}%line_comment \"{}\"", indent, c))
         .collect::<Vec<String>>()
         .join(" ");
 
@@ -149,7 +131,7 @@ fn render_scanner_config_string(scanner_config: &ScannerConfig) -> String {
     let block_comments = scanner_config
         .block_comments
         .iter()
-        .map(|(s, e)| format!("%block_comment \"{}\" \"{}\"", s, e))
+        .map(|(s, e)| format!("{}%block_comment \"{}\" \"{}\"", indent, s, e))
         .collect::<Vec<String>>()
         .join(" ");
 
@@ -158,16 +140,24 @@ fn render_scanner_config_string(scanner_config: &ScannerConfig) -> String {
     }
 
     if !scanner_config.auto_newline {
-        scanner_directives.push("%auto_newline_off".to_owned());
+        scanner_directives.push(format!("{}%auto_newline_off", indent));
     }
 
     if !scanner_config.auto_ws {
-        scanner_directives.push("%auto_ws_off".to_owned());
+        scanner_directives.push(format!("{}%auto_ws_off", indent));
     }
 
-    let scanner_directives = scanner_directives.join(" ");
+    scanner_config.transitions.iter().for_each(|(k, v)| {
+        scanner_directives.push(format!("{}%on {} %enter {}", indent, k, v));
+    });
 
-    format!("%scanner {scanner_name} {{ {scanner_directives} }}")
+    let scanner_directives = scanner_directives.join("\n");
+
+    if index == crate::parser::parol_grammar::INITIAL_STATE {
+        scanner_directives.to_string()
+    } else {
+        format!("%scanner {} {{\n{}\n}}", scanner_name, scanner_directives)
+    }
 }
 
 #[cfg(test)]

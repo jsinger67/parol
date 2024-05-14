@@ -218,6 +218,34 @@ impl Report for ParolErrorReporter {
                             ]),
                     )?)
                 }
+                ParolParserError::InvalidTokenInTransition {
+                    context,
+                    token,
+                    input,
+                    location,
+                } => {
+                    let mut files = SimpleFiles::new();
+                    let content = fs::read_to_string(input).unwrap_or_default();
+                    let file_id = files.add(input.display().to_string(), content);
+
+                    Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!(
+                                "{context} - Invalid token '{token}' in transition. Use a primary non-terminal for the token."
+                            ))
+                            .with_code("parol::parser::invalid_token_in_transition")
+                            .with_labels(vec![Label::primary(
+                                file_id,
+                                Into::<Range<usize>>::into(location),
+                            )])
+                            .with_notes(vec![
+                                "Please use a primary non-terminal for the token.".to_string()
+                            ]),
+                    )?)
+                }
             }
         } else if let Some(err) = err.downcast_ref::<GrammarAnalysisError>() {
             match err {

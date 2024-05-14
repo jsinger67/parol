@@ -32,7 +32,7 @@ const EOI_TOKEN: &str = "$";
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
-#[derive(Debug, Clone, Default, Eq, PartialEq)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, PartialOrd, Ord)]
 pub struct Token<'t> {
     /// The matched string
     pub(crate) text: Cow<'t, str>,

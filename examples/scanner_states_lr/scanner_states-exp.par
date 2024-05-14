@@ -1,0 +1,28 @@
+%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states"
+%line_comment "//"
+%block_comment "/\*" "\*/"
+
+%scanner String {
+    %auto_newline_off
+    %auto_ws_off
+}
+
+%%
+
+/*  0 */ Start: StartList /* Vec */;
+/*  1 */ StartList /* Vec<T>::Push */: Content StartList;
+/*  2 */ StartList /* Vec<T>::New */: ;
+/*  3 */ Content: Identifier;
+/*  4 */ Content: StringDelimiter StringContent StringDelimiter;
+/*  5 */ StringContent: StringElement StringContent;
+/*  6 */ StringContent: ;
+/*  7 */ StringElement: Escaped;
+/*  8 */ StringElement: EscapedLineEnd;
+/*  9 */ StringElement: NoneQuote;
+/* 10 */ Identifier: "[a-zA-Z_]\w*";
+/* 11 */ Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";
+/* 12 */ EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";
+/* 13 */ NoneQuote: <String>"[^\u{22}\u{5c}]+";
+/* 14 */ StringDelimiter: <INITIAL, String>"\u{22}";

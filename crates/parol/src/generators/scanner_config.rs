@@ -1,6 +1,9 @@
 use crate::Cfg;
 use parol_runtime::{lexer::FIRST_USER_TOKEN, TerminalIndex};
-use std::fmt::{Debug, Display, Error, Formatter};
+use std::{
+    collections::BTreeMap,
+    fmt::{Debug, Display, Error, Formatter},
+};
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -44,6 +47,11 @@ pub struct ScannerConfig {
     /// If false the user has to handle whitespace on its own.
     ///
     pub auto_ws: bool,
+
+    /// Scanner state transitions
+    /// Maps from token to scanner state, where the token is identified by its primary non-terminal
+    /// name. The scanner state is identified by its name.
+    pub transitions: BTreeMap<String, String>,
 }
 
 impl ScannerConfig {
@@ -56,6 +64,7 @@ impl ScannerConfig {
             block_comments: Vec::new(),
             auto_newline: true,
             auto_ws: true,
+            transitions: BTreeMap::new(),
         }
     }
 
@@ -155,6 +164,7 @@ impl Default for ScannerConfig {
             block_comments: Vec::new(),
             auto_newline: true,
             auto_ws: true,
+            transitions: BTreeMap::new(),
         }
     }
 }
@@ -166,6 +176,9 @@ impl Display for ScannerConfig {
         writeln!(f, "line_comments: {:?}", self.line_comments)?;
         writeln!(f, "block_comments: {:?}", self.block_comments)?;
         writeln!(f, "auto_newline: {:?}", self.auto_newline)?;
-        writeln!(f, "auto_ws: {:?}", self.auto_ws)
+        writeln!(f, "auto_ws: {:?}", self.auto_ws)?;
+        self.transitions
+            .iter()
+            .try_for_each(|(k, v)| write!(f, "on {} enter {};", k, v))
     }
 }

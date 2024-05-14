@@ -38,7 +38,7 @@ run_task = { name = [
     "generate_oberon_0",
     "generate_oberon2",
     "generate_scanner_states",
-    # "generate_scanner_states_lr",
+    "generate_scanner_states_lr",
     "generate_toml",
 ] }
 
@@ -188,14 +188,14 @@ echo "Building parser sources of example 'scanner_states'..."
 ${PAROL_TARGET} -f ./scanner_states.par -e ./scanner_states-exp.par -p ./scanner_states_parser.rs -a ./scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar
 '''
 
-# [tasks.generate_scanner_states_lr]
-# workspace = false
-# cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/scanner_states_lr"
-# script_runner = "@shell"
-# script = '''
-# echo "Building parser sources of example 'scanner_states_lr'..."
-# ${PAROL_TARGET} -f ./scanner_states.par -e ./scanner_states-exp.par -p ./scanner_states_parser.rs -a ./scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar -g -b -x
-# '''
+[tasks.generate_scanner_states_lr]
+workspace = false
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/scanner_states_lr"
+script_runner = "@shell"
+script = '''
+echo "Building parser sources of example 'scanner_states_lr'..."
+${PAROL_TARGET} -f ./scanner_states.par -e ./scanner_states-exp.par -p ./scanner_states_parser.rs -a ./scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar -g -b -x
+'''
 
 [tasks.generate_toml]
 workspace = false

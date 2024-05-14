@@ -28,7 +28,9 @@ ScannerDirectives
     : "%line_comment": OwnedToken TokenLiteral
     | "%block_comment": OwnedToken TokenLiteral TokenLiteral
     | "%auto_newline_off": OwnedToken
-    | "%auto_ws_off": OwnedToken;
+    | "%auto_ws_off": OwnedToken
+    | '%on': OwnedToken IdentifierList '%enter': OwnedToken Identifier // Scanner state enter directives
+    ;
 
 GrammarDefinition
     : "%%": OwnedToken Production { Production };
@@ -69,7 +71,7 @@ SimpleToken
     : TokenLiteral [ ASTControl ];
 
 TokenWithStates
-    : "<": OwnedToken StateList ">": OwnedToken TokenLiteral [ ASTControl ];
+    : "<": OwnedToken IdentifierList ">": OwnedToken TokenLiteral [ ASTControl ];
 
 Group
     : '(': OwnedToken Alternations ')': OwnedToken;
@@ -95,7 +97,7 @@ LiteralString
 ScannerState
     : "%scanner": OwnedToken Identifier '{': OwnedToken { ScannerDirectives } '}': OwnedToken;
 
-StateList
+IdentifierList
     : Identifier { ",": OwnedToken Identifier };
 
 ScannerSwitch

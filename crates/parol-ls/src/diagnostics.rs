@@ -297,5 +297,22 @@ fn extract_parser_error(
                 message: format!("{feature} - Feature is not yet supported"),
             });
         }
+        ParolParserError::InvalidTokenInTransition {
+            context,
+            token,
+            input,
+            location,
+        } => {
+            *range = location_to_range(location);
+            related_information.push(DiagnosticRelatedInformation {
+                location: location_to_location(location, located_document_state.uri),
+                message: format!(
+                    "Context: {}, Token: {}, Input: {}",
+                    context,
+                    token,
+                    input.display()
+                ),
+            });
+        }
     }
 }

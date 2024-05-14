@@ -108,6 +108,22 @@ pub enum ParolParserError {
         /// Location
         token: Location,
     },
+
+    /// Invalid token in transition, e.g. a token that is not defined in the grammar
+    /// is used in a transition. Use a primary non-terminal for the token.
+    #[error(
+        "{context} - Invalid token '{token}' in transition. Use a primary non-terminal for the token."
+    )]
+    InvalidTokenInTransition {
+        /// Context where the error was issued
+        context: String,
+        /// Token that is not defined matched against a valid primary non-terminal
+        token: String,
+        /// Source file
+        input: PathBuf,
+        /// Location of the token
+        location: Location,
+    },
 }
 
 impl From<ParolParserError> for parol_runtime::ParolError {

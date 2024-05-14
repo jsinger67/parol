@@ -1,6 +1,8 @@
 use super::parol_grammar_trait::{
     self, AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog,
-    PrologList, PrologList0, ScannerDirectives, ScannerSwitch, StartDeclaration, TokenLiteral,
+    PrologList, PrologList0, ScannerDirectives,
+    ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier, ScannerSwitch,
+    StartDeclaration, TokenLiteral,
 };
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use crate::ParolParserError;
@@ -19,7 +21,7 @@ use std::marker::PhantomData;
 /// Used for implementation of trait `Default` for `&ParolGrammar`.
 static DEFAULT_PAROL_GRAMMAR: Lazy<ParolGrammar<'static>> = Lazy::new(ParolGrammar::default);
 
-const INITIAL_STATE: usize = 0;
+pub(crate) const INITIAL_STATE: usize = 0;
 
 /// A user defined type name
 #[derive(
@@ -277,6 +279,10 @@ impl Alternation {
     fn is_used_scanner(&self, scanner_index: usize) -> bool {
         self.0.iter().any(|f| f.is_used_scanner(scanner_index))
     }
+
+    fn is_terminal(&self) -> bool {
+        self.0.len() == 1 && matches!(self.0[0], Factor::Terminal(_, _, _, _, _))
+    }
 }
 
 impl Display for Alternation {
@@ -436,6 +442,34 @@ pub struct ScannerConfig {
     pub auto_newline_off: bool,
     /// Defines whether to handle whitespace automatically in scanner
     pub auto_ws_off: bool,
+    /// Scanner state transitions
+    /// Maps from token to scanner state, where the token is identified by its primary non-terminal
+    /// name. The scanner state is identified by its name.
+    pub transitions: BTreeMap<Token<'static>, Token<'static>>,
+}
+
+impl ScannerConfig {
+    pub(crate) fn add_transitions(
+        &mut self,
+        transitions: &ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier<'_>,
+    ) {
+        // The identifier list contains the first identifier, which is inserted here
+        self.transitions.insert(
+            transitions.identifier_list.identifier.identifier.to_owned(),
+            transitions.identifier.identifier.to_owned(),
+        );
+        // The rest of the identifier list is processed here
+        transitions
+            .identifier_list
+            .identifier_list_list
+            .iter()
+            .for_each(|i| {
+                self.transitions.insert(
+                    i.identifier.identifier.to_owned(),
+                    transitions.identifier.identifier.to_owned(),
+                );
+            });
+    }
 }
 
 impl Display for ScannerConfig {
@@ -444,7 +478,10 @@ impl Display for ScannerConfig {
         write!(f, "line_comments: {:?};", self.line_comments)?;
         write!(f, "block_comments: {:?};", self.block_comments)?;
         write!(f, "auto_newline_off: {};", self.auto_newline_off)?;
-        write!(f, "auto_ws_off: {};", self.auto_ws_off)
+        write!(f, "auto_ws_off: {};", self.auto_ws_off)?;
+        self.transitions
+            .iter()
+            .try_for_each(|(k, v)| write!(f, "on {} enter {};", k, v))
     }
 }
 
@@ -456,6 +493,7 @@ impl Default for ScannerConfig {
             block_comments: Vec::default(),
             auto_newline_off: false,
             auto_ws_off: false,
+            transitions: BTreeMap::default(),
         }
     }
 }
@@ -488,6 +526,9 @@ impl TryFrom<&parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
                     me.auto_newline_off = true
                 }
                 ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(_) => me.auto_ws_off = true,
+                ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(transitions) => {
+                    me.add_transitions(transitions)
+                }
             }
         }
         Ok(me)
@@ -621,6 +662,9 @@ impl ParolGrammar<'_> {
             }
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(_) => {
                 self.scanner_configurations[INITIAL_STATE].auto_ws_off = true
+            }
+            ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(transitions) => {
+                self.scanner_configurations[INITIAL_STATE].add_transitions(transitions)
             }
         }
         Ok(())
@@ -823,8 +867,9 @@ impl ParolGrammar<'_> {
                 ))
             }
             parol_grammar_trait::Symbol::TokenWithStates(token_with_states) => {
-                let mut scanner_states = self
-                    .process_scanner_state_list(&token_with_states.token_with_states.state_list)?;
+                let mut scanner_states = self.process_scanner_state_list(
+                    &token_with_states.token_with_states.identifier_list,
+                )?;
                 scanner_states.sort_unstable();
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
@@ -854,10 +899,10 @@ impl ParolGrammar<'_> {
 
     fn process_scanner_state_list(
         &mut self,
-        state_list: &parol_grammar_trait::StateList,
+        state_list: &parol_grammar_trait::IdentifierList,
     ) -> Result<Vec<usize>> {
         let mut result = vec![self.resolve_scanner(&state_list.identifier.identifier)?];
-        for s in &state_list.state_list_list {
+        for s in &state_list.identifier_list_list {
             result.push(self.resolve_scanner(&s.identifier.identifier)?);
         }
         Ok(result)
@@ -971,10 +1016,34 @@ impl ParolGrammar<'_> {
                 acc
             });
         if !empty_scanners.is_empty() {
-            Err(ParolParserError::EmptyScanners { empty_scanners }.into())
-        } else {
-            Ok(())
+            return Err(ParolParserError::EmptyScanners { empty_scanners }.into());
         }
+
+        self.scanner_configurations
+            .iter()
+            .try_for_each(|s| self.check_transitions(s))
+    }
+
+    fn check_transitions(&self, s: &ScannerConfig) -> Result<()> {
+        s.transitions.iter().try_for_each(|(k, v)| {
+            if !self.is_primary_non_terminal(k) {
+                bail!(ParolParserError::InvalidTokenInTransition {
+                    context: "check_transitions".to_string(),
+                    token: k.text().to_string(),
+                    input: k.location.file_name.to_path_buf(),
+                    location: k.location.clone(),
+                });
+            }
+            if self.resolve_scanner(v).is_err() {
+                bail!(ParolParserError::UnknownScanner {
+                    context: "check_transitions".to_string(),
+                    name: v.text().to_string(),
+                    input: v.location.file_name.to_path_buf(),
+                    token: v.location.clone(),
+                });
+            }
+            Ok(())
+        })
     }
 
     fn is_used_scanner(&self, scanner_index: usize) -> bool {
@@ -998,6 +1067,12 @@ impl ParolGrammar<'_> {
             .into());
         }
         Ok(())
+    }
+
+    fn is_primary_non_terminal(&self, k: &Token<'_>) -> bool {
+        self.productions
+            .iter()
+            .any(|p| p.lhs == k.text() && p.rhs.0.len() == 1 && p.rhs.0[0].is_terminal())
     }
 }
 

@@ -227,6 +227,19 @@ impl ParolLsGrammar {
                     children: None,
                 });
             }
+            ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(trans) => {
+                #[allow(deprecated)]
+                symbols.push(DocumentSymbol {
+                    name: trans.percent_on.text().to_string(),
+                    detail: Some("Transition".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(&trans.percent_on).0,
+                    children: None,
+                });
+            }
         }
     }
 
