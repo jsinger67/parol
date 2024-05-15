@@ -468,8 +468,8 @@ pub struct ScannerConfig {
     /// Defines whether to handle whitespace automatically in scanner
     pub auto_ws_off: bool,
     /// Scanner state transitions
-    /// Maps from token to scanner state, where the token is identified by its primary non-terminal
-    /// name. The scanner state is identified by its name.
+    /// Maps from (token, terminal kind) to scanner state, where the token is identified by its
+    /// primary non-terminal name. The scanner state is identified by its name.
     pub transitions: BTreeMap<Token<'static>, Token<'static>>,
 }
 

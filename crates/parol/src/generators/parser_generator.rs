@@ -337,7 +337,6 @@ impl std::fmt::Display for ParserData<'_> {
 
         f.write_fmt(ume::ume! {
             static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| vec![
-                ScannerConfig::new("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(), &[]),
                 #scanner_builds
             ]);
         })?;
@@ -480,7 +479,6 @@ impl std::fmt::Display for LRParserData<'_> {
 
         f.write_fmt(ume::ume! {
             static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| vec![
-                ScannerConfig::new("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(), &[]),
                 #scanner_builds
             ]);
         })?;
@@ -599,11 +597,14 @@ fn generate_scanner_builds(grammar_config: &GrammarConfig) -> StrVec {
         .scanner_configurations
         .iter()
         .enumerate()
-        .skip(1)
-        .fold(StrVec::new(8), |mut acc, (i, e)| {
+        .fold(StrVec::new(0), |mut acc, (i, e)| {
+            let transitions = e.transitions.iter().fold(StrVec::new(4), |mut acc, t| {
+                acc.push(format!(r#"({}, {}),"#, t.0, t.1));
+                acc
+            });
             acc.push(format!(
-                r#"ScannerConfig::new("{}", Tokenizer::build(TERMINALS, SCANNER_{}.0, SCANNER_{}.1).unwrap(), &[]),"#,
-                e.scanner_name, i, i
+                r#"ScannerConfig::new("{}", Tokenizer::build(TERMINALS, SCANNER_{}.0, SCANNER_{}.1).unwrap(), &[{}]),"#,
+                e.scanner_name, i, i, transitions
             ));
             acc
         })

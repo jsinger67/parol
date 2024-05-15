@@ -1,6 +1,6 @@
 use crate::parser::{Factor, ParolGrammar};
 use crate::transformation::transform_productions;
-use crate::{Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal};
+use crate::{generators, Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal, TerminalKind};
 use anyhow::{bail, Result};
 
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
@@ -53,7 +53,77 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
         )?);
     }
 
+    let terminal_resolver = grammar_config.cfg.get_terminal_index_function();
+    let scanner_resolver = |name: &str| -> Option<usize> {
+        parol_grammar
+            .scanner_configurations
+            .iter()
+            .position(|sc| sc.name == name)
+    };
+    // Finds the terminal token from the name of the primary non-terminal
+    let pr_copy = grammar_config.cfg.pr.clone();
+    let terminal_finder = move |name: &str| -> Option<(String, TerminalKind)> {
+        pr_copy.iter().find_map(|p| {
+            if p.0.get_n_ref().unwrap() == name && p.1.len() == 1 {
+                match &p.1[0] {
+                    Symbol::T(Terminal::Trm(t, k, ..)) => Some((t.to_owned(), *k)),
+                    _ => None,
+                }
+            } else {
+                None
+            }
+        })
+    };
+    grammar_config
+        .scanner_configurations
+        .iter_mut()
+        .try_for_each(|sc| {
+            insert_transitions(
+                sc,
+                &parol_grammar.scanner_configurations,
+                &terminal_resolver,
+                scanner_resolver,
+                &terminal_finder,
+            )
+        })?;
+
     Ok(grammar_config)
+}
+
+fn insert_transitions(
+    sc: &mut generators::ScannerConfig,
+    scanner_configurations: &[crate::parser::parol_grammar::ScannerConfig],
+    terminal_resolver: &impl crate::grammar::cfg::TerminalIndexFn,
+    scanner_resolver: impl Fn(&str) -> Option<usize>,
+    terminal_finder: impl Fn(&str) -> Option<(String, TerminalKind)>,
+) -> Result<()> {
+    if let Some(source_configuartion) = scanner_resolver(&sc.scanner_name) {
+        let mut transitions = Vec::new();
+        scanner_configurations[source_configuartion]
+            .transitions
+            .iter()
+            .try_for_each(|(token, target_state_name)| {
+                if let Some((txt, kind)) = terminal_finder(token.text()) {
+                    if let Some(target_scanner) = scanner_resolver(target_state_name.text()) {
+                        transitions
+                            .push((terminal_resolver.terminal_index(&txt, kind), target_scanner));
+                    } else {
+                        bail!(
+                            "Target scanner configuration {} not found",
+                            target_state_name
+                        );
+                    }
+                } else {
+                    bail!("Terminal {} not found", token);
+                }
+                Ok(())
+            })?;
+        transitions.sort_by(|a, b| a.0.cmp(&b.0));
+        sc.transitions = transitions;
+    } else {
+        bail!("Scanner configuration {} not found", sc.scanner_name);
+    }
+    Ok(())
 }
 
 fn try_from_scanner_config(

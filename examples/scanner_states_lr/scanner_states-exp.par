@@ -4,10 +4,12 @@
 %grammar_type 'lalr(1)'
 %line_comment "//"
 %block_comment "/\*" "\*/"
+%on 9 %enter 1
 
 %scanner String {
     %auto_newline_off
     %auto_ws_off
+    %on 9 %enter 0
 }
 
 %%

@@ -1,9 +1,6 @@
 use crate::Cfg;
 use parol_runtime::{lexer::FIRST_USER_TOKEN, TerminalIndex};
-use std::{
-    collections::BTreeMap,
-    fmt::{Debug, Display, Error, Formatter},
-};
+use std::fmt::{Debug, Display, Error, Formatter};
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -49,9 +46,9 @@ pub struct ScannerConfig {
     pub auto_ws: bool,
 
     /// Scanner state transitions
-    /// Maps from token to scanner state, where the token is identified by its primary non-terminal
-    /// name. The scanner state is identified by its name.
-    pub transitions: BTreeMap<String, String>,
+    /// Maps from token to scanner state, where the token is identified by its TerminalIndex
+    /// The scanner state is identified by its index.
+    pub transitions: Vec<(TerminalIndex, usize)>,
 }
 
 impl ScannerConfig {
@@ -64,7 +61,7 @@ impl ScannerConfig {
             block_comments: Vec::new(),
             auto_newline: true,
             auto_ws: true,
-            transitions: BTreeMap::new(),
+            transitions: Vec::new(),
         }
     }
 
@@ -164,7 +161,7 @@ impl Default for ScannerConfig {
             block_comments: Vec::new(),
             auto_newline: true,
             auto_ws: true,
-            transitions: BTreeMap::new(),
+            transitions: Vec::new(),
         }
     }
 }
