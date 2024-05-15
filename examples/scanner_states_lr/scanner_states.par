@@ -33,7 +33,7 @@ Content
     ;
 
 StringContent
-    : StringElement StringContent
+    : { StringElement }
     |
     ;
 

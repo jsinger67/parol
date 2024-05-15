@@ -103,18 +103,17 @@ pub struct ContentStringDelimiterStringContentStringDelimiter<'t> {
 ///
 /// Type derived for production 5
 ///
-/// `StringContent: StringElement StringContent;`
+/// `StringContent: StringContentList /* Vec */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct StringContentStringElementStringContent<'t> {
-    pub string_element: StringElement<'t>,
-    pub string_content: Box<StringContent<'t>>,
+pub struct StringContentStringContentList<'t> {
+    pub string_content_list: Vec<StringContentList<'t>>,
 }
 
 ///
-/// Type derived for production 6
+/// Type derived for production 8
 ///
 /// `StringContent: ;`
 ///
@@ -124,7 +123,7 @@ pub struct StringContentStringElementStringContent<'t> {
 pub struct StringContentStringContentEmpty {}
 
 ///
-/// Type derived for production 7
+/// Type derived for production 9
 ///
 /// `StringElement: Escaped;`
 ///
@@ -136,7 +135,7 @@ pub struct StringElementEscaped<'t> {
 }
 
 ///
-/// Type derived for production 8
+/// Type derived for production 10
 ///
 /// `StringElement: EscapedLineEnd;`
 ///
@@ -148,7 +147,7 @@ pub struct StringElementEscapedLineEnd<'t> {
 }
 
 ///
-/// Type derived for production 9
+/// Type derived for production 11
 ///
 /// `StringElement: NoneQuote;`
 ///
@@ -242,8 +241,18 @@ pub struct StartList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum StringContent<'t> {
-    StringElementStringContent(StringContentStringElementStringContent<'t>),
+    StringContentList(StringContentStringContentList<'t>),
     StringContentEmpty(StringContentStringContentEmpty),
+}
+
+///
+/// Type derived for non-terminal StringContentList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct StringContentList<'t> {
+    pub string_element: StringElement<'t>,
 }
 
 ///
@@ -283,6 +292,7 @@ pub enum ASTType<'t> {
     Start(Start<'t>),
     StartList(Vec<StartList<'t>>),
     StringContent(StringContent<'t>),
+    StringContentList(Vec<StringContentList<'t>>),
     StringDelimiter(StringDelimiter<'t>),
     StringElement(StringElement<'t>),
 }
@@ -443,24 +453,17 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// `StringContent: StringElement StringContent;`
+    /// `StringContent: StringContentList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
-    fn string_content_0(
-        &mut self,
-        _string_element: &ParseTreeType<'t>,
-        _string_content: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn string_content_0(&mut self, _string_content_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string_content = pop_item!(self, string_content, StringContent, context);
-        let string_element = pop_item!(self, string_element, StringElement, context);
-        let string_content_0_built = StringContentStringElementStringContent {
-            string_element,
-            string_content: Box::new(string_content),
+        let string_content_list = pop_item!(self, string_content_list, StringContentList, context);
+        let string_content_0_built = StringContentStringContentList {
+            string_content_list,
         };
-        let string_content_0_built =
-            StringContent::StringElementStringContent(string_content_0_built);
+        let string_content_0_built = StringContent::StringContentList(string_content_0_built);
         // Calling user action here
         self.user_grammar.string_content(&string_content_0_built)?;
         self.push(ASTType::StringContent(string_content_0_built), context);
@@ -468,6 +471,44 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
     }
 
     /// Semantic action for production 6:
+    ///
+    /// `StringContentList /* Vec<T>::Push */: StringContentList StringElement;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn string_content_list_0(
+        &mut self,
+        _string_content_list: &ParseTreeType<'t>,
+        _string_element: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let string_element = pop_item!(self, string_element, StringElement, context);
+        let mut string_content_list =
+            pop_item!(self, string_content_list, StringContentList, context);
+        let string_content_list_0_built = StringContentList { string_element };
+        // Add an element to the vector
+        string_content_list.push(string_content_list_0_built);
+        self.push(ASTType::StringContentList(string_content_list), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 7:
+    ///
+    /// `StringContentList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn string_content_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let string_content_list_1_built = Vec::new();
+        self.push(
+            ASTType::StringContentList(string_content_list_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 8:
     ///
     /// `StringContent: ;`
     ///
@@ -483,7 +524,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 7:
+    /// Semantic action for production 9:
     ///
     /// `StringElement: Escaped;`
     ///
@@ -500,7 +541,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 8:
+    /// Semantic action for production 10:
     ///
     /// `StringElement: EscapedLineEnd;`
     ///
@@ -517,7 +558,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 9:
+    /// Semantic action for production 11:
     ///
     /// `StringElement: NoneQuote;`
     ///
@@ -534,7 +575,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 10:
+    /// Semantic action for production 12:
     ///
     /// `Identifier: "[a-zA-Z_]\w*";`
     ///
@@ -550,7 +591,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 11:
+    /// Semantic action for production 13:
     ///
     /// `Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";`
     ///
@@ -566,7 +607,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 12:
+    /// Semantic action for production 14:
     ///
     /// `EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";`
     ///
@@ -583,7 +624,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 13:
+    /// Semantic action for production 15:
     ///
     /// `NoneQuote: <String>"[^\u{22}\u{5c}]+";`
     ///
@@ -599,7 +640,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 14:
+    /// Semantic action for production 16:
     ///
     /// `StringDelimiter: <INITIAL, String>"\u{22}";`
     ///
@@ -632,16 +673,18 @@ impl<'t> UserActionsTrait<'t> for ScannerStatesGrammarAuto<'t, '_> {
             2 => self.start_list_1(),
             3 => self.content_0(&children[0]),
             4 => self.content_1(&children[0], &children[1], &children[2]),
-            5 => self.string_content_0(&children[0], &children[1]),
-            6 => self.string_content_1(),
-            7 => self.string_element_0(&children[0]),
-            8 => self.string_element_1(&children[0]),
-            9 => self.string_element_2(&children[0]),
-            10 => self.identifier(&children[0]),
-            11 => self.escaped(&children[0]),
-            12 => self.escaped_line_end(&children[0]),
-            13 => self.none_quote(&children[0]),
-            14 => self.string_delimiter(&children[0]),
+            5 => self.string_content_0(&children[0]),
+            6 => self.string_content_list_0(&children[0], &children[1]),
+            7 => self.string_content_list_1(),
+            8 => self.string_content_1(),
+            9 => self.string_element_0(&children[0]),
+            10 => self.string_element_1(&children[0]),
+            11 => self.string_element_2(&children[0]),
+            12 => self.identifier(&children[0]),
+            13 => self.escaped(&children[0]),
+            14 => self.escaped_line_end(&children[0]),
+            15 => self.none_quote(&children[0]),
+            16 => self.string_delimiter(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

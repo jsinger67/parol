@@ -182,7 +182,14 @@ impl<'t> TokenStream<'t> {
                 self.column,
             );
             let token = self.tokens.remove(0);
-            self.ensure_buffer();
+            if let Some(new_state) =
+                self.scanners[self.current_scanner_index].has_transition(token.token_type)
+            {
+                self.switch_scanner(new_state)?;
+            } else {
+                self.error_token_type = token.token_type;
+                self.ensure_buffer();
+            }
             Ok(token)
         }
     }
