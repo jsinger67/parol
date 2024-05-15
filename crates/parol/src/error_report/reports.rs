@@ -195,6 +195,7 @@ impl Report for ParolErrorReporter {
                 }
                 ParolParserError::UnsupportedFeature {
                     feature,
+                    hint,
                     input,
                     token,
                 } => {
@@ -214,7 +215,8 @@ impl Report for ParolErrorReporter {
                                 Into::<Range<usize>>::into(token),
                             )])
                             .with_notes(vec![
-                                "Sorry, but this feature is not supported yet.".to_string()
+                                "This feature is not supported.".to_string(),
+                                hint.to_string(),
                             ]),
                     )?)
                 }
@@ -243,6 +245,63 @@ impl Report for ParolErrorReporter {
                             )])
                             .with_notes(vec![
                                 "Please use a primary non-terminal for the token.".to_string()
+                            ]),
+                    )?)
+                }
+                ParolParserError::TokenIsNotInScanner {
+                    context,
+                    scanner,
+                    token,
+                    input,
+                    location,
+                } => {
+                    let mut files = SimpleFiles::new();
+                    let content = fs::read_to_string(input).unwrap_or_default();
+                    let file_id = files.add(input.display().to_string(), content);
+
+                    Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!(
+                                "{context} - Token '{token}' is not defined in scanner '{scanner}'"
+                            ))
+                            .with_code("parol::parser::token_is_not_in_scanner")
+                            .with_labels(vec![Label::primary(
+                                file_id,
+                                Into::<Range<usize>>::into(location),
+                            )])
+                            .with_notes(vec![
+                                "Only tokens used in a scanner can initiate a transition from it to another scanner."
+                                    .to_string(),
+                            ]),
+                    )?)
+                }
+                ParolParserError::MixedScannerSwitching {
+                    context,
+                    input,
+                    location,
+                } => {
+                    let mut files = SimpleFiles::new();
+                    let content = fs::read_to_string(input).unwrap_or_default();
+                    let file_id = files.add(input.display().to_string(), content);
+
+                    Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!("{context} - Mixed scanner switching is not allowed"))
+                            .with_code("parol::parser::mixed_scanner_switching")
+                            .with_labels(vec![Label::primary(
+                                file_id,
+                                Into::<Range<usize>>::into(location),
+                            )])
+                            .with_notes(vec![
+                                "Use either parser-based or scanner-based switching.".to_string(),
+                                "Parser-based switching is done via the %sc, %push and %pop directives in productions.".to_string(),
+                                "Scanner-based switching is done via the %on directive in the header of the grammar file.".to_string(),
                             ]),
                     )?)
                 }

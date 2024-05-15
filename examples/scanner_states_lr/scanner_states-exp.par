@@ -15,7 +15,7 @@
 /*  1 */ StartList /* Vec<T>::Push */: Content StartList;
 /*  2 */ StartList /* Vec<T>::New */: ;
 /*  3 */ Content: Identifier;
-/*  4 */ Content: StringDelimiter StringContent StringDelimiter;
+/*  4 */ Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();
 /*  5 */ StringContent: StringElement StringContent;
 /*  6 */ StringContent: ;
 /*  7 */ StringElement: Escaped;

@@ -103,6 +103,8 @@ pub enum ParolParserError {
     UnsupportedFeature {
         /// The feature found
         feature: String,
+        /// Hint
+        hint: String,
         /// Source
         input: PathBuf,
         /// Location
@@ -119,6 +121,34 @@ pub enum ParolParserError {
         context: String,
         /// Token that is not defined matched against a valid primary non-terminal
         token: String,
+        /// Source file
+        input: PathBuf,
+        /// Location of the token
+        location: Location,
+    },
+
+    /// The token that is used to initiate a transition is not defined in this scanner.
+    #[error("{context} - Token '{token}' is not defined in scanner '{scanner}'")]
+    TokenIsNotInScanner {
+        /// Context where the error was issued
+        context: String,
+        /// The scanner where the token is not defined
+        scanner: String,
+        /// Token that is not defined in the scanner
+        token: String,
+        /// Source file
+        input: PathBuf,
+        /// Location of the token
+        location: Location,
+    },
+
+    /// Mixed scanner switching is not allowed - use either parser-based or scanner-based switching.
+    /// Parser-based switching is done via the %sc, %push and %pop directives productions.
+    /// Scanner-based switching is done via the %on directive in the header of the grammar file.
+    #[error("{context} - Mixed scanner switching is not allowed")]
+    MixedScannerSwitching {
+        /// Context where the error was issued
+        context: String,
         /// Source file
         input: PathBuf,
         /// Location of the token

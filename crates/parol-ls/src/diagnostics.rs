@@ -290,11 +290,16 @@ fn extract_parser_error(
                 message: grammar_type.to_string(),
             });
         }
-        ParolParserError::UnsupportedFeature { feature, token, .. } => {
+        ParolParserError::UnsupportedFeature {
+            feature,
+            token,
+            hint,
+            ..
+        } => {
             *range = location_to_range(token);
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(token, located_document_state.uri),
-                message: format!("{feature} - Feature is not yet supported"),
+                message: format!("{feature} - Feature is not yet supported\n{hint}"),
             });
         }
         ParolParserError::InvalidTokenInTransition {
@@ -312,6 +317,36 @@ fn extract_parser_error(
                     token,
                     input.display()
                 ),
+            });
+        }
+        ParolParserError::TokenIsNotInScanner {
+            context,
+            scanner,
+            token,
+            input,
+            location,
+        } => {
+            *range = location_to_range(location);
+            related_information.push(DiagnosticRelatedInformation {
+                location: location_to_location(location, located_document_state.uri),
+                message: format!(
+                    "Context: {}, Scanner: {}, Token: {}, Input: {}",
+                    context,
+                    scanner,
+                    token,
+                    input.display()
+                ),
+            });
+        }
+        ParolParserError::MixedScannerSwitching {
+            context,
+            input,
+            location,
+        } => {
+            *range = location_to_range(location);
+            related_information.push(DiagnosticRelatedInformation {
+                location: location_to_location(location, located_document_state.uri),
+                message: format!("Context: {}, Input: {}", context, input.display()),
             });
         }
     }

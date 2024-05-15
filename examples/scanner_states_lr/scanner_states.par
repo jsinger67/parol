@@ -1,13 +1,17 @@
 %start Start
 %title "Test grammar"
 %comment "Tests correct handling of scanner states"
-
+%grammar_type 'LALR(1)'
 // The following declarations only apply to scanner INITIAL
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
 // Switch to scanner state 'String' when we encounter a double quote in scanner state INITIAL
 %on StringDelimiter %enter String
+
+// The following line will result in a syntax error because the terminal 'Escaped' is not valid in
+// scanner state INITIAL
+// %on Escaped %enter String
 
 // Here we introduce a new scanner state 'String'
 // Switch back to scanner state INITIAL when we encounter a double quote in scanner state 'String'
