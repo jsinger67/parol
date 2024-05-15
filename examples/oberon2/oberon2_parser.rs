@@ -8,7 +8,7 @@ use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{TokenStream, Tokenizer};
+use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
 
 use crate::oberon2_grammar::Oberon2Grammar;
@@ -2860,10 +2860,11 @@ pub const PRODUCTIONS: &[Production; 225] = &[
     },
 ];
 
-static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
-    vec![(
+static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
+    vec![ScannerConfig::new(
         "INITIAL",
         Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
+        &[],
     )]
 });
 
@@ -2887,7 +2888,7 @@ where
     // Initialize wrapper
     let mut user_actions = Oberon2GrammarAuto::new(user_actions);
     llk_parser.parse(
-        TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
+        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
         &mut user_actions,
     )
 }

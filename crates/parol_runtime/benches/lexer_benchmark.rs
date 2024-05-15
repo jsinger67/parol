@@ -1,7 +1,7 @@
 use std::{borrow::Cow, cell::RefCell, path::Path};
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use parol_runtime::{once_cell::sync::Lazy, TerminalIndex, TokenStream, Tokenizer};
+use parol_runtime::{once_cell::sync::Lazy, ScannerConfig, TerminalIndex, TokenStream, Tokenizer};
 
 const LEXER_INPUT: &str = include_str!("./input_1.txt");
 
@@ -118,17 +118,18 @@ const SCANNER_TERMINAL_INDICES: &[TerminalIndex] = &[
 const MAX_K: usize = 3;
 const ERROR_TOKEN_INDEX: TerminalIndex = 90;
 
-static TOKENIZERS_1: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
-    vec![(
-        "INITIAL",
-        Tokenizer::build(PATTERNS, SCANNER_SPECIFICS, SCANNER_TERMINAL_INDICES).unwrap(),
-    )]
+static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
+    vec![ScannerConfig {
+        name: "INITIAL",
+        tokenizer: Tokenizer::build(PATTERNS, SCANNER_SPECIFICS, SCANNER_TERMINAL_INDICES).unwrap(),
+        transitions: &[],
+    }]
 });
 
 fn tokenize_1() {
     let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
     let token_stream =
-        RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &TOKENIZERS_1, MAX_K).unwrap());
+        RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &SCANNERS, MAX_K).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         let tok = token_stream.borrow_mut().lookahead(0).unwrap();
         assert_ne!(tok.token_type, ERROR_TOKEN_INDEX);

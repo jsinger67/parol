@@ -5,7 +5,7 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::{FileSource, TerminalIndex, Token, TokenStream, Tokenizer};
+use parol_runtime::{FileSource, ScannerConfig, TerminalIndex, Token, TokenStream, Tokenizer};
 use std::borrow::Cow;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
@@ -63,15 +63,17 @@ const SCANNER_1: (&[&str; 5], &[TerminalIndex; 4]) = (
 
 const MAX_K: usize = 1;
 
-static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
+static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     vec![
-        (
+        ScannerConfig::new(
             "INITIAL",
             Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "String",
             Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
+            &[],
         ),
     ]
 });
@@ -79,7 +81,7 @@ static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
 #[test]
 fn scanner_switch_and_named_source() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
-    let stream = RefCell::new(TokenStream::new(INPUT, file_name, &TOKENIZERS, MAX_K).unwrap());
+    let stream = RefCell::new(TokenStream::new(INPUT, file_name, &SCANNERS, MAX_K).unwrap());
 
     assert_eq!(stream.borrow().current_scanner_index, 0);
 

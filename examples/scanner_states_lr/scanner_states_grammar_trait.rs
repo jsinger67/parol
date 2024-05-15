@@ -89,7 +89,7 @@ pub struct ContentIdentifier<'t> {
 ///
 /// Type derived for production 4
 ///
-/// `Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();`
+/// `Content: StringDelimiter StringContent StringDelimiter;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -354,7 +354,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
     fn start(&mut self, _start_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let start_list = pop_and_reverse_item!(self, start_list, StartList, context);
+        let start_list = pop_item!(self, start_list, StartList, context);
         let start_built = Start { start_list };
         // Calling user action here
         self.user_grammar.start(&start_built)?;
@@ -364,18 +364,18 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// `StartList /* Vec<T>::Push */: Content StartList;`
+    /// `StartList /* Vec<T>::Push */: StartList Content;`
     ///
     #[parol_runtime::function_name::named]
     fn start_list_0(
         &mut self,
-        _content: &ParseTreeType<'t>,
         _start_list: &ParseTreeType<'t>,
+        _content: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut start_list = pop_item!(self, start_list, StartList, context);
         let content = pop_item!(self, content, Content, context);
+        let mut start_list = pop_item!(self, start_list, StartList, context);
         let start_list_0_built = StartList { content };
         // Add an element to the vector
         start_list.push(start_list_0_built);
@@ -415,7 +415,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// `Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();`
+    /// `Content: StringDelimiter StringContent StringDelimiter;`
     ///
     #[parol_runtime::function_name::named]
     fn content_1(

@@ -1,6 +1,7 @@
 %start Start
 %title "Test grammar"
 %comment "Tests correct handling of scanner states"
+%grammar_type 'lalr(1)'
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
@@ -12,10 +13,10 @@
 %%
 
 /*  0 */ Start: StartList /* Vec */;
-/*  1 */ StartList /* Vec<T>::Push */: Content StartList;
+/*  1 */ StartList /* Vec<T>::Push */: StartList Content;
 /*  2 */ StartList /* Vec<T>::New */: ;
 /*  3 */ Content: Identifier;
-/*  4 */ Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();
+/*  4 */ Content: StringDelimiter StringContent StringDelimiter;
 /*  5 */ StringContent: StringElement StringContent;
 /*  6 */ StringContent: ;
 /*  7 */ StringElement: Escaped;

@@ -1,10 +1,12 @@
 use crate::lexer::EOI;
 use crate::parser::ScannerIndex;
-use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter, Tokenizer};
+use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter};
 use log::trace;
 
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
+
+use super::ScannerConfig;
 
 ///
 /// The TokenStream<'t> type is the interface the parser actually uses.
@@ -33,7 +35,7 @@ pub struct TokenStream<'t> {
 
     /// A slice with named tokenizers, which operate in combination with the
     /// TokenIter like a scanner.
-    tokenizers: &'static [(&'static str, Tokenizer)],
+    scanners: &'static [ScannerConfig],
 
     /// Lookahead token buffer, maximum size is k
     pub tokens: Vec<Token<'t>>,
@@ -74,14 +76,14 @@ impl<'t> TokenStream<'t> {
     pub fn new<T>(
         input: &'t str,
         file_name: T,
-        tokenizers: &'static [(&'static str, Tokenizer)],
+        scanners: &'static [ScannerConfig],
         k: usize,
     ) -> Result<Self, LexerError>
     where
         T: AsRef<Path>,
     {
         let file_name = Arc::new(file_name.as_ref().to_owned());
-        let token_iter = TokenIter::new(&tokenizers[0].1, input, file_name.clone(), k);
+        let token_iter = TokenIter::new(&scanners[0].tokenizer, input, file_name.clone(), k);
 
         // issue #54 "Lookahead exceeds token buffer length" with simple grammar:
         // Ensure that k is at least 1
@@ -91,9 +93,9 @@ impl<'t> TokenStream<'t> {
             k,
             input,
             file_name,
-            error_token_type: tokenizers[0].1.error_token_type,
+            error_token_type: scanners[0].tokenizer.error_token_type,
             token_iter,
-            tokenizers,
+            scanners,
             tokens: Vec::with_capacity(k),
             comments: Vec::new(),
             start_pos: 0,
@@ -234,13 +236,13 @@ impl<'t> TokenStream<'t> {
             trace!(
                 "Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
-                self.tokenizers[scanner_index].0,
+                self.scanners[scanner_index].name,
             );
         } else {
             trace!(
                 "Switching to scanner {} <{}>; Current offset is {}",
                 scanner_index,
-                self.tokenizers[scanner_index].0,
+                self.scanners[scanner_index].name,
                 self.pos,
             );
             self.token_iter = self.switch_to(scanner_index);
@@ -261,7 +263,7 @@ impl<'t> TokenStream<'t> {
             trace!(
                 "push_scanner: Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
-                self.tokenizers[scanner_index].0,
+                self.scanners[scanner_index].name,
             );
             self.scanner_stack.push(self.current_scanner_index);
             self.current_scanner_index = scanner_index;
@@ -270,7 +272,7 @@ impl<'t> TokenStream<'t> {
                 "push_scanner: Pushing current scanner {} and switching to scanner {} <{}>; Current offset is {}",
                 self.current_scanner_index,
                 scanner_index,
-                self.tokenizers[scanner_index].0,
+                self.scanners[scanner_index].name,
                 self.pos,
             );
             self.scanner_stack.push(self.current_scanner_index);
@@ -295,13 +297,13 @@ impl<'t> TokenStream<'t> {
                 trace!(
                     "pop_scanner: Redundant switch to scanner {} <{}> omitted",
                     scanner_index,
-                    self.tokenizers[scanner_index].0,
+                    self.scanners[scanner_index].name,
                 );
             } else {
                 trace!(
                     "pop_scanner: Switching to popped scanner {} <{}>; Current offset is {}",
                     scanner_index,
-                    self.tokenizers[scanner_index].0,
+                    self.scanners[scanner_index].name,
                     self.pos,
                 );
                 self.token_iter = self.switch_to(scanner_index);
@@ -324,7 +326,7 @@ impl<'t> TokenStream<'t> {
     /// Used for diagnostics.
     ///
     pub fn current_scanner(&self) -> &str {
-        self.tokenizers[self.current_scanner_index].0
+        self.scanners[self.current_scanner_index].name
     }
 
     fn read_tokens(&mut self, n: usize) -> usize {
@@ -369,7 +371,7 @@ impl<'t> TokenStream<'t> {
         self.pos = 0;
         let (_, input) = self.input.split_at(self.start_pos);
         TokenIter::new(
-            &self.tokenizers[scanner_index].1,
+            &self.scanners[scanner_index].tokenizer,
             input,
             self.file_name.clone(),
             self.k,

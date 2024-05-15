@@ -301,7 +301,7 @@ impl std::fmt::Display for ParserData<'_> {
             ume::ume!(UserActionsTrait,).to_string()
         };
         f.write_fmt(ume::ume! {
-            use parol_runtime::{TokenStream, Tokenizer};
+            use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
             #[allow(unused_imports)]
@@ -336,8 +336,8 @@ impl std::fmt::Display for ParserData<'_> {
         writeln!(f, "\n{}\n", productions)?;
 
         f.write_fmt(ume::ume! {
-            static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| vec![
-                ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
+            static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| vec![
+                ScannerConfig::new("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(), &[]),
                 #scanner_builds
             ]);
         })?;
@@ -384,7 +384,7 @@ impl std::fmt::Display for ParserData<'_> {
                 );
                 #enable_trimming
                 #auto_wrapper
-                llk_parser.parse(TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
+                llk_parser.parse(TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
                     #mut_ref_user_actions)
             }
         })
@@ -442,7 +442,7 @@ impl std::fmt::Display for LRParserData<'_> {
         };
         f.write_fmt(ume::ume! {
             use parol_runtime::collection_literals::collection;
-            use parol_runtime::{TokenStream, Tokenizer};
+            use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
             #[allow(unused_imports)]
@@ -479,8 +479,8 @@ impl std::fmt::Display for LRParserData<'_> {
         writeln!(f, "\n{}\n", productions)?;
 
         f.write_fmt(ume::ume! {
-            static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| vec![
-                ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
+            static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| vec![
+                ScannerConfig::new("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(), &[]),
                 #scanner_builds
             ]);
         })?;
@@ -527,7 +527,7 @@ impl std::fmt::Display for LRParserData<'_> {
                 );
                 #enable_trimming
                 #auto_wrapper
-                lr_parser.parse(TokenStream::new(input, file_name, &TOKENIZERS, 1).unwrap(),
+                lr_parser.parse(TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
                     #mut_ref_user_actions)
             }
         })
@@ -602,7 +602,7 @@ fn generate_scanner_builds(grammar_config: &GrammarConfig) -> StrVec {
         .skip(1)
         .fold(StrVec::new(8), |mut acc, (i, e)| {
             acc.push(format!(
-                r#"("{}", Tokenizer::build(TERMINALS, SCANNER_{}.0, SCANNER_{}.1).unwrap()),"#,
+                r#"ScannerConfig::new("{}", Tokenizer::build(TERMINALS, SCANNER_{}.0, SCANNER_{}.1).unwrap(), &[]),"#,
                 e.scanner_name, i, i
             ));
             acc

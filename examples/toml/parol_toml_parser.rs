@@ -8,7 +8,7 @@ use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{TokenStream, Tokenizer};
+use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
 
 use crate::parol_toml_grammar::ParolTomlGrammar;
@@ -2081,47 +2081,57 @@ pub const PRODUCTIONS: &[Production; 158] = &[
     },
 ];
 
-static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
+static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     vec![
-        (
+        ScannerConfig::new(
             "INITIAL",
             Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "Esc",
             Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "Val",
             Tokenizer::build(TERMINALS, SCANNER_2.0, SCANNER_2.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "BString",
             Tokenizer::build(TERMINALS, SCANNER_3.0, SCANNER_3.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "MLBString",
             Tokenizer::build(TERMINALS, SCANNER_4.0, SCANNER_4.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "LString",
             Tokenizer::build(TERMINALS, SCANNER_5.0, SCANNER_5.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "MLLString",
             Tokenizer::build(TERMINALS, SCANNER_6.0, SCANNER_6.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "HexInt",
             Tokenizer::build(TERMINALS, SCANNER_7.0, SCANNER_7.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "OctInt",
             Tokenizer::build(TERMINALS, SCANNER_8.0, SCANNER_8.1).unwrap(),
+            &[],
         ),
-        (
+        ScannerConfig::new(
             "BinInt",
             Tokenizer::build(TERMINALS, SCANNER_9.0, SCANNER_9.1).unwrap(),
+            &[],
         ),
     ]
 });
@@ -2146,7 +2156,7 @@ where
     // Initialize wrapper
     let mut user_actions = ParolTomlGrammarAuto::new(user_actions);
     llk_parser.parse(
-        TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
+        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
         &mut user_actions,
     )
 }

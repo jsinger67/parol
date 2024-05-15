@@ -10,7 +10,7 @@ use parol_runtime::parser::{
     LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
 };
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{TokenStream, Tokenizer};
+use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
 
 use parol_runtime::lexer::tokenizer::{
@@ -209,10 +209,11 @@ pub const PRODUCTIONS: &[Production; 13] = &[
     },
 ];
 
-static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
-    vec![(
+static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
+    vec![ScannerConfig::new(
         "INITIAL",
         Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
+        &[],
     )]
 });
 
@@ -232,7 +233,7 @@ where
         NON_TERMINALS,
     );
     llk_parser.parse(
-        TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
+        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
         user_actions,
     )
 }

@@ -33,6 +33,7 @@ pub const ERROR_TOKEN: &str = r###"."###;
 /// The Tokenizer creates a specially formatted regular expression that can be
 /// used for tokenizing an input string.
 ///
+#[derive(Debug)]
 pub struct Tokenizer {
     pub(crate) rx: Regex,
 
