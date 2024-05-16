@@ -18,8 +18,8 @@ equivalent representations.
 
 These transformations are applied iteratively until all EBNF constructs are replaced.
 
-Note that the transformations applied on LR grammars a slightly different, but the principle is the
-same.
+Note that the transformations applied on LR grammars are slightly different, but the principle is
+the same.
 
 ## Sanity checks
 

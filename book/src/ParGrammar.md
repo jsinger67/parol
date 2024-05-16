@@ -52,6 +52,8 @@ You have to option to use LALR(1) grammar type this way.
 %grammar_type 'LALR(1)'
 ```
 
+The support of the new grammar type is still in a phase of improvement. If there are any obstacles
+here, you can be sure that they will be soon got out of the way.
 
 ## Case sensitivity
 
