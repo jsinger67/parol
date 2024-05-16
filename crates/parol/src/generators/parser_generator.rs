@@ -593,13 +593,15 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
 }
 
 fn generate_scanner_builds(grammar_config: &GrammarConfig) -> StrVec {
+    let primary_non_terminal_finder = grammar_config.cfg.get_primary_non_terminal_finder();
+    let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
     grammar_config
         .scanner_configurations
         .iter()
         .enumerate()
         .fold(StrVec::new(0), |mut acc, (i, e)| {
             let transitions = e.transitions.iter().fold(StrVec::new(4), |mut acc, t| {
-                acc.push(format!(r#"({}, {}),"#, t.0, t.1));
+                acc.push(format!(r#"({} /* {} */, {} /* {} */),"#, t.0, primary_non_terminal_finder(t.0).unwrap_or("".to_string()), t.1, scanner_state_resolver(&[t.1])));
                 acc
             });
             acc.push(format!(

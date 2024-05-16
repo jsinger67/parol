@@ -317,12 +317,12 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
         ScannerConfig::new(
             "INITIAL",
             Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-            &[(9, 1)],
+            &[(9 /* StringDelimiter */, 1 /* String */)],
         ),
         ScannerConfig::new(
             "String",
             Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
-            &[(9, 0)],
+            &[(9 /* StringDelimiter */, 0 /* INITIAL */)],
         ),
     ]
 });

@@ -1109,17 +1109,26 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
         ScannerConfig::new(
             "INITIAL",
             Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-            &[(12, 1), (13, 2), (17, 2), (19, 2)],
+            &[
+                (12 /* Rem */, 1 /* Cmnt */),
+                (13 /* If */, 2 /* Expr */),
+                (17 /* Print */, 2 /* Expr */),
+                (19 /* AssignOp */, 2 /* Expr */),
+            ],
         ),
         ScannerConfig::new(
             "Cmnt",
             Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
-            &[(8, 0)],
+            &[(8 /* EndOfLine */, 0 /* INITIAL */)],
         ),
         ScannerConfig::new(
             "Expr",
             Tokenizer::build(TERMINALS, SCANNER_2.0, SCANNER_2.1).unwrap(),
-            &[(8, 0), (14, 0), (15, 0)],
+            &[
+                (8 /* EndOfLine */, 0 /* INITIAL */),
+                (14 /* Then */, 0 /* INITIAL */),
+                (15 /* Goto */, 0 /* INITIAL */),
+            ],
         ),
     ]
 });
