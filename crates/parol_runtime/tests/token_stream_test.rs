@@ -102,9 +102,9 @@ fn scanner_switch_and_named_source() {
         {
             let state = stream.borrow().current_scanner_index;
             if state == 1 {
-                stream.borrow_mut().switch_scanner(0).unwrap();
+                stream.borrow_mut().switch_scanner(0, true).unwrap();
             } else if state == 0 {
-                stream.borrow_mut().switch_scanner(1).unwrap();
+                stream.borrow_mut().switch_scanner(1, true).unwrap();
             }
         }
 

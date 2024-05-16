@@ -27,7 +27,7 @@ impl ScannerConfig {
         }
     }
 
-    /// Check if the scanner configuration has transitions on the given terminal index
+    /// Check if the scanner configuration has a transition on the given terminal index
     pub fn has_transition(&self, terminal_index: TerminalIndex) -> Option<usize> {
         self.transitions
             .iter()

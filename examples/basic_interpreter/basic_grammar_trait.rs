@@ -109,6 +109,11 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
+    /// Semantic action for non-terminal 'Rem'
+    fn rem(&mut self, _arg: &Rem) -> Result<()> {
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'If'
     fn r#if(&mut self, _arg: &If) -> Result<()> {
         Ok(())
@@ -396,7 +401,7 @@ pub struct FloatFloat2 {
 }
 
 ///
-/// Type derived for production 73
+/// Type derived for production 74
 ///
 /// `SummationListGroup: Plus;`
 ///
@@ -408,7 +413,7 @@ pub struct SummationListGroupPlus<'t> {
 }
 
 ///
-/// Type derived for production 74
+/// Type derived for production 75
 ///
 /// `SummationListGroup: Minus;`
 ///
@@ -420,7 +425,7 @@ pub struct SummationListGroupMinus<'t> {
 }
 
 ///
-/// Type derived for production 79
+/// Type derived for production 80
 ///
 /// `Factor: Literal;`
 ///
@@ -432,7 +437,7 @@ pub struct FactorLiteral {
 }
 
 ///
-/// Type derived for production 80
+/// Type derived for production 81
 ///
 /// `Factor: Variable;`
 ///
@@ -444,7 +449,7 @@ pub struct FactorVariable<'t> {
 }
 
 ///
-/// Type derived for production 81
+/// Type derived for production 82
 ///
 /// `Factor: Minus Factor;`
 ///
@@ -457,7 +462,7 @@ pub struct FactorMinusFactor<'t> {
 }
 
 ///
-/// Type derived for production 82
+/// Type derived for production 83
 ///
 /// `Factor: LParen Expression RParen;`
 ///
@@ -987,12 +992,21 @@ pub struct RelationalOp<'t> {
 }
 
 ///
+/// Type derived for non-terminal Rem
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Rem {}
+
+///
 /// Type derived for non-terminal Remark
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Remark<'t> {
+    pub rem: Rem,
     pub remark_opt: Option<RemarkOpt<'t>>,
 }
 
@@ -1128,6 +1142,7 @@ pub enum ASTType<'t> {
     Relational(Relational<'t>),
     RelationalList(Vec<RelationalList<'t>>),
     RelationalOp(RelationalOp<'t>),
+    Rem(Rem),
     Remark(Remark<'t>),
     RemarkOpt(Option<RemarkOpt<'t>>),
     Statement(Statement<'t>),
@@ -1502,18 +1517,15 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// `Remark: 'REM'^ /* Clipped */ %push(Cmnt) RemarkOpt /* Option */ %pop();`
+    /// `Remark: Rem RemarkOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
-    fn remark(
-        &mut self,
-        _r_e_m: &ParseTreeType<'t>,
-        _remark_opt: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn remark(&mut self, _rem: &ParseTreeType<'t>, _remark_opt: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let remark_opt = pop_item!(self, remark_opt, RemarkOpt, context);
-        let remark_built = Remark { remark_opt };
+        let rem = pop_item!(self, rem, Rem, context);
+        let remark_built = Remark { rem, remark_opt };
         // Calling user action here
         self.user_grammar.remark(&remark_built)?;
         self.push(ASTType::Remark(remark_built), context);
@@ -1569,7 +1581,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// `IfStatement: If %push(Expr) Expression %pop() IfBody;`
+    /// `IfStatement: If Expression IfBody;`
     ///
     #[parol_runtime::function_name::named]
     fn if_statement(
@@ -1596,7 +1608,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// `Assignment: AssignmentOpt /* Option */ Variable AssignOp %push(Expr) Expression %pop();`
+    /// `Assignment: AssignmentOpt /* Option */ Variable AssignOp Expression;`
     ///
     #[parol_runtime::function_name::named]
     fn assignment(
@@ -1699,7 +1711,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 27:
     ///
-    /// `PrintStatement: Print %push(Expr) Expression PrintStatementList /* Vec */ %pop();`
+    /// `PrintStatement: Print Expression PrintStatementList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn print_statement(
@@ -1782,7 +1794,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// `EndOfLine: <INITIAL, Expr>/(?:\r?\n|\r)+/^ /* Clipped */;`
+    /// `EndOfLine: <INITIAL, Cmnt, Expr>/(?:\r?\n|\r)+/^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn end_of_line(&mut self, _end_of_line: &ParseTreeType<'t>) -> Result<()> {
@@ -1938,6 +1950,21 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
+    /// `Rem: 'REM'^ /* Clipped */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn rem(&mut self, _rem: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let rem_built = Rem {};
+        // Calling user action here
+        self.user_grammar.rem(&rem_built)?;
+        self.push(ASTType::Rem(rem_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 41:
+    ///
     /// `If: 'IF'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
@@ -1951,7 +1978,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 41:
+    /// Semantic action for production 42:
     ///
     /// `Then: <INITIAL, Expr>'THEN'^ /* Clipped */;`
     ///
@@ -1966,7 +1993,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 42:
+    /// Semantic action for production 43:
     ///
     /// `Goto: <INITIAL, Expr>'GOTO'^ /* Clipped */;`
     ///
@@ -1981,7 +2008,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 43:
+    /// Semantic action for production 44:
     ///
     /// `Let: 'LET'^ /* Clipped */;`
     ///
@@ -1996,7 +2023,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 44:
+    /// Semantic action for production 45:
     ///
     /// `Print: /PRINT|\?/^ /* Clipped */;`
     ///
@@ -2011,7 +2038,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 45:
+    /// Semantic action for production 46:
     ///
     /// `End: 'END'^ /* Clipped */;`
     ///
@@ -2026,7 +2053,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 47:
     ///
     /// `AssignOp: '='^ /* Clipped */;`
     ///
@@ -2041,7 +2068,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 48:
     ///
     /// `LogicalOrOp: <Expr>/N?OR/;`
     ///
@@ -2057,7 +2084,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 49:
     ///
     /// `LogicalAndOp: <Expr>'AND';`
     ///
@@ -2073,7 +2100,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 50:
     ///
     /// `LogicalNotOp: <Expr>'NOT';`
     ///
@@ -2089,7 +2116,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 51:
     ///
     /// `RelationalOp: <Expr>/<\s*>|<\s*=|<|>\s*=|>|=/;`
     ///
@@ -2105,7 +2132,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 51:
+    /// Semantic action for production 52:
     ///
     /// `Plus: <Expr>'+';`
     ///
@@ -2121,7 +2148,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 52:
+    /// Semantic action for production 53:
     ///
     /// `Minus: <Expr>'-';`
     ///
@@ -2137,7 +2164,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 53:
+    /// Semantic action for production 54:
     ///
     /// `MulOp: <Expr>/\*|\u{2F}/;`
     ///
@@ -2153,7 +2180,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 54:
+    /// Semantic action for production 55:
     ///
     /// `LParen: <Expr>'(';`
     ///
@@ -2169,7 +2196,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 55:
+    /// Semantic action for production 56:
     ///
     /// `RParen: <Expr>')';`
     ///
@@ -2185,7 +2212,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 56:
+    /// Semantic action for production 57:
     ///
     /// `Comment: <Cmnt>/[^\r\n]+/;`
     ///
@@ -2201,7 +2228,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 57:
+    /// Semantic action for production 58:
     ///
     /// `Variable: <INITIAL, Expr>/[A-Z][0-9A-Z]*/;`
     ///
@@ -2217,7 +2244,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 58:
+    /// Semantic action for production 59:
     ///
     /// `Expression: LogicalOr;`
     ///
@@ -2233,7 +2260,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 59:
+    /// Semantic action for production 60:
     ///
     /// `LogicalOr: LogicalAnd LogicalOrList /* Vec */;`
     ///
@@ -2257,7 +2284,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 60:
+    /// Semantic action for production 61:
     ///
     /// `LogicalOrList /* Vec<T>::Push */: LogicalOrOp LogicalAnd LogicalOrList;`
     ///
@@ -2283,7 +2310,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 61:
+    /// Semantic action for production 62:
     ///
     /// `LogicalOrList /* Vec<T>::New */: ;`
     ///
@@ -2296,7 +2323,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 62:
+    /// Semantic action for production 63:
     ///
     /// `LogicalAnd: LogicalNot LogicalAndList /* Vec */;`
     ///
@@ -2321,7 +2348,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 63:
+    /// Semantic action for production 64:
     ///
     /// `LogicalAndList /* Vec<T>::Push */: LogicalAndOp LogicalNot LogicalAndList;`
     ///
@@ -2347,7 +2374,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 64:
+    /// Semantic action for production 65:
     ///
     /// `LogicalAndList /* Vec<T>::New */: ;`
     ///
@@ -2360,7 +2387,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 65:
+    /// Semantic action for production 66:
     ///
     /// `LogicalNot: LogicalNotOpt /* Option */ Relational;`
     ///
@@ -2384,7 +2411,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 66:
+    /// Semantic action for production 67:
     ///
     /// `LogicalNotOpt /* Option<T>::Some */: LogicalNotOp;`
     ///
@@ -2401,7 +2428,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 67:
+    /// Semantic action for production 68:
     ///
     /// `LogicalNotOpt /* Option<T>::None */: ;`
     ///
@@ -2413,7 +2440,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 68:
+    /// Semantic action for production 69:
     ///
     /// `Relational: Summation RelationalList /* Vec */;`
     ///
@@ -2437,7 +2464,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 69:
+    /// Semantic action for production 70:
     ///
     /// `RelationalList /* Vec<T>::Push */: RelationalOp Summation RelationalList;`
     ///
@@ -2463,7 +2490,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 70:
+    /// Semantic action for production 71:
     ///
     /// `RelationalList /* Vec<T>::New */: ;`
     ///
@@ -2476,7 +2503,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 71:
+    /// Semantic action for production 72:
     ///
     /// `Summation: Multiplication SummationList /* Vec */;`
     ///
@@ -2500,7 +2527,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 72:
+    /// Semantic action for production 73:
     ///
     /// `SummationList /* Vec<T>::Push */: SummationListGroup Multiplication SummationList;`
     ///
@@ -2527,7 +2554,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 73:
+    /// Semantic action for production 74:
     ///
     /// `SummationListGroup: Plus;`
     ///
@@ -2545,7 +2572,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 74:
+    /// Semantic action for production 75:
     ///
     /// `SummationListGroup: Minus;`
     ///
@@ -2563,7 +2590,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 75:
+    /// Semantic action for production 76:
     ///
     /// `SummationList /* Vec<T>::New */: ;`
     ///
@@ -2576,7 +2603,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 76:
+    /// Semantic action for production 77:
     ///
     /// `Multiplication: Factor MultiplicationList /* Vec */;`
     ///
@@ -2601,7 +2628,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 77:
+    /// Semantic action for production 78:
     ///
     /// `MultiplicationList /* Vec<T>::Push */: MulOp Factor MultiplicationList;`
     ///
@@ -2625,7 +2652,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 78:
+    /// Semantic action for production 79:
     ///
     /// `MultiplicationList /* Vec<T>::New */: ;`
     ///
@@ -2641,7 +2668,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 79:
+    /// Semantic action for production 80:
     ///
     /// `Factor: Literal;`
     ///
@@ -2658,7 +2685,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 80:
+    /// Semantic action for production 81:
     ///
     /// `Factor: Variable;`
     ///
@@ -2675,7 +2702,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 81:
+    /// Semantic action for production 82:
     ///
     /// `Factor: Minus Factor;`
     ///
@@ -2696,7 +2723,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 82:
+    /// Semantic action for production 83:
     ///
     /// `Factor: LParen Expression RParen;`
     ///
@@ -2775,49 +2802,50 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
             37 => self.float1(&children[0]),
             38 => self.float2(&children[0]),
             39 => self.integer(&children[0]),
-            40 => self.r#if(&children[0]),
-            41 => self.then(&children[0]),
-            42 => self.goto(&children[0]),
-            43 => self.r#let(&children[0]),
-            44 => self.print(&children[0]),
-            45 => self.end(&children[0]),
-            46 => self.assign_op(&children[0]),
-            47 => self.logical_or_op(&children[0]),
-            48 => self.logical_and_op(&children[0]),
-            49 => self.logical_not_op(&children[0]),
-            50 => self.relational_op(&children[0]),
-            51 => self.plus(&children[0]),
-            52 => self.minus(&children[0]),
-            53 => self.mul_op(&children[0]),
-            54 => self.l_paren(&children[0]),
-            55 => self.r_paren(&children[0]),
-            56 => self.comment(&children[0]),
-            57 => self.variable(&children[0]),
-            58 => self.expression(&children[0]),
-            59 => self.logical_or(&children[0], &children[1]),
-            60 => self.logical_or_list_0(&children[0], &children[1], &children[2]),
-            61 => self.logical_or_list_1(),
-            62 => self.logical_and(&children[0], &children[1]),
-            63 => self.logical_and_list_0(&children[0], &children[1], &children[2]),
-            64 => self.logical_and_list_1(),
-            65 => self.logical_not(&children[0], &children[1]),
-            66 => self.logical_not_opt_0(&children[0]),
-            67 => self.logical_not_opt_1(),
-            68 => self.relational(&children[0], &children[1]),
-            69 => self.relational_list_0(&children[0], &children[1], &children[2]),
-            70 => self.relational_list_1(),
-            71 => self.summation(&children[0], &children[1]),
-            72 => self.summation_list_0(&children[0], &children[1], &children[2]),
-            73 => self.summation_list_group_0(&children[0]),
-            74 => self.summation_list_group_1(&children[0]),
-            75 => self.summation_list_1(),
-            76 => self.multiplication(&children[0], &children[1]),
-            77 => self.multiplication_list_0(&children[0], &children[1], &children[2]),
-            78 => self.multiplication_list_1(),
-            79 => self.factor_0(&children[0]),
-            80 => self.factor_1(&children[0]),
-            81 => self.factor_2(&children[0], &children[1]),
-            82 => self.factor_3(&children[0], &children[1], &children[2]),
+            40 => self.rem(&children[0]),
+            41 => self.r#if(&children[0]),
+            42 => self.then(&children[0]),
+            43 => self.goto(&children[0]),
+            44 => self.r#let(&children[0]),
+            45 => self.print(&children[0]),
+            46 => self.end(&children[0]),
+            47 => self.assign_op(&children[0]),
+            48 => self.logical_or_op(&children[0]),
+            49 => self.logical_and_op(&children[0]),
+            50 => self.logical_not_op(&children[0]),
+            51 => self.relational_op(&children[0]),
+            52 => self.plus(&children[0]),
+            53 => self.minus(&children[0]),
+            54 => self.mul_op(&children[0]),
+            55 => self.l_paren(&children[0]),
+            56 => self.r_paren(&children[0]),
+            57 => self.comment(&children[0]),
+            58 => self.variable(&children[0]),
+            59 => self.expression(&children[0]),
+            60 => self.logical_or(&children[0], &children[1]),
+            61 => self.logical_or_list_0(&children[0], &children[1], &children[2]),
+            62 => self.logical_or_list_1(),
+            63 => self.logical_and(&children[0], &children[1]),
+            64 => self.logical_and_list_0(&children[0], &children[1], &children[2]),
+            65 => self.logical_and_list_1(),
+            66 => self.logical_not(&children[0], &children[1]),
+            67 => self.logical_not_opt_0(&children[0]),
+            68 => self.logical_not_opt_1(),
+            69 => self.relational(&children[0], &children[1]),
+            70 => self.relational_list_0(&children[0], &children[1], &children[2]),
+            71 => self.relational_list_1(),
+            72 => self.summation(&children[0], &children[1]),
+            73 => self.summation_list_0(&children[0], &children[1], &children[2]),
+            74 => self.summation_list_group_0(&children[0]),
+            75 => self.summation_list_group_1(&children[0]),
+            76 => self.summation_list_1(),
+            77 => self.multiplication(&children[0], &children[1]),
+            78 => self.multiplication_list_0(&children[0], &children[1], &children[2]),
+            79 => self.multiplication_list_1(),
+            80 => self.factor_0(&children[0]),
+            81 => self.factor_1(&children[0]),
+            82 => self.factor_2(&children[0], &children[1]),
+            83 => self.factor_3(&children[0], &children[1], &children[2]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

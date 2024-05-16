@@ -35,6 +35,7 @@ impl<'t> TryFrom<&Token<'t>> for BasicNumber {
     type Error = anyhow::Error;
 
     fn try_from(basic_line_number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
+        trace!("BasicNumber: '{}'", basic_line_number.text());
         let symbol = basic_line_number.text().replace(' ', "").replace('E', "e");
         Ok(Self(symbol.parse::<DefinitionRange>()?))
     }
