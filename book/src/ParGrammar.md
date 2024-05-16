@@ -35,6 +35,24 @@ handling is currently only supported in `parols`'s auto-generation mode.
 >
 >Any feedback is appreciated.
 
+## Defining the grammar type
+
+In the global header section you can define the grammar type you want to use in your grammar
+description.
+
+The default grammar type is LL(k) and can be omitted.
+
+```parol
+%grammar_type 'LL(k)'
+```
+
+You have to option to use LALR(1) grammar type this way.
+
+```parol
+%grammar_type 'LALR(1)'
+```
+
+
 ## Case sensitivity
 
 Non-terminals are treated case sensitive, i. e. "list" and "List" are different symbols. But it is
@@ -172,13 +190,14 @@ making progress in the input. Currently there is no check for this scenario in `
 <h2 id=scanner-states>Scanner states</h2>
 <!-- markdownlint-enable no-inline-html -->
 
-Additionally, _as of version `v0.2.0`_ the grammar supports __multiple scanner states__. This
-feature is known from Flex as
+`Parol` supports __multiple scanner states__. This feature is known from Flex as
 [Start conditions](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex_toc.html#TOC11)
-and provides more flexibility in defining several scanners for several parts of your grammar. In
-contrast to Flex the scanner state switching is defined directly within your grammar description and
-not in semantic actions. This decision is made to foster the principle of strict separation of
-grammar description and grammar processing in semantic actions.
+and provides more flexibility in defining several scanners for several parts of your grammar.
+
+`Parol` provides two different ways to control scanner states directly within your grammar
+description thereby holding the principle of strict separation of grammar description and grammar
+processing in semantic actions. This means no scanner switching in your code, but in the grammar
+description. Only because of this rapid prototyping is possible.
 
 ### The Default scanner state INITIAL
 
@@ -238,7 +257,14 @@ will result in
 Terminals without explicitly associated scanner state are implicitly associated with scanner state
 INITIAL.
 
-Scanner state switching is initiated within your productions like in the following two examples:
+### Parser-bases scanner switching
+
+The first way to control scanner states is to define switching directives within your productions.
+This way can only used for LL(k) grammars because the parser has full knowledge about which
+production to handle next when certain input has been encountered from left to right.
+
+Parser-bases scanner state switching is initiated within your productions like in the following two
+examples:
 
 ```parol
 String: StringDelimiter %sc(String) StringContent StringDelimiter %sc();
@@ -271,6 +297,49 @@ an appropriate grammar formulation.
 >If the scanner switch was successful the lookahead buffer is invalidated.
 
 You may have look at example `scanner_states` that demonstrates the handling of scanner states.
+
+### Scanner-bases scanner switching
+
+LR grammars reduce the parser stack from the right side and thus you can't decide the scanner state
+switching from the perspective of the parser. The tokens are already read and pushed on the parse
+stack before it can be decided what production to reduce on them. This means scanner state switching
+must work different here.
+When incorporating the scanner state switching into the scanner itself the state can be chosen as
+early as possible solely from the current state the scanner is in and the token read next.
+The good new is that this kind of scanner switching works for LL parsers too and most LL(k) grammars
+can be adopted to use scanner-based scanner switching.
+
+Scanner-based scanner switching is defined solely in the header of the grammar file right where the
+scanners are defined.
+
+You use the `%on` and `%enter` directives to control it (snippets taken from the `basic` example):
+
+```parol
+%on Rem %enter Cmnt
+%on If, AssignOp, Print %enter Expr
+
+%scanner Cmnt {
+    %auto_newline_off
+    %on EndOfLine %enter INITIAL
+}
+%scanner Expr {
+    %auto_newline_off
+    %on Then, Goto, EndOfLine %enter INITIAL
+}
+```
+
+After the `%on` directive you can name a list of primary non-terminals which only contain the
+terminal like this:
+
+```parol
+Rem : 'REM'^;
+```
+
+After the `%enter` directive you name the target scanner state.
+
+>_Be aware that mixing of both parser-bases and scanner-based scanner state switching in one grammar
+file is not allowed and will result in errors._
+
 
 ## Omitting grammar symbol from the AST in auto-gen modus
 

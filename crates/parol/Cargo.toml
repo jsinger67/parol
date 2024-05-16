@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.28.0"
+version = "0.29.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 default-run = "parol"
@@ -24,7 +24,7 @@ env_logger = { workspace = true }
 function_name = { workspace = true }
 num_cpus = "1.16.0"
 owo-colors = "4.0.0"
-parol_runtime = { path = "../parol_runtime", version = "0.21.0", features = [
+parol_runtime = { path = "../parol_runtime", version = "0.22.0", features = [
     "auto_generation",
 ] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
@@ -60,6 +60,10 @@ name = "parol"
 required-features = ["build"]
 
 [[example]]
+name = "basic"
+path = "../../examples/basic_interpreter/main.rs"
+
+[[example]]
 name = "boolean_parser"
 path = "../../examples/boolean_parser/main.rs"
 
@@ -70,6 +74,18 @@ path = "../../examples/calc/main.rs"
 [[example]]
 name = "calc_auto"
 path = "../../examples/calc_auto/main.rs"
+
+[[example]]
+name = "calc_lr"
+path = "../../examples/calc_lr/main.rs"
+
+[[example]]
+name = "json_parser"
+path = "../../examples/json_parser/main.rs"
+
+[[example]]
+name = "json_parser_auto"
+path = "../../examples/json_parser_auto/main.rs"
 
 [[example]]
 name = "keywords"
@@ -88,12 +104,29 @@ name = "list_auto"
 path = "../../examples/list_auto/main.rs"
 
 [[example]]
+name = "list_lr"
+path = "../../examples/list_lr/main.rs"
+
+[[example]]
 name = "oberon_0"
 path = "../../examples/oberon_0/main.rs"
 
 [[example]]
+name = "oberon2"
+path = "../../examples/oberon2/main.rs"
+
+[[example]]
 name = "scanner_states"
 path = "../../examples/scanner_states/main.rs"
+
+[[example]]
+name = "scanner_states_lr"
+path = "../../examples/scanner_states_lr/main.rs"
+
+[[example]]
+name = "toml"
+path = "../../examples/toml/main.rs"
+
 
 [[bench]]
 name = "k_tuples_k_concat_benchmark"

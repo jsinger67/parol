@@ -221,7 +221,7 @@ fn run_keywords2_examples() -> Result<()> {
 }
 
 fn run_basic_interpreter_examples() -> Result<()> {
-    let parser = binary_path!("basic");
+    let parser = example_path!("basic");
     for entry in std::path::Path::new(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/basic_interpreter/tests/data/valid"
@@ -252,13 +252,10 @@ fn run_basic_interpreter_examples() -> Result<()> {
 }
 
 fn run_json_examples() -> Result<()> {
-    let parser = binary_path!("json_parser");
-    for entry in std::path::Path::new(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../examples/json_parser/json"
-    ))
-    .read_dir()?
-    .flatten()
+    let parser = example_path!("json_parser");
+    for entry in std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/../../examples/json"))
+        .read_dir()?
+        .flatten()
     {
         if entry.path().extension().unwrap().to_str().unwrap() == "json" {
             println!("Parsing {}...", entry.path().display());
@@ -270,13 +267,10 @@ fn run_json_examples() -> Result<()> {
 }
 
 fn run_json_auto_examples() -> Result<()> {
-    let parser = binary_path!("json_parser_auto");
-    for entry in std::path::Path::new(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../examples/json_parser/json"
-    ))
-    .read_dir()?
-    .flatten()
+    let parser = example_path!("json_parser_auto");
+    for entry in std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/../../examples/json"))
+        .read_dir()?
+        .flatten()
     {
         if entry.path().extension().unwrap().to_str().unwrap() == "json" {
             println!("Parsing {}...", entry.path().display());

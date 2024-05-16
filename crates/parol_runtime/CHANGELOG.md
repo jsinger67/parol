@@ -17,9 +17,11 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## 0.21.1 - Not released yet
+## 0.22.0 - 2024-05-16
 
 - Provide parse tree generation for LRParser
+- Implement scanner-based scanner switching which can be used with LL(k) and LALR(1) parsers
+- Public API has changed and fits to `parol` >= 0.29
 
 ## 0.21.0 - 2024-04-29
 

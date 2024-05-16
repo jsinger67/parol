@@ -57,7 +57,7 @@ impl<'t> TokenIter<'t> {
         }
     }
 
-    ///
+    /// Sets the initial position of the iterator.
     pub fn with_position(mut self, line: u32, column: u32) -> Self {
         self.line = line;
         self.col = column;

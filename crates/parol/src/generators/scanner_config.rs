@@ -44,6 +44,11 @@ pub struct ScannerConfig {
     /// If false the user has to handle whitespace on its own.
     ///
     pub auto_ws: bool,
+
+    /// Scanner state transitions
+    /// Maps from token to scanner state, where the token is identified by its TerminalIndex
+    /// The scanner state is identified by its index.
+    pub transitions: Vec<(TerminalIndex, usize)>,
 }
 
 impl ScannerConfig {
@@ -56,6 +61,7 @@ impl ScannerConfig {
             block_comments: Vec::new(),
             auto_newline: true,
             auto_ws: true,
+            transitions: Vec::new(),
         }
     }
 
@@ -155,6 +161,7 @@ impl Default for ScannerConfig {
             block_comments: Vec::new(),
             auto_newline: true,
             auto_ws: true,
+            transitions: Vec::new(),
         }
     }
 }
@@ -166,6 +173,9 @@ impl Display for ScannerConfig {
         writeln!(f, "line_comments: {:?}", self.line_comments)?;
         writeln!(f, "block_comments: {:?}", self.block_comments)?;
         writeln!(f, "auto_newline: {:?}", self.auto_newline)?;
-        writeln!(f, "auto_ws: {:?}", self.auto_ws)
+        writeln!(f, "auto_ws: {:?}", self.auto_ws)?;
+        self.transitions
+            .iter()
+            .try_for_each(|(k, v)| write!(f, "on {} enter {};", k, v))
     }
 }

@@ -442,7 +442,11 @@ impl Server {
     }
 
     fn apply_change(&mut self, file_path: &str, change: &TextDocumentContentChangeEvent) {
-        self.documents.get_mut(file_path).unwrap().input = change.text.clone();
+        self.documents
+            .get_mut(file_path)
+            .unwrap()
+            .input
+            .clone_from(&change.text);
     }
 
     fn find_user_type_definitions(

@@ -1,3 +1,5 @@
+use std::vec;
+
 use lsp_types::{FormattingOptions, TextEdit};
 
 use crate::{
@@ -5,11 +7,11 @@ use crate::{
     parol_ls_grammar_trait::{
         ASTControl, Alternation, AlternationList, Alternations, AlternationsList, CutOperator,
         Declaration, DoubleColon, Factor, GrammarDefinition, GrammarDefinitionList, Group,
-        Identifier, LiteralString, NonTerminal, NonTerminalOpt, Optional, ParolLs, Production,
-        ProductionLHS, Prolog, PrologList, PrologList0, Regex, Repeat, ScannerDirectives,
-        ScannerState, ScannerStateList, ScannerSwitch, ScannerSwitchOpt, SimpleToken,
-        SimpleTokenOpt, StartDeclaration, StateList, StateListList, Symbol, TokenLiteral,
-        TokenWithStates, TokenWithStatesOpt, UserTypeDeclaration, UserTypeName, UserTypeNameList,
+        Identifier, IdentifierList, IdentifierListList, LiteralString, NonTerminal, NonTerminalOpt,
+        Optional, ParolLs, Production, ProductionLHS, Prolog, PrologList, PrologList0, Regex,
+        Repeat, ScannerDirectives, ScannerState, ScannerStateList, ScannerSwitch, ScannerSwitchOpt,
+        SimpleToken, SimpleTokenOpt, StartDeclaration, Symbol, TokenLiteral, TokenWithStates,
+        TokenWithStatesOpt, UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
     utils::RX_NEW_LINE,
@@ -129,7 +131,7 @@ impl Fmt for Alternations {
 
                 if Line::ends_with_nl(&acc) && !comments_before_or.is_empty() {
                     // Pull the comment on the line with the alternation.
-                    acc = acc.trim_end().to_owned();
+                    acc.clone_from(&acc.trim_end().to_owned());
                     // Add a space between alternation_str and the line comment.
                     acc.push(' ');
                     acc.push_str(&comments_before_or);
@@ -360,7 +362,7 @@ impl Fmt for NonTerminal {
         );
         let mut delim = String::new();
         if Line::ends_with_nl(&comments_before_identifier) {
-            delim = "      ".to_owned();
+            "      ".clone_into(&mut delim);
         }
         (
             format!(
@@ -419,10 +421,11 @@ impl Fmt for Production {
         );
 
         let mut semi_nl_opt = "";
-        alternations_str = alternations_str.trim_end().to_owned();
+        alternations_str.clone_from(&alternations_str.trim_end().to_owned());
         if options.prod_semicolon_on_nl || Line::ends_with_nl(&comments_before_semicolon) {
             if Line::ends_with_nl(&comments_before_semicolon) {
-                comments_before_semicolon = comments_before_semicolon.trim_end().to_owned();
+                comments_before_semicolon
+                    .clone_from(&comments_before_semicolon.trim_end().to_owned());
             }
             semi_nl_opt = "\n    ";
         }
@@ -665,10 +668,10 @@ impl Fmt for StartDeclaration {
         )
     }
 }
-impl Fmt for StateList {
+impl Fmt for IdentifierList {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (identifier, comments) = self.identifier.txt(options, comments);
-        let (state_list_list, comments) = self.state_list_list.iter().fold(
+        let (state_list_list, comments) = self.identifier_list_list.iter().fold(
             (String::new(), comments),
             |(mut acc, comments), s| {
                 let (s_str, comments) = s.txt(options, comments);
@@ -679,7 +682,7 @@ impl Fmt for StateList {
         (format!("{}{}", identifier, state_list_list,), comments)
     }
 }
-impl Fmt for StateListList {
+impl Fmt for IdentifierListList {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (identifier, comments) = self.identifier.txt(options, comments);
         (format!("{} {}", self.comma, identifier), comments)
@@ -714,7 +717,7 @@ impl Fmt for TokenLiteral {
 }
 impl Fmt for TokenWithStates {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
-        let (mut state_list, comments) = self.state_list.txt(options, comments);
+        let (mut state_list, comments) = self.identifier_list.txt(options, comments);
         let (token_literal, comments) = self.token_literal.txt(options, comments);
         let (token_with_states_opt, comments) =
             if let Some(token_with_states_opt) = self.token_with_states_opt.as_ref() {
@@ -722,7 +725,7 @@ impl Fmt for TokenWithStates {
             } else {
                 (String::default(), comments)
             };
-        state_list = state_list.trim().to_owned();
+        state_list.clone_from(&state_list.trim().to_owned());
         (
             format!(
                 "{}{}{}{}{}",
@@ -889,6 +892,54 @@ fn handle_scanner_directives(
                     comments_before_token,
                     indent,
                     w.percent_auto_underscore_ws_underscore_off,
+                    following_comment
+                ),
+                comments,
+            )
+        }
+        ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(trans) => {
+            let (comments_before_token, comments) = Comments::format_comments_before(
+                comments,
+                &trans.percent_on,
+                &options.clone().with_padding(Padding::Left),
+            );
+            if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                indent.insert(0, '\n');
+            };
+            let (following_comment, comments) = Comments::formatted_immediately_following_comment(
+                comments,
+                &trans.identifier.identifier,
+                &options
+                    .clone()
+                    .with_padding(Padding::Left)
+                    .with_line_end(LineEnd::ForceRemove),
+            );
+            let ident_list = trans
+                .identifier_list
+                .identifier_list_list
+                .iter()
+                .fold(
+                    vec![trans
+                        .identifier_list
+                        .identifier
+                        .identifier
+                        .text()
+                        .to_string()],
+                    |mut acc, i| {
+                        acc.push(i.identifier.identifier.text().to_string());
+                        acc
+                    },
+                )
+                .join(", ");
+            (
+                format!(
+                    "{}{}{} {} {} {}{}",
+                    comments_before_token,
+                    indent,
+                    trans.percent_on,
+                    ident_list,
+                    trans.percent_enter,
+                    trans.identifier.identifier.text(),
                     following_comment
                 ),
                 comments,

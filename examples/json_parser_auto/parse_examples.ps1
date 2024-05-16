@@ -3,16 +3,14 @@ $Config = "release"
 $CargoConfig = if ($Config -eq "release") { "--release" } else { $null }
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
-cargo build $CargoConfig
+cargo build $CargoConfig --example json_parser_auto
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }
 
-$target = "./../../target/$Config/json_parser_auto"
-
-Get-ChildItem .\json\*.json | ForEach-Object {
+Get-ChildItem ..\json\*.json | ForEach-Object {
     Write-Host "Parsing example $($_.FullName)..." -ForegroundColor Cyan
-    &$target $_.FullName
+    cargo run $CargoConfig --example json_parser  $_.FullName
     if ($LASTEXITCODE -ne 0) {
         ++$ErrorCount    
     }

@@ -72,7 +72,7 @@
       "patterns": [
         {
           "name": "keyword.other.parol",
-          "match": "%(start|title|grammar_type|comment|line_comment|block_comment|scanner|sc|push|pop|auto_newline_off|auto_ws_off|user_type)\\b"
+          "match": "%(start|title|grammar_type|comment|line_comment|block_comment|scanner|sc|push|pop|auto_newline_off|auto_ws_off|user_type|on|enter)\\b"
         }
       ]
     },

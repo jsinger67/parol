@@ -296,23 +296,24 @@ impl<'t> LRParser<'t> {
                 self.terminal_names[terminal_index as usize]
             );
             // Get the action for the current state and the current terminal
-            // In case the terminal index is 0 (EOI) we use the eof_action (if present)
             let action = self.parse_table.states[current_state]
                 .actions
                 .get(&terminal_index);
             let action = match action {
                 Some(action) => action,
                 None => {
+                    trace!("No action for token '{}' in state {}", token, current_state);
+                    trace!("Current scanner is '{}'", stream.borrow().current_scanner());
                     let entries = vec![SyntaxError {
                         cause: format!(
-                            "No action for terminal '{}' in state {}",
+                            "No action for token '{}' in state {}",
                             self.terminal_names[terminal_index as usize], current_state
                         ),
                         input: Some(Box::new(FileSource::from_stream(&stream.borrow()))),
                         error_location: Box::new((&token).into()),
                         unexpected_tokens: vec![UnexpectedToken::new(
                             "LA(1)".to_owned(),
-                            self.terminal_names[token.token_type as usize].to_owned(),
+                            self.terminal_names[terminal_index as usize].to_owned(),
                             &token,
                         )],
                         expected_tokens: TokenVec::new(),

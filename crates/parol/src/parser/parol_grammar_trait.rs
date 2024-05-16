@@ -139,8 +139,8 @@ pub trait ParolGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'StateList'
-    fn state_list(&mut self, _arg: &StateList<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'IdentifierList'
+    fn identifier_list(&mut self, _arg: &IdentifierList<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -286,7 +286,20 @@ pub struct ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOff {}
 pub struct ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff {}
 
 ///
-/// Type derived for production 27
+/// Type derived for production 16
+///
+/// `ScannerDirectives: '%on'^ /* Clipped */ IdentifierList '%enter'^ /* Clipped */ Identifier;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier<'t> {
+    pub identifier_list: IdentifierList<'t>,
+    pub identifier: Identifier<'t>,
+}
+
+///
+/// Type derived for production 28
 ///
 /// `Factor: Group;`
 ///
@@ -298,7 +311,7 @@ pub struct FactorGroup<'t> {
 }
 
 ///
-/// Type derived for production 28
+/// Type derived for production 29
 ///
 /// `Factor: Repeat;`
 ///
@@ -310,7 +323,7 @@ pub struct FactorRepeat<'t> {
 }
 
 ///
-/// Type derived for production 29
+/// Type derived for production 30
 ///
 /// `Factor: Optional;`
 ///
@@ -322,7 +335,7 @@ pub struct FactorOptional<'t> {
 }
 
 ///
-/// Type derived for production 30
+/// Type derived for production 31
 ///
 /// `Factor: Symbol;`
 ///
@@ -334,7 +347,7 @@ pub struct FactorSymbol<'t> {
 }
 
 ///
-/// Type derived for production 31
+/// Type derived for production 32
 ///
 /// `Symbol: NonTerminal;`
 ///
@@ -346,7 +359,7 @@ pub struct SymbolNonTerminal<'t> {
 }
 
 ///
-/// Type derived for production 32
+/// Type derived for production 33
 ///
 /// `Symbol: SimpleToken;`
 ///
@@ -358,7 +371,7 @@ pub struct SymbolSimpleToken<'t> {
 }
 
 ///
-/// Type derived for production 33
+/// Type derived for production 34
 ///
 /// `Symbol: TokenWithStates;`
 ///
@@ -370,7 +383,7 @@ pub struct SymbolTokenWithStates<'t> {
 }
 
 ///
-/// Type derived for production 34
+/// Type derived for production 35
 ///
 /// `Symbol: ScannerSwitch;`
 ///
@@ -382,7 +395,7 @@ pub struct SymbolScannerSwitch<'t> {
 }
 
 ///
-/// Type derived for production 35
+/// Type derived for production 36
 ///
 /// `TokenLiteral: String;`
 ///
@@ -394,7 +407,7 @@ pub struct TokenLiteralString<'t> {
 }
 
 ///
-/// Type derived for production 36
+/// Type derived for production 37
 ///
 /// `TokenLiteral: RawString;`
 ///
@@ -406,7 +419,7 @@ pub struct TokenLiteralRawString<'t> {
 }
 
 ///
-/// Type derived for production 37
+/// Type derived for production 38
 ///
 /// `TokenLiteral: Regex;`
 ///
@@ -418,7 +431,7 @@ pub struct TokenLiteralRegex<'t> {
 }
 
 ///
-/// Type derived for production 60
+/// Type derived for production 61
 ///
 /// `ScannerSwitch: '%sc' '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;`
 ///
@@ -431,7 +444,7 @@ pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen<'t> {
 }
 
 ///
-/// Type derived for production 61
+/// Type derived for production 62
 ///
 /// `ScannerSwitch: '%push' '('^ /* Clipped */ Identifier ')'^ /* Clipped */;`
 ///
@@ -444,7 +457,7 @@ pub struct ScannerSwitchPercentPushLParenIdentifierRParen<'t> {
 }
 
 ///
-/// Type derived for production 62
+/// Type derived for production 63
 ///
 /// `ScannerSwitch: '%pop' '('^ /* Clipped */ ')'^ /* Clipped */;`
 ///
@@ -456,7 +469,7 @@ pub struct ScannerSwitchPercentPopLParenRParen<'t> {
 }
 
 ///
-/// Type derived for production 65
+/// Type derived for production 66
 ///
 /// `ASTControl: CutOperator;`
 ///
@@ -468,7 +481,7 @@ pub struct ASTControlCutOperator {
 }
 
 ///
-/// Type derived for production 66
+/// Type derived for production 67
 ///
 /// `ASTControl: UserTypeDeclaration;`
 ///
@@ -624,6 +637,27 @@ pub struct Identifier<'t> {
 }
 
 ///
+/// Type derived for non-terminal IdentifierList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IdentifierList<'t> {
+    pub identifier: Identifier<'t>,
+    pub identifier_list_list: Vec<IdentifierListList<'t>>,
+}
+
+///
+/// Type derived for non-terminal IdentifierListList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct IdentifierListList<'t> {
+    pub identifier: Identifier<'t>,
+}
+
+///
 /// Type derived for non-terminal NonTerminal
 ///
 #[allow(dead_code)]
@@ -758,6 +792,9 @@ pub enum ScannerDirectives<'t> {
         ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOff,
     ),
     PercentAutoUnderscoreWsUnderscoreOff(ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff),
+    PercentOnIdentifierListPercentEnterIdentifier(
+        ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier<'t>,
+    ),
 }
 
 ///
@@ -834,27 +871,6 @@ pub struct StartDeclaration<'t> {
 }
 
 ///
-/// Type derived for non-terminal StateList
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
-pub struct StateList<'t> {
-    pub identifier: Identifier<'t>,
-    pub state_list_list: Vec<StateListList<'t>>,
-}
-
-///
-/// Type derived for non-terminal StateListList
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
-pub struct StateListList<'t> {
-    pub identifier: Identifier<'t>,
-}
-
-///
 /// Type derived for non-terminal String
 ///
 #[allow(dead_code)]
@@ -894,7 +910,7 @@ pub enum TokenLiteral<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenWithStates<'t> {
-    pub state_list: StateList<'t>,
+    pub identifier_list: IdentifierList<'t>,
     pub token_literal: TokenLiteral<'t>,
     pub token_with_states_opt: Option<TokenWithStatesOpt>,
 }
@@ -961,6 +977,8 @@ pub enum ASTType<'t> {
     GrammarDefinitionList(Vec<GrammarDefinitionList<'t>>),
     Group(Group<'t>),
     Identifier(Identifier<'t>),
+    IdentifierList(IdentifierList<'t>),
+    IdentifierListList(Vec<IdentifierListList<'t>>),
     NonTerminal(NonTerminal<'t>),
     NonTerminalOpt(Option<NonTerminalOpt>),
     Optional(Optional<'t>),
@@ -980,8 +998,6 @@ pub enum ASTType<'t> {
     SimpleToken(SimpleToken<'t>),
     SimpleTokenOpt(Option<SimpleTokenOpt>),
     StartDeclaration(StartDeclaration<'t>),
-    StateList(StateList<'t>),
-    StateListList(Vec<StateListList<'t>>),
     String(String<'t>),
     Symbol(Symbol<'t>),
     TokenLiteral(TokenLiteral<'t>),
@@ -1420,6 +1436,41 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
+    /// `ScannerDirectives: '%on'^ /* Clipped */ IdentifierList '%enter'^ /* Clipped */ Identifier;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn scanner_directives_4(
+        &mut self,
+        _percent_on: &ParseTreeType<'t>,
+        _identifier_list: &ParseTreeType<'t>,
+        _percent_enter: &ParseTreeType<'t>,
+        _identifier: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let identifier = pop_item!(self, identifier, Identifier, context);
+        let identifier_list = pop_item!(self, identifier_list, IdentifierList, context);
+        let scanner_directives_4_built =
+            ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier {
+                identifier_list,
+                identifier,
+            };
+        let scanner_directives_4_built =
+            ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(
+                scanner_directives_4_built,
+            );
+        // Calling user action here
+        self.user_grammar
+            .scanner_directives(&scanner_directives_4_built)?;
+        self.push(
+            ASTType::ScannerDirectives(scanner_directives_4_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 17:
+    ///
     /// `GrammarDefinition: '%%'^ /* Clipped */ Production GrammarDefinitionList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
@@ -1452,7 +1503,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 17:
+    /// Semantic action for production 18:
     ///
     /// `GrammarDefinitionList /* Vec<T>::Push */: Production GrammarDefinitionList;`
     ///
@@ -1481,7 +1532,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 18:
+    /// Semantic action for production 19:
     ///
     /// `GrammarDefinitionList /* Vec<T>::New */: ;`
     ///
@@ -1497,7 +1548,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 19:
+    /// Semantic action for production 20:
     ///
     /// `DoubleColon: '::';`
     ///
@@ -1513,7 +1564,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 20:
+    /// Semantic action for production 21:
     ///
     /// `Production: Identifier ':'^ /* Clipped */ Alternations ';'^ /* Clipped */;`
     ///
@@ -1539,7 +1590,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 22:
     ///
     /// `Alternations: Alternation AlternationsList /* Vec */;`
     ///
@@ -1564,7 +1615,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 22:
+    /// Semantic action for production 23:
     ///
     /// `AlternationsList /* Vec<T>::Push */: '|'^ /* Clipped */ Alternation AlternationsList;`
     ///
@@ -1586,7 +1637,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 23:
+    /// Semantic action for production 24:
     ///
     /// `AlternationsList /* Vec<T>::New */: ;`
     ///
@@ -1602,7 +1653,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 24:
+    /// Semantic action for production 25:
     ///
     /// `Alternation: AlternationList /* Vec */;`
     ///
@@ -1619,7 +1670,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 25:
+    /// Semantic action for production 26:
     ///
     /// `AlternationList /* Vec<T>::Push */: Factor AlternationList;`
     ///
@@ -1640,7 +1691,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 26:
+    /// Semantic action for production 27:
     ///
     /// `AlternationList /* Vec<T>::New */: ;`
     ///
@@ -1653,7 +1704,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 27:
+    /// Semantic action for production 28:
     ///
     /// `Factor: Group;`
     ///
@@ -1670,7 +1721,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 28:
+    /// Semantic action for production 29:
     ///
     /// `Factor: Repeat;`
     ///
@@ -1687,7 +1738,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 29:
+    /// Semantic action for production 30:
     ///
     /// `Factor: Optional;`
     ///
@@ -1704,7 +1755,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 30:
+    /// Semantic action for production 31:
     ///
     /// `Factor: Symbol;`
     ///
@@ -1721,7 +1772,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 31:
+    /// Semantic action for production 32:
     ///
     /// `Symbol: NonTerminal;`
     ///
@@ -1738,7 +1789,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 32:
+    /// Semantic action for production 33:
     ///
     /// `Symbol: SimpleToken;`
     ///
@@ -1755,7 +1806,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 33:
+    /// Semantic action for production 34:
     ///
     /// `Symbol: TokenWithStates;`
     ///
@@ -1772,7 +1823,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 34:
+    /// Semantic action for production 35:
     ///
     /// `Symbol: ScannerSwitch;`
     ///
@@ -1789,7 +1840,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 35:
+    /// Semantic action for production 36:
     ///
     /// `TokenLiteral: String;`
     ///
@@ -1806,7 +1857,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 36:
+    /// Semantic action for production 37:
     ///
     /// `TokenLiteral: RawString;`
     ///
@@ -1823,7 +1874,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 37:
+    /// Semantic action for production 38:
     ///
     /// `TokenLiteral: Regex;`
     ///
@@ -1840,7 +1891,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 39:
     ///
     /// `SimpleToken: TokenLiteral SimpleTokenOpt /* Option */;`
     ///
@@ -1864,7 +1915,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 40:
     ///
     /// `SimpleTokenOpt /* Option<T>::Some */: ASTControl;`
     ///
@@ -1881,7 +1932,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 40:
+    /// Semantic action for production 41:
     ///
     /// `SimpleTokenOpt /* Option<T>::None */: ;`
     ///
@@ -1893,15 +1944,15 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 41:
+    /// Semantic action for production 42:
     ///
-    /// `TokenWithStates: '<'^ /* Clipped */ StateList '>'^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;`
+    /// `TokenWithStates: '<'^ /* Clipped */ IdentifierList '>'^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
     fn token_with_states(
         &mut self,
         _l_t: &ParseTreeType<'t>,
-        _state_list: &ParseTreeType<'t>,
+        _identifier_list: &ParseTreeType<'t>,
         _g_t: &ParseTreeType<'t>,
         _token_literal: &ParseTreeType<'t>,
         _token_with_states_opt: &ParseTreeType<'t>,
@@ -1911,9 +1962,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let token_with_states_opt =
             pop_item!(self, token_with_states_opt, TokenWithStatesOpt, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
-        let state_list = pop_item!(self, state_list, StateList, context);
+        let identifier_list = pop_item!(self, identifier_list, IdentifierList, context);
         let token_with_states_built = TokenWithStates {
-            state_list,
+            identifier_list,
             token_literal,
             token_with_states_opt,
         };
@@ -1924,7 +1975,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 42:
+    /// Semantic action for production 43:
     ///
     /// `TokenWithStatesOpt /* Option<T>::Some */: ASTControl;`
     ///
@@ -1941,7 +1992,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 43:
+    /// Semantic action for production 44:
     ///
     /// `TokenWithStatesOpt /* Option<T>::None */: ;`
     ///
@@ -1953,7 +2004,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 44:
+    /// Semantic action for production 45:
     ///
     /// `String: /"(\\.|[^\\])*?"/;`
     ///
@@ -1969,7 +2020,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 45:
+    /// Semantic action for production 46:
     ///
     /// `RawString: /'(\\'|[^'])*?'/;`
     ///
@@ -1985,7 +2036,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 47:
     ///
     /// `Regex: /\u{2F}(\\.|[^\\])*?\u{2F}/;`
     ///
@@ -2001,7 +2052,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 48:
     ///
     /// `Group: '(' Alternations ')';`
     ///
@@ -2028,7 +2079,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 49:
     ///
     /// `Optional: '[' Alternations ']';`
     ///
@@ -2055,7 +2106,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 50:
     ///
     /// `Repeat: '{' Alternations '}';`
     ///
@@ -2082,7 +2133,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 51:
     ///
     /// `NonTerminal: Identifier NonTerminalOpt /* Option */;`
     ///
@@ -2106,7 +2157,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 51:
+    /// Semantic action for production 52:
     ///
     /// `NonTerminalOpt /* Option<T>::Some */: ASTControl;`
     ///
@@ -2123,7 +2174,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 52:
+    /// Semantic action for production 53:
     ///
     /// `NonTerminalOpt /* Option<T>::None */: ;`
     ///
@@ -2135,7 +2186,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 53:
+    /// Semantic action for production 54:
     ///
     /// `Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;`
     ///
@@ -2151,7 +2202,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 54:
+    /// Semantic action for production 55:
     ///
     /// `ScannerState: '%scanner'^ /* Clipped */ Identifier '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;`
     ///
@@ -2179,7 +2230,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 55:
+    /// Semantic action for production 56:
     ///
     /// `ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;`
     ///
@@ -2200,7 +2251,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 56:
+    /// Semantic action for production 57:
     ///
     /// `ScannerStateList /* Vec<T>::New */: ;`
     ///
@@ -2216,66 +2267,71 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 57:
-    ///
-    /// `StateList: Identifier StateListList /* Vec */;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn state_list(
-        &mut self,
-        _identifier: &ParseTreeType<'t>,
-        _state_list_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let state_list_list = pop_and_reverse_item!(self, state_list_list, StateListList, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
-        let state_list_built = StateList {
-            identifier,
-            state_list_list,
-        };
-        // Calling user action here
-        self.user_grammar.state_list(&state_list_built)?;
-        self.push(ASTType::StateList(state_list_built), context);
-        Ok(())
-    }
-
     /// Semantic action for production 58:
     ///
-    /// `StateListList /* Vec<T>::Push */: ','^ /* Clipped */ Identifier StateListList;`
+    /// `IdentifierList: Identifier IdentifierListList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
-    fn state_list_list_0(
+    fn identifier_list(
         &mut self,
-        _comma: &ParseTreeType<'t>,
         _identifier: &ParseTreeType<'t>,
-        _state_list_list: &ParseTreeType<'t>,
+        _identifier_list_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut state_list_list = pop_item!(self, state_list_list, StateListList, context);
+        let identifier_list_list =
+            pop_and_reverse_item!(self, identifier_list_list, IdentifierListList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let state_list_list_0_built = StateListList { identifier };
-        // Add an element to the vector
-        state_list_list.push(state_list_list_0_built);
-        self.push(ASTType::StateListList(state_list_list), context);
+        let identifier_list_built = IdentifierList {
+            identifier,
+            identifier_list_list,
+        };
+        // Calling user action here
+        self.user_grammar.identifier_list(&identifier_list_built)?;
+        self.push(ASTType::IdentifierList(identifier_list_built), context);
         Ok(())
     }
 
     /// Semantic action for production 59:
     ///
-    /// `StateListList /* Vec<T>::New */: ;`
+    /// `IdentifierListList /* Vec<T>::Push */: ','^ /* Clipped */ Identifier IdentifierListList;`
     ///
     #[parol_runtime::function_name::named]
-    fn state_list_list_1(&mut self) -> Result<()> {
+    fn identifier_list_list_0(
+        &mut self,
+        _comma: &ParseTreeType<'t>,
+        _identifier: &ParseTreeType<'t>,
+        _identifier_list_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let state_list_list_1_built = Vec::new();
-        self.push(ASTType::StateListList(state_list_list_1_built), context);
+        let mut identifier_list_list =
+            pop_item!(self, identifier_list_list, IdentifierListList, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
+        let identifier_list_list_0_built = IdentifierListList { identifier };
+        // Add an element to the vector
+        identifier_list_list.push(identifier_list_list_0_built);
+        self.push(ASTType::IdentifierListList(identifier_list_list), context);
         Ok(())
     }
 
     /// Semantic action for production 60:
+    ///
+    /// `IdentifierListList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn identifier_list_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let identifier_list_list_1_built = Vec::new();
+        self.push(
+            ASTType::IdentifierListList(identifier_list_list_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 61:
     ///
     /// `ScannerSwitch: '%sc' '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;`
     ///
@@ -2303,7 +2359,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 61:
+    /// Semantic action for production 62:
     ///
     /// `ScannerSwitch: '%push' '('^ /* Clipped */ Identifier ')'^ /* Clipped */;`
     ///
@@ -2331,7 +2387,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 62:
+    /// Semantic action for production 63:
     ///
     /// `ScannerSwitch: '%pop' '('^ /* Clipped */ ')'^ /* Clipped */;`
     ///
@@ -2353,7 +2409,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 63:
+    /// Semantic action for production 64:
     ///
     /// `ScannerSwitchOpt /* Option<T>::Some */: Identifier;`
     ///
@@ -2370,7 +2426,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 64:
+    /// Semantic action for production 65:
     ///
     /// `ScannerSwitchOpt /* Option<T>::None */: ;`
     ///
@@ -2382,7 +2438,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 65:
+    /// Semantic action for production 66:
     ///
     /// `ASTControl: CutOperator;`
     ///
@@ -2399,7 +2455,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 66:
+    /// Semantic action for production 67:
     ///
     /// `ASTControl: UserTypeDeclaration;`
     ///
@@ -2419,7 +2475,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 67:
+    /// Semantic action for production 68:
     ///
     /// `CutOperator: '^'^ /* Clipped */;`
     ///
@@ -2434,7 +2490,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 68:
+    /// Semantic action for production 69:
     ///
     /// `UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : UserType;`
     ///
@@ -2462,7 +2518,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 69:
+    /// Semantic action for production 70:
     ///
     /// `UserTypeName: Identifier UserTypeNameList /* Vec */;`
     ///
@@ -2487,7 +2543,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 70:
+    /// Semantic action for production 71:
     ///
     /// `UserTypeNameList /* Vec<T>::Push */: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;`
     ///
@@ -2511,7 +2567,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 71:
+    /// Semantic action for production 72:
     ///
     /// `UserTypeNameList /* Vec<T>::New */: ;`
     ///
@@ -2554,74 +2610,75 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             13 => self.scanner_directives_1(&children[0], &children[1], &children[2]),
             14 => self.scanner_directives_2(&children[0]),
             15 => self.scanner_directives_3(&children[0]),
-            16 => self.grammar_definition(&children[0], &children[1], &children[2]),
-            17 => self.grammar_definition_list_0(&children[0], &children[1]),
-            18 => self.grammar_definition_list_1(),
-            19 => self.double_colon(&children[0]),
-            20 => self.production(&children[0], &children[1], &children[2], &children[3]),
-            21 => self.alternations(&children[0], &children[1]),
-            22 => self.alternations_list_0(&children[0], &children[1], &children[2]),
-            23 => self.alternations_list_1(),
-            24 => self.alternation(&children[0]),
-            25 => self.alternation_list_0(&children[0], &children[1]),
-            26 => self.alternation_list_1(),
-            27 => self.factor_0(&children[0]),
-            28 => self.factor_1(&children[0]),
-            29 => self.factor_2(&children[0]),
-            30 => self.factor_3(&children[0]),
-            31 => self.symbol_0(&children[0]),
-            32 => self.symbol_1(&children[0]),
-            33 => self.symbol_2(&children[0]),
-            34 => self.symbol_3(&children[0]),
-            35 => self.token_literal_0(&children[0]),
-            36 => self.token_literal_1(&children[0]),
-            37 => self.token_literal_2(&children[0]),
-            38 => self.simple_token(&children[0], &children[1]),
-            39 => self.simple_token_opt_0(&children[0]),
-            40 => self.simple_token_opt_1(),
-            41 => self.token_with_states(
+            16 => self.scanner_directives_4(&children[0], &children[1], &children[2], &children[3]),
+            17 => self.grammar_definition(&children[0], &children[1], &children[2]),
+            18 => self.grammar_definition_list_0(&children[0], &children[1]),
+            19 => self.grammar_definition_list_1(),
+            20 => self.double_colon(&children[0]),
+            21 => self.production(&children[0], &children[1], &children[2], &children[3]),
+            22 => self.alternations(&children[0], &children[1]),
+            23 => self.alternations_list_0(&children[0], &children[1], &children[2]),
+            24 => self.alternations_list_1(),
+            25 => self.alternation(&children[0]),
+            26 => self.alternation_list_0(&children[0], &children[1]),
+            27 => self.alternation_list_1(),
+            28 => self.factor_0(&children[0]),
+            29 => self.factor_1(&children[0]),
+            30 => self.factor_2(&children[0]),
+            31 => self.factor_3(&children[0]),
+            32 => self.symbol_0(&children[0]),
+            33 => self.symbol_1(&children[0]),
+            34 => self.symbol_2(&children[0]),
+            35 => self.symbol_3(&children[0]),
+            36 => self.token_literal_0(&children[0]),
+            37 => self.token_literal_1(&children[0]),
+            38 => self.token_literal_2(&children[0]),
+            39 => self.simple_token(&children[0], &children[1]),
+            40 => self.simple_token_opt_0(&children[0]),
+            41 => self.simple_token_opt_1(),
+            42 => self.token_with_states(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            42 => self.token_with_states_opt_0(&children[0]),
-            43 => self.token_with_states_opt_1(),
-            44 => self.string(&children[0]),
-            45 => self.raw_string(&children[0]),
-            46 => self.regex(&children[0]),
-            47 => self.group(&children[0], &children[1], &children[2]),
-            48 => self.optional(&children[0], &children[1], &children[2]),
-            49 => self.repeat(&children[0], &children[1], &children[2]),
-            50 => self.non_terminal(&children[0], &children[1]),
-            51 => self.non_terminal_opt_0(&children[0]),
-            52 => self.non_terminal_opt_1(),
-            53 => self.identifier(&children[0]),
-            54 => self.scanner_state(
+            43 => self.token_with_states_opt_0(&children[0]),
+            44 => self.token_with_states_opt_1(),
+            45 => self.string(&children[0]),
+            46 => self.raw_string(&children[0]),
+            47 => self.regex(&children[0]),
+            48 => self.group(&children[0], &children[1], &children[2]),
+            49 => self.optional(&children[0], &children[1], &children[2]),
+            50 => self.repeat(&children[0], &children[1], &children[2]),
+            51 => self.non_terminal(&children[0], &children[1]),
+            52 => self.non_terminal_opt_0(&children[0]),
+            53 => self.non_terminal_opt_1(),
+            54 => self.identifier(&children[0]),
+            55 => self.scanner_state(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            55 => self.scanner_state_list_0(&children[0], &children[1]),
-            56 => self.scanner_state_list_1(),
-            57 => self.state_list(&children[0], &children[1]),
-            58 => self.state_list_list_0(&children[0], &children[1], &children[2]),
-            59 => self.state_list_list_1(),
-            60 => self.scanner_switch_0(&children[0], &children[1], &children[2], &children[3]),
-            61 => self.scanner_switch_1(&children[0], &children[1], &children[2], &children[3]),
-            62 => self.scanner_switch_2(&children[0], &children[1], &children[2]),
-            63 => self.scanner_switch_opt_0(&children[0]),
-            64 => self.scanner_switch_opt_1(),
-            65 => self.a_s_t_control_0(&children[0]),
-            66 => self.a_s_t_control_1(&children[0]),
-            67 => self.cut_operator(&children[0]),
-            68 => self.user_type_declaration(&children[0], &children[1]),
-            69 => self.user_type_name(&children[0], &children[1]),
-            70 => self.user_type_name_list_0(&children[0], &children[1], &children[2]),
-            71 => self.user_type_name_list_1(),
+            56 => self.scanner_state_list_0(&children[0], &children[1]),
+            57 => self.scanner_state_list_1(),
+            58 => self.identifier_list(&children[0], &children[1]),
+            59 => self.identifier_list_list_0(&children[0], &children[1], &children[2]),
+            60 => self.identifier_list_list_1(),
+            61 => self.scanner_switch_0(&children[0], &children[1], &children[2], &children[3]),
+            62 => self.scanner_switch_1(&children[0], &children[1], &children[2], &children[3]),
+            63 => self.scanner_switch_2(&children[0], &children[1], &children[2]),
+            64 => self.scanner_switch_opt_0(&children[0]),
+            65 => self.scanner_switch_opt_1(),
+            66 => self.a_s_t_control_0(&children[0]),
+            67 => self.a_s_t_control_1(&children[0]),
+            68 => self.cut_operator(&children[0]),
+            69 => self.user_type_declaration(&children[0], &children[1]),
+            70 => self.user_type_name(&children[0], &children[1]),
+            71 => self.user_type_name_list_0(&children[0], &children[1], &children[2]),
+            72 => self.user_type_name_list_1(),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

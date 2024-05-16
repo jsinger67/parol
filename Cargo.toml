@@ -4,28 +4,11 @@ resolver = "2"
 
 members = [
   "crates/*",
-  "examples/basic_interpreter",
-  "examples/json_parser",
-  "examples/json_parser_auto",
-  "examples/oberon2",
-  "examples/toml",
-  "examples/list_lr",
-  "examples/calc_lr",
 ]
 
 exclude = [
   "crates/parol/tests/snapshots/bin",
   "crates/parol/tests/snapshots/lib",
-  "examples/boolean_parser",
-  "examples/calc_auto",
-  "examples/calc",
-  "examples/json",
-  "examples/keywords",
-  "examples/keywords2",
-  "examples/list_auto",
-  "examples/list",
-  "examples/oberon_0",
-  "examples/scanner_states",
 ]
 
 [workspace.dependencies]

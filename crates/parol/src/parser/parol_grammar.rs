@@ -1,6 +1,8 @@
 use super::parol_grammar_trait::{
     self, AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog,
-    PrologList, PrologList0, ScannerDirectives, ScannerSwitch, StartDeclaration, TokenLiteral,
+    PrologList, PrologList0, ScannerDirectives,
+    ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier, ScannerSwitch,
+    StartDeclaration, TokenLiteral,
 };
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use crate::ParolParserError;
@@ -8,6 +10,7 @@ use anyhow::anyhow;
 
 use parol_macros::{bail, parol};
 
+use parol_runtime::Location;
 use parol_runtime::{lexer::Token, once_cell::sync::Lazy, Result};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -19,7 +22,7 @@ use std::marker::PhantomData;
 /// Used for implementation of trait `Default` for `&ParolGrammar`.
 static DEFAULT_PAROL_GRAMMAR: Lazy<ParolGrammar<'static>> = Lazy::new(ParolGrammar::default);
 
-const INITIAL_STATE: usize = 0;
+pub(crate) const INITIAL_STATE: usize = 0;
 
 /// A user defined type name
 #[derive(
@@ -123,11 +126,11 @@ pub enum Factor {
     /// An identifier, scanner state name
     Identifier(String),
     /// A scanner switch instruction
-    ScannerSwitch(usize),
+    ScannerSwitch(usize, Location),
     /// A scanner switch & push instruction
-    ScannerSwitchPush(usize),
+    ScannerSwitchPush(usize, Location),
     /// A scanner switch + pop instruction
-    ScannerSwitchPop,
+    ScannerSwitchPop(Location),
 }
 
 impl Factor {
@@ -179,9 +182,9 @@ impl Factor {
                 buf
             }
             Factor::Identifier(i) => format!("\"{}\"", i),
-            Self::ScannerSwitch(n) => format!("%sc({})", n),
-            Self::ScannerSwitchPush(n) => format!("%push({})", n),
-            Self::ScannerSwitchPop => "%pop()".to_string(),
+            Self::ScannerSwitch(n, _) => format!("%sc({})", n),
+            Self::ScannerSwitchPush(n, _) => format!("%push({})", n),
+            Self::ScannerSwitchPop(_) => "%pop()".to_string(),
         }
     }
 
@@ -228,9 +231,9 @@ impl Display for Factor {
                 write!(f, "{}", s)
             }
             Self::Identifier(n) => write!(f, "Id({})", n),
-            Self::ScannerSwitch(n) => write!(f, "S({})", n),
-            Self::ScannerSwitchPush(n) => write!(f, "Push({})", n),
-            Self::ScannerSwitchPop => write!(f, "Pop"),
+            Self::ScannerSwitch(n, _) => write!(f, "S({})", n),
+            Self::ScannerSwitchPush(n, _) => write!(f, "Push({})", n),
+            Self::ScannerSwitchPop(_) => write!(f, "Pop"),
         }
     }
 }
@@ -276,6 +279,30 @@ impl Alternation {
 
     fn is_used_scanner(&self, scanner_index: usize) -> bool {
         self.0.iter().any(|f| f.is_used_scanner(scanner_index))
+    }
+
+    fn is_terminal(&self) -> bool {
+        self.0.len() == 1 && matches!(self.0[0], Factor::Terminal(_, _, _, _, _))
+    }
+
+    fn terminal(&self) -> Option<(&str, TerminalKind)> {
+        if self.is_terminal() {
+            match &self.0[0] {
+                Factor::Terminal(t, k, _, _, _) => Some((t, *k)),
+                _ => None,
+            }
+        } else {
+            None
+        }
+    }
+
+    fn has_switch(&self) -> Option<Location> {
+        self.0.iter().find_map(|f| match f {
+            Factor::ScannerSwitch(_, l)
+            | Factor::ScannerSwitchPush(_, l)
+            | Factor::ScannerSwitchPop(l) => Some(l.clone()),
+            _ => None,
+        })
     }
 }
 
@@ -360,6 +387,10 @@ impl Production {
     pub(crate) fn new(lhs: String, rhs: Alternations) -> Self {
         Self { lhs, rhs }
     }
+
+    fn has_switch(&self) -> Option<parol_runtime::Location> {
+        self.rhs.0.iter().find_map(|a| a.has_switch())
+    }
 }
 
 impl Display for Production {
@@ -436,6 +467,34 @@ pub struct ScannerConfig {
     pub auto_newline_off: bool,
     /// Defines whether to handle whitespace automatically in scanner
     pub auto_ws_off: bool,
+    /// Scanner state transitions
+    /// Maps from (token, terminal kind) to scanner state, where the token is identified by its
+    /// primary non-terminal name. The scanner state is identified by its name.
+    pub transitions: BTreeMap<Token<'static>, Token<'static>>,
+}
+
+impl ScannerConfig {
+    pub(crate) fn add_transitions(
+        &mut self,
+        transitions: &ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier<'_>,
+    ) {
+        // The identifier list contains the first identifier, which is inserted here
+        self.transitions.insert(
+            transitions.identifier_list.identifier.identifier.to_owned(),
+            transitions.identifier.identifier.to_owned(),
+        );
+        // The rest of the identifier list is processed here
+        transitions
+            .identifier_list
+            .identifier_list_list
+            .iter()
+            .for_each(|i| {
+                self.transitions.insert(
+                    i.identifier.identifier.to_owned(),
+                    transitions.identifier.identifier.to_owned(),
+                );
+            });
+    }
 }
 
 impl Display for ScannerConfig {
@@ -444,7 +503,10 @@ impl Display for ScannerConfig {
         write!(f, "line_comments: {:?};", self.line_comments)?;
         write!(f, "block_comments: {:?};", self.block_comments)?;
         write!(f, "auto_newline_off: {};", self.auto_newline_off)?;
-        write!(f, "auto_ws_off: {};", self.auto_ws_off)
+        write!(f, "auto_ws_off: {};", self.auto_ws_off)?;
+        self.transitions
+            .iter()
+            .try_for_each(|(k, v)| write!(f, "on {} enter {};", k, v))
     }
 }
 
@@ -456,6 +518,7 @@ impl Default for ScannerConfig {
             block_comments: Vec::default(),
             auto_newline_off: false,
             auto_ws_off: false,
+            transitions: BTreeMap::default(),
         }
     }
 }
@@ -488,6 +551,9 @@ impl TryFrom<&parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
                     me.auto_newline_off = true
                 }
                 ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(_) => me.auto_ws_off = true,
+                ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(transitions) => {
+                    me.add_transitions(transitions)
+                }
             }
         }
         Ok(me)
@@ -621,6 +687,9 @@ impl ParolGrammar<'_> {
             }
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(_) => {
                 self.scanner_configurations[INITIAL_STATE].auto_ws_off = true
+            }
+            ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(transitions) => {
+                self.scanner_configurations[INITIAL_STATE].add_transitions(transitions)
             }
         }
         Ok(())
@@ -823,8 +892,9 @@ impl ParolGrammar<'_> {
                 ))
             }
             parol_grammar_trait::Symbol::TokenWithStates(token_with_states) => {
-                let mut scanner_states = self
-                    .process_scanner_state_list(&token_with_states.token_with_states.state_list)?;
+                let mut scanner_states = self.process_scanner_state_list(
+                    &token_with_states.token_with_states.identifier_list,
+                )?;
                 scanner_states.sort_unstable();
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
@@ -854,10 +924,10 @@ impl ParolGrammar<'_> {
 
     fn process_scanner_state_list(
         &mut self,
-        state_list: &parol_grammar_trait::StateList,
+        state_list: &parol_grammar_trait::IdentifierList,
     ) -> Result<Vec<usize>> {
         let mut result = vec![self.resolve_scanner(&state_list.identifier.identifier)?];
-        for s in &state_list.state_list_list {
+        for s in &state_list.identifier_list_list {
             result.push(self.resolve_scanner(&s.identifier.identifier)?);
         }
         Ok(result)
@@ -890,14 +960,23 @@ impl ParolGrammar<'_> {
                     match &sw.scanner_switch_opt {
                         Some(st) => Ok(Factor::ScannerSwitch(
                             self.resolve_scanner(&st.identifier.identifier)?,
+                            sw.percent_sc.location.clone(),
                         )),
-                        None => Ok(Factor::ScannerSwitch(INITIAL_STATE)),
+                        None => Ok(Factor::ScannerSwitch(
+                            INITIAL_STATE,
+                            sw.percent_sc.location.clone(),
+                        )),
                     }
                 }
-                ScannerSwitch::PercentPushLParenIdentifierRParen(sw) => Ok(
-                    Factor::ScannerSwitchPush(self.resolve_scanner(&sw.identifier.identifier)?),
-                ),
-                ScannerSwitch::PercentPopLParenRParen(_) => Ok(Factor::ScannerSwitchPop),
+                ScannerSwitch::PercentPushLParenIdentifierRParen(sw) => {
+                    Ok(Factor::ScannerSwitchPush(
+                        self.resolve_scanner(&sw.identifier.identifier)?,
+                        sw.percent_push.location.clone(),
+                    ))
+                }
+                ScannerSwitch::PercentPopLParenRParen(sw) => {
+                    Ok(Factor::ScannerSwitchPop(sw.percent_pop.location.clone()))
+                }
             },
             GrammarType::LALR1 => {
                 let token = match &scanner_switch.scanner_switch {
@@ -906,7 +985,8 @@ impl ParolGrammar<'_> {
                     ScannerSwitch::PercentPopLParenRParen(sw) => &sw.percent_pop,
                 };
                 Err(ParolParserError::UnsupportedFeature {
-                    feature: "Scanner switching in LALR(1) grammar".to_string(),
+                    feature: "Parser-based scanner switching in LALR(1) grammar".to_string(),
+                    hint: "Use scanner-based scanner switching (%on - %enter) instead".to_string(),
                     input: token.location.file_name.to_path_buf(),
                     token: token.into(),
                 }
@@ -971,10 +1051,53 @@ impl ParolGrammar<'_> {
                 acc
             });
         if !empty_scanners.is_empty() {
-            Err(ParolParserError::EmptyScanners { empty_scanners }.into())
-        } else {
-            Ok(())
+            return Err(ParolParserError::EmptyScanners { empty_scanners }.into());
         }
+
+        self.scanner_configurations
+            .iter()
+            .enumerate()
+            .try_for_each(|(i, s)| self.check_transitions(i, s))
+    }
+
+    fn check_transitions(&self, index: usize, s: &ScannerConfig) -> Result<()> {
+        if !s.transitions.is_empty() {
+            if let Some(location) = self.parser_based_scanner_switching_used() {
+                bail!(ParolParserError::MixedScannerSwitching {
+                    context: "check_transitions".to_string(),
+                    input: location.file_name.to_path_buf(),
+                    location,
+                });
+            }
+        }
+        s.transitions.iter().try_for_each(|(k, v)| {
+            if !self.is_primary_non_terminal(k) {
+                bail!(ParolParserError::InvalidTokenInTransition {
+                    context: "check_transitions".to_string(),
+                    token: k.text().to_string(),
+                    input: k.location.file_name.to_path_buf(),
+                    location: k.location.clone(),
+                });
+            }
+            if !self.is_terminal_in_scanner(k, index) {
+                bail!(ParolParserError::TokenIsNotInScanner {
+                    context: "check_transitions".to_string(),
+                    scanner: s.name.clone(),
+                    token: k.text().to_string(),
+                    input: k.location.file_name.to_path_buf(),
+                    location: k.location.clone(),
+                });
+            }
+            if self.resolve_scanner(v).is_err() {
+                bail!(ParolParserError::UnknownScanner {
+                    context: "check_transitions".to_string(),
+                    name: v.text().to_string(),
+                    input: v.location.file_name.to_path_buf(),
+                    token: v.location.clone(),
+                });
+            }
+            Ok(())
+        })
     }
 
     fn is_used_scanner(&self, scanner_index: usize) -> bool {
@@ -998,6 +1121,50 @@ impl ParolGrammar<'_> {
             .into());
         }
         Ok(())
+    }
+
+    fn is_primary_non_terminal(&self, k: &Token<'_>) -> bool {
+        self.productions
+            .iter()
+            .any(|p| p.lhs == k.text() && p.rhs.0.len() == 1 && p.rhs.0[0].is_terminal())
+    }
+
+    // Check if a terminal is used in the given scanner state
+    fn is_terminal_in_scanner(&self, terminal: &Token<'_>, index: usize) -> bool {
+        // Get the token text from the primary non-terminal
+        let term = self
+            .productions
+            .iter()
+            .find(|p| p.lhs == terminal.text() && p.rhs.0.len() == 1 && p.rhs.0[0].is_terminal())
+            .and_then(|p| p.rhs.0[0].terminal());
+        if let Some((tx, kind)) = term {
+            // Find a terminal in the productions that matches the given terminal and is used in the
+            // given scanner state
+            self.productions.iter().any(|p| {
+                p.rhs.0.iter().any(|a| {
+                    if a.0.len() == 1 {
+                        if let Factor::Terminal(t, k, _, _, _) = &a.0[0] {
+                            *t == tx && k.behaves_like(kind) && a.is_used_scanner(index)
+                        } else {
+                            false
+                        }
+                    } else {
+                        false
+                    }
+                })
+            })
+        } else {
+            false
+        }
+    }
+
+    /// Check if the grammar uses parser-based scanner switching (i.e. scanner switching in the
+    /// grammar productions) is used.
+    /// We need to check if also scanner-based scanner switching (i.e. scanner switching in the
+    /// scanner directives) is used, because the two cannot be mixed reasonably.
+    fn parser_based_scanner_switching_used(&self) -> Option<parol_runtime::Location> {
+        // Check if any of the productions uses scanner switching
+        self.productions.iter().find_map(|p| p.has_switch())
     }
 }
 

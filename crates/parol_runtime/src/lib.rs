@@ -18,8 +18,8 @@ module [parser::parse_tree_type].
 ///
 pub mod lexer;
 pub use lexer::{
-    FormatToken, Location, LocationBuilder, Span, TerminalIndex, ToSpan, Token, TokenIter,
-    TokenNumber, TokenStream, Tokenizer,
+    FormatToken, Location, LocationBuilder, ScannerConfig, Span, TerminalIndex, ToSpan, Token,
+    TokenIter, TokenNumber, TokenStream, Tokenizer,
 };
 
 pub mod parser_common;

@@ -44,6 +44,12 @@ pub mod rng;
 pub use rng::{Span, ToSpan};
 
 ///
+/// Module that provides the type used for scanner configurations.
+///
+pub mod scanner_config;
+pub use scanner_config::ScannerConfig;
+
+///
 /// Module that provides basic token implementation.
 ///
 pub mod token;

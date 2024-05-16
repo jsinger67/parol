@@ -2,7 +2,7 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::LocationBuilder;
+use parol_runtime::{LocationBuilder, ScannerConfig};
 use parol_runtime::{Token, TokenStream, Tokenizer};
 use std::borrow::Cow;
 use std::cell::RefCell;
@@ -54,17 +54,18 @@ const SCANNER_0: &[&str; 5] = &[
     /*  4 */ r"(?m)(/\*(.|[\r\n])*?\*/)(?-m)", // token::BLOCK_COMMENT
 ];
 
-static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
-    vec![(
-        "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0, &[5, 6, 7, 8, 9, 10]).unwrap(),
-    )]
+static TOKENIZERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
+    vec![ScannerConfig {
+        name: "INITIAL",
+        tokenizer: Tokenizer::build(TERMINALS, SCANNER_0, &[5, 6, 7, 8, 9, 10]).unwrap(),
+        transitions: &[],
+    }]
 });
 
 #[test]
 fn tokenizer_test() {
     assert_eq!(
-        11, TOKENIZERS[0].1.error_token_type,
+        11, TOKENIZERS[0].tokenizer.error_token_type,
         "Error token index is wrong"
     );
 }
@@ -122,11 +123,11 @@ fn lexer_token_production() {
 fn lookahead_must_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let mut token_stream = TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap();
-    let _tok = token_stream.lookahead(2).unwrap();
+    let _tok = token_stream.lookahead(1).unwrap();
 }
 
 #[test]
-#[should_panic(expected = "LookaheadExceedsTokenBuffer")]
+#[should_panic(expected = "LookaheadExceedsTokenBufferLength")]
 fn lookahead_beyond_buffer_must_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
@@ -137,5 +138,8 @@ fn lookahead_beyond_buffer_must_fail() {
             println!("{:?}", tok);
         }
     }
-    token_stream.borrow_mut().lookahead(1).unwrap();
+    // Consume the EOI token
+    println!("{:?}", token_stream.borrow_mut().consume().unwrap());
+    // This must fail
+    println!("{:?}", token_stream.borrow_mut().lookahead(0).unwrap());
 }

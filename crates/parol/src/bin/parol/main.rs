@@ -63,6 +63,9 @@ fn run(args: &CliArgs) -> Result<u128> {
     if let Some(parser_file) = &args.parser {
         builder.parser_output_file(parser_file);
     }
+    if args.trim_parse_tree {
+        builder.trim_parse_tree();
+    }
     if args.auto_generate {
         builder.enable_auto_generation();
     }

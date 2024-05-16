@@ -24,7 +24,7 @@ use std::{env, fs, time::Instant};
 use syntree_layout::Layouter;
 
 // To generate:
-// parol -f ./json.par -e ./json-exp.par -p ./src/json_parser.rs -a ./src/json_grammar_trait.rs -t JsonGrammar -m json_grammar
+// parol -f ./json.par -e ./json-exp.par -p ./json_parser.rs -a ./json_grammar_trait.rs -t JsonGrammar -m json_grammar
 
 fn main() -> Result<()> {
     env_logger::init();

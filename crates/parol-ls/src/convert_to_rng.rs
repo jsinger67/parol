@@ -199,6 +199,9 @@ impl From<&ScannerDirectives> for Rng {
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(auto_ws) => {
                 Self::from(&auto_ws.percent_auto_underscore_ws_underscore_off)
             }
+            ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(trans) => {
+                Self::from(&trans.percent_on).extend(Self::from(&trans.identifier_list))
+            }
         }
     }
 }
@@ -260,17 +263,19 @@ impl From<&StartDeclaration> for Rng {
     }
 }
 
-impl From<&StateList> for Rng {
-    fn from(val: &StateList) -> Self {
+impl From<&IdentifierList> for Rng {
+    fn from(val: &IdentifierList) -> Self {
         let rng = Self::from(&val.identifier.identifier);
-        val.state_list_list.last().map_or(rng, |state_list_list| {
-            rng.extend(Self::from(state_list_list))
-        })
+        val.identifier_list_list
+            .last()
+            .map_or(rng, |state_list_list| {
+                rng.extend(Self::from(state_list_list))
+            })
     }
 }
 
-impl From<&StateListList> for Rng {
-    fn from(val: &StateListList) -> Self {
+impl From<&IdentifierListList> for Rng {
+    fn from(val: &IdentifierListList) -> Self {
         Self::from(&val.comma).extend(Self::from(&val.identifier.identifier))
     }
 }

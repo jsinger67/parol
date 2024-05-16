@@ -1,10 +1,12 @@
 use crate::lexer::EOI;
 use crate::parser::ScannerIndex;
-use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter, Tokenizer};
+use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter};
 use log::trace;
 
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
+
+use super::ScannerConfig;
 
 ///
 /// The TokenStream<'t> type is the interface the parser actually uses.
@@ -33,7 +35,7 @@ pub struct TokenStream<'t> {
 
     /// A slice with named tokenizers, which operate in combination with the
     /// TokenIter like a scanner.
-    tokenizers: &'static [(&'static str, Tokenizer)],
+    scanners: &'static [ScannerConfig],
 
     /// Lookahead token buffer, maximum size is k
     pub tokens: Vec<Token<'t>>,
@@ -74,14 +76,14 @@ impl<'t> TokenStream<'t> {
     pub fn new<T>(
         input: &'t str,
         file_name: T,
-        tokenizers: &'static [(&'static str, Tokenizer)],
+        scanners: &'static [ScannerConfig],
         k: usize,
     ) -> Result<Self, LexerError>
     where
         T: AsRef<Path>,
     {
         let file_name = Arc::new(file_name.as_ref().to_owned());
-        let token_iter = TokenIter::new(&tokenizers[0].1, input, file_name.clone(), k);
+        let token_iter = TokenIter::new(&scanners[0].tokenizer, input, file_name.clone(), k);
 
         // issue #54 "Lookahead exceeds token buffer length" with simple grammar:
         // Ensure that k is at least 1
@@ -91,9 +93,9 @@ impl<'t> TokenStream<'t> {
             k,
             input,
             file_name,
-            error_token_type: tokenizers[0].1.error_token_type,
+            error_token_type: scanners[0].tokenizer.error_token_type,
             token_iter,
-            tokenizers,
+            scanners,
             tokens: Vec::with_capacity(k),
             comments: Vec::new(),
             start_pos: 0,
@@ -103,7 +105,7 @@ impl<'t> TokenStream<'t> {
             current_scanner_index: 0,
             scanner_stack: Vec::new(),
         };
-        token_stream.read_tokens(k);
+        token_stream.read_tokens(k)?;
         Ok(token_stream)
     }
 
@@ -113,11 +115,11 @@ impl<'t> TokenStream<'t> {
     /// If successful it returns an cloned token from buffer position self.pos + n
     ///
     pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>, LexerError> {
-        if n > self.k {
+        if n >= self.k {
             Err(LexerError::LookaheadExceedsMaximum)
         } else {
             // Fill buffer to lookahead size k relative to pos
-            self.ensure_buffer();
+            self.ensure_buffer()?;
             if n >= self.tokens.len() {
                 Err(LexerError::LookaheadExceedsTokenBufferLength)
             } else {
@@ -134,11 +136,11 @@ impl<'t> TokenStream<'t> {
     /// position n.
     ///
     pub fn lookahead_token_type(&mut self, n: usize) -> Result<TerminalIndex, LexerError> {
-        if n > self.k {
+        if n >= self.k {
             Err(LexerError::LookaheadExceedsMaximum)
         } else {
             // Fill buffer to lookahead size k relative to pos
-            self.ensure_buffer();
+            self.ensure_buffer()?;
             if n >= self.tokens.len() {
                 Err(LexerError::LookaheadExceedsTokenBufferLength)
             } else {
@@ -155,34 +157,39 @@ impl<'t> TokenStream<'t> {
     /// The token's positions are captured to support scanner switching.
     ///
     pub fn consume(&mut self) -> Result<Token<'t>, LexerError> {
-        self.ensure_buffer();
+        self.ensure_buffer()?;
         if self.tokens.is_empty() {
             Err(LexerError::InternalError(
                 "Consume on empty buffer is impossible".into(),
             ))
         } else {
-            // Store positions of last latest consumed token for scanner switching.
-            // Actually this is token LA(1) with buffer index 0.
-            let la1 = &self.tokens[0];
-            let (new_lines, column) = TokenIter::count_nl(la1.text());
-            self.pos = la1.location.offset;
-            self.line = la1.location.start_line + new_lines;
-            self.column = if new_lines > 0 {
-                column
-            } else {
-                la1.location.start_column + la1.location.length
-            };
-            trace!(
-                "Consuming {}, Stream position is {}. Line {}, Column {}",
-                la1,
-                self.pos,
-                self.line,
-                self.column,
-            );
+            // We consume token LA(1) with buffer index 0.
+            trace!("Consuming {}", &self.tokens[0]);
+            self.update_position(0);
             let token = self.tokens.remove(0);
-            self.ensure_buffer();
+            self.error_token_type = token.token_type;
+            self.ensure_buffer()?;
             Ok(token)
         }
+    }
+
+    // Store position of token at given index (lookahead) for scanner switching.
+    fn update_position(&mut self, lookahead: usize) {
+        let token = &self.tokens[lookahead];
+        let (new_lines, column) = TokenIter::count_nl(token.text());
+        self.pos = token.location.offset;
+        self.line = token.location.start_line + new_lines;
+        self.column = if new_lines > 0 {
+            column
+        } else {
+            token.location.start_column + token.location.length
+        };
+        trace!(
+            "Update stream position to {}. Line {}, Column {}",
+            self.pos,
+            self.line,
+            self.column,
+        );
     }
 
     ///
@@ -227,28 +234,39 @@ impl<'t> TokenStream<'t> {
     /// `TokenStream::consume`.
     /// This is a documented restriction.
     ///
+    /// The clear flag is used to clear the token buffer after the switch.
+    /// If the scanner switch is initiated by `read_tokens` the flag is set to `false` to keep
+    /// the tokens in the buffer.
+    ///
     /// Currently this never return LexerError but it could be changed in the future.
     ///
-    pub fn switch_scanner(&mut self, scanner_index: ScannerIndex) -> Result<(), LexerError> {
+    pub fn switch_scanner(
+        &mut self,
+        scanner_index: ScannerIndex,
+        clear: bool,
+    ) -> Result<usize, LexerError> {
+        let mut tokens_read = 0usize;
         if self.current_scanner_index == scanner_index {
             trace!(
                 "Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
-                self.tokenizers[scanner_index].0,
+                self.scanners[scanner_index].name,
             );
         } else {
             trace!(
                 "Switching to scanner {} <{}>; Current offset is {}",
                 scanner_index,
-                self.tokenizers[scanner_index].0,
+                self.scanners[scanner_index].name,
                 self.pos,
             );
             self.token_iter = self.switch_to(scanner_index);
             self.current_scanner_index = scanner_index;
-            self.tokens.clear();
-            self.ensure_buffer();
+            if clear {
+                self.tokens.clear();
+            }
+            tokens_read = self.ensure_buffer()?;
         }
-        Ok(())
+        Ok(tokens_read)
     }
 
     ///
@@ -261,7 +279,7 @@ impl<'t> TokenStream<'t> {
             trace!(
                 "push_scanner: Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
-                self.tokenizers[scanner_index].0,
+                self.scanners[scanner_index].name,
             );
             self.scanner_stack.push(self.current_scanner_index);
             self.current_scanner_index = scanner_index;
@@ -270,14 +288,14 @@ impl<'t> TokenStream<'t> {
                 "push_scanner: Pushing current scanner {} and switching to scanner {} <{}>; Current offset is {}",
                 self.current_scanner_index,
                 scanner_index,
-                self.tokenizers[scanner_index].0,
+                self.scanners[scanner_index].name,
                 self.pos,
             );
             self.scanner_stack.push(self.current_scanner_index);
             self.token_iter = self.switch_to(scanner_index);
             self.current_scanner_index = scanner_index;
             self.tokens.clear();
-            self.ensure_buffer();
+            self.ensure_buffer()?;
             trace!(
                 "push_scanner: Resulting scanner stack: {:?}",
                 self.scanner_stack
@@ -295,19 +313,19 @@ impl<'t> TokenStream<'t> {
                 trace!(
                     "pop_scanner: Redundant switch to scanner {} <{}> omitted",
                     scanner_index,
-                    self.tokenizers[scanner_index].0,
+                    self.scanners[scanner_index].name,
                 );
             } else {
                 trace!(
                     "pop_scanner: Switching to popped scanner {} <{}>; Current offset is {}",
                     scanner_index,
-                    self.tokenizers[scanner_index].0,
+                    self.scanners[scanner_index].name,
                     self.pos,
                 );
                 self.token_iter = self.switch_to(scanner_index);
                 self.current_scanner_index = scanner_index;
                 self.tokens.clear();
-                self.ensure_buffer();
+                self.ensure_buffer()?;
                 trace!(
                     "pop_scanner: Resulting scanner stack: {:?}",
                     self.scanner_stack
@@ -324,17 +342,32 @@ impl<'t> TokenStream<'t> {
     /// Used for diagnostics.
     ///
     pub fn current_scanner(&self) -> &str {
-        self.tokenizers[self.current_scanner_index].0
+        self.scanners[self.current_scanner_index].name
     }
 
-    fn read_tokens(&mut self, n: usize) -> usize {
+    ///
+    /// Reads at most n tokens from the input stream and stores them in the token buffer.
+    /// It returns the number of tokens read.
+    /// If a scanner state switch is necessary, the function executes it.
+    /// The function is used by ensure_buffer and switch_scanner.
+    /// The idea is to fill the lookahead buffer with tokens and to switch scanner states as early
+    /// as possible.
+    ///
+    fn read_tokens(&mut self, n: usize) -> Result<usize, LexerError> {
         let mut tokens_read = 0usize;
+        let mut new_scanner = None;
+        let mut token_type = EOI;
         for mut token in &mut self.token_iter {
             if !token.is_skip_token() {
                 tokens_read += 1;
                 trace!("Read {}: {}", self.tokens.len(), token);
                 token.location.scanner_switch_pos = self.start_pos;
+                token_type = token.token_type;
                 self.tokens.push(token);
+                new_scanner = self.scanners[self.current_scanner_index].has_transition(token_type);
+                if new_scanner.is_some() {
+                    break;
+                }
                 if tokens_read >= n {
                     break;
                 }
@@ -343,20 +376,25 @@ impl<'t> TokenStream<'t> {
                 self.comments.push(token);
             }
         }
-        tokens_read
+        if let Some(scanner) = new_scanner {
+            trace!("Switching to scanner {} on token {}", scanner, token_type);
+            self.update_position(self.tokens.len() - 1);
+            tokens_read += self.switch_scanner(scanner, false)?;
+        }
+        Ok(tokens_read)
     }
 
     ///
     /// The function fills the lookahead buffer (self.tokens) with k tokens.
     /// It returns the number of tokens read.
     ///
-    pub(crate) fn ensure_buffer(&mut self) -> usize {
+    pub(crate) fn ensure_buffer(&mut self) -> Result<usize, LexerError> {
         let fill_len = self.tokens.len();
         if fill_len < self.k {
             // Fill buffer to lookahead size k
             self.read_tokens(self.k - fill_len)
         } else {
-            0
+            Ok(0)
         }
     }
 
@@ -369,7 +407,7 @@ impl<'t> TokenStream<'t> {
         self.pos = 0;
         let (_, input) = self.input.split_at(self.start_pos);
         TokenIter::new(
-            &self.tokenizers[scanner_index].1,
+            &self.scanners[scanner_index].tokenizer,
             input,
             self.file_name.clone(),
             self.k,

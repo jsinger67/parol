@@ -14,7 +14,7 @@ use parol_runtime::{log::debug, Report};
 use std::{env, fs, time::Instant};
 
 // To generate:
-// parol -f ./calc.par -e ./calc-exp.par -p ./src/calc_parser.rs -a ./src/calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -g
+// parol -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -g -b -x
 
 struct ErrorReporter;
 impl Report for ErrorReporter {}

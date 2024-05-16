@@ -35,6 +35,7 @@ ScannerDirectives
     | '%block_comment'^ TokenLiteral TokenLiteral
     | '%auto_newline_off'^
     | '%auto_ws_off'^
+    | '%on'^ IdentifierList '%enter'^ Identifier // Scanner state enter directives
     ;
 
 GrammarDefinition
@@ -83,7 +84,7 @@ SimpleToken
     ;
 
 TokenWithStates
-    : '<'^ StateList '>'^ TokenLiteral [ ASTControl ]
+    : '<'^ IdentifierList '>'^ TokenLiteral [ ASTControl ]
     ;
 
 String
@@ -127,7 +128,7 @@ ScannerState
     ;
 
 // The list of scanner states a terminal symbol is associated with
-StateList
+IdentifierList
     : Identifier { ','^ Identifier }
     ;
 

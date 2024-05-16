@@ -349,7 +349,7 @@ impl<'t> LLKParser<'t> {
                         }
                     },
                     ParseType::S(s) => {
-                        stream.borrow_mut().switch_scanner(s)?;
+                        stream.borrow_mut().switch_scanner(s, true)?;
                         self.parser_stack.stack.pop();
                     }
                     ParseType::Push(s) => {
@@ -519,7 +519,7 @@ impl<'t> LLKParser<'t> {
 
     // Sync input tokens with expected tokens if possible
     fn recover_from_token_mismatch(&mut self, stream: Rc<RefCell<TokenStream<'t>>>) -> Result<()> {
-        stream.borrow_mut().ensure_buffer();
+        stream.borrow_mut().ensure_buffer()?;
         let scanned_token_types = stream.borrow().token_types();
         let expected_token_types = self.parser_stack.expected_token_types();
         trace!("LA: [{scanned_token_types:?}]");

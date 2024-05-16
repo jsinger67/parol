@@ -4,12 +4,10 @@ $CargoConfig = if ($Config -eq "release") { "--release" } else { $null }
 $env:RUST_LOG = ""
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
-cargo build $CargoConfig
+cargo build $CargoConfig --example basic
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }
-
-$target = "./../../target/$Config/basic"
 
 
 # --------------------------------------------------------------------------------------------------
@@ -18,7 +16,7 @@ $target = "./../../target/$Config/basic"
 Get-ChildItem ./tests/data/invalid/*.bas |
 ForEach-Object {
     Write-Host "Parsing $($_.FullName) should fail..." -ForegroundColor Magenta
-    &$target $_.FullName -q
+    cargo run $CargoConfig --example basic $_.FullName -q
     if ($?) {
         ++$ErrorCount    
     }
@@ -30,7 +28,7 @@ ForEach-Object {
 Get-ChildItem ./tests/data/valid/*.bas |
 ForEach-Object {
     Write-Host "Parsing $($_.FullName)..." -ForegroundColor Yellow
-    &$target $_.FullName -q | Tee-Object -Variable output
+    cargo run $CargoConfig --example basic $_.FullName -q | Tee-Object -Variable output
     if (-not $?) {
         ++$ErrorCount    
     } else {

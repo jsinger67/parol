@@ -25,13 +25,10 @@ pub(crate) trait InstanceFacade<'a>: SymbolFacade<'a> {
 
 pub(crate) trait TypeFacade<'a>: SymbolFacade<'a> {
     fn inner_name(&self) -> String;
-    fn inner_type(&self) -> Option<SymbolId>;
     fn member_scope(&self) -> ScopeId;
     fn entrails(&self) -> &TypeEntrails;
-    fn is_container(&self) -> bool;
     fn generate_range_calculation(&self) -> Result<String>;
     fn members(&self) -> &[SymbolId];
-    fn lifetime(&self) -> String;
 }
 
 pub(crate) struct SymbolItem<'a> {
@@ -190,20 +187,12 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
             .inner_name(self.symbol_item.symbol_table, self.symbol_item.symbol)
     }
 
-    fn inner_type(&self) -> Option<SymbolId> {
-        self.my_type.inner_type()
-    }
-
     fn member_scope(&self) -> ScopeId {
         self.my_type.member_scope
     }
 
     fn entrails(&self) -> &TypeEntrails {
         &self.my_type.entrails
-    }
-
-    fn is_container(&self) -> bool {
-        self.my_type.is_container()
     }
 
     fn generate_range_calculation(&self) -> Result<String> {
@@ -311,12 +300,6 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
             .symbol_table
             .scope(self.member_scope())
             .symbols
-    }
-
-    fn lifetime(&self) -> String {
-        self.symbol_item
-            .symbol_table
-            .lifetime(self.symbol_item.my_id())
     }
 }
 

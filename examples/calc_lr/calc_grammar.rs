@@ -270,7 +270,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_sum";
         let mut result = self.process_mult(&summ.mult)?;
         for item in &summ.summ_list {
-            let op: BinaryOperator = match &*item.add_op {
+            let op: BinaryOperator = match &item.add_op {
                 AddOp::Plus(plus) => plus.plus.plus.text().try_into(),
                 AddOp::Minus(minus) => minus.minus.minus.text().try_into(),
             }?;
