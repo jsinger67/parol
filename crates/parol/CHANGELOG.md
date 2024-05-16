@@ -38,6 +38,9 @@ more details
 - Removed clippy warnings new in Rust 1.78.0
 - Implement scanner-based scanner switching which can be used in both LL(k) and LALR(1) grammars
 
+    * A new example `scanner_states_lr` is introduced to show the basic functionality. Additionally 
+    the example `basic` was migrated to use the scanner-based scanner switching.
+
 ## 0.28.0 - 2024-04-29
 
 - Complete new **LALR(1) grammar support**. Use the new `%grammar_type` directive to switch to LALR(1)
