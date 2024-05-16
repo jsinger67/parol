@@ -1,5 +1,5 @@
-[parol](https://github.com/jsinger67/parol/tree/main/crates/parol) is a LL(k) parser generator
-**for Rust**.
+[parol](https://github.com/jsinger67/parol/tree/main/crates/parol) is a LL(k) and a LALR(1) parser
+generator **for Rust**.
 
 It's an installable command line tool that can generate complete parsers from a single grammar
 description file including all AST data types you would otherwise had to design by yourself. `parol`
