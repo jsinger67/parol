@@ -18,6 +18,9 @@ equivalent representations.
 
 These transformations are applied iteratively until all EBNF constructs are replaced.
 
+Note that the transformations applied on LR grammars a slightly different, but the principle is the
+same.
+
 ## Sanity checks
 
 Then `parol` checks this pre-transformed input grammar for several properties that prevent a
@@ -109,6 +112,14 @@ struct A {
 ```
 
 This results in finite type sizes.
+
+Note that `parol` has a way to minimize the use of boxed types in the generated parser.
+The `parol` tool supports a new command line switch (-b, --min_boxes) that enables the minimization
+of used boxes in generated data structures. The `parol::build::Builder` also provides a new method
+`minimize_boxed_types()` that you can call in your build scripts.
+
+`parol` then determines where no recursions can occur by applying extra calculations on the
+structure of the grammar.
 
 ## Manage Type generation
 

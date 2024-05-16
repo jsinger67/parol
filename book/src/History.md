@@ -69,4 +69,5 @@ prototyping** for your language!
 * Build script integration to invoke `parol` automatically during the build of your own crate
 * An [extension](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode) for Visual Studio
 Code and a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls)
+* The possibility to use LALR(1) grammars optionally instead of LL(k) ones
 * And all those features Lelek never received

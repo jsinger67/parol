@@ -50,7 +50,7 @@ cargo build
 And run the test with the generated parser:
 
 ```shell
-$ cargo run -- ./test.txt
+$ cargo run ./test.txt
     Finished dev [unoptimized + debuginfo] target(s) in 0.20s
      Running `target\debug\my_grammar.exe ./test.txt`
 Parsing took 4 milliseconds.
