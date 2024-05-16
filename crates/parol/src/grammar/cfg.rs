@@ -3,8 +3,8 @@ use crate::{Pos, Pr, Symbol, Terminal, TerminalKind};
 use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::{NonTerminalIndex, TerminalIndex};
 use regex::Regex;
-use std::collections::HashSet;
 use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{HashMap, HashSet};
 use std::ops::Index;
 
 pub(crate) static RX_NUM_SUFFIX: Lazy<Regex> =
@@ -39,6 +39,11 @@ where
         self(t)
     }
 }
+
+/// The type of a primary non-terminal finder function.
+/// A primary non-terminal finder function translates a terminal index into a non-terminal name
+/// that is the primary non-terminal for the given terminal.
+pub(crate) type FnPrimaryNonTerminalFinder = Box<dyn Fn(TerminalIndex) -> Option<String>>;
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -155,6 +160,24 @@ impl Cfg {
                 .unwrap()) as TerminalIndex
                 + parol_runtime::lexer::FIRST_USER_TOKEN
         }
+    }
+
+    /// Generates a function that can be used as primary_non_terminal_finder
+    pub fn get_primary_non_terminal_finder(&self) -> FnPrimaryNonTerminalFinder {
+        let terminal_index_finder = self.get_terminal_index_function();
+        let primary_non_terminals =
+            self.pr
+                .iter()
+                .fold(HashMap::<TerminalIndex, String>::new(), |mut acc, p| {
+                    if p.1.len() == 1 {
+                        if let crate::Symbol::T(Terminal::Trm(s, k, ..)) = &p.1[0] {
+                            let t = terminal_index_finder.terminal_index(s, *k);
+                            acc.insert(t, p.0.get_n().unwrap());
+                        }
+                    }
+                    acc
+                });
+        Box::new(move |t: TerminalIndex| primary_non_terminals.get(&t).cloned())
     }
 
     ///

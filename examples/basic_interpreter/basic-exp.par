@@ -2,22 +2,18 @@
 %title "Basic grammar"
 %comment "Subset of C64 Basic used in tutorial for parser generator `parol`"
 %auto_newline_off
-%on 12 %enter 1
-%on 13 %enter 2
-%on 17 %enter 2
-%on 19 %enter 2
+%on AssignOp, If, Print %enter Expr
+%on Rem %enter Cmnt
 %user_type BasicLineNumber = crate::basic_grammar::BasicLineNumber
 %user_type BasicNumber = crate::basic_grammar::BasicNumber
 
 %scanner Cmnt {
     %auto_newline_off
-    %on 8 %enter 0
+    %on EndOfLine %enter INITIAL
 }
 %scanner Expr {
     %auto_newline_off
-    %on 8 %enter 0
-    %on 14 %enter 0
-    %on 15 %enter 0
+    %on EndOfLine, Goto, Then %enter INITIAL
 }
 
 %%

@@ -1,7 +1,10 @@
 //!
 //! The module contains the conversion to a the PAR format.
 //!
-use crate::{parser::parol_grammar::GrammarType, GrammarConfig, ScannerConfig, StrVec};
+use crate::{
+    generators::grammar_config::FnScannerStateResolver, grammar::cfg::FnPrimaryNonTerminalFinder,
+    group_by, parser::parol_grammar::GrammarType, GrammarConfig, ScannerConfig, StrVec,
+};
 use anyhow::Result;
 
 // ---------------------------------------------------
@@ -34,8 +37,15 @@ pub fn render_par_string(
         GrammarType::LALR1 => "%grammar_type 'lalr(1)'\n".to_owned(),
     };
 
-    let initial_scanner_state =
-        render_scanner_config_string(0, &grammar_config.scanner_configurations[0]);
+    let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
+    let primary_non_terminal_finder = grammar_config.cfg.get_primary_non_terminal_finder();
+
+    let initial_scanner_state = render_scanner_config_string(
+        0,
+        &grammar_config.scanner_configurations[0],
+        &scanner_state_resolver,
+        &primary_non_terminal_finder,
+    );
 
     let user_types = grammar_config
         .user_type_defs
@@ -45,7 +55,6 @@ pub fn render_par_string(
             acc
         });
 
-    let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
     let user_type_resolver = grammar_config.get_user_type_resolver();
 
     let mut productions =
@@ -76,7 +85,12 @@ pub fn render_par_string(
         .enumerate()
         .skip(1)
         .fold(String::new(), |mut acc, (i, e)| {
-            acc.push_str(&render_scanner_config_string(i, e));
+            acc.push_str(&render_scanner_config_string(
+                i,
+                e,
+                &scanner_state_resolver,
+                &primary_non_terminal_finder,
+            ));
             acc.push('\n');
             acc
         });
@@ -100,7 +114,12 @@ pub fn render_par_string(
     ))
 }
 
-fn render_scanner_config_string(index: usize, scanner_config: &ScannerConfig) -> String {
+fn render_scanner_config_string(
+    index: usize,
+    scanner_config: &ScannerConfig,
+    scanner_state_resolver: &FnScannerStateResolver,
+    primary_non_terminal_finder: &FnPrimaryNonTerminalFinder,
+) -> String {
     let scanner_name = &scanner_config.scanner_name;
 
     let mut scanner_directives = String::with_capacity(1024); // Start capacity with 1KB
@@ -126,8 +145,18 @@ fn render_scanner_config_string(index: usize, scanner_config: &ScannerConfig) ->
         scanner_directives.push_str(&format!("{}%auto_ws_off\n", indent));
     }
 
-    for (k, v) in &scanner_config.transitions {
-        scanner_directives.push_str(&format!("{}%on {} %enter {}\n", indent, k, v));
+    for (scanner, primary_nts) in group_by(&scanner_config.transitions, |(_, v)| *v) {
+        let mut primary_nts = primary_nts
+            .iter()
+            .map(|(k, _)| primary_non_terminal_finder(*k).unwrap_or(format!("{}", k)))
+            .collect::<Vec<_>>();
+        primary_nts.sort();
+        scanner_directives.push_str(&format!(
+            "{}%on {} %enter {}\n",
+            indent,
+            primary_nts.join(", "),
+            scanner_state_resolver(&[scanner])
+        ));
     }
 
     if index == crate::parser::parol_grammar::INITIAL_STATE {
