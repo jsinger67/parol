@@ -637,6 +637,7 @@ dependencies = [
 [[package]]
 name = "lalr"
 version = "0.1.0"
+source = "git+https://github.com/jsinger67/lalr.git?branch=conflict_handling#367ac2a7317a66a96ad7991512664ea7304213ce"
 
 [[package]]
 name = "libc"
