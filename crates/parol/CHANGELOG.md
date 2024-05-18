@@ -33,8 +33,8 @@ more details
     This configuration was not available until now. If you didn't use a build script and call the
     `parol` binary to generate your source you weren't able to activate this configuration.
     The `trim_parse_tree` option is useful if you don't need a parse tree after finishing the parse
-    process. It mostly saves runtime effort and speeds up the parsing performance as well as the
-    memory consumption.
+    process. It mostly saves runtime effort, speeds up the parsing performance and also decreases
+    the memory consumption.
 - Removed clippy warnings new in Rust 1.78.0
 - Implement scanner-based scanner switching which can be used in both LL(k) and LALR(1) grammars
 
