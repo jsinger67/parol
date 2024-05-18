@@ -156,8 +156,6 @@ pub struct LRParser<'t> {
     /// Temporary stack that receives recognized grammar symbols before they
     /// are added to the parse tree.
     ///
-    /// Parse tree generation is not implemented yet because of the syntree's implementation.
-    ///
     /// This stack is also used to provide arguments to semantic user actions.
     parse_tree_stack: ParseTreeStack<LRParseTree<'t>>,
 
@@ -185,7 +183,7 @@ pub struct LRParser<'t> {
     ///
     /// To enable this call the method `trim_parse_tree` on the parser object before parsing.
     ///
-    /// Default is `true` as longs a parse tree generation is not implemented.
+    /// Default is `false`.
     trim_parse_tree: bool,
 }
 
@@ -208,7 +206,7 @@ impl<'t> LRParser<'t> {
             productions,
             terminal_names,
             non_terminal_names,
-            trim_parse_tree: true,
+            trim_parse_tree: false,
         }
     }
 
