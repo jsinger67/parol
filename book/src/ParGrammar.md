@@ -262,7 +262,7 @@ INITIAL.
 ### Parser-bases scanner switching
 
 The first way to control scanner states is to define switching directives within your productions.
-This way can only used for LL(k) grammars because the parser has full knowledge about which
+This way can only be used for LL(k) grammars because the parser has full knowledge about which
 production to handle next when certain input has been encountered from left to right.
 
 Parser-bases scanner state switching is initiated within your productions like in the following two
@@ -290,13 +290,18 @@ stack and to switch to a scanner configuration with the given index in parenthes
 The `%pop` instruction is used to pop the index of the scanner pushed before and to switch to the
 scanner configuration with that index.
 
-> Currently the scanner state switching only works if the lookahead
-__at the point where the switch is made__ is only of size 1 because the lookahead mechanism is not
-aware of scanner states. This means the provision of lookahead tokens will be made with the current
-active scanner and may fail if a token is not known by it. In most cases this can be circumvented by
-an appropriate grammar formulation.
->
->If the scanner switch was successful the lookahead buffer is invalidated.
+> Note that `%push` and `%pop` instructions should be balanced. This means that in one context use
+**only one** of the combinations `%push(S1)`/`%pop` and `%sc(<S1>)`/`%sc(<S2>)`. `%push`/`%pop`
+provides a (call) stack semantics over scanner states whereas `%sc`/`%sc` can be used to represent
+scanner state graphs semantics. Mixing both semantics should be avoided or at should least be
+carefully considered.
+
+> Currently the scanner parser-based state switching only works if the lookahead
+__at the point where the switch is made__ is only of size 1 because the lookahead mechanism is
+directly influenced by the current scanner state. This means the provision of lookahead tokens will
+be made with the current active scanner and may fail if a token is not known by it. In most cases
+this can be circumvented by an appropriate grammar formulation. If this is not possible consider to
+use `Scanner-bases scanner switching` instead.
 
 You may have look at example `scanner_states` that demonstrates the handling of scanner states.
 
@@ -339,11 +344,14 @@ Rem : 'REM'^;
 
 After the `%enter` directive you name the target scanner state.
 
+You also may have look at examples `scanner_states_lr` for a simple demonstration and at example
+`basic` for a more advanced one.
+
 >_Be aware that mixing of both parser-bases and scanner-based scanner state switching in one grammar
 file is not allowed and will result in errors._
 
 
-## Omitting grammar symbol from the AST in auto-gen modus
+## Omitting grammar symbols from the AST in auto-gen modus
 
 You can suffix grammar symbols (terminals and non-terminals) with a cut operator (^). This instructs
 `parol` to not propagate them to the AST in auto-gen modus.
@@ -353,18 +361,40 @@ Group: '('^ Alternations ')'^;
 ```
 
 The AST type for the symbol `Group` will then only contain a member for the non-terminal
-`Alternations`. The parentheses are ignored.
+`Alternations`. The parentheses are left out.
 
 ## Assigning user types to grammar symbols
 
 You can specify a user type to be inserted into the AST structure at the place where the symbol
 would otherwise had the originally generated type.
 Add after a grammar symbol a colon followed by a user type name to instruct `parol` to use this type
-instead. In your language implementation you have to provide fallible or infallible conversions
-from the original generated types to your types by implementing one of the traits `From` or `TryFrom`.
+instead. In your language implementation you have to provide fallible conversions from references of
+the original generated types (`&T`) to your types (`U`) by implementing the trait
+`TryFrom<&T> for U`.
+
 An examples can be found in the `list_auto` example.
+
+```rust
+impl<'t> TryFrom<&Token<'t>> for Number {
+    type Error = anyhow::Error;
+
+    fn try_from(number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
+        Ok(Self(number.text().parse::<u32>()?))
+    }
+}
+```
+
 You can also define aliases for the user type names by inserting as many `%user_type` directives as
-you want. Then use these aliases behind the colons.
+you want.
+
+```parol
+%user_type Number = crate::list_grammar::Number
+```
+Then use these aliases behind the colons.
+
+```parol
+Num: "0|[1-9][0-9]*": Number;
+```
 
 ## Semantic actions
 
