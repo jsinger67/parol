@@ -5501,7 +5501,7 @@ hljs.registerLanguage(
           },
           {
             className: "keyword",
-            begin: /%(start|title|comment|line_comment|block_comment|auto_newline_of|auto_ws_off|user_type|scanner)/,
+            begin: /%(start|title|comment|line_comment|block_comment|auto_newline_of|auto_ws_off|user_type|scanner|on|enter)/,
           },
           {
             className: "built_in",

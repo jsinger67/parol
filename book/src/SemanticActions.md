@@ -257,6 +257,8 @@ right-hand side of the production (`{ instruction ";"^ }`).
 The elements of the vector are of type `CalcList` that is defined this way:
 > The reason why boxed types are needed is explained
 [here](AstGeneration.html#recursive-structure-of-a-grammar).
+>
+> Also note that in the meantime the very `Box` here could be optimized away by `parol`. This is a great example of the evolution of it.
 
 ```rust
 ///

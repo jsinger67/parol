@@ -58,6 +58,10 @@ If you have a historical grammar definition that is left recursive, which in dee
 for instance because of the ubiquity of Yacc/Bison grammar descriptions, you should allow for extra
 time and effort to convert it to a working right recursive one.
 
+Or you use the opportunity to use LALR(1) grammars without having to forgo the comfort of `parol`.
+Have a look at the specification of a
+[grammar type](https://jsinger67.github.io/ParGrammar.html#defining-the-grammar-type).
+
 `parol` currently provides no special support for this phase except that it is able to detect left
 recursions in your grammar.
 
