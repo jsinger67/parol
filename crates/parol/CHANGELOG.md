@@ -27,11 +27,13 @@ new minor version numbers. Please note that this is no version handling covered 
 
   * **Shift-reduce conflicts**
   
-    Parol behaves like Bison/YACC now, namely that in general all are resolved by favoring shift.
+    Parol behaves like Bison/YACC now, namely that in general all shift-reduce conflicts are
+    resolved by favoring shift.
 
   * **Reduce-reduce conflicts**
 
-    Parol prefers productions with lower number, i.e. the first seen in the grammar description.
+    Parol prefers productions with lower number, i.e. the first seen ones in the grammar
+    description.
 
   All automatically resolved conflicts generate warnings that should not simply be ignored.
   A way to disable warnings on resolved conflicts will be provided later.
