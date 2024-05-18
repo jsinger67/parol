@@ -20,6 +20,7 @@ new minor version numbers. Please note that this is no version handling covered 
 ## 0.22.1 - Not released yet
 
 - Fix default settings for enabling parse tree generation in `LRParser`
+- Optimize memory consumption in case parse tree generation is disabled in `LRParser`
 
 ## 0.22.0 - 2024-05-16
 

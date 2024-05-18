@@ -242,9 +242,9 @@ impl<'t> LRParser<'t> {
         let non_terminal = LRParseTree::NonTerminal(
             self.non_terminal_names[self.productions[prod_num].lhs],
             if self.trim_parse_tree {
-                Vec::new()
+                None
             } else {
-                children
+                Some(children)
             },
         );
         // Push the new non-terminal node onto the parse tree stack

@@ -8,14 +8,14 @@ use syntree::{Builder, Tree};
 #[derive(Debug, Clone)]
 pub enum LRParseTree<'t> {
     Terminal(Token<'t>),
-    NonTerminal(&'static str, Vec<LRParseTree<'t>>),
+    NonTerminal(&'static str, Option<Vec<LRParseTree<'t>>>),
 }
 
 impl Display for LRParseTree<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             LRParseTree::Terminal(token) => write!(f, "{}", token),
-            LRParseTree::NonTerminal(name, children) => {
+            LRParseTree::NonTerminal(name, Some(children)) => {
                 write!(f, "{}", name)?;
                 if !children.is_empty() {
                     write!(f, "(")?;
@@ -29,6 +29,7 @@ impl Display for LRParseTree<'_> {
                 }
                 Ok(())
             }
+            LRParseTree::NonTerminal(name, None) => write!(f, "{}", name),
         }
     }
 }
@@ -49,8 +50,10 @@ fn build_tree<'t>(
         }
         LRParseTree::NonTerminal(name, children) => {
             builder.open(ParseTreeType::N(name))?;
-            for child in children {
-                build_tree(builder, child)?;
+            if let Some(children) = children {
+                for child in children {
+                    build_tree(builder, child)?;
+                }
             }
             builder.close()?;
         }
