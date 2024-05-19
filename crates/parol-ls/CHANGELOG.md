@@ -5,7 +5,7 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## 0.19.1 - Not released yet
+## 0.19.1 - 2024-05-19
 
 * Better presentation of multiple errors
 * Enhanced support for scanner states and especially the %on/%enter directives in document outline.
