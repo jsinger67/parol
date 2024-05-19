@@ -5,6 +5,20 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 0.19.1 - Not released yet
+
+* Better presentation of multiple errors
+* Enhanced support for scanner states and especially the %on/%enter directives in document outline.
+  * Goto primary non-terminals
+  * Rename primary non-terminals
+  * Hover of primary non-terminals
+  * Goto scanner states
+  * Rename scanner states (except INITIAL)
+* Goto scanner states from token with state
+* Renaming of Scanner states from token with state and scanner definitions itself
+* Hover of Scanner states from token with state
+* Some inner refactoring
+
 ## 0.19.0 - 2024-05-16
 
 * Support of new scanner switching of `parol_runtime@0.22` and `parol@0.29`

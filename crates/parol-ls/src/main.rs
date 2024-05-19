@@ -19,6 +19,7 @@ mod parol_ls_grammar_trait;
 mod parol_ls_parser;
 mod rng;
 mod server;
+mod symbol_def;
 mod utils;
 
 extern crate clap;

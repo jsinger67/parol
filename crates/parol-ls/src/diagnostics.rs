@@ -139,7 +139,7 @@ fn extract_grammar_analysis_error(
                 ) {
                     for rang in non_terminals {
                         let (range, message) =
-                            (*rang, format!("Left-recursive non-terminal: {}", rec.name));
+                            (rang, format!("Left-recursive non-terminal: {}", rec.name));
                         diagnostics.push(Diagnostic {
                             range,
                             severity: Some(DiagnosticSeverity::ERROR),
@@ -191,7 +191,7 @@ fn extract_grammar_analysis_error(
                 ) {
                     for rng in non_terminals {
                         let (range, message) =
-                            (*rng, format!("{} non-terminal: {}", error_spec, nt.hint));
+                            (rng, format!("{} non-terminal: {}", error_spec, nt.hint));
                         diagnostics.push(Diagnostic {
                             range,
                             severity: Some(DiagnosticSeverity::ERROR),

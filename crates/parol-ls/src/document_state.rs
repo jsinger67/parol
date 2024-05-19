@@ -13,8 +13,8 @@ pub(crate) struct DocumentState {
 }
 
 impl DocumentState {
-    pub(crate) fn ident_at_position(&self, position: Position) -> Option<String> {
-        self.parsed_data.ident_at_position(position)
+    pub(crate) fn ident_at_position(&self, position: Position) -> Option<&str> {
+        self.parsed_data.ident_at_position(position).map(|s| s.0)
     }
 
     pub(crate) fn clear(&mut self) {

@@ -342,7 +342,7 @@ impl Server {
             // Handle non-terminals here
             Self::add_non_terminal_definitions(
                 document_state,
-                &text_at_position,
+                text_at_position,
                 &mut locations,
                 &params,
             );
@@ -350,9 +350,17 @@ impl Server {
             // Handle user types here
             Self::find_user_type_definitions(
                 document_state,
-                text_at_position,
+                text_at_position.to_owned(),
                 &mut locations,
-                params,
+                &params,
+            );
+
+            // Handle scanner states here
+            Self::find_scanner_state_definitions(
+                document_state,
+                text_at_position.to_owned(),
+                &mut locations,
+                &params,
             );
         }
         GotoDefinitionResponse::Array(locations)
@@ -453,24 +461,50 @@ impl Server {
         document_state: &DocumentState,
         text_at_position: String,
         locations: &mut Vec<Location>,
-        params: GotoDefinitionParams,
+        params: &GotoDefinitionParams,
     ) {
-        if let Some(range) = document_state
+        if let Some(ranges) = document_state
             .parsed_data
             .user_type_definitions
-            .get(&text_at_position)
+            .find_definitions(&text_at_position)
         {
             locations.push(Location {
-                uri: params.text_document_position_params.text_document.uri,
-                range: *range,
+                uri: params
+                    .text_document_position_params
+                    .text_document
+                    .uri
+                    .clone(),
+                range: ranges[0],
             });
         }
     }
 
-    pub(crate) fn find_non_terminal_definitions<'a>(
-        document_state: &'a DocumentState,
+    fn find_scanner_state_definitions(
+        document_state: &DocumentState,
+        text_at_position: String,
+        locations: &mut Vec<Location>,
+        params: &GotoDefinitionParams,
+    ) {
+        if let Some(ranges) = document_state
+            .parsed_data
+            .scanner_state_definitions
+            .find_definitions(&text_at_position)
+        {
+            locations.push(Location {
+                uri: params
+                    .text_document_position_params
+                    .text_document
+                    .uri
+                    .clone(),
+                range: ranges[0],
+            });
+        }
+    }
+
+    pub(crate) fn find_non_terminal_definitions(
+        document_state: &DocumentState,
         non_terminal: &str,
-    ) -> Option<&'a Vec<Range>> {
+    ) -> Option<Vec<Range>> {
         document_state
             .parsed_data
             .find_non_terminal_definitions(non_terminal)
@@ -492,7 +526,7 @@ impl Server {
                         .text_document
                         .uri
                         .clone(),
-                    range: *range,
+                    range,
                 });
             }
         }
