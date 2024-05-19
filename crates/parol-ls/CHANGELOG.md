@@ -18,6 +18,7 @@ file.
 * Renaming of Scanner states from token with state and scanner definitions itself
 * Hover of Scanner states from token with state
 * Some inner refactoring
+* Bump to `lsp-types@0.96.0`
 
 ## 0.19.0 - 2024-05-16
 

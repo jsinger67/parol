@@ -1,5 +1,5 @@
 use lsp_types::{
-    Diagnostic, DiagnosticRelatedInformation, DiagnosticSeverity, Location, Range, Url,
+    Diagnostic, DiagnosticRelatedInformation, DiagnosticSeverity, Location, Range, Uri,
 };
 use parol::{GrammarAnalysisError, ParolParserError};
 use parol_runtime::{ParolError, ParserError, SyntaxError};
@@ -16,7 +16,7 @@ pub struct Diagnostics {}
 
 impl Diagnostics {
     pub(crate) fn to_diagnostics(
-        uri: &Url,
+        uri: &Uri,
         document_state: &DocumentState,
         err: anyhow::Error,
     ) -> Vec<Diagnostic> {
@@ -76,7 +76,7 @@ impl Diagnostics {
     }
 }
 
-fn extract_syntax_errors(entries: &[SyntaxError], diagnostics: &mut Vec<Diagnostic>, uri: &Url) {
+fn extract_syntax_errors(entries: &[SyntaxError], diagnostics: &mut Vec<Diagnostic>, uri: &Uri) {
     for e in entries {
         let range = if e.unexpected_tokens.is_empty() {
             location_to_range(&e.error_location)
@@ -128,7 +128,7 @@ fn extract_grammar_analysis_error(
     error: &GrammarAnalysisError,
     located_document_state: &LocatedDocumentState,
     diagnostics: &mut Vec<Diagnostic>,
-    uri: &Url,
+    uri: &Uri,
 ) {
     match error {
         GrammarAnalysisError::LeftRecursion { recursions } => {

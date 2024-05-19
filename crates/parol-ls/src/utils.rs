@@ -26,11 +26,11 @@ pub(crate) fn location_to_range(location: &Location) -> Range {
 
 ///
 /// Converts `parol_runtime::lexer::Location` to a `lsp_types::Location`.
-/// Url is usually taken from the `LocatedDocumentState`.
+/// Uri is usually taken from the `LocatedDocumentState`.
 ///
 pub(crate) fn location_to_location(
     location: &Location,
-    uri: &lsp_types::Url,
+    uri: &lsp_types::Uri,
 ) -> lsp_types::Location {
     lsp_types::Location {
         uri: uri.to_owned(),

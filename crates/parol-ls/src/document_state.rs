@@ -1,7 +1,7 @@
 use derive_new::new;
 use lsp_types::{
     DocumentFormattingParams, DocumentSymbolParams, DocumentSymbolResponse, Hover, HoverParams,
-    Position, PrepareRenameResponse, RenameParams, TextDocumentPositionParams, Url, WorkspaceEdit,
+    Position, PrepareRenameResponse, RenameParams, TextDocumentPositionParams, Uri, WorkspaceEdit,
 };
 
 use crate::parol_ls_grammar::ParolLsGrammar;
@@ -50,6 +50,6 @@ impl DocumentState {
 
 #[derive(Debug, new)]
 pub(crate) struct LocatedDocumentState<'a> {
-    pub(crate) uri: &'a Url,
+    pub(crate) uri: &'a Uri,
     pub(crate) document_state: &'a DocumentState,
 }

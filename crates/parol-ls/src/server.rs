@@ -1,6 +1,11 @@
-use std::{collections::HashMap, error::Error, path::Path, sync::Arc, thread};
+use std::{
+    collections::HashMap,
+    error::Error,
+    path::{Path, PathBuf},
+    sync::Arc,
+    thread,
+};
 
-use anyhow::anyhow;
 use lsp_server::Message;
 use lsp_types::{
     notification::{
@@ -11,7 +16,7 @@ use lsp_types::{
     DidOpenTextDocumentParams, DocumentFormattingParams, DocumentSymbolParams,
     DocumentSymbolResponse, GotoDefinitionParams, GotoDefinitionResponse, Hover, HoverParams,
     Location, PrepareRenameResponse, PublishDiagnosticsParams, Range, RenameParams,
-    TextDocumentContentChangeEvent, TextDocumentPositionParams, TextEdit, Url, WorkspaceEdit,
+    TextDocumentContentChangeEvent, TextDocumentPositionParams, TextEdit, Uri, WorkspaceEdit,
 };
 use parol::{
     analysis::lalr1_parse_table::calculate_lalr1_parse_table, calculate_lookahead_dfas,
@@ -121,7 +126,7 @@ macro_rules! update_boolean_formatting_option {
 #[derive(Debug, Default)]
 pub(crate) struct Server {
     /// Any documents the server has handled, indexed by their URL
-    documents: HashMap<String, DocumentState>,
+    documents: HashMap<Uri, DocumentState>,
 
     /// Limit for lookahead calculation.
     /// Be careful with high values. The server can get stuck for some grammars.
@@ -161,14 +166,12 @@ impl Server {
 
     pub(crate) fn analyze(
         &mut self,
-        uri: Url,
+        uri: Uri,
         version: i32,
         connection: Arc<lsp_server::Connection>,
     ) -> anyhow::Result<()> {
-        let file_path = uri
-            .to_file_path()
-            .map_err(|_| anyhow!("Failed interpreting file path {}", uri.path()))?;
-        let document_state = self.documents.get_mut(uri.path()).unwrap();
+        let file_path: PathBuf = PathBuf::from(uri.path().to_string());
+        let document_state = self.documents.get_mut(&uri).unwrap();
         eprintln!("analyze: step 1 - parse");
         document_state.clear();
         parse(
@@ -177,7 +180,7 @@ impl Server {
             &mut document_state.parsed_data,
         )?;
         eprintln!("analyze: step 2 - check_grammar");
-        let document_state = self.documents.get(uri.path()).unwrap();
+        let document_state = self.documents.get(&uri).unwrap();
         Self::check_grammar(
             &document_state.input,
             &file_path,
@@ -205,7 +208,7 @@ impl Server {
         file_name: &Path,
         max_k: usize,
         connection: Arc<lsp_server::Connection>,
-        uri: Url,
+        uri: Uri,
         version: i32,
         document_state: DocumentState,
     ) -> anyhow::Result<()> {
@@ -218,14 +221,14 @@ impl Server {
                 if let Err(err) = calculate_lookahead_dfas(&grammar_config, max_k) {
                     eprintln!("check_grammar: errors from calculate_lookahead_dfas");
                     let _ =
-                        Self::notify_analysis_error(err, connection, uri, version, document_state);
+                        Self::notify_analysis_error(err, connection, &uri, version, document_state);
                 }
             }
             GrammarType::LALR1 => {
                 if let Err(err) = calculate_lalr1_parse_table(&grammar_config) {
                     eprintln!("check_grammar: errors from calculate_lookahead_dfas");
                     let _ =
-                        Self::notify_analysis_error(err, connection, uri, version, document_state);
+                        Self::notify_analysis_error(err, connection, &uri, version, document_state);
                 }
             }
         });
@@ -239,7 +242,7 @@ impl Server {
     ) -> Result<(), Box<dyn Error>> {
         let params: DidOpenTextDocumentParams = n.extract(DidOpenTextDocument::METHOD)?;
         self.documents.insert(
-            params.text_document.uri.path().to_string(),
+            params.text_document.uri.clone(),
             DocumentState {
                 input: params.text_document.text.clone(),
                 ..Default::default()
@@ -260,12 +263,15 @@ impl Server {
             }
             Err(err) => {
                 eprintln!("handle_open_document: error");
-                let path = params.text_document.uri.path();
-                let document_state = self.documents.get(path).unwrap().clone();
+                let document_state = self
+                    .documents
+                    .get(&params.text_document.uri)
+                    .unwrap()
+                    .clone();
                 Self::notify_analysis_error(
                     err,
                     connection,
-                    params.text_document.uri,
+                    &params.text_document.uri,
                     params.text_document.version,
                     document_state,
                 )?;
@@ -280,7 +286,7 @@ impl Server {
         n: lsp_server::Notification,
     ) -> Result<(), Box<dyn Error>> {
         let params: DidChangeTextDocumentParams = n.extract(DidChangeTextDocument::METHOD)?;
-        self.apply_changes(params.text_document.uri.path(), &params.content_changes);
+        self.apply_changes(&params.text_document.uri, &params.content_changes);
         match self.analyze(
             params.text_document.uri.clone(),
             params.text_document.version,
@@ -296,12 +302,15 @@ impl Server {
             }
             Err(err) => {
                 eprintln!("handle_change_document: error");
-                let path = params.text_document.uri.path();
-                let document_state = self.documents.get(path).unwrap().clone();
+                let document_state = self
+                    .documents
+                    .get(&params.text_document.uri)
+                    .unwrap()
+                    .clone();
                 Self::notify_analysis_error(
                     err,
                     connection,
-                    params.text_document.uri,
+                    &params.text_document.uri,
                     params.text_document.version,
                     document_state,
                 )?;
@@ -315,7 +324,7 @@ impl Server {
         n: lsp_server::Notification,
     ) -> Result<(), Box<dyn Error>> {
         let params: DidCloseTextDocumentParams = n.extract(DidCloseTextDocument::METHOD)?;
-        self.cleanup(params.text_document.uri.path());
+        self.cleanup(&params.text_document.uri);
         Ok(())
     }
 
@@ -325,13 +334,7 @@ impl Server {
     ) -> GotoDefinitionResponse {
         let document_state = self
             .documents
-            .get(
-                params
-                    .text_document_position_params
-                    .text_document
-                    .uri
-                    .path(),
-            )
+            .get(&params.text_document_position_params.text_document.uri)
             .unwrap();
         let mut locations = Vec::new();
         if let Some(text_at_position) =
@@ -369,13 +372,7 @@ impl Server {
     pub(crate) fn handle_hover(&mut self, params: HoverParams) -> Hover {
         let document_state = self
             .documents
-            .get(
-                params
-                    .text_document_position_params
-                    .text_document
-                    .uri
-                    .path(),
-            )
+            .get(&params.text_document_position_params.text_document.uri)
             .unwrap();
         document_state.hover(params)
     }
@@ -384,7 +381,7 @@ impl Server {
         &self,
         params: DocumentSymbolParams,
     ) -> DocumentSymbolResponse {
-        let document_state = self.documents.get(params.text_document.uri.path()).unwrap();
+        let document_state = self.documents.get(&params.text_document.uri).unwrap();
         document_state.document_symbols(params)
     }
 
@@ -392,7 +389,7 @@ impl Server {
         &self,
         params: TextDocumentPositionParams,
     ) -> Option<PrepareRenameResponse> {
-        if let Some(document_state) = self.documents.get(params.text_document.uri.path()) {
+        if let Some(document_state) = self.documents.get(&params.text_document.uri) {
             document_state.prepare_rename(params)
         } else {
             None
@@ -402,7 +399,7 @@ impl Server {
     pub(crate) fn handle_rename(&self, params: RenameParams) -> Option<WorkspaceEdit> {
         if let Some(document_state) = self
             .documents
-            .get(params.text_document_position.text_document.uri.path())
+            .get(&params.text_document_position.text_document.uri)
         {
             document_state.rename(params)
         } else {
@@ -414,7 +411,7 @@ impl Server {
         &self,
         mut params: DocumentFormattingParams,
     ) -> Option<Vec<TextEdit>> {
-        if let Some(document_state) = self.documents.get(params.text_document.uri.path()) {
+        if let Some(document_state) = self.documents.get(&params.text_document.uri) {
             add_boolean_formatting_option!(self, params.options.properties, empty_line_after_prod);
             add_boolean_formatting_option!(self, params.options.properties, prod_semicolon_on_nl);
             add_number_formatting_option!(self, params.options.properties, max_line_length);
@@ -435,23 +432,19 @@ impl Server {
         Ok(())
     }
 
-    fn cleanup(&mut self, file_path: &str) {
-        self.documents.remove(file_path);
+    fn cleanup(&mut self, uri: &Uri) {
+        self.documents.remove(uri);
     }
 
-    fn apply_changes(
-        &mut self,
-        file_path: &str,
-        content_changes: &[TextDocumentContentChangeEvent],
-    ) {
+    fn apply_changes(&mut self, uri: &Uri, content_changes: &[TextDocumentContentChangeEvent]) {
         if let Some(change) = content_changes.last() {
-            self.apply_change(file_path, change);
+            self.apply_change(uri, change);
         }
     }
 
-    fn apply_change(&mut self, file_path: &str, change: &TextDocumentContentChangeEvent) {
+    fn apply_change(&mut self, uri: &Uri, change: &TextDocumentContentChangeEvent) {
         self.documents
-            .get_mut(file_path)
+            .get_mut(uri)
             .unwrap()
             .input
             .clone_from(&change.text);
@@ -534,7 +527,7 @@ impl Server {
 
     fn notify_analysis_ok(
         connection: Arc<lsp_server::Connection>,
-        uri: Url,
+        uri: Uri,
         version: i32,
     ) -> Result<(), Box<dyn Error>> {
         let result = PublishDiagnosticsParams::new(uri, vec![], Some(version));
@@ -552,14 +545,14 @@ impl Server {
     fn notify_analysis_error(
         err: anyhow::Error,
         connection: Arc<lsp_server::Connection>,
-        uri: Url,
+        uri: &Uri,
         version: i32,
         document_state: DocumentState,
     ) -> Result<(), Box<dyn Error>> {
         eprintln!("handle_open_document: document obtained");
         let result = PublishDiagnosticsParams::new(
             uri.clone(),
-            Diagnostics::to_diagnostics(&uri, &document_state, err),
+            Diagnostics::to_diagnostics(uri, &document_state, err),
             Some(version),
         );
         let params = serde_json::to_value(result).unwrap();
