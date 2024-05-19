@@ -200,7 +200,7 @@ impl From<&ScannerDirectives> for Rng {
                 Self::from(&auto_ws.percent_auto_underscore_ws_underscore_off)
             }
             ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(trans) => {
-                Self::from(&trans.percent_on).extend(Self::from(&trans.identifier_list))
+                Self::from(&trans.percent_on).extend(Self::from(&trans.identifier))
             }
         }
     }

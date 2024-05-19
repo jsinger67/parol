@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 use crate::parol_ls_grammar::OwnedToken;
 use derive_new::new;
 use lsp_types::{Position, Range};
@@ -85,6 +87,14 @@ impl From<Rng> for Range {
 impl From<&Rng> for Range {
     fn from(val: &Rng) -> Self {
         val.0
+    }
+}
+
+impl Add for Rng {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        self.extend(rhs)
     }
 }
 

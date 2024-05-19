@@ -2,7 +2,8 @@ use crate::{
     formatting::Comments,
     parol_ls_grammar_trait::{
         self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
-        ScannerDirectives, ScannerState, StartDeclaration, TokenLiteral, UserTypeDeclaration,
+        Prolog, ScannerDirectives, ScannerState, StartDeclaration, TokenLiteral, TokenWithStates,
+        UserTypeDeclaration,
     },
     rng::Rng,
     utils::{extract_text_range, location_to_range, to_markdown},
@@ -26,21 +27,36 @@ use std::fmt::{Debug, Display, Error, Formatter, Write as _};
 ///
 #[derive(Debug, Clone, Default)]
 pub struct ParolLsGrammar {
-    // A hash that maps non-terminals to their productions' left-hand side.
+    // A hash that maps non-terminals to their productions' left-hand side rages.
     pub non_terminal_definitions: HashMap<String, Vec<Range>>,
-    pub non_terminals: Vec<(Range, String)>,
+
+    // A list of non-terminal references and their ranges
+    pub non_terminal_refs: Vec<(Range, String)>,
+
+    pub scanner_state_definitions: HashMap<String, Range>,
+
+    // A list of scanner state references and their ranges
+    pub scanner_states_refs: Vec<(Range, String)>,
+
+    // The start symbol of the grammar
     pub start_symbol: String,
 
+    // A hash that maps user types to their ranges
     pub user_type_definitions: HashMap<String, Range>,
-    pub user_types: Vec<(Range, String)>,
+
+    // A list of user type references and their ranges
+    pub user_type_refs: Vec<(Range, String)>,
 
     // A hash that maps non-terminals to their productions
     pub productions: HashMap<String, Vec<Production>>,
 
+    // A list of document symbols
     pub symbols: Vec<DocumentSymbol>,
 
+    // The grammar
     pub grammar: Option<ParolLs>,
 
+    // A list of comments
     pub(crate) comments: Comments,
 }
 
@@ -51,17 +67,23 @@ impl ParolLsGrammar {
 
     pub(crate) fn ident_at_position(&self, position: Position) -> Option<String> {
         if let Some((_, non_terminal)) = self
-            .non_terminals
+            .non_terminal_refs
             .iter()
             .find(|(r, _)| r.start <= position && r.end > position)
         {
             Some(non_terminal.clone())
         } else if let Some((_, user_type)) = self
-            .user_types
+            .user_type_refs
             .iter()
             .find(|(r, _)| r.start <= position && r.end > position)
         {
             Some(user_type.clone())
+        } else if let Some((_, scanner_state)) = self
+            .scanner_states_refs
+            .iter()
+            .find(|(r, _)| r.start <= position && r.end > position)
+        {
+            Some(scanner_state.clone())
         } else {
             None
         }
@@ -79,7 +101,7 @@ impl ParolLsGrammar {
     }
 
     fn find_non_terminal_range(&self, non_terminal: &str, position: Position) -> Option<Range> {
-        self.non_terminals.iter().find_map(|(r, n)| {
+        self.non_terminal_refs.iter().find_map(|(r, n)| {
             if n == non_terminal && r.start <= position && r.end > position {
                 Some(*r)
             } else {
@@ -88,9 +110,24 @@ impl ParolLsGrammar {
         })
     }
 
-    fn add_non_terminal_ref(&mut self, range: Range, token: &OwnedToken) {
+    fn add_non_terminal_ref(&mut self, token: &OwnedToken) {
         // eprintln!("add_non_terminal_ref: {range:?}, {}", token);
-        self.non_terminals.push((range, token.text().to_string()));
+        let range = location_to_range(&token.location);
+        self.non_terminal_refs
+            .push((range, token.text().to_string()));
+    }
+
+    /// Adds a scanner state definition to the list of scanner state definitions
+    /// Used for hover support
+    fn add_scanner_state_definition(&mut self, identifier: &OwnedToken, range: Range) {
+        self.scanner_state_definitions
+            .insert(identifier.text().to_string(), range);
+    }
+
+    fn add_scanner_state_ref(&mut self, range: Range, token: &OwnedToken) {
+        // eprintln!("add_scanner_state_ref: {range:?}, {}", token);
+        self.scanner_states_refs
+            .push((range, token.text().to_string()));
     }
 
     fn add_non_terminal_definition(&mut self, token: &OwnedToken) -> Range {
@@ -105,7 +142,7 @@ impl ParolLsGrammar {
     }
 
     fn add_user_type_ref(&mut self, range: Range, token: &OwnedToken) {
-        self.user_types.push((range, token.text().to_string()));
+        self.user_type_refs.push((range, token.text().to_string()));
     }
 
     fn add_user_type_definition(&mut self, token: &OwnedToken, range: Range) -> Range {
@@ -117,7 +154,7 @@ impl ParolLsGrammar {
         range
     }
 
-    fn add_scanner_symbols(symbols: &mut Vec<DocumentSymbol>, arg: &ScannerDirectives) {
+    fn add_scanner_symbols(&mut self, symbols: &mut Vec<DocumentSymbol>, arg: &ScannerDirectives) {
         match arg {
             ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(line_comment) => {
                 #[allow(deprecated)]
@@ -228,17 +265,47 @@ impl ParolLsGrammar {
                 });
             }
             ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(trans) => {
-                #[allow(deprecated)]
-                symbols.push(DocumentSymbol {
-                    name: trans.percent_on.text().to_string(),
-                    detail: Some("Transition".to_string()),
-                    kind: SymbolKind::PROPERTY,
-                    tags: None,
-                    deprecated: None,
-                    range: Into::<Rng>::into(arg).0,
-                    selection_range: Into::<Rng>::into(&trans.percent_on).0,
-                    children: None,
-                });
+                self.add_non_terminal_ref(&trans.identifier_list.identifier.identifier);
+                let mut children: Vec<DocumentSymbol> =
+                    trans.identifier_list.identifier_list_list.iter().fold(
+                        vec![(&trans.identifier_list.identifier.identifier).into()],
+                        |mut acc, id| {
+                            let mut id_sym: DocumentSymbol = (&id.identifier.identifier).into();
+                            id_sym.detail = Some("Initiating terminal".to_string());
+
+                            // Add the reference to the non-terminal for hover support
+
+                            // TODO: This is no good separation of concerns. We should have a separate
+                            // method for adding references to non-terminals.
+                            // Actually, this is the only reason why this function has a mutable
+                            // reference to self.
+                            self.add_non_terminal_ref(&id.identifier.identifier);
+
+                            acc.push(id_sym);
+                            acc
+                        },
+                    );
+                let mut target_state: DocumentSymbol = (&trans.identifier.identifier).into();
+                target_state.detail = Some("Target state".to_string());
+
+                // Add the reference to the non-terminal for hover support
+                // TODO: This is no good separation of concerns. We should have a separate
+                // method for adding references to non-terminals.
+                // Actually, this is the only reason why this function has a mutable
+                // reference to self.
+                self.add_scanner_state_ref(target_state.range, &trans.identifier.identifier);
+
+                children.push(target_state);
+
+                let mut on_enter_directive: DocumentSymbol = (&trans.percent_on).into();
+                on_enter_directive.detail = Some("Scanner state transition".to_string());
+                // Extend the range to include the target state
+                on_enter_directive.range = Into::<Rng>::into(arg).0;
+                on_enter_directive.selection_range = Into::<Rng>::into(&trans.percent_on).0;
+                on_enter_directive.kind = SymbolKind::STRUCT;
+                on_enter_directive.children = Some(children);
+
+                symbols.push(on_enter_directive);
             }
         }
     }
@@ -254,6 +321,12 @@ impl ParolLsGrammar {
                     let _ = write!(value, "\n{}", to_markdown(extract_text_range(input, rng)));
                 }
             } else if let Some(range) = self.user_type_definitions.get(&item) {
+                let _ = write!(
+                    value,
+                    "\n{}",
+                    to_markdown(extract_text_range(input, Rng(*range)))
+                );
+            } else if let Some(range) = self.scanner_state_definitions.get(&item) {
                 let _ = write!(
                     value,
                     "\n{}",
@@ -308,15 +381,18 @@ impl ParolLsGrammar {
                         uri: params.text_document_position.text_document.uri.clone(),
                         version: None,
                     },
-                    edits: self.non_terminals.iter().fold(vec![], |mut acc, (r, n)| {
-                        if n == &non_terminal {
-                            acc.push(OneOf::Left(TextEdit {
-                                range: *r,
-                                new_text: params.new_name.clone(),
-                            }));
-                        }
-                        acc
-                    }),
+                    edits: self
+                        .non_terminal_refs
+                        .iter()
+                        .fold(vec![], |mut acc, (r, n)| {
+                            if n == &non_terminal {
+                                acc.push(OneOf::Left(TextEdit {
+                                    range: *r,
+                                    new_text: params.new_name.clone(),
+                                }));
+                            }
+                            acc
+                        }),
                 };
                 let document_changes = Some(DocumentChanges::Edits(vec![text_document_edits]));
                 return Some(WorkspaceEdit {
@@ -353,7 +429,7 @@ impl ParolLsGrammar {
             .to_string()
     }
 
-    fn expanded_token_literal(token_literal: &TokenLiteral) -> String {
+    pub(crate) fn expanded_token_literal(token_literal: &TokenLiteral) -> String {
         match token_literal {
             TokenLiteral::String(s) => {
                 TerminalKind::Legacy.expand(Self::trim_quotes(s.string.string.text()).as_str())
@@ -374,11 +450,20 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         Ok(())
     }
 
+    /// Semantic action for non-terminal 'Prolog'
+    fn prolog(&mut self, prolog: &Prolog) -> Result<()> {
+        self.scanner_state_definitions.insert(
+            "INITIAL".to_string(),
+            Rng::from_slice(&prolog.prolog_list).0,
+        );
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'StartDeclaration'
     fn start_declaration(&mut self, arg: &StartDeclaration) -> Result<()> {
         let token = &arg.identifier.identifier;
         let range = location_to_range(&token.location);
-        self.add_non_terminal_ref(range, token);
+        self.add_non_terminal_ref(token);
 
         self.start_symbol = token.text().to_string();
 
@@ -485,7 +570,9 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                 });
             }
             Declaration::ScannerDirectives(scanner) => {
-                Self::add_scanner_symbols(&mut self.symbols, &scanner.scanner_directives);
+                let mut scanner_symbols: Vec<DocumentSymbol> = vec![];
+                self.add_scanner_symbols(&mut scanner_symbols, &scanner.scanner_directives);
+                self.symbols.extend(scanner_symbols);
             }
             Declaration::PercentGrammarUnderscoreTypeLiteralString(grammar_type) => {
                 #[allow(deprecated)]
@@ -529,8 +616,25 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     /// Semantic action for non-terminal 'ProductionLHS'
     fn production_l_h_s(&mut self, arg: &ProductionLHS) -> Result<()> {
         let token = &arg.identifier.identifier;
-        let range = self.add_non_terminal_definition(token);
-        self.add_non_terminal_ref(range, token);
+        self.add_non_terminal_definition(token);
+        self.add_non_terminal_ref(token);
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'TokenWithStates'
+    fn token_with_states(&mut self, arg: &TokenWithStates) -> Result<()> {
+        [arg.identifier_list.identifier.identifier.clone()]
+            .iter()
+            .chain(
+                arg.identifier_list
+                    .identifier_list_list
+                    .iter()
+                    .map(|id| &id.identifier.identifier),
+            )
+            .for_each(|id| {
+                let token = &id;
+                self.add_non_terminal_ref(token);
+            });
         Ok(())
     }
 
@@ -570,8 +674,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     /// Semantic action for non-terminal 'NonTerminal'
     fn non_terminal(&mut self, arg: &NonTerminal) -> Result<()> {
         let token = &arg.identifier.identifier;
-        let range = location_to_range(&token.location);
-        self.add_non_terminal_ref(range, token);
+        self.add_non_terminal_ref(token);
         Ok(())
     }
 
@@ -579,12 +682,12 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     fn scanner_state(&mut self, arg: &ScannerState) -> Result<()> {
         let scanner_state_symbols: Vec<DocumentSymbol> =
             arg.scanner_state_list.iter().fold(vec![], |mut acc, s| {
-                Self::add_scanner_symbols(&mut acc, &s.scanner_directives);
+                self.add_scanner_symbols(&mut acc, &s.scanner_directives);
                 acc
             });
         let name = format!("{} {}", arg.percent_scanner, arg.identifier.identifier);
         #[allow(deprecated)]
-        self.symbols.push(DocumentSymbol {
+        let document_symbol = DocumentSymbol {
             name,
             detail: Some("Scanner state".to_string()),
             kind: SymbolKind::STRUCT,
@@ -593,7 +696,9 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
             range: Into::<Rng>::into(arg).0,
             selection_range: Into::<Rng>::into(&arg.percent_scanner).0,
             children: Some(scanner_state_symbols),
-        });
+        };
+        self.add_scanner_state_definition(&arg.identifier.identifier, Into::<Rng>::into(arg).0);
+        self.symbols.push(document_symbol);
         Ok(())
     }
 

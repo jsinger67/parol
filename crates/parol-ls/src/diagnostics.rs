@@ -3,7 +3,7 @@ use lsp_types::{
 };
 use parol::{GrammarAnalysisError, ParolParserError};
 use parol_runtime::{ParolError, ParserError, SyntaxError};
-use std::fmt::Write as _;
+use std::error::Error;
 
 use crate::{
     document_state::{DocumentState, LocatedDocumentState},
@@ -42,9 +42,10 @@ impl Diagnostics {
                         extract_grammar_analysis_error(
                             e,
                             &located_document_state,
-                            &range,
-                            &mut related_information,
+                            &mut diagnostics,
+                            uri,
                         );
+                        return diagnostics;
                     } else if let Some(e) = err.downcast_ref::<ParolParserError>() {
                         let located_document_state = LocatedDocumentState::new(uri, document_state);
                         extract_parser_error(
@@ -126,56 +127,88 @@ fn extract_syntax_errors(entries: &[SyntaxError], diagnostics: &mut Vec<Diagnost
 fn extract_grammar_analysis_error(
     error: &GrammarAnalysisError,
     located_document_state: &LocatedDocumentState,
-    range: &Range,
-    related_information: &mut Vec<DiagnosticRelatedInformation>,
+    diagnostics: &mut Vec<Diagnostic>,
+    uri: &Url,
 ) {
     match error {
         GrammarAnalysisError::LeftRecursion { recursions } => {
-            for (i, rec) in recursions.iter().enumerate() {
-                related_information.push(DiagnosticRelatedInformation {
-                    location: Location {
-                        uri: located_document_state.uri.to_owned(),
-                        range: *range,
-                    },
-                    message: format!("Recursion #{}:", i + 1),
-                });
-                eprintln!("{}", rec.name);
+            for rec in recursions.iter() {
                 if let Some(non_terminals) = Server::find_non_terminal_definitions(
                     located_document_state.document_state,
                     &rec.name,
                 ) {
-                    for rng in non_terminals {
-                        let (range, message) = (*rng, format!("Non-terminal: {}", rec.name));
-                        related_information.push(DiagnosticRelatedInformation {
-                            location: Location {
-                                uri: located_document_state.uri.to_owned(),
-                                range,
-                            },
+                    for rang in non_terminals {
+                        let (range, message) =
+                            (*rang, format!("Left-recursive non-terminal: {}", rec.name));
+                        diagnostics.push(Diagnostic {
+                            range,
+                            severity: Some(DiagnosticSeverity::ERROR),
+                            code: Some(lsp_types::NumberOrString::String(
+                                "parol::analysis::left_recursion".to_owned(),
+                            )),
+                            code_description: None,
+                            source: error.source().map(|s| s.to_string()),
                             message,
-                        })
+                            related_information: Some(vec![DiagnosticRelatedInformation {
+                                location: Location {
+                                    uri: uri.clone(),
+                                    range,
+                                },
+                                message: format!(
+                                    "Left-recursions are not allowed in LL grammars: {}",
+                                    rec.name
+                                ),
+                            }]),
+                            data: None,
+                            tags: None,
+                        });
                     }
-                } else if let Some(rel) = related_information.last_mut() {
-                    let _ = write!(rel.message, " {}", rec.name);
                 }
             }
         }
         GrammarAnalysisError::UnreachableNonTerminals { non_terminals }
         | GrammarAnalysisError::NonProductiveNonTerminals { non_terminals } => {
-            for hint in non_terminals {
-                eprintln!("{}", hint);
+            let (error_spec, code) =
+                if let GrammarAnalysisError::UnreachableNonTerminals { .. } = error {
+                    (
+                        "Unreachable",
+                        Some(lsp_types::NumberOrString::String(
+                            "parol::analysis::unreachable_non_terminal".to_owned(),
+                        )),
+                    )
+                } else {
+                    (
+                        "Nonproductive",
+                        Some(lsp_types::NumberOrString::String(
+                            "parol::analysis::nonproductive_non_terminal".to_owned(),
+                        )),
+                    )
+                };
+            for nt in non_terminals {
                 if let Some(non_terminals) = Server::find_non_terminal_definitions(
                     located_document_state.document_state,
-                    &hint.hint,
+                    &nt.hint,
                 ) {
                     for rng in non_terminals {
-                        let (range, message) = (*rng, format!("Non-terminal: {}", hint.hint));
-                        related_information.push(DiagnosticRelatedInformation {
-                            location: Location {
-                                uri: located_document_state.uri.to_owned(),
-                                range,
-                            },
+                        let (range, message) =
+                            (*rng, format!("{} non-terminal: {}", error_spec, nt.hint));
+                        diagnostics.push(Diagnostic {
+                            range,
+                            severity: Some(DiagnosticSeverity::ERROR),
+                            code: code.clone(),
+                            code_description: None,
+                            source: error.source().map(|s| s.to_string()),
                             message,
-                        })
+                            related_information: Some(vec![DiagnosticRelatedInformation {
+                                location: Location {
+                                    uri: uri.clone(),
+                                    range,
+                                },
+                                message: format!("{} non-terminals are not allowed", error_spec),
+                            }]),
+                            data: None,
+                            tags: None,
+                        });
                     }
                 }
             }
@@ -184,12 +217,24 @@ fn extract_grammar_analysis_error(
             // No additional information attached
         }
         GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict } => {
-            related_information.push(DiagnosticRelatedInformation {
-                location: Location {
-                    uri: located_document_state.uri.to_owned(),
-                    range: *range,
-                },
+            diagnostics.push(Diagnostic {
+                range: Range::default(),
+                severity: Some(DiagnosticSeverity::ERROR),
+                code: Some(lsp_types::NumberOrString::String(
+                    "parol::analysis::lalr1_parse_table_conflict".to_owned(),
+                )),
+                code_description: None,
+                source: error.source().map(|s| s.to_string()),
                 message: format!("{:?}", conflict),
+                related_information: Some(vec![DiagnosticRelatedInformation {
+                    location: Location {
+                        uri: uri.clone(),
+                        range: Range::default(),
+                    },
+                    message: "Conflict was not automatically resolved".to_owned(),
+                }]),
+                data: None,
+                tags: None,
             });
         }
     }

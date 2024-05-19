@@ -10,6 +10,7 @@ mod config;
 mod convert_to_rng;
 pub mod diagnostics;
 pub mod document_state;
+mod document_symbol;
 pub mod errors;
 mod formatting;
 mod handler;
