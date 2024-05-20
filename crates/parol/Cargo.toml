@@ -2,7 +2,7 @@
 name = "parol"
 version = "0.29.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
-description = "LL(k) parser generator for Rust"
+description = "LL(k) and LALR(1) parser generator for Rust"
 default-run = "parol"
 documentation = "https://docs.rs/parol"
 repository = "https://github.com/jsinger67/parol/tree/main/crates/parol"
