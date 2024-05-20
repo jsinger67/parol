@@ -13,17 +13,16 @@ use std::{
     fmt::Display,
 };
 
+use crate::{
+    grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn},
+    render_par_string, Cfg, GrammarAnalysisError, GrammarConfig, Pr, Terminal,
+};
 use anyhow::{anyhow, Result};
-use lalr::{Config, LR1ResolvedConflict};
+use lalr::{Config, LR1ResolvedConflict, LRConflictResolution};
 use parol_runtime::{
     lexer::{BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE},
     log::trace,
     NonTerminalIndex, ProductionIndex, TerminalIndex,
-};
-
-use crate::{
-    grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn},
-    render_par_string, Cfg, GrammarAnalysisError, GrammarConfig, Pr, Terminal,
 };
 
 /// Type aliases for the LALR(1) parse table construction.
@@ -172,7 +171,7 @@ pub enum LRConflict {
         /// The LR(0) state in which the conflict occurs.
         state: ItemSet,
         /// The token leading to the conflict, or `None` if the token is EOF.
-        token: Option<TerminalIndex>,
+        token: TerminalIndex,
         /// The first conflicting rule.
         r1: ProductionIndex,
         /// The second conflicting rule.
@@ -183,7 +182,7 @@ pub enum LRConflict {
         /// The LR(0) state in which the conflict appears.
         state: ItemSet,
         /// The token leading to the conflict, or `None` if the token is EOF.
-        token: Option<TerminalIndex>,
+        token: TerminalIndex,
         /// The reduce rule involved in the conflict.
         rule: ProductionIndex,
     },
@@ -199,15 +198,51 @@ impl From<LR1ConflictLalr<'_>> for LRConflict {
                 r2,
             } => LRConflict::ReduceReduce {
                 state: state.into(),
-                token: token.copied(),
+                token: *token.unwrap_or(&EOI),
                 r1: r1.1.act,
                 r2: r2.1.act,
             },
             LR1ConflictLalr::ShiftReduce { state, token, rule } => LRConflict::ShiftReduce {
                 state: state.into(),
-                token: token.copied(),
+                token: *token.unwrap_or(&EOI),
                 rule: rule.1.act,
             },
+        }
+    }
+}
+
+impl Display for LRConflict {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            LRConflict::ReduceReduce {
+                state,
+                token,
+                r1,
+                r2,
+            } => {
+                writeln!(
+                    f,
+                    "Reduce-reduce conflict in state {:?} on token {:?}",
+                    state, token
+                )?;
+                writeln!(
+                    f,
+                    "Decission between reducing with production {} or {}",
+                    r1, r2
+                )
+            }
+            LRConflict::ShiftReduce { state, token, rule } => {
+                writeln!(
+                    f,
+                    "Shift-reduce conflict in state {:?} on token {:?}",
+                    state, token
+                )?;
+                writeln!(
+                    f,
+                    "Decission between shifting the token or reducing with production {}",
+                    rule
+                )
+            }
         }
     }
 }
@@ -280,7 +315,7 @@ impl Display for LRConflictError {
                     f,
                     "Reduce-reduce conflict in state {:?} on token {}",
                     state,
-                    token.map_or("<$>".to_owned(), tr)
+                    tr(*token)
                 )?;
                 if let Some(cfg) = &self.cfg {
                     writeln!(
@@ -318,12 +353,7 @@ impl Display for LRConflictError {
                         f,
                         "Can't decide between shifting the token or reducing with the production:",
                     )?;
-                    writeln!(
-                        f,
-                        "  Token      {}: {}",
-                        token.map_or("<$>".to_owned(), |t| t.to_string()),
-                        token.map_or("<$>".to_owned(), tr)
-                    )?;
+                    writeln!(f, "  Token      {}: {}", token, tr(*token))?;
                     writeln!(f, "  Production {}: {}", rule, cfg.pr[*rule])?;
                 } else {
                     writeln!(
@@ -335,6 +365,38 @@ impl Display for LRConflictError {
                 Ok(())
             }
         }
+    }
+}
+
+/// A resolved LALR(1) parse table conflict.
+#[derive(Debug)]
+pub struct LRResolvedConflict {
+    /// The conflict that was resolved.
+    pub conflict: LRConflict,
+    /// The resolution that was applied.
+    pub applied_resolution: LRConflictResolution,
+}
+
+impl From<LR1ResolvedConflict<'_, TerminalIndex, NonTerminalIndex, ProductionIndex>>
+    for LRResolvedConflict
+{
+    fn from(
+        conflict: LR1ResolvedConflict<'_, TerminalIndex, NonTerminalIndex, ProductionIndex>,
+    ) -> Self {
+        LRResolvedConflict {
+            conflict: conflict.conflict.into(),
+            applied_resolution: conflict.applied_resolution,
+        }
+    }
+}
+
+impl Display for LRResolvedConflict {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(
+            f,
+            "{} resolved by {:?}",
+            self.conflict, self.applied_resolution
+        )
     }
 }
 
@@ -357,13 +419,11 @@ impl From<LR1ParseTableLalr<'_>> for LRParseTable {
     }
 }
 
-struct LALRConfig<'a> {
-    calls: std::cell::RefCell<
-        Vec<LR1ResolvedConflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>>,
-    >,
+struct LALRConfig {
+    calls: std::cell::RefCell<Vec<LRResolvedConflict>>,
 }
 
-impl<'a> LALRConfig<'a> {
+impl LALRConfig {
     fn new() -> Self {
         LALRConfig {
             calls: std::cell::RefCell::new(vec![]),
@@ -371,7 +431,7 @@ impl<'a> LALRConfig<'a> {
     }
 }
 
-impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRConfig<'a> {
+impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRConfig {
     fn resolve_shift_reduce_conflict_in_favor_of_shift(&self) -> bool {
         true
     }
@@ -385,7 +445,7 @@ impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRCo
         conflict: LR1ResolvedConflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>,
     ) {
         println!("Resolved conflict: {:?}", conflict);
-        self.calls.borrow_mut().push(conflict);
+        self.calls.borrow_mut().push(conflict.into());
     }
 
     fn priority_of(
@@ -400,7 +460,9 @@ impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRCo
 }
 
 /// Calculate the LALR(1) parse table for the given grammar configuration.
-pub fn calculate_lalr1_parse_table(grammar_config: &GrammarConfig) -> Result<LRParseTable> {
+pub fn calculate_lalr1_parse_table(
+    grammar_config: &GrammarConfig,
+) -> Result<(LRParseTable, Vec<LRResolvedConflict>)> {
     trace!("CFG: \n{}", render_par_string(grammar_config, true)?);
     let cfg = &grammar_config.cfg;
     let grammar = GrammarLalr::from(cfg);
@@ -415,5 +477,5 @@ pub fn calculate_lalr1_parse_table(grammar_config: &GrammarConfig) -> Result<LRP
     trace!("LALR(1) parse table: {:#?}", parse_table);
     let parse_table = LRParseTable::from(parse_table);
     trace!("Converted LALR(1) parse table: {:#?}", parse_table);
-    Ok(parse_table)
+    Ok((parse_table, config.calls.into_inner()))
 }

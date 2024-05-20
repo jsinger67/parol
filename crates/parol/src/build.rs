@@ -604,7 +604,7 @@ impl GrammarGenerator<'_> {
                 );
             }
             GrammarType::LALR1 => {
-                self.parse_table = Some(crate::calculate_lalr1_parse_table(grammar_config)?);
+                self.parse_table = Some(crate::calculate_lalr1_parse_table(grammar_config)?.0);
                 grammar_config.update_lookahead_size(1);
             }
         }

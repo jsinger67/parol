@@ -1,7 +1,9 @@
 use lsp_types::{
     Diagnostic, DiagnosticRelatedInformation, DiagnosticSeverity, Location, Range, Uri,
 };
-use parol::{GrammarAnalysisError, ParolParserError};
+use parol::{
+    analysis::lalr1_parse_table::LRResolvedConflict, GrammarAnalysisError, ParolParserError,
+};
 use parol_runtime::{ParolError, ParserError, SyntaxError};
 use std::error::Error;
 
@@ -73,6 +75,34 @@ impl Diagnostics {
         };
         diagnostics.push(diagnostic);
         diagnostics
+    }
+
+    pub(crate) fn to_resolved_confict_warning(
+        uri: &Uri,
+        warnings: Vec<LRResolvedConflict>,
+    ) -> Diagnostic {
+        let range = Range::default();
+        let source = Some("parol-ls".to_string());
+        let message = format!("{} automatically resolved conflicts", warnings.len());
+
+        let related_information: Option<Vec<DiagnosticRelatedInformation>> =
+            Some(warnings.into_iter().fold(vec![], |mut acc, w| {
+                acc.push(DiagnosticRelatedInformation {
+                    location: Location::new(uri.clone(), Range::default()),
+                    message: format!("{:?}", w.conflict),
+                });
+                acc
+            }));
+
+        Diagnostic {
+            source,
+            severity: Some(DiagnosticSeverity::WARNING),
+            code: None,
+            range,
+            message,
+            related_information,
+            ..Default::default()
+        }
     }
 }
 

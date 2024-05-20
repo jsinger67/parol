@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 0.19.2 - Not released yet
+
+* Diagnostic warnings on automatically resolved conflicts
+
 ## 0.19.1 - 2024-05-19
 
 * Better presentation of multiple errors

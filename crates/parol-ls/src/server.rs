@@ -225,10 +225,26 @@ impl Server {
                 }
             }
             GrammarType::LALR1 => {
-                if let Err(err) = calculate_lalr1_parse_table(&grammar_config) {
-                    eprintln!("check_grammar: errors from calculate_lookahead_dfas");
-                    let _ =
-                        Self::notify_analysis_error(err, connection, &uri, version, document_state);
+                let result = calculate_lalr1_parse_table(&grammar_config);
+                match result {
+                    Ok((_, resolved_conflicts)) => {
+                        let _ = Self::notify_resolved_conlicts(
+                            resolved_conflicts,
+                            connection,
+                            &uri,
+                            version,
+                        );
+                    }
+                    Err(err) => {
+                        eprintln!("check_grammar: errors from calculate_lookahead_dfas");
+                        let _ = Self::notify_analysis_error(
+                            err,
+                            connection,
+                            &uri,
+                            version,
+                            document_state,
+                        );
+                    }
                 }
             }
         });
@@ -549,7 +565,6 @@ impl Server {
         version: i32,
         document_state: DocumentState,
     ) -> Result<(), Box<dyn Error>> {
-        eprintln!("handle_open_document: document obtained");
         let result = PublishDiagnosticsParams::new(
             uri.clone(),
             Diagnostics::to_diagnostics(uri, &document_state, err),
@@ -557,7 +572,31 @@ impl Server {
         );
         let params = serde_json::to_value(result).unwrap();
         let method = <PublishDiagnostics as Notification>::METHOD.to_string();
-        eprintln!("handle_open_document: sending response\n{:?}", params);
+        connection
+            .sender
+            .send(Message::Notification(lsp_server::Notification {
+                method,
+                params,
+            }))?;
+        Ok(())
+    }
+
+    fn notify_resolved_conlicts(
+        resolved_conflicts: Vec<parol::analysis::lalr1_parse_table::LRResolvedConflict>,
+        connection: Arc<lsp_server::Connection>,
+        uri: &Uri,
+        version: i32,
+    ) -> Result<(), Box<dyn Error>> {
+        let result = PublishDiagnosticsParams::new(
+            uri.clone(),
+            vec![Diagnostics::to_resolved_confict_warning(
+                uri,
+                resolved_conflicts,
+            )],
+            Some(version),
+        );
+        let params = serde_json::to_value(result).unwrap();
+        let method = <PublishDiagnostics as Notification>::METHOD.to_string();
         connection
             .sender
             .send(Message::Notification(lsp_server::Notification {
