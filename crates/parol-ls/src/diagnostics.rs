@@ -89,7 +89,7 @@ impl Diagnostics {
             Some(warnings.into_iter().fold(vec![], |mut acc, w| {
                 acc.push(DiagnosticRelatedInformation {
                     location: Location::new(uri.clone(), Range::default()),
-                    message: format!("{:?}", w.conflict),
+                    message: w.to_string(),
                 });
                 acc
             }));
