@@ -284,8 +284,7 @@ impl<'t> LRParser<'t> {
 
         loop {
             self.handle_comments(&stream, user_actions)?;
-            let token = stream.borrow_mut().lookahead(0)?;
-            let terminal_index = token.token_type;
+            let terminal_index = stream.borrow_mut().lookahead_token_type(0)?;
             let current_state = self.parser_stack.current_state();
             trace!(
                 "Current state: {}, token type: {} ({})",
@@ -297,105 +296,88 @@ impl<'t> LRParser<'t> {
             let action = self.parse_table.states[current_state]
                 .actions
                 .get(&terminal_index);
-            let action = match action {
-                Some(action) => action,
-                None => {
-                    trace!("No action for token '{}' in state {}", token, current_state);
-                    trace!("Current scanner is '{}'", stream.borrow().current_scanner());
-                    let entries = vec![SyntaxError {
-                        cause: format!(
-                            "No action for token '{}' in state {}",
-                            self.terminal_names[terminal_index as usize], current_state
-                        ),
-                        input: Some(Box::new(FileSource::from_stream(&stream.borrow()))),
-                        error_location: Box::new((&token).into()),
-                        unexpected_tokens: vec![UnexpectedToken::new(
-                            "LA(1)".to_owned(),
-                            self.terminal_names[terminal_index as usize].to_owned(),
-                            &token,
-                        )],
-                        expected_tokens: TokenVec::new(),
-                        source: None,
-                    }];
-                    return Err(ParolError::ParserError(ParserError::SyntaxErrors {
-                        entries,
-                    }));
-                }
-            };
+
             match action {
-                LRAction::Shift(next_state) => {
-                    trace!("Shift to state {}", next_state);
-                    self.parser_stack.push(*next_state);
-                    trace!(
-                        "Push token {} ({})",
-                        token.text,
-                        self.terminal_names[token.token_type as usize]
-                    );
-                    let token = LRParseTree::Terminal(token.clone());
-                    self.parse_tree_stack.push(token.clone());
-                    // Consume the token
-                    stream.borrow_mut().consume()?;
-                }
-                LRAction::Reduce(nt_index, prod_index) => {
-                    trace!("Reduce by production {}", prod_index);
-                    let nt_index = *nt_index;
-                    let n = self.call_action(*prod_index, user_actions)?;
-                    for _ in 0..n {
-                        // Pop n states from the stack
-                        if self.parser_stack.stack.is_empty() {
-                            return Err(ParserError::InternalError(
-                                "Attempted to pop from an empty stack".to_owned(),
-                            )
-                            .into());
+                Some(action) => {
+                    match action {
+                        LRAction::Shift(next_state) => {
+                            // Consume the token
+                            let token = stream.borrow_mut().consume()?;
+                            trace!("Shift to state {}", next_state);
+                            self.parser_stack.push(*next_state);
+                            trace!(
+                                "Push token {} ({})",
+                                token.text,
+                                self.terminal_names[token.token_type as usize]
+                            );
+                            let token = LRParseTree::Terminal(token.clone());
+                            self.parse_tree_stack.push(token);
                         }
-                        self.parser_stack.pop();
+                        LRAction::Reduce(nt_index, prod_index) => {
+                            trace!("Reduce by production {}", prod_index);
+                            let nt_index = *nt_index;
+                            let n = self.call_action(*prod_index, user_actions)?;
+                            for _ in 0..n {
+                                // Pop n states from the stack
+                                if self.parser_stack.stack.is_empty() {
+                                    return Err(ParserError::InternalError(
+                                        "Attempted to pop from an empty stack".to_owned(),
+                                    )
+                                    .into());
+                                }
+                                self.parser_stack.pop();
+                            }
+                            // The new state is the one on top of the stack
+                            let state = self.parser_stack.current_state();
+                            trace!("Current state after removing {} states is {}", n, state);
+                            let goto = match self
+                                .parse_table
+                                .states
+                                .get(state)
+                                .unwrap()
+                                .gotos
+                                .get(&nt_index)
+                            {
+                                Some(goto) => goto,
+                                None => {
+                                    return Err(ParserError::InternalError(format!(
+                                        "No goto for non-terminal '{}' in state {}",
+                                        nt_index, state
+                                    ))
+                                    .into());
+                                }
+                            };
+                            // Push the new state onto the stack
+                            trace!("Push goto state {}", goto);
+                            self.parser_stack.push(*goto);
+                        }
+                        LRAction::Accept => {
+                            trace!("Accept");
+                            // The non-terminal of the start symbol lies on top of the stack here
+                            trace!("Final parse stack: {:?}", self.parser_stack.stack);
+                            trace!("Final parse tree stack:\n{}", self.parse_tree_stack);
+                            // Find the production number of the start symbol
+                            let prod_index = if let Some(index) = self
+                                .productions
+                                .iter()
+                                .position(|p| p.lhs == self.start_symbol_index)
+                            {
+                                index
+                            } else {
+                                return Err(ParserError::InternalError(format!(
+                                    "No production found for start symbol '{}'",
+                                    self.non_terminal_names[self.start_symbol_index]
+                                ))
+                                .into());
+                            };
+                            // Call the action for the start symbol
+                            let _n = self.call_action(prod_index, user_actions)?;
+                            break;
+                        }
                     }
-                    // The new state is the one on top of the stack
-                    let state = self.parser_stack.current_state();
-                    trace!("Current state after removing {} states is {}", n, state);
-                    let goto = match self
-                        .parse_table
-                        .states
-                        .get(state)
-                        .unwrap()
-                        .gotos
-                        .get(&nt_index)
-                    {
-                        Some(goto) => goto,
-                        None => {
-                            return Err(ParserError::InternalError(format!(
-                                "No goto for non-terminal '{}' in state {}",
-                                nt_index, state
-                            ))
-                            .into());
-                        }
-                    };
-                    // Push the new state onto the stack
-                    trace!("Push goto state {}", goto);
-                    self.parser_stack.push(*goto);
                 }
-                LRAction::Accept => {
-                    trace!("Accept");
-                    // The non-terminal of the start symbol lies on top of the stack here
-                    trace!("Final parse stack: {:?}", self.parser_stack.stack);
-                    trace!("Final parse tree stack:\n{}", self.parse_tree_stack);
-                    // Find the production number of the start symbol
-                    let prod_index = if let Some(index) = self
-                        .productions
-                        .iter()
-                        .position(|p| p.lhs == self.start_symbol_index)
-                    {
-                        index
-                    } else {
-                        return Err(ParserError::InternalError(format!(
-                            "No production found for start symbol '{}'",
-                            self.non_terminal_names[self.start_symbol_index]
-                        ))
-                        .into());
-                    };
-                    // Call the action for the start symbol
-                    let _n = self.call_action(prod_index, user_actions)?;
-                    break;
+                None => {
+                    self.handle_parse_error(&stream, current_state, terminal_index)?;
                 }
             }
         }
@@ -409,5 +391,42 @@ impl<'t> LRParser<'t> {
             parse_tree.try_into()
         };
         Ok(parse_tree.map_err(|source| ParserError::TreeError { source })?)
+    }
+
+    fn handle_parse_error(
+        &mut self,
+        stream: &Rc<RefCell<TokenStream<'t>>>,
+        current_state: usize,
+        terminal_index: u16,
+    ) -> Result<()> {
+        let token = stream.borrow_mut().lookahead(0)?;
+        trace!("No action for token '{}' in state {}", token, current_state);
+        trace!("Current scanner is '{}'", stream.borrow().current_scanner());
+        trace!("Parse stack: {:?}", self.parser_stack.stack);
+        trace!("Parse tree stack:\n{}", self.parse_tree_stack);
+        let entries = vec![SyntaxError {
+            cause: format!(
+                "No action for token '{}' in state {}",
+                self.terminal_names[terminal_index as usize], current_state
+            ),
+            input: Some(Box::new(FileSource::from_stream(&stream.borrow()))),
+            error_location: Box::new((&token).into()),
+            unexpected_tokens: vec![UnexpectedToken::new(
+                "LA(1)".to_owned(),
+                self.terminal_names[terminal_index as usize].to_owned(),
+                &token,
+            )],
+            expected_tokens: self.parse_table.states[current_state].actions.keys().fold(
+                TokenVec::new(),
+                |mut acc, t| {
+                    acc.push(self.terminal_names[*t as usize].to_owned());
+                    acc
+                },
+            ),
+            source: None,
+        }];
+        Err(ParolError::ParserError(ParserError::SyntaxErrors {
+            entries,
+        }))
     }
 }
