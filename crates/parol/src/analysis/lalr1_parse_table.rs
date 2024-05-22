@@ -225,10 +225,10 @@ impl Display for LRConflict {
                     "Reduce-reduce conflict in state {:?} on token {:?}",
                     state, token
                 )?;
-                writeln!(
+                write!(
                     f,
-                    "Decission between reducing with production {} or {}",
-                    r1, r2
+                    "Decission between reducing with production {} or {} on token {}",
+                    r1, r2, token
                 )
             }
             LRConflict::ShiftReduce { state, token, rule } => {
@@ -237,10 +237,10 @@ impl Display for LRConflict {
                     "Shift-reduce conflict in state {:?} on token {:?}",
                     state, token
                 )?;
-                writeln!(
+                write!(
                     f,
-                    "Decission between shifting the token or reducing with production {}",
-                    rule
+                    "Decission between shifting the token {} or reducing with production {}",
+                    token, rule
                 )
             }
         }
@@ -444,8 +444,9 @@ impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRCo
         &self,
         conflict: LR1ResolvedConflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>,
     ) {
-        println!("Resolved conflict: {:?}", conflict);
-        self.calls.borrow_mut().push(conflict.into());
+        let conflict: LRResolvedConflict = conflict.into();
+        println!("{}", conflict);
+        self.calls.borrow_mut().push(conflict);
     }
 
     fn priority_of(
