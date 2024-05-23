@@ -38,6 +38,8 @@ new minor version numbers. Please note that this is no version handling covered 
   All automatically resolved conflicts generate warnings that should not simply be ignored.
   A way to disable warnings on resolved conflicts will be provided later.
 
+- Improved load performance of LRParsers by modified code generation
+
 
 ## 0.29.0 - 2024-05-16
 

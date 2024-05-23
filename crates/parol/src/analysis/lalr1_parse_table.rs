@@ -112,7 +112,7 @@ impl From<ItemSetLalr<'_>> for ItemSet {
 /// A LALR(1) parse table action.
 /// The action can be either a shift, reduce, or accept action.
 /// Duplicate of the `lalr` crate's `LRAction` type without the reference to the creating grammar.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub enum LRAction {
     /// Shift the current token and go to the next state.
     Shift(usize),

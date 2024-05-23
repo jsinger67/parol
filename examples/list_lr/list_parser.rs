@@ -4,7 +4,6 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::collection_literals::collection;
 use parol_runtime::lr_parser::{LR1State, LRAction, LRParseTable, LRParser, LRProduction};
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
@@ -62,79 +61,80 @@ pub const NON_TERMINALS: &[&str; 5] = &[
     /* 4 */ "Num",
 ];
 
-static PARSE_TABLE: Lazy<LRParseTable> = Lazy::new(|| {
-    LRParseTable::new(vec![
+static PARSE_TABLE: LRParseTable = LRParseTable {
+    actions: &[
+        /* 0 */ LRAction::Shift(1),
+        /* 1 */ LRAction::Shift(6),
+        /* 2 */ LRAction::Reduce(0 /* Items */, 3),
+        /* 3 */ LRAction::Reduce(1 /* ItemsList */, 4),
+        /* 4 */ LRAction::Reduce(1 /* ItemsList */, 5),
+        /* 5 */ LRAction::Reduce(3 /* ListOpt */, 1),
+        /* 6 */ LRAction::Reduce(3 /* ListOpt */, 2),
+        /* 7 */ LRAction::Reduce(4 /* Num */, 6),
+        /* 8 */ LRAction::Accept,
+    ],
+    states: &[
         // State 0
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(3 /*ListOpt*/, 2),
-                6 /* '0|[1-9][0-9]*' */ => LRAction::Shift(1),
-            },
-            gotos: collection! {
-                0 /* Items */ => 2,
-                3 /* ListOpt */ => 3,
-                4 /* Num */ => 4,
-            },
+            actions: &[
+                (0, 6), /* '<$>' => LRAction::Reduce(ListOpt, 2) */
+                (6, 0), /* '0|[1-9][0-9]*' => LRAction::Shift(1) */
+            ],
+            gotos: &[
+                (0, 2), /* Items => 2 */
+                (3, 3), /* ListOpt => 3 */
+                (4, 4), /* Num => 4 */
+            ],
         },
         // State 1
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(4 /*Num*/, 6),
-                5 /* ',' */ => LRAction::Reduce(4 /*Num*/, 6),
-            },
-            gotos: collection! {},
+            actions: &[
+                (0, 7), /* '<$>' => LRAction::Reduce(Num, 6) */
+                (5, 7), /* ',' => LRAction::Reduce(Num, 6) */
+            ],
+            gotos: &[],
         },
         // State 2
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(3 /*ListOpt*/, 1),
-            },
-            gotos: collection! {},
+            actions: &[(0, 5) /* '<$>' => LRAction::Reduce(ListOpt, 1) */],
+            gotos: &[],
         },
         // State 3
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Accept,
-            },
-            gotos: collection! {},
+            actions: &[(0, 8) /* '<$>' => LRAction::Accept */],
+            gotos: &[],
         },
         // State 4
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(1 /*ItemsList*/, 5),
-                5 /* ',' */ => LRAction::Reduce(1 /*ItemsList*/, 5),
-            },
-            gotos: collection! {
-                1 /* ItemsList */ => 5,
-            },
+            actions: &[
+                (0, 4), /* '<$>' => LRAction::Reduce(ItemsList, 5) */
+                (5, 4), /* ',' => LRAction::Reduce(ItemsList, 5) */
+            ],
+            gotos: &[(1, 5) /* ItemsList => 5 */],
         },
         // State 5
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(0 /*Items*/, 3),
-                5 /* ',' */ => LRAction::Shift(6),
-            },
-            gotos: collection! {},
+            actions: &[
+                (0, 2), /* '<$>' => LRAction::Reduce(Items, 3) */
+                (5, 1), /* ',' => LRAction::Shift(6) */
+            ],
+            gotos: &[],
         },
         // State 6
         LR1State {
-            actions: collection! {
-                6 /* '0|[1-9][0-9]*' */ => LRAction::Shift(1),
-            },
-            gotos: collection! {
-                4 /* Num */ => 7,
-            },
+            actions: &[(6, 0) /* '0|[1-9][0-9]*' => LRAction::Shift(1) */],
+            gotos: &[(4, 7) /* Num => 7 */],
         },
         // State 7
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(1 /*ItemsList*/, 4),
-                5 /* ',' */ => LRAction::Reduce(1 /*ItemsList*/, 4),
-            },
-            gotos: collection! {},
+            actions: &[
+                (0, 3), /* '<$>' => LRAction::Reduce(ItemsList, 4) */
+                (5, 3), /* ',' => LRAction::Reduce(ItemsList, 4) */
+            ],
+            gotos: &[],
         },
-    ])
-});
+    ],
+};
 
 pub const PRODUCTIONS: &[LRProduction; 7] = &[
     // 0 - List: ListOpt /* Option */;

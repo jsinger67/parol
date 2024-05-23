@@ -5,13 +5,7 @@
 //! This is suboptimal but necessary to avoid a dependency to the `lalr` crate here.
 
 use core::str;
-use std::{
-    cell::RefCell,
-    collections::{BTreeMap, BTreeSet},
-    convert::TryInto,
-    iter::FromIterator,
-    rc::Rc,
-};
+use std::{cell::RefCell, collections::BTreeSet, convert::TryInto, rc::Rc};
 
 use log::trace;
 
@@ -20,6 +14,9 @@ use crate::{
     ParseTree, ParseTreeStack, ParseTreeType, ParserError, ProductionIndex, Result, SyntaxError,
     TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
+
+/// The type of the index of a LR action in the parse table's actions array.
+pub type LRActionIndex = usize;
 
 ///
 /// The type that contains all data to process a production within the lr-parser.
@@ -60,7 +57,7 @@ pub struct ItemSet {
 /// A LALR(1) parse table action.
 /// The action can be either a shift, reduce, or accept action.
 /// Duplicate of the `lalr` crate's `LRAction` type without the reference to the creating grammar.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum LRAction {
     /// Shift the current token and go to the next state.
     Shift(usize),
@@ -75,30 +72,65 @@ pub enum LRAction {
 #[derive(Debug)]
 pub struct LR1State {
     /// The actions to take for each terminal in the state.
-    pub actions: BTreeMap<TerminalIndex, LRAction>,
+    pub actions: &'static [(TerminalIndex, LRActionIndex)],
     /// The gotos to take for each non-terminal in the state.
-    pub gotos: BTreeMap<NonTerminalIndex, usize>,
+    pub gotos: &'static [(NonTerminalIndex, usize)],
+}
+
+impl LR1State {
+    /// Returns the action index for the given terminal index.
+    /// If the terminal index is not found in the state, `None` is returned.
+    pub fn action_index(&self, terminal_index: TerminalIndex) -> Option<LRActionIndex> {
+        self.actions
+            .iter()
+            .find(|(t, _)| *t == terminal_index)
+            .map(|(_, a)| *a)
+    }
+
+    /// Returns the goto state for the given non-terminal index.
+    /// If the non-terminal index is not found in the state, `None` is returned.
+    pub fn goto_state(&self, non_terminal_index: NonTerminalIndex) -> Option<usize> {
+        self.gotos
+            .iter()
+            .find(|(nt, _)| *nt == non_terminal_index)
+            .map(|(_, g)| *g)
+    }
+
+    /// Returns a list of all terminal indices in the state.
+    /// The list is displayed in case of an error.
+    pub fn viable_terminal_indices(&self) -> Vec<TerminalIndex> {
+        self.actions.iter().map(|(t, _)| *t).collect()
+    }
 }
 
 /// The LALR(1) parse table.
 #[derive(Debug)]
 pub struct LRParseTable {
+    /// The actions used in the parse table.
+    pub actions: &'static [LRAction],
+
     /// The states in the parse table.
-    pub states: Vec<LR1State>,
+    pub states: &'static [LR1State],
 }
 
 impl LRParseTable {
-    /// Creates a new instance.
-    pub fn new(states: Vec<LR1State>) -> Self {
-        Self { states }
+    /// Returns the action for the given state and terminal index.
+    /// If the terminal index is not found in the state, `None` is returned.
+    pub fn action(&self, state: usize, terminal_index: TerminalIndex) -> Option<&LRAction> {
+        let state = &self.states[state];
+        state.action_index(terminal_index).map(|a| &self.actions[a])
     }
-}
 
-impl FromIterator<LR1State> for LRParseTable {
-    fn from_iter<T: IntoIterator<Item = LR1State>>(iter: T) -> Self {
-        Self {
-            states: iter.into_iter().collect(),
-        }
+    /// Returns the goto state for the given state and non-terminal index.
+    /// If the non-terminal index is not found in the state, `None` is returned.
+    pub fn goto(&self, state: usize, non_terminal_index: NonTerminalIndex) -> Option<usize> {
+        self.states[state].goto_state(non_terminal_index)
+    }
+
+    /// Returns a list of all terminal indices in the state.
+    /// The list is displayed in case of an error.
+    pub fn viable_terminal_indices(&self, state: usize) -> Vec<TerminalIndex> {
+        self.states[state].viable_terminal_indices()
     }
 }
 
@@ -293,9 +325,7 @@ impl<'t> LRParser<'t> {
                 self.terminal_names[terminal_index as usize]
             );
             // Get the action for the current state and the current terminal
-            let action = self.parse_table.states[current_state]
-                .actions
-                .get(&terminal_index);
+            let action = self.parse_table.action(current_state, terminal_index);
 
             match action {
                 Some(action) => {
@@ -330,14 +360,7 @@ impl<'t> LRParser<'t> {
                             // The new state is the one on top of the stack
                             let state = self.parser_stack.current_state();
                             trace!("Current state after removing {} states is {}", n, state);
-                            let goto = match self
-                                .parse_table
-                                .states
-                                .get(state)
-                                .unwrap()
-                                .gotos
-                                .get(&nt_index)
-                            {
+                            let goto = match self.parse_table.goto(state, nt_index) {
                                 Some(goto) => goto,
                                 None => {
                                     return Err(ParserError::InternalError(format!(
@@ -349,7 +372,7 @@ impl<'t> LRParser<'t> {
                             };
                             // Push the new state onto the stack
                             trace!("Push goto state {}", goto);
-                            self.parser_stack.push(*goto);
+                            self.parser_stack.push(goto);
                         }
                         LRAction::Accept => {
                             trace!("Accept");
@@ -416,13 +439,14 @@ impl<'t> LRParser<'t> {
                 self.terminal_names[terminal_index as usize].to_owned(),
                 &token,
             )],
-            expected_tokens: self.parse_table.states[current_state].actions.keys().fold(
-                TokenVec::new(),
-                |mut acc, t| {
+            expected_tokens: self
+                .parse_table
+                .viable_terminal_indices(current_state)
+                .iter()
+                .fold(TokenVec::new(), |mut acc, t| {
                     acc.push(self.terminal_names[*t as usize].to_owned());
                     acc
-                },
-            ),
+                }),
             source: None,
         }];
         Err(ParolError::ParserError(ParserError::SyntaxErrors {

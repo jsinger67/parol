@@ -231,12 +231,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "collection_literals"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "186dce98367766de751c42c4f03970fc60fc012296e706ccbb9d5df9b6c1e271"
-
-[[package]]
 name = "colorchoice"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -803,7 +797,6 @@ version = "0.22.0"
 dependencies = [
  "anyhow",
  "codespan-reporting",
- "collection_literals",
  "criterion",
  "derive_builder",
  "env_logger 0.11.3",

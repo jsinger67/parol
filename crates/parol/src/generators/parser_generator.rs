@@ -440,7 +440,6 @@ impl std::fmt::Display for LRParserData<'_> {
             ume::ume!(UserActionsTrait,).to_string()
         };
         f.write_fmt(ume::ume! {
-            use parol_runtime::collection_literals::collection;
             use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
@@ -472,7 +471,7 @@ impl std::fmt::Display for LRParserData<'_> {
 
         writeln!(
             f,
-            "\n\nstatic PARSE_TABLE: Lazy<LRParseTable> = Lazy::new(|| {});\n",
+            "\n\nstatic PARSE_TABLE: LRParseTable  = {};\n",
             parse_table_source
         )?;
         writeln!(f, "\n{}\n", productions)?;
@@ -714,23 +713,48 @@ fn generate_parse_table_source(
 
     // Create a non-terminal resolver function
     let nr = |ni: usize| non_terminals[ni].as_str();
+
+    let actions = parse_table
+        .states
+        .iter()
+        .fold(BTreeSet::<LRAction>::new(), |mut acc, s| {
+            s.actions.iter().for_each(|(_, a)| {
+                acc.insert(a.clone());
+            });
+            acc
+        });
+
+    // Sorted array of actions
+    let actions_array = actions.iter().cloned().collect::<Vec<_>>();
+
+    let actions = actions_array
+        .iter()
+        .enumerate()
+        .fold(String::new(), |mut acc, (i, a)| {
+            acc.push_str(format!("/* {} */ {}, ", i, generate_source_for_action(a, nr)).as_str());
+            acc
+        });
+
+    let states = parse_table
+        .states
+        .iter()
+        .enumerate()
+        .fold(String::new(), |mut acc, (i, s)| {
+            acc.push_str(&generate_source_for_lrstate(s, i, &actions_array, &tr, &nr));
+            acc.push(',');
+            acc
+        });
+
     format!(
-        "LRParseTable::new(vec![{}])",
-        parse_table
-            .states
-            .iter()
-            .enumerate()
-            .fold(String::new(), |mut acc, (i, s)| {
-                acc.push_str(&generate_source_for_lrstate(s, i, &tr, &nr));
-                acc.push(',');
-                acc
-            })
+        "LRParseTable {{ actions: &[{}], states: &[{}] }}",
+        actions, states,
     )
 }
 
 fn generate_source_for_lrstate<'a>(
     state: &'a LR1State,
     state_num: usize,
+    actions_array: &[LRAction],
     tr: &impl Fn(TerminalIndex) -> &'a str,
     nr: &impl Fn(NonTerminalIndex) -> &'a str,
 ) -> String {
@@ -741,32 +765,34 @@ fn generate_source_for_lrstate<'a>(
             actions: {},
             gotos: {} }}"#,
         state_num,
-        generate_source_for_actions(state, tr, nr),
+        generate_source_for_actions(state, actions_array, tr, nr),
         generate_source_for_gotos(state, nr)
     )
 }
 
 fn generate_source_for_actions<'a>(
     state: &LR1State,
+    actions_array: &[LRAction],
     tr: &impl Fn(TerminalIndex) -> &'a str,
     nr: &impl Fn(NonTerminalIndex) -> &'a str,
 ) -> String {
     format!(
-        r#"collection! {{ {}
-    }}"#,
-        state.actions.iter().fold(String::new(), |mut acc, (t, a)| {
-            acc.push_str(
+        r#"&[{}]"#,
+        state
+            .actions
+            .iter()
+            .map(|(t, a)| {
                 format!(
                     r#"
-        {} /* '{}' */ => {},"#,
+        ({}, {}) /* '{}' => {} */"#,
                     t,
+                    generate_source_for_action_ref(a, actions_array),
                     tr(*t),
-                    generate_source_for_action(a, nr)
+                    generate_action_comment(a, nr)
                 )
-                .as_str(),
-            );
-            acc
-        })
+            })
+            .collect::<Vec<String>>()
+            .join(", ")
     )
 }
 
@@ -774,22 +800,26 @@ fn generate_source_for_gotos<'a>(
     state: &LR1State,
     nr: &impl Fn(NonTerminalIndex) -> &'a str,
 ) -> String {
+    if state.gotos.is_empty() {
+        return "&[]".to_string();
+    }
     format!(
-        r#"collection! {{ {}
-    }}"#,
-        state.gotos.iter().fold(String::new(), |mut acc, (n, s)| {
-            acc.push_str(
+        r#"&[{}]"#,
+        state
+            .gotos
+            .iter()
+            .map(|(n, s)| {
                 format!(
                     r#"
-        {} /* {} */ => {}, "#,
+                ({}, {}) /* {} => {} */"#,
                     n,
+                    s,
                     nr(*n),
-                    s
+                    s,
                 )
-                .as_str(),
-            );
-            acc
-        })
+            })
+            .collect::<Vec<String>>()
+            .join(", ")
     )
 }
 
@@ -799,7 +829,23 @@ fn generate_source_for_action<'a>(
 ) -> String {
     match action {
         LRAction::Shift(s) => format!("LRAction::Shift({})", s),
-        LRAction::Reduce(n, p) => format!("LRAction::Reduce({} /*{}*/, {})", n, nr(*n), p),
+        LRAction::Reduce(n, p) => format!("LRAction::Reduce({} /* {} */, {})", n, nr(*n), p),
+        LRAction::Accept => "LRAction::Accept".to_string(),
+    }
+}
+
+fn generate_source_for_action_ref(action: &LRAction, actions_array: &[LRAction]) -> String {
+    let index = actions_array.iter().position(|a| a == action).unwrap();
+    format!("{}", index)
+}
+
+fn generate_action_comment<'a>(
+    action: &LRAction,
+    nr: impl Fn(NonTerminalIndex) -> &'a str,
+) -> String {
+    match action {
+        LRAction::Shift(s) => format!("LRAction::Shift({})", s),
+        LRAction::Reduce(n, p) => format!("LRAction::Reduce({}, {})", nr(*n), p),
         LRAction::Accept => "LRAction::Accept".to_string(),
     }
 }

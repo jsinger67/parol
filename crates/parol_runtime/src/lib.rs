@@ -51,7 +51,6 @@ pub use errors::{
 
 // re-export
 pub use codespan_reporting;
-pub use collection_literals;
 #[cfg(feature = "auto_generation")]
 pub use derive_builder;
 pub use function_name;

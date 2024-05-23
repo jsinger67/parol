@@ -4,7 +4,6 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::collection_literals::collection;
 use parol_runtime::lr_parser::{LR1State, LRAction, LRParseTable, LRParser, LRProduction};
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
@@ -91,189 +90,206 @@ pub const NON_TERMINALS: &[&str; 11] = &[
     /* 10 */ "StringElement",
 ];
 
-static PARSE_TABLE: Lazy<LRParseTable> = Lazy::new(|| {
-    LRParseTable::new(vec![
+static PARSE_TABLE: LRParseTable = LRParseTable {
+    actions: &[
+        /* 0 */ LRAction::Shift(2),
+        /* 1 */ LRAction::Shift(3),
+        /* 2 */ LRAction::Shift(10),
+        /* 3 */ LRAction::Shift(11),
+        /* 4 */ LRAction::Shift(12),
+        /* 5 */ LRAction::Reduce(0 /* Content */, 3),
+        /* 6 */ LRAction::Reduce(0 /* Content */, 4),
+        /* 7 */ LRAction::Reduce(1 /* Escaped */, 13),
+        /* 8 */ LRAction::Reduce(2 /* EscapedLineEnd */, 14),
+        /* 9 */ LRAction::Reduce(3 /* Identifier */, 12),
+        /* 10 */ LRAction::Reduce(4 /* NoneQuote */, 15),
+        /* 11 */ LRAction::Reduce(6 /* StartList */, 1),
+        /* 12 */ LRAction::Reduce(6 /* StartList */, 2),
+        /* 13 */ LRAction::Reduce(7 /* StringContent */, 5),
+        /* 14 */ LRAction::Reduce(8 /* StringContentList */, 6),
+        /* 15 */ LRAction::Reduce(8 /* StringContentList */, 7),
+        /* 16 */ LRAction::Reduce(9 /* StringDelimiter */, 16),
+        /* 17 */ LRAction::Reduce(10 /* StringElement */, 9),
+        /* 18 */ LRAction::Reduce(10 /* StringElement */, 10),
+        /* 19 */ LRAction::Reduce(10 /* StringElement */, 11),
+        /* 20 */ LRAction::Accept,
+    ],
+    states: &[
         // State 0
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(6 /*StartList*/, 2),
-                5 /* '[a-zA-Z_]\w*' */ => LRAction::Reduce(6 /*StartList*/, 2),
-                9 /* '\u{22}' */ => LRAction::Reduce(6 /*StartList*/, 2),
-            },
-            gotos: collection! {
-                6 /* StartList */ => 1,
-            },
+            actions: &[
+                (0, 12), /* '<$>' => LRAction::Reduce(StartList, 2) */
+                (5, 12), /* '[a-zA-Z_]\w*' => LRAction::Reduce(StartList, 2) */
+                (9, 12), /* '\u{22}' => LRAction::Reduce(StartList, 2) */
+            ],
+            gotos: &[(6, 1) /* StartList => 1 */],
         },
         // State 1
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Accept,
-                5 /* '[a-zA-Z_]\w*' */ => LRAction::Shift(2),
-                9 /* '\u{22}' */ => LRAction::Shift(3),
-            },
-            gotos: collection! {
-                0 /* Content */ => 4,
-                3 /* Identifier */ => 5,
-                9 /* StringDelimiter */ => 6,
-            },
+            actions: &[
+                (0, 20), /* '<$>' => LRAction::Accept */
+                (5, 0),  /* '[a-zA-Z_]\w*' => LRAction::Shift(2) */
+                (9, 1),  /* '\u{22}' => LRAction::Shift(3) */
+            ],
+            gotos: &[
+                (0, 4), /* Content => 4 */
+                (3, 5), /* Identifier => 5 */
+                (9, 6), /* StringDelimiter => 6 */
+            ],
         },
         // State 2
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(3 /*Identifier*/, 12),
-                5 /* '[a-zA-Z_]\w*' */ => LRAction::Reduce(3 /*Identifier*/, 12),
-                9 /* '\u{22}' */ => LRAction::Reduce(3 /*Identifier*/, 12),
-            },
-            gotos: collection! {},
+            actions: &[
+                (0, 9), /* '<$>' => LRAction::Reduce(Identifier, 12) */
+                (5, 9), /* '[a-zA-Z_]\w*' => LRAction::Reduce(Identifier, 12) */
+                (9, 9), /* '\u{22}' => LRAction::Reduce(Identifier, 12) */
+            ],
+            gotos: &[],
         },
         // State 3
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(9 /*StringDelimiter*/, 16),
-                5 /* '[a-zA-Z_]\w*' */ => LRAction::Reduce(9 /*StringDelimiter*/, 16),
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(9 /*StringDelimiter*/, 16),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(9 /*StringDelimiter*/, 16),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(9 /*StringDelimiter*/, 16),
-                9 /* '\u{22}' */ => LRAction::Reduce(9 /*StringDelimiter*/, 16),
-            },
-            gotos: collection! {},
+            actions: &[
+                (0, 16), /* '<$>' => LRAction::Reduce(StringDelimiter, 16) */
+                (5, 16), /* '[a-zA-Z_]\w*' => LRAction::Reduce(StringDelimiter, 16) */
+                (6, 16), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringDelimiter, 16) */
+                (7, 16), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringDelimiter, 16) */
+                (8, 16), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringDelimiter, 16) */
+                (9, 16), /* '\u{22}' => LRAction::Reduce(StringDelimiter, 16) */
+            ],
+            gotos: &[],
         },
         // State 4
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(6 /*StartList*/, 1),
-                5 /* '[a-zA-Z_]\w*' */ => LRAction::Reduce(6 /*StartList*/, 1),
-                9 /* '\u{22}' */ => LRAction::Reduce(6 /*StartList*/, 1),
-            },
-            gotos: collection! {},
+            actions: &[
+                (0, 11), /* '<$>' => LRAction::Reduce(StartList, 1) */
+                (5, 11), /* '[a-zA-Z_]\w*' => LRAction::Reduce(StartList, 1) */
+                (9, 11), /* '\u{22}' => LRAction::Reduce(StartList, 1) */
+            ],
+            gotos: &[],
         },
         // State 5
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(0 /*Content*/, 3),
-                5 /* '[a-zA-Z_]\w*' */ => LRAction::Reduce(0 /*Content*/, 3),
-                9 /* '\u{22}' */ => LRAction::Reduce(0 /*Content*/, 3),
-            },
-            gotos: collection! {},
+            actions: &[
+                (0, 5), /* '<$>' => LRAction::Reduce(Content, 3) */
+                (5, 5), /* '[a-zA-Z_]\w*' => LRAction::Reduce(Content, 3) */
+                (9, 5), /* '\u{22}' => LRAction::Reduce(Content, 3) */
+            ],
+            gotos: &[],
         },
         // State 6
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(8 /*StringContentList*/, 7),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(8 /*StringContentList*/, 7),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(8 /*StringContentList*/, 7),
-                9 /* '\u{22}' */ => LRAction::Reduce(8 /*StringContentList*/, 7),
-            },
-            gotos: collection! {
-                7 /* StringContent */ => 7,
-                8 /* StringContentList */ => 8,
-            },
+            actions: &[
+                (6, 15), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringContentList, 7) */
+                (7, 15), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringContentList, 7) */
+                (8, 15), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringContentList, 7) */
+                (9, 15), /* '\u{22}' => LRAction::Reduce(StringContentList, 7) */
+            ],
+            gotos: &[
+                (7, 7), /* StringContent => 7 */
+                (8, 8), /* StringContentList => 8 */
+            ],
         },
         // State 7
         LR1State {
-            actions: collection! {
-                9 /* '\u{22}' */ => LRAction::Shift(3),
-            },
-            gotos: collection! {
-                9 /* StringDelimiter */ => 9,
-            },
+            actions: &[(9, 1) /* '\u{22}' => LRAction::Shift(3) */],
+            gotos: &[(9, 9) /* StringDelimiter => 9 */],
         },
         // State 8
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Shift(10),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Shift(11),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Shift(12),
-                9 /* '\u{22}' */ => LRAction::Reduce(7 /*StringContent*/, 5),
-            },
-            gotos: collection! {
-                1 /* Escaped */ => 13,
-                2 /* EscapedLineEnd */ => 14,
-                4 /* NoneQuote */ => 15,
-                10 /* StringElement */ => 16,
-            },
+            actions: &[
+                (6, 2),  /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Shift(10) */
+                (7, 3),  /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Shift(11) */
+                (8, 4),  /* '[^\u{22}\u{5c}]+' => LRAction::Shift(12) */
+                (9, 13), /* '\u{22}' => LRAction::Reduce(StringContent, 5) */
+            ],
+            gotos: &[
+                (1, 13),  /* Escaped => 13 */
+                (2, 14),  /* EscapedLineEnd => 14 */
+                (4, 15),  /* NoneQuote => 15 */
+                (10, 16), /* StringElement => 16 */
+            ],
         },
         // State 9
         LR1State {
-            actions: collection! {
-                0 /* '<$>' */ => LRAction::Reduce(0 /*Content*/, 4),
-                5 /* '[a-zA-Z_]\w*' */ => LRAction::Reduce(0 /*Content*/, 4),
-                9 /* '\u{22}' */ => LRAction::Reduce(0 /*Content*/, 4),
-            },
-            gotos: collection! {},
+            actions: &[
+                (0, 6), /* '<$>' => LRAction::Reduce(Content, 4) */
+                (5, 6), /* '[a-zA-Z_]\w*' => LRAction::Reduce(Content, 4) */
+                (9, 6), /* '\u{22}' => LRAction::Reduce(Content, 4) */
+            ],
+            gotos: &[],
         },
         // State 10
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(1 /*Escaped*/, 13),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(1 /*Escaped*/, 13),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(1 /*Escaped*/, 13),
-                9 /* '\u{22}' */ => LRAction::Reduce(1 /*Escaped*/, 13),
-            },
-            gotos: collection! {},
+            actions: &[
+                (6, 7), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(Escaped, 13) */
+                (7, 7), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(Escaped, 13) */
+                (8, 7), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(Escaped, 13) */
+                (9, 7), /* '\u{22}' => LRAction::Reduce(Escaped, 13) */
+            ],
+            gotos: &[],
         },
         // State 11
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(2 /*EscapedLineEnd*/, 14),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(2 /*EscapedLineEnd*/, 14),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(2 /*EscapedLineEnd*/, 14),
-                9 /* '\u{22}' */ => LRAction::Reduce(2 /*EscapedLineEnd*/, 14),
-            },
-            gotos: collection! {},
+            actions: &[
+                (6, 8), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(EscapedLineEnd, 14) */
+                (7, 8), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(EscapedLineEnd, 14) */
+                (8, 8), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(EscapedLineEnd, 14) */
+                (9, 8), /* '\u{22}' => LRAction::Reduce(EscapedLineEnd, 14) */
+            ],
+            gotos: &[],
         },
         // State 12
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(4 /*NoneQuote*/, 15),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(4 /*NoneQuote*/, 15),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(4 /*NoneQuote*/, 15),
-                9 /* '\u{22}' */ => LRAction::Reduce(4 /*NoneQuote*/, 15),
-            },
-            gotos: collection! {},
+            actions: &[
+                (6, 10), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(NoneQuote, 15) */
+                (7, 10), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(NoneQuote, 15) */
+                (8, 10), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(NoneQuote, 15) */
+                (9, 10), /* '\u{22}' => LRAction::Reduce(NoneQuote, 15) */
+            ],
+            gotos: &[],
         },
         // State 13
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(10 /*StringElement*/, 9),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(10 /*StringElement*/, 9),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(10 /*StringElement*/, 9),
-                9 /* '\u{22}' */ => LRAction::Reduce(10 /*StringElement*/, 9),
-            },
-            gotos: collection! {},
+            actions: &[
+                (6, 17), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringElement, 9) */
+                (7, 17), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringElement, 9) */
+                (8, 17), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringElement, 9) */
+                (9, 17), /* '\u{22}' => LRAction::Reduce(StringElement, 9) */
+            ],
+            gotos: &[],
         },
         // State 14
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(10 /*StringElement*/, 10),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(10 /*StringElement*/, 10),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(10 /*StringElement*/, 10),
-                9 /* '\u{22}' */ => LRAction::Reduce(10 /*StringElement*/, 10),
-            },
-            gotos: collection! {},
+            actions: &[
+                (6, 18), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringElement, 10) */
+                (7, 18), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringElement, 10) */
+                (8, 18), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringElement, 10) */
+                (9, 18), /* '\u{22}' => LRAction::Reduce(StringElement, 10) */
+            ],
+            gotos: &[],
         },
         // State 15
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(10 /*StringElement*/, 11),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(10 /*StringElement*/, 11),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(10 /*StringElement*/, 11),
-                9 /* '\u{22}' */ => LRAction::Reduce(10 /*StringElement*/, 11),
-            },
-            gotos: collection! {},
+            actions: &[
+                (6, 19), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringElement, 11) */
+                (7, 19), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringElement, 11) */
+                (8, 19), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringElement, 11) */
+                (9, 19), /* '\u{22}' => LRAction::Reduce(StringElement, 11) */
+            ],
+            gotos: &[],
         },
         // State 16
         LR1State {
-            actions: collection! {
-                6 /* '\u{5c}[\u{22}\u{5c}bfnt]' */ => LRAction::Reduce(8 /*StringContentList*/, 6),
-                7 /* '\u{5c}[\s^\n\r]*\r?\n' */ => LRAction::Reduce(8 /*StringContentList*/, 6),
-                8 /* '[^\u{22}\u{5c}]+' */ => LRAction::Reduce(8 /*StringContentList*/, 6),
-                9 /* '\u{22}' */ => LRAction::Reduce(8 /*StringContentList*/, 6),
-            },
-            gotos: collection! {},
+            actions: &[
+                (6, 14), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringContentList, 6) */
+                (7, 14), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringContentList, 6) */
+                (8, 14), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringContentList, 6) */
+                (9, 14), /* '\u{22}' => LRAction::Reduce(StringContentList, 6) */
+            ],
+            gotos: &[],
         },
-    ])
-});
+    ],
+};
 
 pub const PRODUCTIONS: &[LRProduction; 17] = &[
     // 0 - Start: StartList /* Vec */;
