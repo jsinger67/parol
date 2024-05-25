@@ -141,9 +141,9 @@ processing itself.
 You can specify a user type to be inserted into the AST structure at the place where the symbol
 would otherwise had the originally generated type.
 Add after a grammar symbol a colon followed by a user type name to instruct `parol` to use this type
-instead. In your language implementation you have to provide fallible or infallible conversions
-from the original generated types to your types by implementing one of the traits `From` or `TryFrom`.
-An examples can be found in the `list_auto` example.
+instead. In your language implementation you have to provide fallible conversions from references of
+the original generated types (`&T`) to your types (`U`) by implementing the trait
+`TryFrom<&T> for U`. An examples can be found in the `list_auto` example.
 You can also define aliases for the user type names by inserting as many `%user_type` directives as
 you want. Then use these aliases behind the colons.
 
@@ -250,8 +250,8 @@ Here the scanned text of the token is accessed using the method `text` of the `T
 imported from the `parol_runtime`crate. This text is then parsed into an `u32` type and finally
 wrapped into a `Number`type which is a *newtype* for `u32`.
 
-By implementing some `From` or `TryFrom` traits for your user type you can integrate them easily
-into the parse process.
+By implementing `TryFrom` traits for your user type you can integrate them easily into the parse
+process.
 
 There exist some examples that can help to become familiar with this concept. Maybe you would like
 to have a look at my rudimentary
