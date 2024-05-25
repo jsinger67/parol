@@ -28,16 +28,20 @@ pub struct Number<'t> {
 The recursion occurs here by containing `List` in `ListListItemList`.
 
 
-Use instead `parol`'s own repetition construct, which will result in the generation of a data type
+Use instead `parol`'s own repetition construct (`{...}`), which will result in the generation of a data type
 containing a vector.
 ```parol
 List: { ListItem };
-ListItem: ...;
+ListItem: Number;
+Number: /0|[1-9][0-9]*/: Number;
 ```
 This will generate iterative data structures like this:
 ```rust
 pub struct List<'t> {
     pub list_list: Vec<ListList<'t>>,
+}
+pub struct ListList {
+    pub list_item: Box<ListItem>,
 }
 pub struct ListItem<'t> {
     pub number: Box<Number<'t>>,
