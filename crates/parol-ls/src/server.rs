@@ -587,9 +587,6 @@ impl Server {
         uri: &Uri,
         version: i32,
     ) -> Result<(), Box<dyn Error>> {
-        if resolved_conflicts.is_empty() {
-            return Ok(());
-        }
         let result = PublishDiagnosticsParams::new(
             uri.clone(),
             vec![Diagnostics::to_resolved_confict_warning(
