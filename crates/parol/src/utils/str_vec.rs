@@ -68,6 +68,10 @@ impl StrVec {
     pub(crate) fn join(&self, arg: &str) -> String {
         self.vec.join(arg)
     }
+
+    pub(crate) fn as_slice(&self) -> &[String] {
+        &self.vec
+    }
 }
 
 pub struct StrVecIterator<'a> {

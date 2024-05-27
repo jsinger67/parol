@@ -604,8 +604,8 @@ fn generate_scanner_builds(grammar_config: &GrammarConfig) -> StrVec {
                 acc
             });
             acc.push(format!(
-                r#"ScannerConfig::new("{}", Tokenizer::build(TERMINALS, SCANNER_{}.0, SCANNER_{}.1).unwrap(), &[{}]),"#,
-                e.scanner_name, i, i, transitions
+                r#"ScannerConfig::new("{}", Tokenizer::build_from_dfas(SCANNER_{}.1, SCANNER_{}.2, SCANNER_{}.3).unwrap(), &[{}]),"#,
+                e.scanner_name, i, i, i, transitions
             ));
             acc
         })

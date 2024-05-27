@@ -91,7 +91,7 @@ impl ScannerConfig {
 
     ///
     /// Generates the data needed by the lexer generator.
-    /// The tuple contains of the specific internal tokens of the scanner (ws,
+    /// The tuple contains the specific internal tokens of the scanner (ws,
     /// comments etc.) and the indices of the terminals that are valid in this
     /// scanner.
     ///

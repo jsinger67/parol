@@ -1,7 +1,10 @@
 use crate::lexer::TerminalIndex;
 use anyhow::{anyhow, Result};
 use log::trace;
-use regex_automata::{dfa::regex::Regex, PatternID};
+use regex_automata::{
+    dfa::{dense::DFA, regex::Regex},
+    PatternID,
+};
 
 ///
 /// This is an  unmatchable regular expression.
@@ -121,6 +124,47 @@ impl Tokenizer {
         Ok(Self {
             rx,
             token_types,
+            error_token_type,
+        })
+    }
+
+    ///
+    /// Creates a new Tokenizer object from augmented terminals and scanner
+    /// specific information.
+    ///
+    /// # Arguments
+    ///
+    /// ## augmented_terminals
+    /// All valid terminals of the grammar. These include the specific common terminals
+    /// `EOI`, `NEW_LINE`, `WHITESPACE`, `LINE_COMMENT`, `BLOCK_COMMENT` with the value
+    /// `UNMATCHABLE_TOKEN` to provide consistent index handling for all scanner states.
+    ///
+    /// ## scanner_specifics
+    /// The values of the five scanner specific common terminals `EOI`, `NEW_LINE`, `WHITESPACE`,
+    /// `LINE_COMMENT` and `BLOCK_COMMENT`
+    ///
+    /// ## scanner_terminal_indices
+    /// The indices of token types belonging to this scanner state. These indices are pointing into
+    /// `augmented_terminals`.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if the regex patterns can't be compiled.
+    pub fn build_from_dfas(
+        token_types: &[TerminalIndex],
+        fwd_bytes: &[u8],
+        rev_bytes: &[u8],
+    ) -> Result<Self> {
+        let fwd: DFA<Vec<u32>> = DFA::from_bytes(fwd_bytes)?.0.to_owned();
+        let rev: DFA<Vec<u32>> = DFA::from_bytes(rev_bytes)?.0.to_owned();
+
+        let rx = Regex::builder().build_from_dfas(fwd, rev);
+
+        // The last token should always be the error token!
+        let error_token_type = (token_types.len() - 1) as TerminalIndex;
+        Ok(Self {
+            rx,
+            token_types: token_types.to_vec(),
             error_token_type,
         })
     }

@@ -4,7 +4,9 @@ use anyhow::Result;
 use parol_runtime::TerminalIndex;
 
 use crate::StrVec;
-use std::fmt::Debug;
+use std::fmt::{Debug, Write};
+
+use super::regex_serializer::RegexSerializer;
 
 #[derive(Debug, Default)]
 struct ScannerBuildInfo {
@@ -13,17 +15,22 @@ struct ScannerBuildInfo {
     terminal_index_count: usize,
     special_tokens: StrVec,
     terminal_indices: StrVec,
+    fwd_dfa: String,
+    fwd_bytes: usize,
+    rev_dfa: String,
+    rev_bytes: usize,
 }
 
 impl ScannerBuildInfo {
-    fn from_scanner_build_info(
+    fn try_from_scanner_build_info(
+        augmented_terminals: &[String],
         scanner_index: usize,
         scanner_name: String,
         terminal_names: &[String],
         width: usize,
         special_tokens: &[String],
         terminal_indices: &[TerminalIndex],
-    ) -> Self {
+    ) -> Result<Self> {
         let special_tokens =
             special_tokens
                 .iter()
@@ -40,17 +47,37 @@ impl ScannerBuildInfo {
                     acc.push(format!("/* {:w$} */ {},", i, e, w = width));
                     acc
                 });
-        let terminal_indices = terminal_indices.iter().fold(StrVec::new(8), |mut acc, e| {
+        let terminal_names = terminal_indices.iter().fold(StrVec::new(8), |mut acc, e| {
             acc.push(format!(r#"{}, /* {} */"#, e, terminal_names[*e as usize]));
             acc
         });
-        Self {
+
+        let mut token_types = Vec::with_capacity(terminal_names.len());
+        let (fwd, rev) = RegexSerializer::serialize(
+            augmented_terminals,
+            special_tokens.as_slice(),
+            terminal_indices,
+            &mut token_types,
+        )?;
+        let fwd_bytes = fwd.len();
+        let rev_bytes = rev.len();
+
+        let mut fwd_dfa = String::new();
+        let mut rev_dfa = String::new();
+        write!(&mut fwd_dfa, "{}", fwd)?;
+        write!(&mut rev_dfa, "{}", rev)?;
+
+        Ok(Self {
             scanner_index,
             scanner_name,
-            terminal_index_count: terminal_indices.len(),
+            terminal_index_count: terminal_names.len(),
             special_tokens,
-            terminal_indices,
-        }
+            terminal_indices: terminal_names,
+            fwd_dfa,
+            fwd_bytes,
+            rev_dfa,
+            rev_bytes,
+        })
     }
 }
 
@@ -151,12 +178,20 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
         .enumerate()
         .map(|(i, sc)| (i, sc.generate_build_information(&grammar_config.cfg)))
         .map(|(i, (sp, ti, n))| {
-            ScannerBuildInfo::from_scanner_build_info(i, n, &terminal_names, width, &sp, &ti)
+            ScannerBuildInfo::try_from_scanner_build_info(
+                augmented_terminals.as_slice(),
+                i,
+                n,
+                &terminal_names,
+                width,
+                &sp,
+                &ti,
+            )
         })
-        .fold(StrVec::new(0), |mut acc, e| {
-            acc.push(format!("{}", e));
-            acc
-        });
+        .try_fold(StrVec::new(0), |mut acc, s| {
+            acc.push(format!("{}", s?));
+            Ok::<StrVec, anyhow::Error>(acc)
+        })?;
 
     let terminal_names =
         terminal_names
@@ -230,13 +265,22 @@ impl std::fmt::Display for ScannerBuildInfo {
             terminal_index_count,
             special_tokens,
             terminal_indices,
+            fwd_dfa,
+            fwd_bytes,
+            rev_dfa,
+            rev_bytes,
         } = self;
 
         writeln!(f, r#"/* SCANNER_{scanner_index}: "{scanner_name}" */"#)?;
         let scanner_name = format!("SCANNER_{}", scanner_index);
         f.write_fmt(ume::ume! {
-            const #scanner_name: (&[&str; 5], &[TerminalIndex; #terminal_index_count]) = (
-                &[#special_tokens], &[#terminal_indices],
+            const #scanner_name: (&[&str; 5], &[TerminalIndex; #terminal_index_count], &[u8; #fwd_bytes], &[u8; #rev_bytes]) = (
+                &[#special_tokens],
+                &[#terminal_indices],
+                // Forward DFA
+                &#fwd_dfa,
+                // Reverse DFA
+                &#rev_dfa,
             );
         })
     }
