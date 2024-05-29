@@ -5,7 +5,7 @@
 use std::fmt::Display;
 
 use anyhow::{anyhow, Result};
-use parol_runtime::{lexer::tokenizer::UNMATCHABLE_TOKEN, log::trace, TerminalIndex};
+use parol_runtime::{log::trace, TerminalIndex};
 use regex_automata::dfa::regex::Regex;
 
 /// This struct is used to store a byte array and implement the Display trait for it.
@@ -82,7 +82,7 @@ impl RegexSerializer {
         let internal_terminals = scanner_specifics.iter().enumerate().fold(
             Vec::with_capacity(augmented_terminals.len()),
             |mut acc, (i, t)| {
-                if *t != UNMATCHABLE_TOKEN {
+                if *t != "UNMATCHABLE_TOKEN" {
                     acc.push(t.clone());
                     token_types.push(i as TerminalIndex);
                 }
