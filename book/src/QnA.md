@@ -80,3 +80,26 @@ scanner state related problems, therefore
     * Check for token types attached to the tokens provided during parse, the numbers can be found
     in the generated parser
     * Check the current scanner state and if the tokens are valid there
+
+## Q: I get warnings in generated code 'This function has too many arguments'
+A: Configure the builder in your `build.rs` to let `parol` generate a
+```rust
+#![allow(clippy::too_many_arguments)]
+```
+line at the beginning of your generated file.
+
+Add this line in the builder configuration somewhere before the call to `.generate_parser()`:
+
+```rust
+        .inner_attributes(vec![InnerAttributes::AllowTooManyArguments])
+```
+Don't forget to import the `InnerAttributes` into your `build.rs`:
+
+```rust
+use parol::{build::Builder, InnerAttributes, ParolErrorReporter};
+```
+
+Another way to avoid this waring is to modify your grammar such that the lengths of the right-hand
+sides of your productions are decreased. Therefore examine the productions that correlate to the
+functions where the warnings occur. Then consider to factor out parts of the RHS into separate
+productions.
