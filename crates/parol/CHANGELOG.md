@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.29.1 - Not released yet
+## 0.30.0 - 2024-06-06
 
 - Provide a general strategy to solve conflicts during parse table generation.
 
