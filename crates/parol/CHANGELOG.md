@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.30.0 - 2024-06-06
+## 0.30.0 - 2024-06-08
 
 - Provide a general strategy to solve conflicts during parse table generation.
 
@@ -39,6 +39,8 @@ new minor version numbers. Please note that this is no version handling covered 
   A way to disable warnings on resolved conflicts will be provided later.
 
 - Improved load performance of LRParsers by modified code generation
+
+- Referencing `lalry` instead of `lalr`now
 
 
 ## 0.29.0 - 2024-05-16

@@ -18,7 +18,7 @@ use crate::{
     render_par_string, Cfg, GrammarAnalysisError, GrammarConfig, Pr, Terminal,
 };
 use anyhow::{anyhow, Result};
-use lalr::{Config, LR1ResolvedConflict, LRConflictResolution};
+use lalry::{Config, LR1ResolvedConflict, LRConflictResolution};
 use parol_runtime::{
     lexer::{BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE},
     log::trace,
@@ -29,14 +29,14 @@ use parol_runtime::{
 /// The generic parameters are defined to be terminal, non-terminal, and production indices.
 
 type LR1ParseTableLalr<'a> =
-    lalr::LR1ParseTable<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
-type LR1StateLalr<'a> = lalr::LR1State<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
-type LRActionLalr<'a> = lalr::LRAction<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
-type LR1ConflictLalr<'a> = lalr::LR1Conflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
-type ItemLalr<'a> = lalr::Item<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
-type ItemSetLalr<'a> = lalr::ItemSet<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
-type RhsLalr = lalr::Rhs<TerminalIndex, NonTerminalIndex, ProductionIndex>;
-type GrammarLalr = lalr::Grammar<TerminalIndex, NonTerminalIndex, ProductionIndex>;
+    lalry::LR1ParseTable<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
+type LR1StateLalr<'a> = lalry::LR1State<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
+type LRActionLalr<'a> = lalry::LRAction<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
+type LR1ConflictLalr<'a> = lalry::LR1Conflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
+type ItemLalr<'a> = lalry::Item<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
+type ItemSetLalr<'a> = lalry::ItemSet<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
+type RhsLalr = lalry::Rhs<TerminalIndex, NonTerminalIndex, ProductionIndex>;
+type GrammarLalr = lalry::Grammar<TerminalIndex, NonTerminalIndex, ProductionIndex>;
 
 /// Convert the given grammar configuration into a LALR(1) grammar that can be used to construct
 /// the LALR(1) parse table.
@@ -57,10 +57,10 @@ impl From<&Cfg> for GrammarLalr {
                     .iter()
                     .map(|s| match s {
                         crate::Symbol::N(n, _, _) => {
-                            lalr::Symbol::Nonterminal(nti.non_terminal_index(n))
+                            lalry::Symbol::Nonterminal(nti.non_terminal_index(n))
                         }
                         crate::Symbol::T(Terminal::Trm(s, k, _, _, _)) => {
-                            lalr::Symbol::Terminal(ti.terminal_index(s, *k))
+                            lalry::Symbol::Terminal(ti.terminal_index(s, *k))
                         }
                         _ => unreachable!(),
                     })
@@ -125,9 +125,9 @@ pub enum LRAction {
 impl From<LRActionLalr<'_>> for LRAction {
     fn from(action: LRActionLalr<'_>) -> Self {
         match action {
-            lalr::LRAction::Shift(s) => LRAction::Shift(s),
-            lalr::LRAction::Reduce(p, r) => LRAction::Reduce(*p, r.act),
-            lalr::LRAction::Accept => LRAction::Accept,
+            lalry::LRAction::Shift(s) => LRAction::Shift(s),
+            lalry::LRAction::Reduce(p, r) => LRAction::Reduce(*p, r.act),
+            lalry::LRAction::Accept => LRAction::Accept,
         }
     }
 }
@@ -451,7 +451,7 @@ impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRCo
 
     fn priority_of(
         &self,
-        rhs: &lalr::Rhs<TerminalIndex, NonTerminalIndex, ProductionIndex>,
+        rhs: &lalry::Rhs<TerminalIndex, NonTerminalIndex, ProductionIndex>,
         _lookahead: Option<&TerminalIndex>,
     ) -> i32 {
         // Use negative production index as priority:
