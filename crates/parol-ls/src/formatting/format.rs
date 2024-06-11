@@ -1,6 +1,6 @@
 use std::vec;
 
-use lsp_types::{FormattingOptions, TextEdit};
+use lsp_types::{FormattingOptions, Range, TextEdit};
 
 use crate::{
     parol_ls_grammar::OwnedToken,
@@ -57,7 +57,10 @@ impl LastToken for TokenLiteral {
 
 impl Format for &ParolLs {
     fn format(&self, options: &FormattingOptions, comments: Comments) -> Vec<TextEdit> {
-        let range = <&ParolLs as Into<Rng>>::into(*self).0;
+        // We use the complete document's range for the edit to ensure that the whole document is
+        // replaced. This is necessary to avoid problems with comments at the start and the end of
+        // the document.
+        let range = Rng::new(Range::default()).extend_to_end().0;
         let fmt_options = options.into();
         let (new_text, comments) = self.txt(&fmt_options, comments);
         debug_assert!(comments.is_empty());
