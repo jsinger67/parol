@@ -429,8 +429,10 @@ impl<'t> LRParser<'t> {
         trace!("Parse tree stack:\n{}", self.parse_tree_stack);
         let entries = vec![SyntaxError {
             cause: format!(
-                "No action for token '{}' in state {}",
-                self.terminal_names[terminal_index as usize], current_state
+                "No action for token '{}' in state {}\nCurrent scanner is '{}'",
+                self.terminal_names[terminal_index as usize],
+                current_state,
+                stream.borrow().current_scanner()
             ),
             input: Some(Box::new(FileSource::from_stream(&stream.borrow()))),
             error_location: Box::new((&token).into()),

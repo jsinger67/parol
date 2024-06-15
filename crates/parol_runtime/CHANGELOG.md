@@ -17,6 +17,10 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## 0.23.1 -Not released yet
+
+- LR parser: Outputting current scanner in error message
+
 ## 0.23.0 - 2024-06-06
 
 - Fix default settings for enabling parse tree generation in `LRParser`
