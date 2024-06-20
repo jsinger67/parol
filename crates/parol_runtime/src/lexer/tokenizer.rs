@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use crate::lexer::TerminalIndex;
 use anyhow::{anyhow, Result};
 use log::trace;
@@ -114,10 +116,13 @@ impl Tokenizer {
             "Error in mapping of PatternID to TerminalIndex"
         );
 
-        trace!("Generated regex for scanner:\n{:?}", patterns);
+        trace!("Generating regex for scanner:\n{:?}...", patterns);
+        let now = Instant::now();
         let rx = Regex::builder()
             .build_many(&patterns)
             .map_err(|e| anyhow!(e))?;
+        let elapsed_time = now.elapsed();
+        trace!("took {} milliseconds.", elapsed_time.as_millis());
         Ok(Self {
             rx,
             token_types,

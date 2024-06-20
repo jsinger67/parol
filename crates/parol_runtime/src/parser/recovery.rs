@@ -99,7 +99,7 @@ impl Recovery {
             // Ranges are excluding, thus we increment the upper limits.
             result = Some((a0..a1 + 1, e0..e1 + 1));
         }
-        trace!("result: {result:?}");
+        trace!("calculate_match_ranges result: {result:?}");
         result
     }
 
@@ -107,23 +107,23 @@ impl Recovery {
     // with a maximum range.
     pub(crate) fn minimal_token_difference(
         scanned_token_types: &[TerminalIndex],
-        possible_terminal_strings: &mut Vec<Vec<TerminalIndex>>,
+        possible_terminal_strings: &mut HashSet<Vec<TerminalIndex>>,
     ) -> Option<Vec<TerminalIndex>> {
         trace!("scanned_token_types: {scanned_token_types:?}");
         trace!("possible_terminal_strings: {possible_terminal_strings:?}");
         let mut max_match_length = 0;
-        let mut max_match_index = None;
-        for (i, terminal_string) in possible_terminal_strings.iter().enumerate() {
+        let mut max_match_length_string = None;
+        for terminal_string in possible_terminal_strings.iter() {
             if let Some((r, _)) = Self::calculate_match_ranges(scanned_token_types, terminal_string)
             {
                 let match_length = max(0, r.end - r.start);
                 if match_length > max_match_length {
                     max_match_length = match_length;
-                    max_match_index = Some(i);
+                    max_match_length_string = Some(terminal_string);
                 }
             }
         }
-        max_match_index.map(|i| possible_terminal_strings.remove(i))
+        max_match_length_string.map(|i| possible_terminal_strings.get(i).unwrap().clone())
     }
 
     // This function uses the lookahead DFA (transitions and production number in state 0) of a
@@ -133,8 +133,8 @@ impl Recovery {
     pub(crate) fn restore_terminal_strings(
         transitions: &[Trans],
         prod0: CompiledProductionIndex,
-    ) -> Vec<Vec<TerminalIndex>> {
-        let mut result = Vec::new();
+    ) -> HashSet<Vec<TerminalIndex>> {
+        let mut result = HashSet::new();
         let mut nodes = HashSet::<(usize, bool)>::new();
         let root_key = (0, prod0 != INVALID_PROD);
         nodes.insert(root_key);
@@ -175,7 +175,7 @@ impl Recovery {
                     terminal_string.push(edge);
                     prev_node_index = *node_index;
                 }
-                result.push(terminal_string);
+                result.insert(terminal_string);
             }
         }
 

@@ -3,7 +3,7 @@ use crate::{
     ParseStack, ParseTreeStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result,
     SyntaxError, TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
-use log::{debug, trace};
+use log::trace;
 use std::{cell::RefCell, cmp::Ord, rc::Rc};
 use syntree::{Builder, Tree};
 
@@ -173,8 +173,22 @@ impl<'t> LLKParser<'t> {
     }
 
     #[inline]
-    fn add_error(&mut self, error: SyntaxError) {
-        self.error_entries.push(error)
+    fn add_error(&mut self, error: SyntaxError) -> Result<()> {
+        if self
+            .error_entries
+            .iter()
+            .any(|e| e.error_location == error.error_location)
+        {
+            return Err(ParserError::RecoveryFailed.into());
+        }
+        self.error_entries.push(error);
+        if self.error_entries.len() > 100 {
+            return Err(ParserError::TooManyErrors {
+                count: self.error_entries.len(),
+            }
+            .into());
+        }
+        Ok(())
     }
 
     fn push_production(
@@ -340,11 +354,12 @@ impl<'t> LLKParser<'t> {
                             self.push_production(&mut tree_builder, prod_num)?;
                         }
                         Err(source) => {
-                            if self
-                                .handle_prediction_error(n, stream.clone(), source)
-                                .is_err()
-                            {
-                                break 'WHILE;
+                            match self.handle_prediction_error(n, stream.clone(), source) {
+                                Err(_) => break 'WHILE,
+                                Ok(prod_num) => {
+                                    self.parser_stack.stack.pop();
+                                    self.push_production(&mut tree_builder, prod_num)?;
+                                }
                             }
                         }
                     },
@@ -379,7 +394,7 @@ impl<'t> LLKParser<'t> {
                     }
                     ParseType::E(p) => {
                         self.production_depth -= 1;
-                        debug!("Popped production {} -> depth {}", p, self.production_depth);
+                        trace!("Popped production {} -> depth {}", p, self.production_depth);
                         self.parser_stack.stack.pop(); // Pop the End of production marker
                         self.process_item_stack(&mut tree_builder, p, user_actions)?;
                     }
@@ -434,19 +449,20 @@ impl<'t> LLKParser<'t> {
             )],
             expected_tokens,
             source: None,
-        });
+        })?;
         self.recover_from_token_mismatch(stream.clone())
     }
 
     fn handle_prediction_error(
         &mut self,
-        n: usize,
+        non_terminal: NonTerminalIndex,
         stream: Rc<RefCell<TokenStream<'t>>>,
         source: crate::ParolError,
     ) -> Result<ProductionIndex> {
-        let nt_name = self.non_terminal_names[n];
+        let nt_name = self.non_terminal_names[non_terminal];
         let (message, unexpected_tokens, expected_tokens) =
-            self.lookahead_automata[n].build_error(self.terminal_names, &stream.borrow())?;
+            self.lookahead_automata[non_terminal]
+                .build_error(self.terminal_names, &stream.borrow())?;
         self.add_error(SyntaxError {
             cause: self.diagnostic_message(
                 format!(
@@ -466,8 +482,8 @@ impl<'t> LLKParser<'t> {
             unexpected_tokens,
             expected_tokens,
             source: Some(Box::new(source)),
-        });
-        self.recover_from_prediction_error(n, stream.clone())
+        })?;
+        self.recover_from_prediction_error(non_terminal, stream.clone())
     }
 
     fn recover_from_prediction_error(
@@ -485,20 +501,39 @@ impl<'t> LLKParser<'t> {
         {
             trace!("Sync with {:?}", expected_token_types);
             self.adjust_token_stream(scanned_token_types, expected_token_types, stream.clone())?;
-            let result = self.predict_production(self.start_symbol_index, stream);
-            trace!("recovering with production {:?}", result);
-            return result;
+            let result = self.predict_production(non_terminal, stream);
+            match result {
+                Ok(prod_num) => {
+                    trace!("recovering with production {}", prod_num);
+                    return Ok(prod_num);
+                }
+                Err(source) => {
+                    trace!("predict_production failed {:?}", source);
+                    return Err(source);
+                }
+            }
         }
 
         if !possible_terminal_strings.is_empty() {
             // Steamroller tactics: sync with the first possible token string
-            trace!("Force sync with {:?}", possible_terminal_strings[0]);
+            let first_token_string = possible_terminal_strings.iter().next().unwrap();
+            trace!("Force sync with {:?}", first_token_string);
             self.sync_token_stream(
                 scanned_token_types,
-                possible_terminal_strings[0].clone(),
+                first_token_string.clone(),
                 stream.clone(),
             )?;
-            return self.predict_production(self.start_symbol_index, stream);
+            let result = self.predict_production(non_terminal, stream);
+            match result {
+                Ok(prod_num) => {
+                    trace!("recovering with production {}", prod_num);
+                    return Ok(prod_num);
+                }
+                Err(source) => {
+                    trace!("predict_production failed {:?}", source);
+                    return Err(source);
+                }
+            }
         }
 
         trace!(
@@ -506,7 +541,7 @@ impl<'t> LLKParser<'t> {
             self.diagnostic_message("Can't recover prediction error", stream.clone())
         );
         let current_token = stream.borrow_mut().lookahead(0).unwrap_or_default();
-        self.add_error(
+        let _ = self.add_error(
             SyntaxError::default()
                 .with_cause("Can't recover")
                 .with_location(current_token.location.clone()),
@@ -588,7 +623,7 @@ impl<'t> LLKParser<'t> {
         if replaced {
             Ok(())
         } else {
-            self.add_error(SyntaxError::default().with_cause("Can't sync"));
+            let _ = self.add_error(SyntaxError::default().with_cause("Can't sync"));
             Err(ParserError::SyntaxErrors {
                 entries: self.error_entries.drain(..).collect(),
             }

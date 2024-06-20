@@ -34,6 +34,12 @@ pub enum ParserError {
         source: LexerError,
     },
 
+    #[error("Too many errors: {count}")]
+    TooManyErrors { count: usize },
+
+    #[error("Error recovery failed")]
+    RecoveryFailed,
+
     #[error("{0}")]
     InternalError(String),
 }

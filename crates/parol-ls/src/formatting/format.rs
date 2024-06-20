@@ -1,6 +1,5 @@
-use std::vec;
-
 use lsp_types::{FormattingOptions, Range, TextEdit};
+use std::vec;
 
 use crate::{
     parol_ls_grammar::OwnedToken,
@@ -1120,6 +1119,7 @@ mod test {
         }
     }
 
+    #[allow(clippy::const_is_empty)]
     fn skip_test(file_name: &OsStr) -> bool {
         SKIP_LIST.contains(&file_name.to_str().unwrap())
             || (!SELECTED_TESTS.is_empty()

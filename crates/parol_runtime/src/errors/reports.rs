@@ -251,6 +251,28 @@ pub trait Report {
                         .with_code("parol_runtime::parser::internal_error")
                         .with_notes(vec!["This may be a bug. Please report it!".to_string()]),
                 )?),
+                ParserError::TooManyErrors { count } => Ok(term::emit(
+                    &mut writer.lock(),
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message(format!("Too many errors: {count}"))
+                        .with_code("parol_runtime::parser::too_many_errors")
+                        .with_notes(vec![
+                            "The parser has stopped because too many errors occurred.".to_string(),
+                        ]),
+                )?),
+                ParserError::RecoveryFailed => Ok(term::emit(
+                    &mut writer.lock(),
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message("Error recovery failed")
+                        .with_code("parol_runtime::parser::recovery_failed")
+                        .with_notes(vec![
+                            "The parser has stopped because error recovery failed.".to_string(),
+                        ]),
+                )?),
             }
         };
 

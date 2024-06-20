@@ -20,6 +20,7 @@ new minor version numbers. Please note that this is no version handling covered 
 ## 0.23.1 -Not released yet
 
 - LR parser: Outputting current scanner in error message
+- Fixed problem with deterministic and termination of the recovery process in generated LL parsers
 
 ## 0.23.0 - 2024-06-06
 
