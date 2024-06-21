@@ -5,9 +5,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## 0.20.1 - Not release yet
+## 0.21.0 - 2024-06-21
 
 * Fixed formatting problem with comments before the `%start` directive.
+* Using new `parol_runtime@0.24` and `parol@0.31` which are providing fixes for recovery of LL
+parsers
 
 ## 0.20.0 - 2024-06-08
 

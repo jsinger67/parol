@@ -21,6 +21,11 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.31.0 - 2024-06-21
+
+- Referencing `parol_runtime` 0.24.0 which introduced braking changes, due to new parser error types.
+Please, see [CHANGELOG parol_runtime](../parol_runtime/CHANGELOG.md) for details.
+
 ## 0.30.0 - 2024-06-08
 
 - Provide a general strategy to solve conflicts during parse table generation.
