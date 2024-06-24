@@ -1,3 +1,4 @@
+#[cfg(not(target_family = "wasm"))]
 use std::time::Instant;
 
 use crate::lexer::TerminalIndex;
@@ -117,12 +118,13 @@ impl Tokenizer {
         );
 
         trace!("Generating regex for scanner:\n{:?}...", patterns);
+        #[cfg(not(target_family = "wasm"))]
         let now = Instant::now();
         let rx = Regex::builder()
             .build_many(&patterns)
             .map_err(|e| anyhow!(e))?;
-        let elapsed_time = now.elapsed();
-        trace!("took {} milliseconds.", elapsed_time.as_millis());
+        #[cfg(not(target_family = "wasm"))]
+        trace!("took {} milliseconds.", now.elapsed().as_millis());
         Ok(Self {
             rx,
             token_types,

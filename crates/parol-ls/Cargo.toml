@@ -26,7 +26,7 @@ lsp-server = "0.7.6"
 lsp-types = "0.97.0"
 once_cell = { workspace = true }
 parol = { path = "../parol", version = "0.31.0" }
-parol_runtime = { path = "../parol_runtime", version = "0.24.0", features = [
+parol_runtime = { path = "../parol_runtime", version = "0.24.1", features = [
     "auto_generation",
 ] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
@@ -37,6 +37,6 @@ thiserror = { workspace = true }
 
 [build-dependencies]
 parol = { path = "../parol", version = "0.31.0" }
-parol_runtime = { path = "../parol_runtime", version = "0.24.0", features = [
+parol_runtime = { path = "../parol_runtime", version = "0.24.1", features = [
     "auto_generation",
 ] }
