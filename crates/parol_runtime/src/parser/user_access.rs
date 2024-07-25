@@ -21,9 +21,9 @@ pub trait UserActionsTrait<'t> {
     ///
     /// This function is called when a token is parsed that is associated to the
     /// user defined terminals declared by
-    /// * %line_comment
+    /// `%line_comment`
     /// and
-    /// * %block_comment
+    /// `%block_comment`
     /// directives.
     /// This can improve handling of comments that are not captured by the grammar definition
     /// itself.
