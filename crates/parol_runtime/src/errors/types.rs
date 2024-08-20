@@ -63,6 +63,9 @@ pub enum LexerError {
 
     #[error("{0}")]
     RecoveryError(String),
+
+    #[error(transparent)]
+    RegexError(#[from] scnr::ScnrError),
 }
 
 #[derive(Error, Debug)]

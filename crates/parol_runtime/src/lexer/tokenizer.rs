@@ -1,10 +1,6 @@
-#[cfg(not(target_family = "wasm"))]
-use std::time::Instant;
+use anyhow::Result;
 
-use crate::lexer::TerminalIndex;
-use anyhow::{anyhow, Result};
-use log::trace;
-use regex_automata::{dfa::regex::Regex, PatternID};
+use super::TerminalIndex;
 
 ///
 /// This is an  unmatchable regular expression.
@@ -33,23 +29,21 @@ pub const WHITESPACE_TOKEN: &str = r"[\s--\r\n]+";
 pub const ERROR_TOKEN: &str = r###"."###;
 
 ///
-/// The Tokenizer creates a specially formatted regular expression that can be
-/// used for tokenizing an input string.
+/// The Tokenizer abstracts one specific scanner state or scanner mode.
+/// It is used during generation of the scanner.
 ///
 #[derive(Debug)]
 pub struct Tokenizer {
-    pub(crate) rx: Regex,
+    /// The regular expressions that are valid token types in this mode, bundled with their token
+    /// type numbers.
+    /// The priorities of the patterns are determined by their order in the vector. Lower indices
+    /// have higher priority if multiple patterns match the input and have the same length.
+    pub(crate) patterns: Vec<(String, TerminalIndex)>,
 
-    /// This vector provides the mapping of
-    /// scanned PatternID (index in vec) to TerminalIndex (content at index)
-    token_types: Vec<TerminalIndex>,
-
-    ///
     /// This is the token index for the special error token.
     /// Its value isn't constant and depends on the given token count.
     /// It is always the last token that is tried to match and usually
     /// indicates an error.
-    ///
     pub error_token_type: TerminalIndex,
 }
 
@@ -82,24 +76,22 @@ impl Tokenizer {
         scanner_terminal_indices: &[TerminalIndex],
     ) -> Result<Self> {
         debug_assert_eq!(5, scanner_specifics.len());
-        let mut token_types = Vec::with_capacity(augmented_terminals.len());
-        let internal_terminals = scanner_specifics.iter().enumerate().fold(
-            Vec::with_capacity(augmented_terminals.len()),
-            |mut acc, (i, t)| {
-                if *t != UNMATCHABLE_TOKEN {
-                    acc.push(*t);
-                    token_types.push(i as TerminalIndex);
-                }
-                acc
-            },
-        );
-        let mut patterns = scanner_terminal_indices
+        let mut patterns = Vec::with_capacity(augmented_terminals.len());
+        scanner_specifics.iter().enumerate().for_each(|(i, t)| {
+            if *t != UNMATCHABLE_TOKEN {
+                patterns.push((t.to_string(), i as TerminalIndex));
+            }
+        });
+        scanner_terminal_indices
             .iter()
-            .map(|term_idx| (*term_idx, augmented_terminals[*term_idx as usize]))
-            .fold(internal_terminals, |mut acc, (term_idx, pattern)| {
-                acc.push(pattern);
-                token_types.push(term_idx);
-                acc
+            .map(|term_idx| {
+                (
+                    augmented_terminals[*term_idx as usize].to_string(),
+                    *term_idx,
+                )
+            })
+            .for_each(|e| {
+                patterns.push(e);
             });
         let error_token_type = (augmented_terminals.len() - 1) as TerminalIndex;
 
@@ -108,37 +100,30 @@ impl Tokenizer {
             "Last token should always be the error token!"
         );
 
-        patterns.push(augmented_terminals[error_token_type as usize]);
-        token_types.push(error_token_type);
+        patterns.push((
+            augmented_terminals[error_token_type as usize].to_string(),
+            error_token_type,
+        ));
 
         debug_assert_eq!(
             patterns.len(),
-            token_types.len(),
+            patterns.len(),
             "Error in mapping of PatternID to TerminalIndex"
         );
 
-        trace!("Generating regex for scanner:\n{:?}...", patterns);
-        #[cfg(not(target_family = "wasm"))]
-        let now = Instant::now();
-        let rx = Regex::builder()
-            .build_many(&patterns)
-            .map_err(|e| anyhow!(e))?;
-        #[cfg(not(target_family = "wasm"))]
-        trace!("took {} milliseconds.", now.elapsed().as_millis());
         Ok(Self {
-            rx,
-            token_types,
+            patterns,
             error_token_type,
         })
     }
 
-    /// Decode the pattern index to a terminal index.
-    ///
-    /// # Panics
-    ///
-    /// This panics if `pattern_id >= self.token_types.len()`.
-    #[inline]
-    pub(crate) fn terminal_index_of_pattern(&self, pattern_id: PatternID) -> TerminalIndex {
-        self.token_types[pattern_id]
-    }
+    // /// Decode the pattern index to a terminal index.
+    // ///
+    // /// # Panics
+    // ///
+    // /// This panics if `pattern_id >= self.token_types.len()`.
+    // #[inline]
+    // pub(crate) fn terminal_index_of_pattern(&self, pattern_id: usize) -> TerminalIndex {
+    //     self.token_types[pattern_id]
+    // }
 }

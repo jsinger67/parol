@@ -1,7 +1,12 @@
+use scnr::ScannerMode;
+
 use crate::{TerminalIndex, Tokenizer};
 
 /// Scanner configuration fed into a TokenStream
-#[derive(Debug)]
+
+// TODO: Add Debug derive again when the scnr crate supports it.
+// #[derive(Debug)]
+
 pub struct ScannerConfig {
     /// Name of the scanner configuration, i.e. the scanner state or mode
     pub name: &'static str,
@@ -33,5 +38,19 @@ impl ScannerConfig {
             .iter()
             .find(|(term, _)| *term == terminal_index)
             .map(|(_, scanner)| *scanner)
+    }
+}
+
+impl From<&ScannerConfig> for ScannerMode {
+    fn from(config: &ScannerConfig) -> Self {
+        ScannerMode::new(
+            config.name,
+            config
+                .tokenizer
+                .patterns
+                .iter()
+                .map(|(p, t)| (p.clone(), (*t).into())),
+            config.transitions.iter().map(|(t, m)| (*t as usize, *m)),
+        )
     }
 }

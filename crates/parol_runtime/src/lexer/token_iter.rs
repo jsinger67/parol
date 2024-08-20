@@ -1,10 +1,10 @@
 use crate::{
-    lexer::{location, Token, Tokenizer, RX_NEW_LINE},
+    lexer::{location, Token, RX_NEW_LINE},
     Location, TokenNumber,
 };
 use location::LocationBuilder;
 use log::trace;
-use regex_automata::dfa::{dense::DFA, regex::FindMatches};
+use scnr::{scanner::Scanner, FindMatches};
 use std::{path::PathBuf, sync::Arc};
 
 ///
@@ -19,10 +19,10 @@ pub struct TokenIter<'t> {
     col: u32,
 
     /// An iterator over token matches
-    find_iter: FindMatches<'static, 't, DFA<Vec<u32>>>,
+    pub(crate) find_iter: FindMatches<'t>,
 
     /// The tokenizer itself
-    rx: &'static Tokenizer,
+    pub(crate) scanner: Scanner,
 
     /// The input text
     pub(crate) input: &'t str,
@@ -43,12 +43,12 @@ impl<'t> TokenIter<'t> {
     /// This function creates a token iterator from a tokenizer and an input.
     /// k determines the number of lookahead tokens the stream shall support.
     ///
-    pub fn new(rx: &'static Tokenizer, input: &'t str, file_name: Arc<PathBuf>, k: usize) -> Self {
+    pub fn new(scanner: Scanner, input: &'t str, file_name: Arc<PathBuf>, k: usize) -> Self {
         Self {
             line: 1,
             col: 1,
-            find_iter: rx.rx.find_iter(input.as_bytes()),
-            rx,
+            find_iter: scanner.find_iter(input),
+            scanner,
             input,
             k,
             file_name: file_name.clone(),
@@ -73,7 +73,7 @@ impl<'t> TokenIter<'t> {
     /// Returns a tuple of line count and new column number.
     ///
     pub(crate) fn count_nl(s: &str) -> (u32, u32) {
-        let matches = RX_NEW_LINE.find_iter(s.as_bytes()).collect::<Vec<_>>();
+        let matches = RX_NEW_LINE.find_iter(s).collect::<Vec<_>>();
         let lines = matches.len() as u32;
         if let Some(&right_most_match) = matches.last().as_ref() {
             (lines, (s.len() - right_most_match.end()) as u32 + 1)
@@ -82,15 +82,20 @@ impl<'t> TokenIter<'t> {
             (lines, 0)
         }
     }
+
+    /// Returns the name of the scanner mode with the given index.
+    pub(crate) fn scanner_mode_name(&self, index: usize) -> Option<&str> {
+        self.scanner.mode_name(index)
+    }
 }
 
 impl<'t> Iterator for TokenIter<'t> {
     type Item = Token<'t>;
     fn next(&mut self) -> Option<Token<'t>> {
-        if let Some(ref multi_match) = self.find_iter.next() {
-            let token_type = self.rx.terminal_index_of_pattern(multi_match.pattern());
+        if let Some(matched) = self.find_iter.next() {
+            let token_type = matched.token_type();
             // The token's text is taken from the match
-            let text = &self.input[multi_match.range()];
+            let text = &self.input[matched.range()];
             let length = text.len() as u32;
             // The token position is calculated from the matched text
             let start_line = self.line;
@@ -98,7 +103,7 @@ impl<'t> Iterator for TokenIter<'t> {
 
             // Set the inner position behind the scanned token
             let (new_lines, column_after_nl) = Self::count_nl(text);
-            let pos = multi_match.end();
+            let pos = matched.end();
             self.line += new_lines;
             self.col = if new_lines > 0 {
                 column_after_nl
@@ -117,7 +122,7 @@ impl<'t> Iterator for TokenIter<'t> {
                 .build()
             {
                 self.last_location = Some(location.clone());
-                let token = Token::with(text, token_type, location, self.token_number);
+                let token = Token::with(text, token_type as u16, location, self.token_number);
                 if !token.is_skip_token() || token.is_comment_token() {
                     self.token_number += 1;
                 }

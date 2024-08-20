@@ -42,7 +42,7 @@ const TERMINALS: &[&str; 12] = &[
     /*  7 */ r###":"###,
     /*  8 */ r###";"###,
     /*  9 */ r"[a-zA-Z_]\w*",
-    /* 10 */ r#""([^\\]|(\\.))*?""#,
+    /* 10 */ r#""([^\\]|(\\.))*""#,
     /* 11 */ ERROR_TOKEN,
 ];
 
@@ -51,7 +51,7 @@ const SCANNER_0: &[&str; 5] = &[
     /*  1 */ NEW_LINE_TOKEN, // token::NEW_LINE
     /*  2 */ WHITESPACE_TOKEN, // token::WHITESPACE
     /*  3 */ r###"//.*"###, // token::LINE_COMMENT
-    /*  4 */ r"(?m)(/\*(.|[\r\n])*?\*/)(?-m)", // token::BLOCK_COMMENT
+    /*  4 */ r"/\*([.\r\n][^*]|\\*[^/])*\*/", // token::BLOCK_COMMENT
 ];
 
 static TOKENIZERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
@@ -61,6 +61,10 @@ static TOKENIZERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
         transitions: &[],
     }]
 });
+
+fn init() {
+    let _ = env_logger::builder().is_test(true).try_init();
+}
 
 #[test]
 fn tokenizer_test() {
@@ -72,6 +76,7 @@ fn tokenizer_test() {
 
 #[test]
 fn lexer_token_production() {
+    init();
     let k = 3;
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
@@ -79,7 +84,7 @@ fn lexer_token_production() {
     let mut tok = Token::default();
     while !token_stream.borrow().all_input_consumed() {
         tok = token_stream.borrow_mut().lookahead(0).unwrap();
-        print!("{:?}", tok);
+        println!("{:?}", tok);
         token_stream.borrow_mut().consume().unwrap();
     }
     assert_eq!(k, token_stream.borrow().tokens.len());
