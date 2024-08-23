@@ -47,7 +47,7 @@
           "patterns": [
             {
               "name": "string.quoted.double.parol",
-              "match": "\\.|[^\\\"]"
+              "match": "\\.|[^\"]"
             }
           ]
         },
@@ -64,7 +64,7 @@
         },
         {
           "name": "string.quoted.regex.parol",
-          "match": "/(\\/|[^/])+?/"
+          "match": "/(\/|[^/])+/"
         }
       ]
     },

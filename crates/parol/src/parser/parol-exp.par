@@ -53,9 +53,9 @@
 /* 42 */ TokenWithStates: '<'^ /* Clipped */ IdentifierList '>'^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;
 /* 43 */ TokenWithStatesOpt /* Option<T>::Some */: ASTControl;
 /* 44 */ TokenWithStatesOpt /* Option<T>::None */: ;
-/* 45 */ String: /"(\\.|[^\\])*?"/;
-/* 46 */ RawString: /'(\\'|[^'])*?'/;
-/* 47 */ Regex: /\u{2F}(\\.|[^\\])*?\u{2F}/;
+/* 45 */ String: /"(\\.|[^"])*"/;
+/* 46 */ RawString: /'(\\.|[^'])*'/;
+/* 47 */ Regex: "/(\\.|[^\/])*/";
 /* 48 */ Group: '(' Alternations ')';
 /* 49 */ Optional: '[' Alternations ']';
 /* 50 */ Repeat: '{' Alternations '}';

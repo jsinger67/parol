@@ -106,7 +106,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// `Begin: "(?i)(?-u:\b)Begin(?-u:\b)";`
+    /// `Begin: "[bB][eE][gG][iI][nN]";`
     ///
     fn begin(&mut self, _begin: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -114,7 +114,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// `End: "(?i)(?-u:\b)End(?-u:\b)";`
+    /// `End: "[eE][nN][dD]";`
     ///
     fn end(&mut self, _end: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -122,7 +122,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// `Var: "(?i)(?-u:\b)Var(?-u:\b)";`
+    /// `Var: "[vV][aA][rR]";`
     ///
     fn var(&mut self, _var: &ParseTreeType) -> Result<()> {
         Ok(())

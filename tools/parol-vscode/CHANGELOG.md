@@ -4,7 +4,15 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## v0.2.0
+## v0.3.1 - Not released yet
+
+* Fixed regexes for Regex and String terminals 
+
+## v0.3.0 - 2024-05-16
+
+* Add new keywords "%on" and "%enter" to syntax.
+
+## v0.2.0 - 2024-04-01
 
 * Support grammar type specification in par files with the `%grammar_type` directive
 * Little fix in tm-grammar specification regarding regex-like quoted strings

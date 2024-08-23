@@ -13,7 +13,7 @@
 /*  6 */ Block: Begin BlockList /* Vec */ End;
 /*  7 */ BlockList /* Vec<T>::Push */: Items BlockList;
 /*  8 */ BlockList /* Vec<T>::New */: ;
-/*  9 */ Begin: "(?i)(?-u:\b)Begin(?-u:\b)";
-/* 10 */ End: "(?i)(?-u:\b)End(?-u:\b)";
-/* 11 */ Var: "(?i)(?-u:\b)Var(?-u:\b)";
+/*  9 */ Begin: "[bB][eE][gG][iI][nN]";
+/* 10 */ End: "[eE][nN][dD]";
+/* 11 */ Var: "[vV][aA][rR]";
 /* 12 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";

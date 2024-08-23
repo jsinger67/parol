@@ -81,7 +81,11 @@ impl<'t> TokenStream<'t> {
             .iter()
             .map(|s| s.into())
             .collect::<Vec<ScannerMode>>();
+        trace!("Scanner modes: {}", serde_json::to_string(&modes).unwrap());
         let scanner = ScannerBuilder::new().add_scanner_modes(&modes).build()?;
+        // To enable debug output compliled DFA as dot file:
+        // $env:RUST_LOG="scnr::internal::scanner_impl=debug"
+        let _ = scanner.log_compiled_dfas_as_dot(&modes);
         let token_iter = TokenIter::new(scanner, input, file_name.clone(), k);
 
         // issue #54 "Lookahead exceeds token buffer length" with simple grammar:

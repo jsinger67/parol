@@ -23,15 +23,15 @@ pub const TERMINALS: &[&str; 18] = &[
     /*  2 */ UNMATCHABLE_TOKEN,
     /*  3 */ UNMATCHABLE_TOKEN,
     /*  4 */ UNMATCHABLE_TOKEN,
-    /*  5 */ r"(?i)AND",
-    /*  6 */ r"(?i)OR",
-    /*  7 */ r"(?i)XOR",
-    /*  8 */ r"(?i)NOR",
-    /*  9 */ r"(?i)NAND",
-    /* 10 */ r"(?i)XNOR",
-    /* 11 */ r"(?i)TRUE",
-    /* 12 */ r"(?i)FALSE",
-    /* 13 */ r"(?i)NOT",
+    /*  5 */ r"[aA][nN][dD]",
+    /*  6 */ r"[oO][rR]",
+    /*  7 */ r"[xX][oO][rR]",
+    /*  8 */ r"[nN][oO][rR]",
+    /*  9 */ r"[nN][aA][nN][dD]",
+    /* 10 */ r"[xX][nN][oO][rR]",
+    /* 11 */ r"[tT][rR][uU][eE]",
+    /* 12 */ r"[fF][aA][lL][sS][eE]",
+    /* 13 */ r"[nN][oO][tT]",
     /* 14 */ r";",
     /* 15 */ r"\(",
     /* 16 */ r"\)",
@@ -65,8 +65,8 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 12]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"(//.*(\r\n|\r|\n|$))",
-        /*  4 */ r"((?ms)\(\*.*?\*\))",
+        /*  3 */ r"//.*(\r\n|\r|\n)",
+        /*  4 */ r"\(\*([.\r\n--*]|\*[^)])*\*\)",
     ],
     &[
         5,  /* AndOp */
@@ -407,47 +407,47 @@ pub const PRODUCTIONS: &[Production; 36] = &[
         lhs: 1,
         production: &[ParseType::N(23)],
     },
-    // 21 - AndOp: "(?i)AND";
+    // 21 - AndOp: "[aA][nN][dD]";
     Production {
         lhs: 0,
         production: &[ParseType::T(5)],
     },
-    // 22 - OrOp: "(?i)OR";
+    // 22 - OrOp: "[oO][rR]";
     Production {
         lhs: 13,
         production: &[ParseType::T(6)],
     },
-    // 23 - XorOp: "(?i)XOR";
+    // 23 - XorOp: "[xX][oO][rR]";
     Production {
         lhs: 24,
         production: &[ParseType::T(7)],
     },
-    // 24 - NorOp: "(?i)NOR";
+    // 24 - NorOp: "[nN][oO][rR]";
     Production {
         lhs: 11,
         production: &[ParseType::T(8)],
     },
-    // 25 - NandOp: "(?i)NAND";
+    // 25 - NandOp: "[nN][aA][nN][dD]";
     Production {
         lhs: 10,
         production: &[ParseType::T(9)],
     },
-    // 26 - XnorOp: "(?i)XNOR";
+    // 26 - XnorOp: "[xX][nN][oO][rR]";
     Production {
         lhs: 23,
         production: &[ParseType::T(10)],
     },
-    // 27 - True: "(?i)TRUE";
+    // 27 - True: "[tT][rR][uU][eE]";
     Production {
         lhs: 21,
         production: &[ParseType::T(11)],
     },
-    // 28 - False: "(?i)FALSE";
+    // 28 - False: "[fF][aA][lL][sS][eE]";
     Production {
         lhs: 8,
         production: &[ParseType::T(12)],
     },
-    // 29 - Not: "(?i)NOT";
+    // 29 - Not: "[nN][oO][tT]";
     Production {
         lhs: 12,
         production: &[ParseType::T(13)],
@@ -457,17 +457,17 @@ pub const PRODUCTIONS: &[Production; 36] = &[
         lhs: 14,
         production: &[ParseType::N(15), ParseType::N(3), ParseType::N(9)],
     },
-    // 31 - Semicolon: ";";
+    // 31 - Semicolon: ';';
     Production {
         lhs: 16,
         production: &[ParseType::T(14)],
     },
-    // 32 - LeftParenthesis: "\(";
+    // 32 - LeftParenthesis: '(';
     Production {
         lhs: 9,
         production: &[ParseType::T(15)],
     },
-    // 33 - RightParenthesis: "\)";
+    // 33 - RightParenthesis: ')';
     Production {
         lhs: 15,
         production: &[ParseType::T(16)],

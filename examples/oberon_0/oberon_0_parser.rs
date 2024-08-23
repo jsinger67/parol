@@ -115,7 +115,7 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 36]) = (
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
         /*  3 */ UNMATCHABLE_TOKEN,
-        /*  4 */ r"((?ms)\(\*.*?\*\))",
+        /*  4 */ r"\(\*([.\r\n--*]|\*[^)])*\*\)",
     ],
     &[
         5,  /* Dot */

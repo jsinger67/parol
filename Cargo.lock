@@ -810,6 +810,7 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "scnr",
+ "serde_json",
  "syntree",
  "syntree_layout",
  "thiserror",
@@ -1077,8 +1078,6 @@ dependencies = [
 [[package]]
 name = "scnr"
 version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57aa588864ec0a4c2667af5291d425cd3c77361d4c582994a0409a9b1c2a2814"
 dependencies = [
  "dot-writer",
  "log",

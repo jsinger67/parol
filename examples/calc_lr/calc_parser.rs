@@ -77,8 +77,8 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 17]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"(//.*(\r\n|\r|\n|$))",
-        /*  4 */ r"((?ms)/\*.*?\*/)",
+        /*  3 */ r"//.*(\r\n|\r|\n)",
+        /*  4 */ r"/\*([.\r\n--*]|\*[^/])*\*/",
     ],
     &[
         5,  /* Semicolon */

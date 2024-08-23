@@ -1,19 +1,8 @@
 mod errors;
 mod json_grammar;
-// The output is in the $OUT_DIR directory,
-// so we have to include!() it
-#[cfg(feature = "use-cargo-output")]
-mod json_grammar_trait {
-    include!(concat!(env!("OUT_DIR"), "/grammar_trait.rs"));
-}
-#[cfg(feature = "use-cargo-output")]
-mod json_parser {
-    include!(concat!(env!("OUT_DIR"), "/parser.rs"));
-}
+
 // The output is version controlled
-#[cfg(not(feature = "use-cargo-output"))]
 mod json_grammar_trait;
-#[cfg(not(feature = "use-cargo-output"))]
 mod json_parser;
 
 use crate::json_grammar::JsonGrammar;
