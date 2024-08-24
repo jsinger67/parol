@@ -364,7 +364,7 @@ impl<'t> LLKParser<'t> {
                         }
                     },
                     ParseType::S(s) => {
-                        stream.borrow_mut().switch_scanner(s, true)?;
+                        stream.borrow_mut().switch_scanner(s)?;
                         self.parser_stack.stack.pop();
                     }
                     ParseType::Push(s) => {

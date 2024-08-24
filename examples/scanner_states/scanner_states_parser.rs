@@ -24,10 +24,10 @@ pub const TERMINALS: &[&str; 11] = &[
     /*  3 */ UNMATCHABLE_TOKEN,
     /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r"[a-zA-Z_]\w*",
-    /*  6 */ r"\u{5c}[\u{22}\u{5c}bfnt]",
-    /*  7 */ r"\u{5c}[\s^\n\r]*\r?\n",
-    /*  8 */ r"[^\u{22}\u{5c}]+",
-    /*  9 */ r"\u{22}",
+    /*  6 */ r#"\["\\bfnt]"#,
+    /*  7 */ r"\[\s--\n\r]*\r?\n",
+    /*  8 */ r#"[^"\\]+"#,
+    /*  9 */ r#"""#,
     /* 10 */ ERROR_TOKEN,
 ];
 
@@ -214,27 +214,27 @@ pub const PRODUCTIONS: &[Production; 15] = &[
         lhs: 9,
         production: &[ParseType::N(4)],
     },
-    // 10 - Identifier: "[a-zA-Z_]\w*";
+    // 10 - Identifier: /[a-zA-Z_]\w*/;
     Production {
         lhs: 3,
         production: &[ParseType::T(5)],
     },
-    // 11 - Escaped: "\u{5c}[\u{22}\u{5c}bfnt]";
+    // 11 - Escaped: /\["\\bfnt]/;
     Production {
         lhs: 1,
         production: &[ParseType::T(6)],
     },
-    // 12 - EscapedLineEnd: "\u{5c}[\s^\n\r]*\r?\n";
+    // 12 - EscapedLineEnd: /\[\s--\n\r]*\r?\n/;
     Production {
         lhs: 2,
         production: &[ParseType::T(7)],
     },
-    // 13 - NoneQuote: "[^\u{22}\u{5c}]+";
+    // 13 - NoneQuote: /[^"\\]+/;
     Production {
         lhs: 4,
         production: &[ParseType::T(8)],
     },
-    // 14 - StringDelimiter: "\u{22}";
+    // 14 - StringDelimiter: /"/;
     Production {
         lhs: 8,
         production: &[ParseType::T(9)],

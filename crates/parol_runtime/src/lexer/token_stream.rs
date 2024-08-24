@@ -13,7 +13,9 @@ use super::ScannerConfig;
 /// The TokenStream<'t> type is the interface the parser actually uses.
 /// It provides the lookahead functionality by maintaining a lookahead buffer.
 /// Also it provides the ability to switch scanner states. This is handled by
-/// choosing a Tokenizer and updating its position in the input text.
+/// the used scanner implementation.
+///
+/// It also maintains the line and column numbers and propagates them to the tokens.
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
@@ -37,23 +39,14 @@ pub struct TokenStream<'t> {
     /// Comment token buffer
     pub comments: Vec<Token<'t>>,
 
-    /// Start position in the input text as byte offset.
-    /// Can be greater than zero, if `self` was created during a
-    /// scanner state switch before.
-    start_pos: usize,
-
-    /// Relative position from start of input as byte offset at the last point
-    /// the scanner was switched, is 0 initially. Needed for scanner switching.
-    pos: usize,
-
     /// Line number of last consumed token. Needed for scanner switching. Is initially 1.
     line: u32,
 
     /// Columns after last consumed token. Needed for scanner switching. Is initially 1.
     column: u32,
 
-    /// Index of the current scanner state, is 0 initially.
-    pub current_scanner_index: ScannerIndex,
+    /// Absolute position from start of input to the end of the last consumed token.
+    last_consumed_token_end_pos: usize,
 
     /// Scanner stack to support push and pop operations for scanner configurations
     scanner_stack: Vec<ScannerIndex>,
@@ -99,11 +92,9 @@ impl<'t> TokenStream<'t> {
             token_iter,
             tokens: Vec::with_capacity(k),
             comments: Vec::new(),
-            start_pos: 0,
-            pos: 0,
             line: 1,
             column: 1,
-            current_scanner_index: 0,
+            last_consumed_token_end_pos: 0,
             scanner_stack: Vec::new(),
         };
         token_stream.read_tokens(k)?;
@@ -113,7 +104,7 @@ impl<'t> TokenStream<'t> {
     ///
     /// Provides at maximum k tokens lookahead relative to the current read
     /// position.
-    /// If successful it returns an cloned token from buffer position self.pos + n
+    /// If successful it returns a cloned token from buffer position self.pos + n
     ///
     pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>, LexerError> {
         if n >= self.k {
@@ -167,29 +158,25 @@ impl<'t> TokenStream<'t> {
         } else {
             // We consume token LA(1) with buffer index 0.
             trace!("Consuming {}", &self.tokens[0]);
-            self.update_position(0);
+            // We store the position of the lookahead token to support scanner switching.
+            self.update_position();
             token = self.tokens.remove(0);
             self.ensure_buffer()?;
         }
         Ok(token)
     }
 
-    // Store position of token at given index (lookahead) for scanner switching.
-    fn update_position(&mut self, lookahead: usize) {
-        let token = &self.tokens[lookahead];
-        let (new_lines, column) = TokenIter::count_nl(token.text());
-        self.pos = token.location.offset;
-        self.line = token.location.start_line + new_lines;
-        self.column = if new_lines > 0 {
-            column
-        } else {
-            token.location.start_column + token.location.length
-        };
+    // Update the line and column numbers from the token at index 0 in the token buffer.
+    fn update_position(&mut self) {
+        let token = &self.tokens[0];
+        self.line = token.location.start_line;
+        self.column = token.location.start_column + token.location.length;
+        self.last_consumed_token_end_pos = token.location.offset;
         trace!(
-            "Update stream position to {}. Line {}, Column {}",
-            self.pos,
+            "Updated line: {}, column: {}, last consumed token end position: {}",
             self.line,
             self.column,
+            self.last_consumed_token_end_pos
         );
     }
 
@@ -233,13 +220,9 @@ impl<'t> TokenStream<'t> {
     ///
     /// Currently this never return LexerError but it could be changed in the future.
     ///
-    pub fn switch_scanner(
-        &mut self,
-        scanner_index: ScannerIndex,
-        clear: bool,
-    ) -> Result<usize, LexerError> {
+    pub fn switch_scanner(&mut self, scanner_index: ScannerIndex) -> Result<usize, LexerError> {
         let mut tokens_read = 0usize;
-        if self.current_scanner_index == scanner_index {
+        if self.token_iter.current_mode() == scanner_index {
             trace!(
                 "Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
@@ -247,16 +230,12 @@ impl<'t> TokenStream<'t> {
             );
         } else {
             trace!(
-                "Switching to scanner {} <{}>; Current offset is {}",
+                "Switching to scanner {} <{}>.",
                 scanner_index,
                 self.scanner_mode_name(scanner_index),
-                self.pos,
             );
             self.switch_to(scanner_index);
-            self.current_scanner_index = scanner_index;
-            if clear {
-                self.tokens.clear();
-            }
+            self.clear_token_buffer();
             tokens_read = self.ensure_buffer()?;
         }
         Ok(tokens_read)
@@ -268,25 +247,22 @@ impl<'t> TokenStream<'t> {
     /// Currently this never return LexerError but it could be changed in the future.
     ///
     pub fn push_scanner(&mut self, scanner_index: ScannerIndex) -> Result<(), LexerError> {
-        if self.current_scanner_index == scanner_index {
+        if self.token_iter.current_mode() == scanner_index {
             trace!(
                 "push_scanner: Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
                 self.scanner_mode_name(scanner_index),
             );
-            self.scanner_stack.push(self.current_scanner_index);
-            self.current_scanner_index = scanner_index;
+            self.scanner_stack.push(self.token_iter.current_mode());
         } else {
             trace!(
-                "push_scanner: Pushing current scanner {} and switching to scanner {} <{}>; Current offset is {}",
-                self.current_scanner_index,
+                "push_scanner: Pushing current scanner {} and switching to scanner {} <{}>.",
+                self.token_iter.current_mode(),
                 scanner_index,
                 self.scanner_mode_name(scanner_index),
-                self.pos,
             );
-            self.scanner_stack.push(self.current_scanner_index);
+            self.scanner_stack.push(self.token_iter.current_mode());
             self.switch_to(scanner_index);
-            self.current_scanner_index = scanner_index;
             self.tokens.clear();
             self.ensure_buffer()?;
             trace!(
@@ -302,7 +278,7 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn pop_scanner(&mut self) -> Result<(), LexerError> {
         if let Some(scanner_index) = self.scanner_stack.pop() {
-            if self.current_scanner_index == scanner_index {
+            if self.token_iter.current_mode() == scanner_index {
                 trace!(
                     "pop_scanner: Redundant switch to scanner {} <{}> omitted",
                     scanner_index,
@@ -310,13 +286,11 @@ impl<'t> TokenStream<'t> {
                 );
             } else {
                 trace!(
-                    "pop_scanner: Switching to popped scanner {} <{}>; Current offset is {}",
+                    "pop_scanner: Switching to popped scanner {} <{}>.",
                     scanner_index,
                     self.scanner_mode_name(scanner_index),
-                    self.pos,
                 );
                 self.switch_to(scanner_index);
-                self.current_scanner_index = scanner_index;
                 self.tokens.clear();
                 self.ensure_buffer()?;
                 trace!(
@@ -337,8 +311,13 @@ impl<'t> TokenStream<'t> {
     #[inline]
     pub fn current_scanner(&self) -> &str {
         self.token_iter
-            .scanner_mode_name(self.current_scanner_index)
+            .scanner_mode_name(self.token_iter.current_mode())
             .unwrap_or("unknown")
+    }
+
+    /// Returns the index of the currently active scanner state.
+    pub fn current_scanner_index(&self) -> ScannerIndex {
+        self.token_iter.current_mode()
     }
 
     ///
@@ -350,7 +329,6 @@ impl<'t> TokenStream<'t> {
     ///
     fn read_tokens(&mut self, n: usize) -> Result<usize, LexerError> {
         let mut tokens_read = 0usize;
-
         for token in &mut self.token_iter {
             if !token.is_skip_token() {
                 tokens_read += 1;
@@ -386,9 +364,15 @@ impl<'t> TokenStream<'t> {
     /// position (aka scanner state switching).
     ///
     fn switch_to(&mut self, scanner_index: usize) {
-        self.start_pos += self.pos;
-        self.pos = 0;
         self.token_iter.scanner.set_mode(scanner_index);
+        trace!(
+            "Switched to scanner {} <{}>. Last consumed token's end position: {}",
+            scanner_index,
+            self.scanner_mode_name(scanner_index),
+            self.last_consumed_token_end_pos
+        );
+        self.token_iter
+            .set_position(self.last_consumed_token_end_pos + 1);
     }
 
     pub(crate) fn token_types(&self) -> Vec<TerminalIndex> {
@@ -448,7 +432,6 @@ impl<'t> TokenStream<'t> {
                     .end_line(self.line)
                     .end_column(self.column)
                     .length(0)
-                    .offset(self.start_pos + self.pos)
                     .file_name(self.file_name.clone())
                     .build()
                     .unwrap()
@@ -473,5 +456,11 @@ impl<'t> TokenStream<'t> {
         self.token_iter
             .scanner_mode_name(index)
             .unwrap_or("unknown")
+    }
+
+    /// Clears the token buffer.
+    #[inline]
+    fn clear_token_buffer(&mut self) {
+        self.tokens.clear();
     }
 }

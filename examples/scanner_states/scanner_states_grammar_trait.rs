@@ -113,7 +113,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// `Identifier: "[a-zA-Z_]\w*";`
+    /// `Identifier: /[a-zA-Z_]\w*/;`
     ///
     fn identifier(&mut self, _identifier: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -121,7 +121,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// `Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";`
+    /// `Escaped: <String>/\["\\bfnt]/;`
     ///
     fn escaped(&mut self, _escaped: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -129,7 +129,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 12:
     ///
-    /// `EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";`
+    /// `EscapedLineEnd: <String>/\[\s--\n\r]*\r?\n/;`
     ///
     fn escaped_line_end(&mut self, _escaped_line_end: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -137,7 +137,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 13:
     ///
-    /// `NoneQuote: <String>"[^\u{22}\u{5c}]+";`
+    /// `NoneQuote: <String>/[^"\\]+/;`
     ///
     fn none_quote(&mut self, _none_quote: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -145,7 +145,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 14:
     ///
-    /// `StringDelimiter: <INITIAL, String>"\u{22}";`
+    /// `StringDelimiter: <INITIAL, String>/"/;`
     ///
     fn string_delimiter(&mut self, _string_delimiter: &ParseTreeType) -> Result<()> {
         Ok(())

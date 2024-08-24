@@ -10,14 +10,6 @@ use std::borrow::Cow;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 
-const INPUT: &str = r#"Id1
-"1. String"
-Id2
-"2. \"String\t\" with \
-escaped newline"
-
-"3. String \nwith newline""#;
-
 pub const TERMINALS: &[&str; 11] = &[
     /*  0 */ UNMATCHABLE_TOKEN,
     /*  1 */ UNMATCHABLE_TOKEN,
@@ -25,10 +17,10 @@ pub const TERMINALS: &[&str; 11] = &[
     /*  3 */ UNMATCHABLE_TOKEN,
     /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r"[a-zA-Z_]\w*",
-    /*  6 */ r"\u{5c}[\u{22}\u{5c}bfnt]",
-    /*  7 */ r"\u{5c}[\s^\n\r]*\r?\n",
-    /*  8 */ r"[^\u{22}\u{5c}]+",
-    /*  9 */ r"\u{22}",
+    /*  6 */ r#"\["\\bfnt]"#,
+    /*  7 */ r"\[\s--\n\r]*\r?\n",
+    /*  8 */ r#"[^"\\]+"#,
+    /*  9 */ r#"""#,
     /* 10 */ ERROR_TOKEN,
 ];
 
@@ -38,8 +30,8 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"(//.*(\r\n|\r|\n))",
-        /*  4 */ r"/\*([.\r\n][^*]|\\*[^/])*\*/",
+        /*  3 */ r"//.*(\r\n|\r|\n)",
+        /*  4 */ r"/\*([.\r\n--*]|\*[^/])*\*/",
     ],
     &[5 /* Identifier */, 9 /* StringDelimiter */],
 );
@@ -78,14 +70,28 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     ]
 });
 
+const INPUT: &str = r#"Id1
+"1. String"
+Id2
+"2. \"String\t\" with \
+escaped newline"
+
+"3. String \nwith newline""#;
+
+fn init() {
+    let _ = env_logger::builder().is_test(true).try_init();
+}
+
 #[test]
 fn scanner_switch_and_named_source() {
+    init();
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let stream = RefCell::new(TokenStream::new(INPUT, file_name, &SCANNERS, MAX_K).unwrap());
+    eprintln!("'{INPUT:#?}'");
 
-    assert_eq!(stream.borrow().current_scanner_index, 0);
-
+    assert_eq!(stream.borrow().current_scanner_index(), 0);
     let mut prev_tok = Token::default();
+    let mut token_count = 0;
     while !stream.borrow().all_input_consumed() {
         let tok = stream.borrow_mut().lookahead(0).unwrap();
         println!("{:?}", tok);
@@ -97,22 +103,27 @@ fn scanner_switch_and_named_source() {
         assert_eq!(span_contents, tok.text());
         assert_eq!(span_contents, &INPUT[source_span]);
 
-        if tok.token_type == 9
-        /* StringDelimiter */
-        {
-            let state = stream.borrow().current_scanner_index;
-            if state == 1 {
-                stream.borrow_mut().switch_scanner(0, true).unwrap();
-            } else if state == 0 {
-                stream.borrow_mut().switch_scanner(1, true).unwrap();
-            }
+        if tok.token_type == 9 {
+            // StringDelimiter
+            let state = stream.borrow().current_scanner_index();
+            let new_state = if state == 0 { 1 } else { 0 };
+            stream.borrow_mut().switch_scanner(new_state).unwrap();
+            eprintln!("switched to scanner {new_state}");
         }
 
+        // Consume the token which will update the iterator position where to reset the scanner
+        // after clearing the token buffer.
         stream.borrow_mut().consume().unwrap();
+        token_count += 1;
+
+        if token_count > 30 {
+            panic!("Too much tokens processed");
+        }
+
         prev_tok = tok;
     }
 
-    assert_eq!(stream.borrow().current_scanner_index, 1);
+    assert_eq!(stream.borrow().current_scanner_index(), 1);
 
     assert_eq!(prev_tok.text(), "\"");
     assert_eq!(prev_tok.location.start_line, 7);

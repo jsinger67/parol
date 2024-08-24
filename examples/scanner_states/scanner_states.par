@@ -50,27 +50,27 @@ StringElement
 
 Identifier
     // This terminal is only valid in scanner state INITIAL (implicitly)
-    : "[a-zA-Z_]\w*"
+    : /[a-zA-Z_]\w*/
     ;
 
 Escaped
     // This terminal is only valid in scanner state 'String'
-    : <String>"\u{5c}[\u{22}\u{5c}bfnt]"
+    : <String>/\["\\bfnt]/
     ;
 
 EscapedLineEnd
     // This terminal is only valid in scanner state 'String'
-    // NOTE: [\s^\n\r] matches all whitespace characters *except* \r and \n
+    // NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
     // Otherwise, the regex will greedily pickup newlines See issue #5
-    : <String>"\u{5c}[\s^\n\r]*\r?\n"
+    : <String>/\[\s--\n\r]*\r?\n/
     ;
 
 NoneQuote
     // This terminal is only valid in scanner state 'String'
-    : <String>"[^\u{22}\u{5c}]+"
+    : <String>/[^"\\]+/
     ;
 
 StringDelimiter
     // This terminal is valid in both scanner states INITIAL and 'String'
-    : <String, INITIAL>"\u{22}"
+    : <String, INITIAL>/"/
     ;
