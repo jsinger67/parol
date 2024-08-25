@@ -7,11 +7,11 @@ mod json_parser;
 
 use crate::json_grammar::JsonGrammar;
 use crate::json_parser::parse;
-use anyhow::{anyhow, Context, Result};
 use parol_runtime::log::debug;
 use parol_runtime::Report;
 use std::env;
 use std::fs;
+use std::process::ExitCode;
 use std::time::Instant;
 
 // To generate:
@@ -20,31 +20,40 @@ use std::time::Instant;
 struct JSONErrorReporter;
 impl Report for JSONErrorReporter {}
 
-fn main() -> Result<()> {
+fn main() -> ExitCode {
     env_logger::init();
     debug!("env logger started");
 
     let args: Vec<String> = env::args().collect();
     if args.len() >= 2 {
         let file_name = args[1].clone();
-        let input = fs::read_to_string(file_name.clone())
-            .with_context(|| format!("Can't read file {}", file_name))?;
+        let input = match fs::read_to_string(file_name.clone()) {
+            Ok(input) => input,
+            Err(_) => {
+                println!("Can't read file {}", file_name);
+                return ExitCode::FAILURE;
+            }
+        };
         let mut json_grammar = JsonGrammar::new();
         let now = Instant::now();
         match parse(&input, &file_name, &mut json_grammar) {
             Ok(_) => {
                 let elapsed_time = now.elapsed();
                 if args.len() > 2 && args[2] == "-q" {
-                    Ok(())
+                    ExitCode::SUCCESS
                 } else {
-                    println!("Success!\n{}", json_grammar);
                     println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
-                    Ok(())
+                    println!("Success!\n{}", json_grammar);
+                    ExitCode::SUCCESS
                 }
             }
-            Err(e) => JSONErrorReporter::report_error(&e, file_name),
+            Err(e) => {
+                let _ = JSONErrorReporter::report_error(&e, file_name);
+                ExitCode::FAILURE
+            }
         }
     } else {
-        Err(anyhow!("Please provide a file name as first parameter!"))
+        println!("Please provide a file name as first parameter!");
+        ExitCode::FAILURE
     }
 }

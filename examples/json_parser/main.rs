@@ -7,23 +7,28 @@ mod json_parser;
 
 use crate::json_grammar::JsonGrammar;
 use crate::json_parser::parse;
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use parol_runtime::{log::debug, ParseTree, Report};
-use std::{env, fs, time::Instant};
+use std::{env, fs, process::ExitCode, time::Instant};
 use syntree_layout::Layouter;
 
 // To generate:
 // parol -f ./json.par -e ./json-exp.par -p ./json_parser.rs -a ./json_grammar_trait.rs -t JsonGrammar -m json_grammar
 
-fn main() -> Result<()> {
+fn main() -> ExitCode {
     env_logger::init();
     debug!("env logger started");
 
     let args: Vec<String> = env::args().collect();
     if args.len() >= 2 {
         let file_name = args[1].clone();
-        let input = fs::read_to_string(file_name.clone())
-            .with_context(|| format!("Can't read file {}", file_name))?;
+        let input = match fs::read_to_string(file_name.clone()) {
+            Ok(input) => input,
+            Err(_) => {
+                println!("Can't read file {}", file_name);
+                return ExitCode::FAILURE;
+            }
+        };
         let mut json_grammar = JsonGrammar::new();
         let now = Instant::now();
         match parse(&input, &file_name, &mut json_grammar) {
@@ -31,17 +36,27 @@ fn main() -> Result<()> {
                 let elapsed_time = now.elapsed();
                 println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                 if args.len() > 2 && args[2] == "-q" {
-                    Ok(())
+                    ExitCode::SUCCESS
                 } else {
+                    println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                     println!("Success!\n{}", json_grammar);
-                    generate_tree_layout(&syntax_tree, &file_name)?;
-                    Ok(())
+                    match generate_tree_layout(&syntax_tree, &file_name) {
+                        Ok(_) => ExitCode::SUCCESS,
+                        Err(e) => {
+                            eprintln!("Error generating tree layout: {}", e);
+                            ExitCode::FAILURE
+                        }
+                    }
                 }
             }
-            Err(e) => errors::JSONErrorReporter::report_error(&e, file_name),
+            Err(e) => {
+                let _ = errors::JSONErrorReporter::report_error(&e, file_name);
+                ExitCode::FAILURE
+            }
         }
     } else {
-        Err(anyhow!("Please provide a file name as first parameter!"))
+        println!("Please provide a file name as first parameter!");
+        ExitCode::FAILURE
     }
 }
 

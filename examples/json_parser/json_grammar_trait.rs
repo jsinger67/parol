@@ -28,7 +28,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// `Object: "\{" ObjectSuffix;`
+    /// `Object: '{'^ /* Clipped */ ObjectSuffix;`
     ///
     fn object(&mut self, _l_brace: &ParseTreeType, _object_suffix: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -36,7 +36,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// `ObjectSuffix: Pair ObjectList /* Vec */ "\}";`
+    /// `ObjectSuffix: Pair ObjectList /* Vec */ '}'^ /* Clipped */;`
     ///
     fn object_suffix_0(
         &mut self,
@@ -49,7 +49,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// `ObjectSuffix: "\}";`
+    /// `ObjectSuffix: '}'^ /* Clipped */;`
     ///
     fn object_suffix_1(&mut self, _r_brace: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -57,7 +57,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// `ObjectList /* Vec<T>::Push */: "," Pair ObjectList;`
+    /// `ObjectList /* Vec<T>::Push */: ','^ /* Clipped */ Pair ObjectList;`
     ///
     fn object_list_0(
         &mut self,
@@ -78,7 +78,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// `Pair: String ":" Value;`
+    /// `Pair: String ':'^ /* Clipped */ Value;`
     ///
     fn pair(
         &mut self,
@@ -91,7 +91,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// `Array: "\[" ArraySuffix;`
+    /// `Array: '['^ /* Clipped */ ArraySuffix;`
     ///
     fn array(&mut self, _l_bracket: &ParseTreeType, _array_suffix: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -99,7 +99,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// `ArraySuffix: Value ArrayList /* Vec */ "\]";`
+    /// `ArraySuffix: Value ArrayList /* Vec */ ']'^ /* Clipped */;`
     ///
     fn array_suffix_0(
         &mut self,
@@ -112,7 +112,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// `ArraySuffix: "\]";`
+    /// `ArraySuffix: ']'^ /* Clipped */;`
     ///
     fn array_suffix_1(&mut self, _r_bracket: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -120,7 +120,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// `ArrayList /* Vec<T>::Push */: "," Value ArrayList;`
+    /// `ArrayList /* Vec<T>::Push */: ','^ /* Clipped */ Value ArrayList;`
     ///
     fn array_list_0(
         &mut self,
@@ -173,7 +173,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 16:
     ///
-    /// `Value: "true";`
+    /// `Value: 'true'^ /* Clipped */;`
     ///
     fn value_4(&mut self, _true: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -181,7 +181,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 17:
     ///
-    /// `Value: "false";`
+    /// `Value: 'false'^ /* Clipped */;`
     ///
     fn value_5(&mut self, _false: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -189,7 +189,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 18:
     ///
-    /// `Value: "null";`
+    /// `Value: 'null'^ /* Clipped */;`
     ///
     fn value_6(&mut self, _null: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -197,7 +197,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 19:
     ///
-    /// `String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";`
+    /// `String: /"(\\.|[^"])*"/;`
     ///
     fn string(&mut self, _string: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -205,7 +205,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 20:
     ///
-    /// `Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";`
+    /// `Number: /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?/;`
     ///
     fn number(&mut self, _number: &ParseTreeType) -> Result<()> {
         Ok(())

@@ -67,7 +67,7 @@ pub trait JsonGrammarTrait<'t> {
 ///
 /// Type derived for production 2
 ///
-/// `ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;`
+/// `ObjectSuffix: Pair ObjectList /* Vec */ '}'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -80,7 +80,7 @@ pub struct ObjectSuffixPairObjectListRBrace<'t> {
 ///
 /// Type derived for production 3
 ///
-/// `ObjectSuffix: "\}"^ /* Clipped */;`
+/// `ObjectSuffix: '}'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -90,7 +90,7 @@ pub struct ObjectSuffixRBrace {}
 ///
 /// Type derived for production 8
 ///
-/// `ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;`
+/// `ArraySuffix: Value ArrayList /* Vec */ ']'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -103,7 +103,7 @@ pub struct ArraySuffixValueArrayListRBracket<'t> {
 ///
 /// Type derived for production 9
 ///
-/// `ArraySuffix: "\]"^ /* Clipped */;`
+/// `ArraySuffix: ']'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -119,7 +119,7 @@ pub struct ArraySuffixRBracket {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueString<'t> {
-    pub string: String<'t>,
+    pub string: Box<String<'t>>,
 }
 
 ///
@@ -131,7 +131,7 @@ pub struct ValueString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueNumber<'t> {
-    pub number: Number<'t>,
+    pub number: Box<Number<'t>>,
 }
 
 ///
@@ -143,7 +143,7 @@ pub struct ValueNumber<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueObject<'t> {
-    pub object: Object<'t>,
+    pub object: Box<Object<'t>>,
 }
 
 ///
@@ -155,13 +155,13 @@ pub struct ValueObject<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueArray<'t> {
-    pub array: Array<'t>,
+    pub array: Box<Array<'t>>,
 }
 
 ///
 /// Type derived for production 16
 ///
-/// `Value: "true"^ /* Clipped */;`
+/// `Value: 'true'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -171,7 +171,7 @@ pub struct ValueTrue {}
 ///
 /// Type derived for production 17
 ///
-/// `Value: "false"^ /* Clipped */;`
+/// `Value: 'false'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -181,7 +181,7 @@ pub struct ValueFalse {}
 ///
 /// Type derived for production 18
 ///
-/// `Value: "null"^ /* Clipped */;`
+/// `Value: 'null'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -200,7 +200,7 @@ pub struct ValueNull {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Array<'t> {
-    pub array_suffix: ArraySuffix<'t>,
+    pub array_suffix: Box<ArraySuffix<'t>>,
 }
 
 ///
@@ -210,7 +210,7 @@ pub struct Array<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArrayList<'t> {
-    pub value: Value<'t>,
+    pub value: Box<Value<'t>>,
 }
 
 ///
@@ -230,7 +230,7 @@ pub enum ArraySuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Json<'t> {
-    pub value: Value<'t>,
+    pub value: Box<Value<'t>>,
 }
 
 ///
@@ -240,7 +240,7 @@ pub struct Json<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Number<'t> {
-    pub number: Token<'t>, /* -?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)? */
+    pub number: Token<'t>, /* -?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)? */
 }
 
 ///
@@ -250,7 +250,7 @@ pub struct Number<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Object<'t> {
-    pub object_suffix: ObjectSuffix<'t>,
+    pub object_suffix: Box<ObjectSuffix<'t>>,
 }
 
 ///
@@ -260,7 +260,7 @@ pub struct Object<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ObjectList<'t> {
-    pub pair: Pair<'t>,
+    pub pair: Box<Pair<'t>>,
 }
 
 ///
@@ -280,8 +280,8 @@ pub enum ObjectSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Pair<'t> {
-    pub string: String<'t>,
-    pub value: Value<'t>,
+    pub string: Box<String<'t>>,
+    pub value: Box<Value<'t>>,
 }
 
 ///
@@ -291,7 +291,7 @@ pub struct Pair<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct String<'t> {
-    pub string: Token<'t>, /* \u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022} */
+    pub string: Token<'t>, /* "(\\.|[^"])*" */
 }
 
 ///
@@ -398,7 +398,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
-        let json_built = Json { value };
+        let json_built = Json {
+            value: Box::new(value),
+        };
         // Calling user action here
         self.user_grammar.json(&json_built)?;
         self.push(ASTType::Json(json_built), context);
@@ -407,7 +409,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// `Object: "\{"^ /* Clipped */ ObjectSuffix;`
+    /// `Object: '{'^ /* Clipped */ ObjectSuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn object(
@@ -418,7 +420,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_suffix = pop_item!(self, object_suffix, ObjectSuffix, context);
-        let object_built = Object { object_suffix };
+        let object_built = Object {
+            object_suffix: Box::new(object_suffix),
+        };
         // Calling user action here
         self.user_grammar.object(&object_built)?;
         self.push(ASTType::Object(object_built), context);
@@ -427,7 +431,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// `ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;`
+    /// `ObjectSuffix: Pair ObjectList /* Vec */ '}'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn object_suffix_0(
@@ -451,7 +455,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// `ObjectSuffix: "\}"^ /* Clipped */;`
+    /// `ObjectSuffix: '}'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn object_suffix_1(&mut self, _r_brace: &ParseTreeType<'t>) -> Result<()> {
@@ -465,7 +469,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// `ObjectList /* Vec<T>::Push */: ","^ /* Clipped */ Pair ObjectList;`
+    /// `ObjectList /* Vec<T>::Push */: ','^ /* Clipped */ Pair ObjectList;`
     ///
     #[parol_runtime::function_name::named]
     fn object_list_0(
@@ -478,7 +482,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut object_list = pop_item!(self, object_list, ObjectList, context);
         let pair = pop_item!(self, pair, Pair, context);
-        let object_list_0_built = ObjectList { pair };
+        let object_list_0_built = ObjectList {
+            pair: Box::new(pair),
+        };
         // Add an element to the vector
         object_list.push(object_list_0_built);
         self.push(ASTType::ObjectList(object_list), context);
@@ -500,7 +506,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// `Pair: String ":"^ /* Clipped */ Value;`
+    /// `Pair: String ':'^ /* Clipped */ Value;`
     ///
     #[parol_runtime::function_name::named]
     fn pair(
@@ -513,7 +519,10 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
         let string = pop_item!(self, string, String, context);
-        let pair_built = Pair { string, value };
+        let pair_built = Pair {
+            string: Box::new(string),
+            value: Box::new(value),
+        };
         // Calling user action here
         self.user_grammar.pair(&pair_built)?;
         self.push(ASTType::Pair(pair_built), context);
@@ -522,7 +531,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// `Array: "\["^ /* Clipped */ ArraySuffix;`
+    /// `Array: '['^ /* Clipped */ ArraySuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn array(
@@ -533,7 +542,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_suffix = pop_item!(self, array_suffix, ArraySuffix, context);
-        let array_built = Array { array_suffix };
+        let array_built = Array {
+            array_suffix: Box::new(array_suffix),
+        };
         // Calling user action here
         self.user_grammar.array(&array_built)?;
         self.push(ASTType::Array(array_built), context);
@@ -542,7 +553,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// `ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;`
+    /// `ArraySuffix: Value ArrayList /* Vec */ ']'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn array_suffix_0(
@@ -566,7 +577,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// `ArraySuffix: "\]"^ /* Clipped */;`
+    /// `ArraySuffix: ']'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn array_suffix_1(&mut self, _r_bracket: &ParseTreeType<'t>) -> Result<()> {
@@ -580,7 +591,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// `ArrayList /* Vec<T>::Push */: ","^ /* Clipped */ Value ArrayList;`
+    /// `ArrayList /* Vec<T>::Push */: ','^ /* Clipped */ Value ArrayList;`
     ///
     #[parol_runtime::function_name::named]
     fn array_list_0(
@@ -593,7 +604,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut array_list = pop_item!(self, array_list, ArrayList, context);
         let value = pop_item!(self, value, Value, context);
-        let array_list_0_built = ArrayList { value };
+        let array_list_0_built = ArrayList {
+            value: Box::new(value),
+        };
         // Add an element to the vector
         array_list.push(array_list_0_built);
         self.push(ASTType::ArrayList(array_list), context);
@@ -622,7 +635,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let value_0_built = ValueString { string };
+        let value_0_built = ValueString {
+            string: Box::new(string),
+        };
         let value_0_built = Value::String(value_0_built);
         // Calling user action here
         self.user_grammar.value(&value_0_built)?;
@@ -639,7 +654,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let value_1_built = ValueNumber { number };
+        let value_1_built = ValueNumber {
+            number: Box::new(number),
+        };
         let value_1_built = Value::Number(value_1_built);
         // Calling user action here
         self.user_grammar.value(&value_1_built)?;
@@ -656,7 +673,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object = pop_item!(self, object, Object, context);
-        let value_2_built = ValueObject { object };
+        let value_2_built = ValueObject {
+            object: Box::new(object),
+        };
         let value_2_built = Value::Object(value_2_built);
         // Calling user action here
         self.user_grammar.value(&value_2_built)?;
@@ -673,7 +692,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
-        let value_3_built = ValueArray { array };
+        let value_3_built = ValueArray {
+            array: Box::new(array),
+        };
         let value_3_built = Value::Array(value_3_built);
         // Calling user action here
         self.user_grammar.value(&value_3_built)?;
@@ -683,7 +704,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// `Value: "true"^ /* Clipped */;`
+    /// `Value: 'true'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn value_4(&mut self, _true: &ParseTreeType<'t>) -> Result<()> {
@@ -699,7 +720,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// `Value: "false"^ /* Clipped */;`
+    /// `Value: 'false'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn value_5(&mut self, _false: &ParseTreeType<'t>) -> Result<()> {
@@ -715,7 +736,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// `Value: "null"^ /* Clipped */;`
+    /// `Value: 'null'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn value_6(&mut self, _null: &ParseTreeType<'t>) -> Result<()> {
@@ -731,7 +752,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// `String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";`
+    /// `String: /"(\\.|[^"])*"/;`
     ///
     #[parol_runtime::function_name::named]
     fn string(&mut self, string: &ParseTreeType<'t>) -> Result<()> {
@@ -747,7 +768,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// `Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";`
+    /// `Number: /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?/;`
     ///
     #[parol_runtime::function_name::named]
     fn number(&mut self, number: &ParseTreeType<'t>) -> Result<()> {

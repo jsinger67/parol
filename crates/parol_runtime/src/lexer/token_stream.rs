@@ -1,7 +1,7 @@
 use crate::lexer::EOI;
 use crate::parser::ScannerIndex;
 use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter};
-use log::trace;
+use log::{debug, trace};
 use scnr::{ScannerBuilder, ScannerMode};
 
 use std::path::{Path, PathBuf};
@@ -74,7 +74,7 @@ impl<'t> TokenStream<'t> {
             .iter()
             .map(|s| s.into())
             .collect::<Vec<ScannerMode>>();
-        trace!("Scanner modes: {}", serde_json::to_string(&modes).unwrap());
+        debug!("Scanner modes: {}", serde_json::to_string(&modes).unwrap());
         let scanner = ScannerBuilder::new().add_scanner_modes(&modes).build()?;
         // To enable debug output compliled DFA as dot file:
         // $env:RUST_LOG="scnr::internal::scanner_impl=debug"
