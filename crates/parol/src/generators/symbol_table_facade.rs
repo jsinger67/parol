@@ -267,7 +267,7 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
                                     acc.push(format!(
                                         "{}::{}(v) => v.first().map_or(Span::default(), |f| f.span())",
                                         self.name(),
-                                        v.name()
+                                        v.inner_name()
                                     ));
                                     acc.push(
                                         "+ v.last().map_or(Span::default(), |l| l.span()),".to_string(),
@@ -276,11 +276,11 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
                                 TypeEntrails::Option(_) => acc.push(format!(
                                     "{}::{}(o) => o.as_ref().map_or(Span::default(), |o| o.span()),",
                                     self.name(),
-                                    v.name()
+                                    v.inner_name()
                                 )),
                                 _ => {
                                     // Expr::CommentExpr(v) => v.span(),
-                                    acc.push(format!("{}::{}(v) => v.span(),", self.name(), v.name()))
+                                    acc.push(format!("{}::{}(v) => v.span(),", self.name(), v.inner_name()))
                                 }
                             }
                         } else {
