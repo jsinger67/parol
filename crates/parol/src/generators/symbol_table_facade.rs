@@ -319,3 +319,42 @@ impl std::fmt::Display for EnumRangeCalc {
         })
     }
 }
+
+#[cfg(test)]
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_generate_range_calculation() {
+        let mut symbol_table = SymbolTable::new();
+        let enum_type_id = symbol_table
+            .insert_global_type("MyEnum", TypeEntrails::Enum)
+            .unwrap();
+        let enum_variant1_base = symbol_table
+            .insert_global_type("VariantABase", TypeEntrails::Struct)
+            .unwrap();
+        let enum_variant2_base = symbol_table
+            .insert_global_type("VariantBBase", TypeEntrails::Struct)
+            .unwrap();
+
+        // Add enum variants
+        let _variant_a_id = symbol_table.insert_type(
+            enum_type_id,
+            "VariantA",
+            TypeEntrails::EnumVariant(enum_variant1_base),
+        );
+
+        let _variant_b_id = symbol_table.insert_type(
+            enum_type_id,
+            "VariantB",
+            TypeEntrails::EnumVariant(enum_variant2_base),
+        );
+
+        // Call the generation of range calculation code on the enum type facade
+        let enum_type = symbol_table.symbol_as_type(enum_type_id);
+        assert_eq!(
+            enum_type.generate_range_calculation().unwrap(),
+            "match self {         MyEnum::VariantA(v) => v.span(),\n        MyEnum::VariantB(v) => v.span(),\n }");
+    }
+}
