@@ -7,7 +7,7 @@ documentation = "https://docs.rs/parol-macros"
 repository = "https://github.com/jsinger67/parol/tree/main/crates/parol-macros"
 readme = "README.md"
 keywords = ["parser", "parsing", "parser-generator", "LLk"]
-categories = ["algorithms", "parsing", "Parsing tools"]
+categories = ["algorithms", "parsing"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
 
