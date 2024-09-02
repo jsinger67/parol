@@ -94,10 +94,10 @@ pub fn main(args: &Args) -> Result<()> {
 }
 
 const DEPENDENCIES: &[&[&str]] = &[
-    &["add", "env_logger@0.11.3"],
+    &["add", "env_logger@0.11"],
     &[
         "add",
-        "parol_runtime@0.24.1",
+        "parol_runtime@1.0.0",
         "--features",
         "auto_generation",
     ],
@@ -110,7 +110,7 @@ const DEPENDENCIES: &[&[&str]] = &[
     ],
     &[
         "add",
-        "parol_runtime@0.24.1",
+        "parol_runtime@1.0.0",
         "--features",
         "auto_generation",
         "--build",

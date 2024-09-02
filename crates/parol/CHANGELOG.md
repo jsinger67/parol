@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.31.1 - Not released yet
+## 1.0.0 - 2024-09-02
 
 - Merged PR [#393](https://github.com/jsinger67/parol/pull/393) from [ryo33](https://github.com/ryo33)
  This fixes a bug in range generation of enums.
