@@ -46,33 +46,6 @@ It also contains the vs-code extension `parol-vscode` which is released on VS Co
 <!-- Start of content from CommonReadMe copied here.
 Unfortunately there is no include directive available in Markdown -->
 
-> ## News about the current development process
->
-> For those who are wondering about the relatively long period of no new releases of `parol` here
-> are some updates about the ongoing development. `parol` is gradually reaching a state to make it
-> production ready, which it is still not, but the experiences with relative big projects leaves
-> more and more the impression that it's time to go this step.
->
-> But I see one hindrance which I want to bring out of the way first.
-> 
-> This hindrance is the start up performance with what I'm not very satisfied yet, especially if the
-> grammar contains a lot of complicated terminal types (regexes).
-> For complex grammars I have 600ms here and this is way more than the whole parsing process takes
-> and is related to the compilation time of the complex regular expression used to tokenize the
-> input.
-> 
-> I'm currently working steadily on an own implementation of a scanner/lexer crate suitable for
-> `parol`'s requirements that supports scanner states out of the box and is fast enough in both
-> compilation time and scanning time.
->
-> The result is still open but I already now that there will be some restrictions about the
-> supported regex features which can be used for token/terminal definitions.
-> 
-> Everything else should be kept stable and I'll inform you in time about the implied restrictions.
->
-> Thanks for all supporters of `parol`!
->
-
 [parol](https://github.com/jsinger67/parol/tree/main/crates/parol) is a LL(k) and a LALR(1) parser
 generator **for Rust**.
 
@@ -207,12 +180,12 @@ example project.
 
 ## State of the project
 
-`parol` has proved its ability in many examples and tests during its development. Early adopters can
-quite safely use it.
+`parol` has proven its performance in many examples and tests during its development.
+Also, projects ranging from small to large scale are using `parol` as their parser generator
+successfully.
 
-But `parol` is not ready for production yet. Features are still in development and the crate's
-interface can change at any time. There is still a lot of work to be done and any help is
-appreciated.
+As of the release of version 1.0.0 `parol` can be used in production like environments. Please,
+check the licenses for the terms of use.
 
 ## Dependencies
 

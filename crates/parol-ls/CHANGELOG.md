@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 1.0.0 - 2024-09-02
+
+* No changes, just a re-release with new version
+
 ## 0.21.0 - 2024-06-21
 
 * Fixed formatting problem with comments before the `%start` directive.

@@ -1,13 +1,13 @@
 [package]
 name = "parol-macros"
-version = "0.2.0"
+version = "1.0.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "Macros for LL(k) parser generator `parol`"
 documentation = "https://docs.rs/parol-macros"
 repository = "https://github.com/jsinger67/parol/tree/main/crates/parol-macros"
 readme = "README.md"
 keywords = ["parser", "parsing", "parser-generator", "LLk"]
-categories = ["algorithms", "parsing", "Parsing tools"]
+categories = ["algorithms", "parsing"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
 
