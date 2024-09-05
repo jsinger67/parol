@@ -17,4 +17,4 @@ updates:
       interval: daily
       time: "20:00"
     open-pull-requests-limit: 10
-    branch: "dependabot/cargo/release1.0"
+    target-branch: "release1.0"
