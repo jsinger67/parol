@@ -11,7 +11,6 @@ updates:
       interval: daily
       time: "20:00"
     open-pull-requests-limit: 10
-    branch: "dependabot/cargo/main"
   - package-ecosystem: cargo # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
