@@ -73,30 +73,29 @@ impl Tokenizer {
     pub fn build(
         augmented_terminals: &[&str],
         scanner_specifics: &[&str],
-        scanner_terminal_indices: &[TerminalIndex],
+        scanner_terminal_indices: &[TerminalIndex]
     ) -> Result<Self> {
         debug_assert_eq!(5, scanner_specifics.len());
         let mut patterns = Vec::with_capacity(augmented_terminals.len());
-        scanner_specifics.iter().enumerate().for_each(|(i, t)| {
-            if *t != UNMATCHABLE_TOKEN {
-                patterns.push((t.to_string(), i as TerminalIndex));
-            }
-        });
+        scanner_specifics
+            .iter()
+            .enumerate()
+            .for_each(|(i, t)| {
+                if *t != UNMATCHABLE_TOKEN {
+                    patterns.push((t.to_string(), i as TerminalIndex));
+                }
+            });
         scanner_terminal_indices
             .iter()
-            .map(|term_idx| {
-                (
-                    augmented_terminals[*term_idx as usize].to_string(),
-                    *term_idx,
-                )
-            })
+            .map(|term_idx| { (augmented_terminals[*term_idx as usize].to_string(), *term_idx) })
             .for_each(|e| {
                 patterns.push(e);
             });
         let error_token_type = (augmented_terminals.len() - 1) as TerminalIndex;
 
         debug_assert_eq!(
-            ERROR_TOKEN, augmented_terminals[error_token_type as usize],
+            ERROR_TOKEN,
+            augmented_terminals[error_token_type as usize],
             "Last token should always be the error token!"
         );
 
@@ -105,9 +104,8 @@ impl Tokenizer {
             error_token_type,
         ));
 
-        debug_assert_eq!(
-            patterns.len(),
-            patterns.len(),
+        debug_assert!(
+            patterns.len() >= scanner_terminal_indices.len(),
             "Error in mapping of PatternID to TerminalIndex"
         );
 

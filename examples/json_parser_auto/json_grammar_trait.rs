@@ -119,7 +119,7 @@ pub struct ArraySuffixRBracket {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueString<'t> {
-    pub string: Box<String<'t>>,
+    pub string: String<'t>,
 }
 
 ///
@@ -131,7 +131,7 @@ pub struct ValueString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueNumber<'t> {
-    pub number: Box<Number<'t>>,
+    pub number: Number<'t>,
 }
 
 ///
@@ -143,7 +143,7 @@ pub struct ValueNumber<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueObject<'t> {
-    pub object: Box<Object<'t>>,
+    pub object: Object<'t>,
 }
 
 ///
@@ -155,7 +155,7 @@ pub struct ValueObject<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueArray<'t> {
-    pub array: Box<Array<'t>>,
+    pub array: Array<'t>,
 }
 
 ///
@@ -200,7 +200,7 @@ pub struct ValueNull {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Array<'t> {
-    pub array_suffix: Box<ArraySuffix<'t>>,
+    pub array_suffix: ArraySuffix<'t>,
 }
 
 ///
@@ -210,7 +210,7 @@ pub struct Array<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArrayList<'t> {
-    pub value: Box<Value<'t>>,
+    pub value: Value<'t>,
 }
 
 ///
@@ -230,7 +230,7 @@ pub enum ArraySuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Json<'t> {
-    pub value: Box<Value<'t>>,
+    pub value: Value<'t>,
 }
 
 ///
@@ -250,7 +250,7 @@ pub struct Number<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Object<'t> {
-    pub object_suffix: Box<ObjectSuffix<'t>>,
+    pub object_suffix: ObjectSuffix<'t>,
 }
 
 ///
@@ -260,7 +260,7 @@ pub struct Object<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ObjectList<'t> {
-    pub pair: Box<Pair<'t>>,
+    pub pair: Pair<'t>,
 }
 
 ///
@@ -280,8 +280,8 @@ pub enum ObjectSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Pair<'t> {
-    pub string: Box<String<'t>>,
-    pub value: Box<Value<'t>>,
+    pub string: String<'t>,
+    pub value: Value<'t>,
 }
 
 ///
@@ -398,9 +398,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
-        let json_built = Json {
-            value: Box::new(value),
-        };
+        let json_built = Json { value };
         // Calling user action here
         self.user_grammar.json(&json_built)?;
         self.push(ASTType::Json(json_built), context);
@@ -420,9 +418,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_suffix = pop_item!(self, object_suffix, ObjectSuffix, context);
-        let object_built = Object {
-            object_suffix: Box::new(object_suffix),
-        };
+        let object_built = Object { object_suffix };
         // Calling user action here
         self.user_grammar.object(&object_built)?;
         self.push(ASTType::Object(object_built), context);
@@ -482,9 +478,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut object_list = pop_item!(self, object_list, ObjectList, context);
         let pair = pop_item!(self, pair, Pair, context);
-        let object_list_0_built = ObjectList {
-            pair: Box::new(pair),
-        };
+        let object_list_0_built = ObjectList { pair };
         // Add an element to the vector
         object_list.push(object_list_0_built);
         self.push(ASTType::ObjectList(object_list), context);
@@ -519,10 +513,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
         let string = pop_item!(self, string, String, context);
-        let pair_built = Pair {
-            string: Box::new(string),
-            value: Box::new(value),
-        };
+        let pair_built = Pair { string, value };
         // Calling user action here
         self.user_grammar.pair(&pair_built)?;
         self.push(ASTType::Pair(pair_built), context);
@@ -542,9 +533,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_suffix = pop_item!(self, array_suffix, ArraySuffix, context);
-        let array_built = Array {
-            array_suffix: Box::new(array_suffix),
-        };
+        let array_built = Array { array_suffix };
         // Calling user action here
         self.user_grammar.array(&array_built)?;
         self.push(ASTType::Array(array_built), context);
@@ -604,9 +593,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut array_list = pop_item!(self, array_list, ArrayList, context);
         let value = pop_item!(self, value, Value, context);
-        let array_list_0_built = ArrayList {
-            value: Box::new(value),
-        };
+        let array_list_0_built = ArrayList { value };
         // Add an element to the vector
         array_list.push(array_list_0_built);
         self.push(ASTType::ArrayList(array_list), context);
@@ -635,9 +622,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let value_0_built = ValueString {
-            string: Box::new(string),
-        };
+        let value_0_built = ValueString { string };
         let value_0_built = Value::String(value_0_built);
         // Calling user action here
         self.user_grammar.value(&value_0_built)?;
@@ -654,9 +639,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let value_1_built = ValueNumber {
-            number: Box::new(number),
-        };
+        let value_1_built = ValueNumber { number };
         let value_1_built = Value::Number(value_1_built);
         // Calling user action here
         self.user_grammar.value(&value_1_built)?;
@@ -673,9 +656,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object = pop_item!(self, object, Object, context);
-        let value_2_built = ValueObject {
-            object: Box::new(object),
-        };
+        let value_2_built = ValueObject { object };
         let value_2_built = Value::Object(value_2_built);
         // Calling user action here
         self.user_grammar.value(&value_2_built)?;
@@ -692,9 +673,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
-        let value_3_built = ValueArray {
-            array: Box::new(array),
-        };
+        let value_3_built = ValueArray { array };
         let value_3_built = Value::Array(value_3_built);
         // Calling user action here
         self.user_grammar.value(&value_3_built)?;

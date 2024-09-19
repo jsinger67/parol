@@ -38,8 +38,7 @@ Content
 //     | StringDelimiter %sc(String) StringContent StringDelimiter %sc()
 
 StringContent
-    : StringElement StringContent
-    |
+    : { StringElement }
     ;
 
 StringElement

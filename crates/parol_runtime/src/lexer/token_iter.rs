@@ -1,25 +1,16 @@
-use crate::{
-    lexer::{location, Token, RX_NEW_LINE},
-    Location, TokenNumber,
-};
+use crate::{ lexer::{ location, Token }, Location, TokenNumber };
 use location::LocationBuilder;
 use log::trace;
-use scnr::{scanner::Scanner, FindMatches};
-use std::{path::PathBuf, sync::Arc};
+use scnr::{ scanner::Scanner, FindMatches, MatchExt, MatchExtIterator, WithPositions };
+use std::{ path::PathBuf, sync::Arc };
 
 ///
 /// The TokenIter type provides iterator functionality for Token<'t> objects.
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 pub struct TokenIter<'t> {
-    /// Line number, starting with 1
-    line: u32,
-
-    /// Column number, starting with 1
-    col: u32,
-
     /// An iterator over token matches
-    pub(crate) find_iter: FindMatches<'t>,
+    pub(crate) find_iter: WithPositions<FindMatches<'t>>,
 
     /// The tokenizer itself
     pub(crate) scanner: Scanner,
@@ -45,9 +36,7 @@ impl<'t> TokenIter<'t> {
     ///
     pub fn new(scanner: Scanner, input: &'t str, file_name: Arc<PathBuf>, k: usize) -> Self {
         Self {
-            line: 1,
-            col: 1,
-            find_iter: scanner.find_iter(input),
+            find_iter: scanner.find_iter(input).with_positions(),
             scanner,
             input,
             k,
@@ -55,34 +44,6 @@ impl<'t> TokenIter<'t> {
             token_number: 0,
             last_location: None,
         }
-    }
-
-    /// Sets the initial position of the iterator.
-    pub fn with_position(mut self, line: u32, column: u32) -> Self {
-        self.line = line;
-        self.col = column;
-        self
-    }
-
-    ///
-    /// Counts the occurrences of newlines in the given text.
-    /// If at least one newline is counted it also calculates the column position after the last
-    /// matched newline.
-    /// It is used to update `line` and `col` members.
-    ///
-    /// Returns a tuple of line count and new column number.
-    ///
-    pub(crate) fn count_nl(s: &str) -> (u32, u32) {
-        let matches = RX_NEW_LINE.find_iter(s).collect::<Vec<_>>();
-        let lines = matches.len() as u32;
-        let result = if let Some(&right_most_match) = matches.last().as_ref() {
-            (lines, (s.len() - right_most_match.end()) as u32 + 1)
-        } else {
-            // Column number 0 means invalid
-            (lines, 0)
-        };
-        trace!("count_nl: {}, {}", result.0, result.1);
-        result
     }
 
     /// Returns the name of the scanner mode with the given index.
@@ -95,41 +56,28 @@ impl<'t> TokenIter<'t> {
         self.scanner.current_mode()
     }
 
-    pub(crate) fn token_from_match(&mut self, matched: scnr::Match) -> Option<Token<'t>> {
+    pub(crate) fn token_from_match(&mut self, matched: MatchExt) -> Option<Token<'t>> {
         let token_type = matched.token_type();
-        // The token's text is taken from the match
-        let text = &self.input[matched.range()];
-        let length = text.len() as u32;
-        // The token position is calculated from the matched text
-        let start_line = self.line;
-        let start_column = self.col;
-
-        // Set the inner position behind the scanned token
-        let (new_lines, column_after_nl) = Self::count_nl(text);
-        let pos = matched.end();
-        self.line += new_lines;
-        self.col = if new_lines > 0 {
-            column_after_nl
-        } else {
-            debug_assert!(column_after_nl == 0);
-            self.col + length
-        };
-        if let Ok(location) = LocationBuilder::default()
-            .start_line(start_line)
-            .start_column(start_column)
-            .end_line(start_line + new_lines)
-            .end_column(self.col)
-            .length(length)
-            .offset(pos)
-            .file_name(self.file_name.clone())
-            .build()
+        if
+            let Ok(location) = LocationBuilder::default()
+                .start_line(matched.start_position().line as u32)
+                .start_column(matched.start_position().column as u32)
+                .end_line(matched.end_position().line as u32)
+                .end_column(matched.end_position().column as u32)
+                .length(matched.len() as u32)
+                .offset(matched.end())
+                .file_name(self.file_name.clone())
+                .build()
         {
             self.last_location = Some(location.clone());
+
+            // The token's text is taken from the match
+            let text = &self.input[matched.range()];
             let token = Token::with(text, token_type as u16, location, self.token_number);
+
             if !token.is_skip_token() || token.is_comment_token() {
                 self.token_number += 1;
             }
-            trace!("{}, newline count: {}", token, new_lines);
             Some(token)
         } else {
             // Error
@@ -146,7 +94,7 @@ impl<'t> TokenIter<'t> {
     /// If the position is less than the current position, the function creates a new iterator and
     /// advances it to the given position.
     pub fn set_position(&mut self, position: usize) {
-        self.find_iter = self.scanner.find_iter(self.input).with_offset(position);
+        self.find_iter = self.scanner.find_iter(self.input).with_offset(position).with_positions();
     }
 }
 

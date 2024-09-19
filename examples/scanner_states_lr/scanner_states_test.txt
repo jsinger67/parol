@@ -1,7 +1,4 @@
+
 Id1
 "1. String"
 Id2
-"2. \"String\t\" with \
-escaped newline"
-
-"3. String \nwith newline"

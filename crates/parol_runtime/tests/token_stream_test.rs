@@ -2,13 +2,16 @@
 //! Scanner switching is tested and token spans are checked.
 
 use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
+    ERROR_TOKEN,
+    NEW_LINE_TOKEN,
+    UNMATCHABLE_TOKEN,
+    WHITESPACE_TOKEN,
 };
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::{FileSource, ScannerConfig, TerminalIndex, Token, TokenStream, Tokenizer};
+use parol_runtime::{ FileSource, ScannerConfig, TerminalIndex, Token, TokenStream, Tokenizer };
 use std::borrow::Cow;
 use std::cell::RefCell;
-use std::path::{Path, PathBuf};
+use std::path::{ Path, PathBuf };
 
 pub const TERMINALS: &[&str; 11] = &[
     /*  0 */ UNMATCHABLE_TOKEN,
@@ -45,12 +48,7 @@ const SCANNER_1: (&[&str; 5], &[TerminalIndex; 4]) = (
         /*  3 */ UNMATCHABLE_TOKEN,
         /*  4 */ UNMATCHABLE_TOKEN,
     ],
-    &[
-        6, /* Escaped */
-        7, /* EscapedLineEnd */
-        8, /* NoneQuote */
-        9, /* StringDelimiter */
-    ],
+    &[6 /* Escaped */, 7 /* EscapedLineEnd */, 8 /* NoneQuote */, 9 /* StringDelimiter */],
 );
 
 const MAX_K: usize = 1;
@@ -60,17 +58,18 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
         ScannerConfig::new(
             "INITIAL",
             Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-            &[],
+            &[]
         ),
         ScannerConfig::new(
             "String",
             Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
-            &[],
-        ),
+            &[]
+        )
     ]
 });
 
-const INPUT: &str = r#"Id1
+const INPUT: &str =
+    r#"Id1
 "1. String"
 Id2
 "2. \"String\t\" with \
@@ -123,7 +122,7 @@ fn scanner_switch_and_named_source() {
         prev_tok = tok;
     }
 
-    assert_eq!(stream.borrow().current_scanner_index(), 1);
+    assert_eq!(stream.borrow().current_scanner_index(), 0);
 
     assert_eq!(prev_tok.text(), "\"");
     assert_eq!(prev_tok.location.start_line, 7);

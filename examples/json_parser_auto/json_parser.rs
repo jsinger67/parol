@@ -315,6 +315,8 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    llk_parser.trim_parse_tree();
+
     // Initialize wrapper
     let mut user_actions = JsonGrammarAuto::new(user_actions);
     llk_parser.parse(
