@@ -23,7 +23,7 @@ derive_builder = { version = "0.20.1" }
 env_logger = { workspace = true }
 function_name = { workspace = true }
 num_cpus = "1.16.0"
-owo-colors = "5.0.0"
+owo-colors = "4.1.0"
 parol_runtime = { path = "../parol_runtime", version = "1.0.0", features = [
     "auto_generation",
 ] }
