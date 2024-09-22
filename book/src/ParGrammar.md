@@ -188,6 +188,22 @@ avoid terminals like this:
 Internally the tokenizer will enter a loop and match the empty string over and over again without
 making progress in the input. Currently there is no check for this scenario in `parol_runtime`.
 
+There is a **workaround** when you simply need possibly empty tokens, at least for the `?` and `*`
+ones.
+Make the token `+` and put their uses in optional expressions `[]`. This makes them non-empty and
+also their possible emptiness explicit for the grammar:
+
+```parol
+RuleWithWhiteSpaces: WhiteSpaces;
+WhiteSpaces: /[ \t]*/;
+
+// =>
+
+RuleWithWhiteSpaces: [ WhiteSpaces ];
+WhiteSpaces: /[ \t]+/;
+```
+
+
 <!-- markdownlint-disable no-inline-html -->
 <h2 id=scanner-states>Scanner states</h2>
 <!-- markdownlint-enable no-inline-html -->
