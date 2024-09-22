@@ -225,8 +225,9 @@ impl<'t> TokenStream<'t> {
         self.error_token_type
     }
 
-    ///
     /// Provides scanner state switching
+    ///
+    /// *Parser based scanner switching*
     ///
     /// Currently we take the stream position where we set the new scanner from
     /// the match of LA(1) token. More precisely all relevant positions after the match
@@ -234,12 +235,25 @@ impl<'t> TokenStream<'t> {
     /// `TokenStream::consume`.
     /// This is a documented restriction.
     ///
+    /// A *parser based scanner switch* is executed by the parser itself when handling a `%sc`, a
+    /// `%push` or a `%pop` directive.
+    /// On `%sc` the parser calls `switch_scanner` with the clear flag set to `true`.
+    /// On `%push` the parser calls `push_scanner` which clears the token buffer.
+    /// On `%pop` the parser calls `pop_scanner` which also clears the token buffer.
+    ///
+    /// Thus, the parser always clears the token buffer after the switch.
+    ///
+    /// *Scanner based scanner switching*
+    ///
+    /// The `read_tokens` function actually executes the *scanner based scanner switch*.
     /// The clear flag is used to clear the token buffer after the switch.
     /// If the scanner switch is initiated by `read_tokens` the flag is set to `false` to keep
-    /// the tokens in the buffer.
+    /// the tokens in the buffer. The `read_tokens` stops reading tokens after the scanner switch
+    /// is detected.
+    ///
+    /// *Return value*
     ///
     /// Currently this never return LexerError but it could be changed in the future.
-    ///
     pub fn switch_scanner(
         &mut self,
         scanner_index: ScannerIndex,
@@ -262,6 +276,7 @@ impl<'t> TokenStream<'t> {
             self.token_iter = self.switch_to(scanner_index);
             self.current_scanner_index = scanner_index;
             if clear {
+                trace!("Clearing token buffer after scanner switch");
                 self.tokens.clear();
             }
             tokens_read = self.ensure_buffer()?;
