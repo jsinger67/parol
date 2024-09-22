@@ -188,7 +188,7 @@ impl<'t> TokenStream<'t> {
             "Update stream position to {}. Line {}, Column {}",
             self.pos,
             self.line,
-            self.column,
+            self.column
         );
     }
 
@@ -225,8 +225,9 @@ impl<'t> TokenStream<'t> {
         self.error_token_type
     }
 
-    ///
     /// Provides scanner state switching
+    ///
+    /// *Parser based scanner switching*
     ///
     /// Currently we take the stream position where we set the new scanner from
     /// the match of LA(1) token. More precisely all relevant positions after the match
@@ -234,12 +235,25 @@ impl<'t> TokenStream<'t> {
     /// `TokenStream::consume`.
     /// This is a documented restriction.
     ///
+    /// A *parser based scanner switch* is executed by the parser itself when handling a `%sc`, a
+    /// `%push` or a `%pop` directive.
+    /// On `%sc` the parser calls `switch_scanner` with the clear flag set to `true`.
+    /// On `%push` the parser calls `push_scanner` which clears the token buffer.
+    /// On `%pop` the parser calls `pop_scanner` which also clears the token buffer.
+    ///
+    /// Thus, the parser always clears the token buffer after the switch.
+    ///
+    /// *Scanner based scanner switching*
+    ///
+    /// The `read_tokens` function actually executes the *scanner based scanner switch*.
     /// The clear flag is used to clear the token buffer after the switch.
     /// If the scanner switch is initiated by `read_tokens` the flag is set to `false` to keep
-    /// the tokens in the buffer.
+    /// the tokens in the buffer. The `read_tokens` stops reading tokens after the scanner switch
+    /// is detected.
+    ///
+    /// *Return value*
     ///
     /// Currently this never return LexerError but it could be changed in the future.
-    ///
     pub fn switch_scanner(
         &mut self,
         scanner_index: ScannerIndex,
@@ -250,18 +264,19 @@ impl<'t> TokenStream<'t> {
             trace!(
                 "Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
-                self.scanners[scanner_index].name,
+                self.scanners[scanner_index].name
             );
         } else {
             trace!(
                 "Switching to scanner {} <{}>; Current offset is {}",
                 scanner_index,
                 self.scanners[scanner_index].name,
-                self.pos,
+                self.pos
             );
             self.token_iter = self.switch_to(scanner_index);
             self.current_scanner_index = scanner_index;
             if clear {
+                trace!("Clearing token buffer after scanner switch");
                 self.tokens.clear();
             }
             tokens_read = self.ensure_buffer()?;
@@ -279,7 +294,7 @@ impl<'t> TokenStream<'t> {
             trace!(
                 "push_scanner: Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
-                self.scanners[scanner_index].name,
+                self.scanners[scanner_index].name
             );
             self.scanner_stack.push(self.current_scanner_index);
             self.current_scanner_index = scanner_index;
@@ -289,7 +304,7 @@ impl<'t> TokenStream<'t> {
                 self.current_scanner_index,
                 scanner_index,
                 self.scanners[scanner_index].name,
-                self.pos,
+                self.pos
             );
             self.scanner_stack.push(self.current_scanner_index);
             self.token_iter = self.switch_to(scanner_index);
@@ -313,14 +328,14 @@ impl<'t> TokenStream<'t> {
                 trace!(
                     "pop_scanner: Redundant switch to scanner {} <{}> omitted",
                     scanner_index,
-                    self.scanners[scanner_index].name,
+                    self.scanners[scanner_index].name
                 );
             } else {
                 trace!(
                     "pop_scanner: Switching to popped scanner {} <{}>; Current offset is {}",
                     scanner_index,
                     self.scanners[scanner_index].name,
-                    self.pos,
+                    self.pos
                 );
                 self.token_iter = self.switch_to(scanner_index);
                 self.current_scanner_index = scanner_index;
@@ -366,6 +381,9 @@ impl<'t> TokenStream<'t> {
                 self.tokens.push(token);
                 new_scanner = self.scanners[self.current_scanner_index].has_transition(token_type);
                 if new_scanner.is_some() {
+                    // We have a scanner switch on token_type, this switch must be executed
+                    // before more tokens are read.
+                    // Therefore we break the loop and execute the switch.
                     break;
                 }
                 if tokens_read >= n {
@@ -379,6 +397,7 @@ impl<'t> TokenStream<'t> {
         if let Some(scanner) = new_scanner {
             trace!("Switching to scanner {} on token {}", scanner, token_type);
             self.update_position(self.tokens.len() - 1);
+            // Buffer deletion is not necessary, because we don't have invalid tokens in the buffer.
             tokens_read += self.switch_scanner(scanner, false)?;
         }
         Ok(tokens_read)
@@ -443,7 +462,7 @@ impl<'t> TokenStream<'t> {
                 index,
                 token_type
             );
-            if (self.tokens[index].token_type) == EOI {
+            if self.tokens[index].token_type == EOI {
                 Err(LexerError::RecoveryError("Can't replace EOI".to_owned()))
             } else {
                 self.tokens[index].token_type = token_type;
