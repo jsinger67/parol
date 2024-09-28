@@ -1,4 +1,4 @@
-use crate::{TerminalIndex, Tokenizer};
+use crate::{ScannerIndex, TerminalIndex, Tokenizer};
 
 /// Scanner configuration fed into a TokenStream
 #[derive(Debug)]
@@ -10,7 +10,7 @@ pub struct ScannerConfig {
     /// The mapping of token types to new scanner configurations
     /// The entries are tuples of the terminal index and the new scanner configuration index and are
     /// sorted by terminal index.
-    pub transitions: &'static [(TerminalIndex, usize)],
+    pub transitions: &'static [(TerminalIndex, ScannerIndex)],
 }
 
 impl ScannerConfig {
@@ -18,7 +18,7 @@ impl ScannerConfig {
     pub fn new(
         name: &'static str,
         tokenizer: Tokenizer,
-        transitions: &'static [(TerminalIndex, usize)],
+        transitions: &'static [(TerminalIndex, ScannerIndex)],
     ) -> Self {
         Self {
             name,
@@ -28,7 +28,7 @@ impl ScannerConfig {
     }
 
     /// Check if the scanner configuration has a transition on the given terminal index
-    pub fn has_transition(&self, terminal_index: TerminalIndex) -> Option<usize> {
+    pub fn has_transition(&self, terminal_index: TerminalIndex) -> Option<ScannerIndex> {
         self.transitions
             .iter()
             .find(|(term, _)| *term == terminal_index)
