@@ -6,7 +6,7 @@ mod scanner_states_parser;
 
 use crate::scanner_states_grammar::ScannerStatesGrammar;
 use crate::scanner_states_parser::parse;
-use anyhow::{ anyhow, Context, Result };
+use anyhow::{anyhow, Context, Result};
 use parol::generate_tree_layout;
 use parol_runtime::log::debug;
 use parol_runtime::Report;
@@ -30,16 +30,14 @@ fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() == 2 {
         let file_name = args[1].clone();
-        let input = fs
-            ::read_to_string(file_name.clone())
+        let input = fs::read_to_string(file_name.clone())
             .with_context(|| format!("Can't read file {}", file_name))?;
         let mut scanner_states_grammar = ScannerStatesGrammar::new();
         match parse(&input, &file_name, &mut scanner_states_grammar) {
             Ok(syntax_tree) => {
                 println!("{}", scanner_states_grammar);
-                generate_tree_layout(&syntax_tree, &file_name).context(
-                    "Error generating tree layout"
-                )
+                generate_tree_layout(&syntax_tree, &file_name)
+                    .context("Error generating tree layout")
             }
             Err(e) => {
                 ScannerStatesErrorReporter::report_error(&e, file_name).unwrap_or(());

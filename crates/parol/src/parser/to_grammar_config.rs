@@ -1,24 +1,32 @@
-use crate::parser::{ Factor, ParolGrammar };
+use crate::parser::{Factor, ParolGrammar};
 use crate::transformation::transform_productions;
-use crate::{ generators, Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal, TerminalKind };
-use anyhow::{ bail, Result };
+use crate::{generators, Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal, TerminalKind};
+use anyhow::{bail, Result};
 
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let st = parol_grammar.start_symbol;
-    let non_terminals = parol_grammar.productions.iter().fold(Vec::<String>::new(), |mut acc, p| {
-        if !acc.contains(&p.lhs) {
-            acc.push(p.lhs.clone());
-        }
-        acc
-    });
+    let non_terminals =
+        parol_grammar
+            .productions
+            .iter()
+            .fold(Vec::<String>::new(), |mut acc, p| {
+                if !acc.contains(&p.lhs) {
+                    acc.push(p.lhs.clone());
+                }
+                acc
+            });
     let pr = transform_productions(parol_grammar.productions, parol_grammar.grammar_type)?;
     let cfg = Cfg { st, pr };
     let title = parol_grammar.title;
     let comment = parol_grammar.comment;
     // The first scanner configuration should always be the default configuration
     debug_assert_eq!(parol_grammar.scanner_configurations[0].name, "INITIAL");
-    let line_comments = parol_grammar.scanner_configurations[0].line_comments.clone();
-    let block_comments = parol_grammar.scanner_configurations[0].block_comments.clone();
+    let line_comments = parol_grammar.scanner_configurations[0]
+        .line_comments
+        .clone();
+    let block_comments = parol_grammar.scanner_configurations[0]
+        .block_comments
+        .clone();
     let auto_newline = !parol_grammar.scanner_configurations[0].auto_newline_off;
     let auto_ws = !parol_grammar.scanner_configurations[0].auto_ws_off;
     let lookahead_size = 1; // Updated later
@@ -41,14 +49,18 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
     }
 
     for s in 1..parol_grammar.scanner_configurations.len() {
-        grammar_config = grammar_config.add_scanner(
-            try_from_scanner_config(&parol_grammar.scanner_configurations[s], s)?
-        );
+        grammar_config = grammar_config.add_scanner(try_from_scanner_config(
+            &parol_grammar.scanner_configurations[s],
+            s,
+        )?);
     }
 
     let terminal_resolver = grammar_config.cfg.get_terminal_index_function();
     let scanner_resolver = |name: &str| -> Option<usize> {
-        parol_grammar.scanner_configurations.iter().position(|sc| sc.name == name)
+        parol_grammar
+            .scanner_configurations
+            .iter()
+            .position(|sc| sc.name == name)
     };
     // Finds the terminal token from the name of the primary non-terminal
     let pr_copy = grammar_config.cfg.pr.clone();
@@ -64,7 +76,8 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
             }
         })
     };
-    grammar_config.scanner_configurations
+    grammar_config
+        .scanner_configurations
         .iter_mut()
         .try_for_each(|sc| {
             insert_transitions(
@@ -72,7 +85,7 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
                 &parol_grammar.scanner_configurations,
                 &terminal_resolver,
                 scanner_resolver,
-                &terminal_finder
+                &terminal_finder,
             )
         })?;
 
@@ -84,21 +97,23 @@ fn insert_transitions(
     scanner_configurations: &[crate::parser::parol_grammar::ScannerConfig],
     terminal_resolver: &impl crate::grammar::cfg::TerminalIndexFn,
     scanner_resolver: impl Fn(&str) -> Option<usize>,
-    terminal_finder: impl Fn(&str) -> Option<(String, TerminalKind)>
+    terminal_finder: impl Fn(&str) -> Option<(String, TerminalKind)>,
 ) -> Result<()> {
     if let Some(source_configuartion) = scanner_resolver(&sc.scanner_name) {
         let mut transitions = Vec::new();
-        scanner_configurations[source_configuartion].transitions
+        scanner_configurations[source_configuartion]
+            .transitions
             .iter()
             .try_for_each(|(token, target_state_name)| {
                 if let Some((txt, kind)) = terminal_finder(token.text()) {
                     if let Some(target_scanner) = scanner_resolver(target_state_name.text()) {
-                        transitions.push((
-                            terminal_resolver.terminal_index(&txt, kind),
-                            target_scanner,
-                        ));
+                        transitions
+                            .push((terminal_resolver.terminal_index(&txt, kind), target_scanner));
                     } else {
-                        bail!("Target scanner configuration {} not found", target_state_name);
+                        bail!(
+                            "Target scanner configuration {} not found",
+                            target_state_name
+                        );
                     }
                 } else {
                     bail!("Terminal {} not found", token);
@@ -115,7 +130,7 @@ fn insert_transitions(
 
 fn try_from_scanner_config(
     sc: &crate::parser::parol_grammar::ScannerConfig,
-    scanner_state: usize
+    scanner_state: usize,
 ) -> Result<ScannerConfig> {
     let scanner_config = ScannerConfig::new(sc.name.clone(), scanner_state)
         .with_line_comments(sc.line_comments.clone())

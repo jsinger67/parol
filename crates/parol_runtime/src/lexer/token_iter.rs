@@ -1,8 +1,13 @@
-use crate::{ lexer::{ location, Token }, Location, TokenNumber };
+use crate::{
+    lexer::{location, Token},
+    Location, TokenNumber,
+};
 use location::LocationBuilder;
 use log::trace;
-use scnr::{ scanner::Scanner, FindMatches, MatchExt, MatchExtIterator, WithPositions };
-use std::{ path::PathBuf, sync::Arc };
+use scnr::{
+    scanner::Scanner, FindMatches, MatchExt, MatchExtIterator, ScannerModeSwitcher, WithPositions,
+};
+use std::{path::PathBuf, sync::Arc};
 
 ///
 /// The TokenIter type provides iterator functionality for Token<'t> objects.
@@ -58,16 +63,15 @@ impl<'t> TokenIter<'t> {
 
     pub(crate) fn token_from_match(&mut self, matched: MatchExt) -> Option<Token<'t>> {
         let token_type = matched.token_type();
-        if
-            let Ok(location) = LocationBuilder::default()
-                .start_line(matched.start_position().line as u32)
-                .start_column(matched.start_position().column as u32)
-                .end_line(matched.end_position().line as u32)
-                .end_column(matched.end_position().column as u32)
-                .length(matched.len() as u32)
-                .offset(matched.end())
-                .file_name(self.file_name.clone())
-                .build()
+        if let Ok(location) = LocationBuilder::default()
+            .start_line(matched.start_position().line as u32)
+            .start_column(matched.start_position().column as u32)
+            .end_line(matched.end_position().line as u32)
+            .end_column(matched.end_position().column as u32)
+            .length(matched.len() as u32)
+            .offset(matched.end())
+            .file_name(self.file_name.clone())
+            .build()
         {
             self.last_location = Some(location.clone());
 
@@ -94,7 +98,15 @@ impl<'t> TokenIter<'t> {
     /// If the position is less than the current position, the function creates a new iterator and
     /// advances it to the given position.
     pub fn set_position(&mut self, position: usize) {
-        self.find_iter = self.scanner.find_iter(self.input).with_offset(position).with_positions();
+        self.find_iter = self
+            .scanner
+            .find_iter(self.input)
+            .with_offset(position)
+            .with_positions();
+    }
+
+    pub(crate) fn set_mode(&mut self, scanner_index: usize) {
+        self.find_iter.set_mode(scanner_index);
     }
 }
 

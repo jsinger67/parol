@@ -364,7 +364,7 @@ impl<'t> TokenStream<'t> {
     /// position (aka scanner state switching).
     ///
     fn switch_to(&mut self, scanner_index: usize) {
-        self.token_iter.scanner.set_mode(scanner_index);
+        self.token_iter.set_mode(scanner_index);
         trace!(
             "Switched to scanner {} <{}>. Last consumed token's end position: {}",
             scanner_index,
