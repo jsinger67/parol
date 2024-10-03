@@ -126,10 +126,33 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     }]
 });
 
+static USED_PATTERNS: Lazy<Vec<&str>> = Lazy::new(|| {
+    let internal_terminals =
+        SCANNER_SPECIFICS
+            .iter()
+            .fold(Vec::with_capacity(PATTERNS.len()), |mut acc, t| {
+                if *t != parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN {
+                    acc.push(*t);
+                }
+                acc
+            });
+    let mut patterns = SCANNER_TERMINAL_INDICES
+        .iter()
+        .map(|term_idx| PATTERNS[*term_idx as usize])
+        .fold(internal_terminals, |mut acc, pattern| {
+            acc.push(pattern);
+            acc
+        });
+    let error_token_type = (PATTERNS.len() - 1) as TerminalIndex;
+    patterns.push(PATTERNS[error_token_type as usize]);
+    patterns
+});
+
 fn build_scanner() {
     let _scanner = black_box(
-        Tokenizer::build(PATTERNS, SCANNER_SPECIFICS, SCANNER_TERMINAL_INDICES)
-            .expect("Scanner build failed"),
+        regex_automata::dfa::regex::Regex::builder()
+            .build_many(&USED_PATTERNS)
+            .expect("Regex build failed"),
     );
 }
 
