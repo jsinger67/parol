@@ -4,8 +4,7 @@ use crate::{TerminalIndex, Tokenizer};
 
 /// Scanner configuration fed into a TokenStream
 
-// TODO: Add Debug derive again when the scnr crate supports it.
-// #[derive(Debug)]
+#[derive(Debug)]
 
 pub struct ScannerConfig {
     /// Name of the scanner configuration, i.e. the scanner state or mode
