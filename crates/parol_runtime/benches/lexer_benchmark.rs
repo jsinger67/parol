@@ -1,6 +1,6 @@
 use std::{borrow::Cow, cell::RefCell, path::Path};
 
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use parol_runtime::{once_cell::sync::Lazy, ScannerConfig, TerminalIndex, TokenStream, Tokenizer};
 
 const LEXER_INPUT: &str = include_str!("./input_1.txt");
@@ -126,6 +126,13 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     }]
 });
 
+fn build_scanner() {
+    let _scanner = black_box(
+        Tokenizer::build(PATTERNS, SCANNER_SPECIFICS, SCANNER_TERMINAL_INDICES)
+            .expect("Scanner build failed"),
+    );
+}
+
 fn tokenize_1() {
     let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
     let token_stream =
@@ -141,5 +148,9 @@ fn regex_1_benchmark(c: &mut Criterion) {
     c.bench_function("tokenize_1", |b| b.iter(tokenize_1));
 }
 
-criterion_group!(benches, regex_1_benchmark,);
+fn build_scanner_benchmark(c: &mut Criterion) {
+    c.bench_function("build_scanner", |b| b.iter(build_scanner));
+}
+
+criterion_group!(benches, regex_1_benchmark, build_scanner_benchmark);
 criterion_main!(benches);
