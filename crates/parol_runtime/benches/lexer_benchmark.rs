@@ -127,14 +127,17 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     }]
 });
 
-fn build_scanner() {
-    let modes = SCANNERS
+static USED_MODES: Lazy<Vec<ScannerMode>> = Lazy::new(|| {
+    SCANNERS
         .iter()
         .map(|s| s.into())
-        .collect::<Vec<ScannerMode>>();
+        .collect::<Vec<ScannerMode>>()
+});
+
+fn build_scanner() {
     let _scanner = black_box(
         ScannerBuilder::new()
-            .add_scanner_modes(&modes)
+            .add_scanner_modes(&USED_MODES)
             .build()
             .expect("Scanner build failed"),
     );
