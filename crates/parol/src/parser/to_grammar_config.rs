@@ -19,6 +19,8 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
     let cfg = Cfg { st, pr };
     let title = parol_grammar.title;
     let comment = parol_grammar.comment;
+    // The first scanner configuration should always be the default configuration
+    debug_assert_eq!(parol_grammar.scanner_configurations[0].name, "INITIAL");
     let line_comments = parol_grammar.scanner_configurations[0]
         .line_comments
         .clone();

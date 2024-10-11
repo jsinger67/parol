@@ -1,4 +1,5 @@
 use crate::Cfg;
+use anyhow::{bail, Result};
 use parol_runtime::{lexer::FIRST_USER_TOKEN, TerminalIndex};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -98,7 +99,7 @@ impl ScannerConfig {
     pub fn generate_build_information(
         &self,
         cfg: &Cfg,
-    ) -> (Vec<String>, Vec<TerminalIndex>, String) {
+    ) -> Result<(Vec<String>, Vec<TerminalIndex>, String)> {
         let mut scanner_specific = vec![
             "UNMATCHABLE_TOKEN".to_owned(),
             if self.auto_newline {
@@ -116,7 +117,7 @@ impl ScannerConfig {
             let line_comments_rx = self
                 .line_comments
                 .iter()
-                .map(|s| format!(r###"({}.*(\r\n|\r|\n|$))"###, s))
+                .map(|s| format!(r###"{}.*(\r\n|\r|\n)"###, s))
                 .collect::<Vec<String>>()
                 .join("|");
             scanner_specific.push(line_comments_rx);
@@ -127,8 +128,8 @@ impl ScannerConfig {
             let block_comments_rx = self
                 .block_comments
                 .iter()
-                .map(|(s, e)| format!(r###"((?ms){}.*?{})"###, s, e))
-                .collect::<Vec<String>>()
+                .map(|(s, e)| Self::format_block_comment(s, e))
+                .collect::<Result<Vec<String>>>()?
                 .join("|");
             scanner_specific.push(block_comments_rx);
         } else {
@@ -148,7 +149,92 @@ impl ScannerConfig {
                     acc
                 });
 
-        (scanner_specific, term_indices, self.scanner_name.clone())
+        Ok((scanner_specific, term_indices, self.scanner_name.clone()))
+    }
+
+    /// Formats a block comment
+    /// The block comment is formatted as a regular expression.
+    /// We need to specify the repeated expression for the comment content in such a way that
+    /// the end of the comment is not matched.
+    /// For this we need to allow only sequences that do not start with a substring of the end
+    /// of the comment. Since the end comment can be any string, we need to build an alternation
+    /// of all possible substrings of the end comment.
+    /// If the comment end is "*/" the regular expression is:
+    /// r"/\*([.\r\n--*][^*]|\*[^/])*\*/"
+    fn format_block_comment(s: &str, e: &str) -> Result<String> {
+        let len_with_escaped_chars = |s: &str| {
+            let mut prev = None;
+            s.chars()
+                .map(|c| {
+                    if c == '\\' && !matches!(prev, Some('\\')) {
+                        prev = Some(c);
+                        0
+                    } else {
+                        prev = Some(c);
+                        1
+                    }
+                })
+                .sum::<usize>()
+        };
+        Ok(match len_with_escaped_chars(e) {
+            0 => bail!("Block comment end is empty."),
+            1 => {
+                let c0 = if e.chars().nth(0).unwrap() == '\\' {
+                    if Self::must_escape_in_bracketed_expression(e.chars().nth(1).unwrap()) {
+                        e.to_string()
+                    } else {
+                        e.chars().nth(1).unwrap().escape_default().to_string()
+                    }
+                } else {
+                    e.to_string()
+                };
+                format!(r"{s}[.\r\n--{c0}]*{e}")
+            }
+            2 => {
+                let (c0, c1) = if e.chars().nth(0).unwrap() == '\\' {
+                    (&e[0..2], &e[2..])
+                } else {
+                    (&e[0..1], &e[1..])
+                };
+                // We need to determine if the character is escaped or not, and if it is escaped
+                // wheter it is a regex meta character or not.
+                // If it is a regex meta character we don't need to escape it in a bracket expression.
+                let c0c = if c0.len() > 1 {
+                    debug_assert_eq!(c0.chars().nth(0).unwrap(), '\\');
+                    // Determine if the character after the escape is a regex meta character
+                    if Self::must_escape_in_bracketed_expression(c0.chars().nth(1).unwrap()) {
+                        c0.to_string()
+                    } else {
+                        c0.chars().nth(1).unwrap().escape_default().to_string()
+                    }
+                } else {
+                    debug_assert_eq!(c0.len(), 1);
+                    c0.to_string()
+                };
+                let c1c = if c1.len() > 1 {
+                    debug_assert_eq!(c1.chars().nth(0).unwrap(), '\\');
+                    // Determine if the character after the escape is a regex meta character
+                    if Self::must_escape_in_bracketed_expression(c1.chars().nth(1).unwrap()) {
+                        c1.to_string()
+                    } else {
+                        c1.chars().nth(1).unwrap().escape_default().to_string()
+                    }
+                } else {
+                    debug_assert_eq!(c1.len(), 1);
+                    c1.to_string()
+                };
+                format!(r"{s}([.\r\n--{c0c}]|{c0}[^{c1c}])*{e}")
+            }
+            _ => bail!(
+                r"Block comment end '{}' is too long. Maximum length is 2.
+                Consider using manual comment handling, maybe with different scanner modes.",
+                e
+            ),
+        })
+    }
+
+    fn must_escape_in_bracketed_expression(c: char) -> bool {
+        matches!(c, '-' | ']' | '^' | '\\')
     }
 }
 
@@ -177,5 +263,38 @@ impl Display for ScannerConfig {
         self.transitions
             .iter()
             .try_for_each(|(k, v)| write!(f, "on {} enter {};", k, v))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_format_block_comment() {
+        let s = r"/\*";
+        let e = r"\*/";
+        let r = ScannerConfig::format_block_comment(s, e);
+        assert_eq!(r.unwrap(), r"/\*([.\r\n--*]|\*[^/])*\*/");
+
+        let s = r"\{\{";
+        let e = r"\}\}";
+        let r = ScannerConfig::format_block_comment(s, e);
+        assert_eq!(r.unwrap(), r"\{\{([.\r\n--}]|\}[^}])*\}\}");
+
+        let s = "--";
+        let e = "--";
+        let r = ScannerConfig::format_block_comment(s, e);
+        assert_eq!(r.unwrap(), r"--([.\r\n---]|-[^-])*--");
+
+        let s = "#";
+        let e = "#";
+        let r = ScannerConfig::format_block_comment(s, e);
+        assert_eq!(r.unwrap(), r"#[.\r\n--#]*#");
+
+        let s = r"\{";
+        let e = r"\}";
+        let r = ScannerConfig::format_block_comment(s, e);
+        assert_eq!(r.unwrap(), r"\{[.\r\n--}]*\}");
     }
 }

@@ -24,10 +24,10 @@ pub const TERMINALS: &[&str; 11] = &[
     /*  3 */ UNMATCHABLE_TOKEN,
     /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r"[a-zA-Z_]\w*",
-    /*  6 */ r"\u{5c}[\u{22}\u{5c}bfnt]",
-    /*  7 */ r"\u{5c}[\s^\n\r]*\r?\n",
-    /*  8 */ r"[^\u{22}\u{5c}]+",
-    /*  9 */ r"\u{22}",
+    /*  6 */ r#"\["\\bfnt]"#,
+    /*  7 */ r"\[\s--\n\r]*\r?\n",
+    /*  8 */ r#"[^"\\]+"#,
+    /*  9 */ r#"""#,
     /* 10 */ ERROR_TOKEN,
 ];
 
@@ -51,8 +51,8 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"(//.*(\r\n|\r|\n|$))",
-        /*  4 */ r"((?ms)/\*.*?\*/)",
+        /*  3 */ r"//.*(\r\n|\r|\n)",
+        /*  4 */ r"/\*([.\r\n--*]|\*[^/])*\*/",
     ],
     &[5 /* Identifier */, 9 /* StringDelimiter */],
 );
@@ -76,7 +76,7 @@ const SCANNER_1: (&[&str; 5], &[TerminalIndex; 4]) = (
 
 const MAX_K: usize = 1;
 
-pub const NON_TERMINALS: &[&str; 10] = &[
+pub const NON_TERMINALS: &[&str; 11] = &[
     /*  0 */ "Content",
     /*  1 */ "Escaped",
     /*  2 */ "EscapedLineEnd",
@@ -85,11 +85,12 @@ pub const NON_TERMINALS: &[&str; 10] = &[
     /*  5 */ "Start",
     /*  6 */ "StartList",
     /*  7 */ "StringContent",
-    /*  8 */ "StringDelimiter",
-    /*  9 */ "StringElement",
+    /*  8 */ "StringContentList",
+    /*  9 */ "StringDelimiter",
+    /* 10 */ "StringElement",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 10] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 11] = &[
     /* 0 - "Content" */
     LookaheadDFA {
         prod0: -1,
@@ -98,25 +99,25 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 10] = &[
     },
     /* 1 - "Escaped" */
     LookaheadDFA {
-        prod0: 11,
+        prod0: 12,
         transitions: &[],
         k: 0,
     },
     /* 2 - "EscapedLineEnd" */
     LookaheadDFA {
-        prod0: 12,
+        prod0: 13,
         transitions: &[],
         k: 0,
     },
     /* 3 - "Identifier" */
     LookaheadDFA {
-        prod0: 10,
+        prod0: 11,
         transitions: &[],
         k: 0,
     },
     /* 4 - "NoneQuote" */
     LookaheadDFA {
-        prod0: 13,
+        prod0: 14,
         transitions: &[],
         k: 0,
     },
@@ -134,30 +135,36 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 10] = &[
     },
     /* 7 - "StringContent" */
     LookaheadDFA {
-        prod0: -1,
-        transitions: &[
-            Trans(0, 6, 1, 5),
-            Trans(0, 7, 1, 5),
-            Trans(0, 8, 1, 5),
-            Trans(0, 9, 2, 6),
-        ],
-        k: 1,
-    },
-    /* 8 - "StringDelimiter" */
-    LookaheadDFA {
-        prod0: 14,
+        prod0: 5,
         transitions: &[],
         k: 0,
     },
-    /* 9 - "StringElement" */
+    /* 8 - "StringContentList" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 6, 1, 7), Trans(0, 7, 2, 8), Trans(0, 8, 3, 9)],
+        transitions: &[
+            Trans(0, 6, 1, 6),
+            Trans(0, 7, 1, 6),
+            Trans(0, 8, 1, 6),
+            Trans(0, 9, 2, 7),
+        ],
+        k: 1,
+    },
+    /* 9 - "StringDelimiter" */
+    LookaheadDFA {
+        prod0: 15,
+        transitions: &[],
+        k: 0,
+    },
+    /* 10 - "StringElement" */
+    LookaheadDFA {
+        prod0: -1,
+        transitions: &[Trans(0, 6, 1, 8), Trans(0, 7, 2, 9), Trans(0, 8, 3, 10)],
         k: 1,
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 15] = &[
+pub const PRODUCTIONS: &[Production; 16] = &[
     // 0 - Start: StartList /* Vec */;
     Production {
         lhs: 5,
@@ -183,60 +190,65 @@ pub const PRODUCTIONS: &[Production; 15] = &[
         lhs: 0,
         production: &[
             ParseType::Pop,
-            ParseType::N(8),
+            ParseType::N(9),
             ParseType::N(7),
             ParseType::Push(1),
-            ParseType::N(8),
+            ParseType::N(9),
         ],
     },
-    // 5 - StringContent: StringElement StringContent;
+    // 5 - StringContent: StringContentList /* Vec */;
     Production {
         lhs: 7,
-        production: &[ParseType::N(7), ParseType::N(9)],
+        production: &[ParseType::N(8)],
     },
-    // 6 - StringContent: ;
+    // 6 - StringContentList: StringElement StringContentList;
     Production {
-        lhs: 7,
+        lhs: 8,
+        production: &[ParseType::N(8), ParseType::N(10)],
+    },
+    // 7 - StringContentList: ;
+    Production {
+        lhs: 8,
         production: &[],
     },
-    // 7 - StringElement: Escaped;
+    // 8 - StringElement: Escaped;
     Production {
-        lhs: 9,
+        lhs: 10,
         production: &[ParseType::N(1)],
     },
-    // 8 - StringElement: EscapedLineEnd;
+    // 9 - StringElement: EscapedLineEnd;
     Production {
-        lhs: 9,
+        lhs: 10,
         production: &[ParseType::N(2)],
     },
-    // 9 - StringElement: NoneQuote;
+    // 10 - StringElement: NoneQuote;
     Production {
-        lhs: 9,
+        lhs: 10,
         production: &[ParseType::N(4)],
     },
-    // 10 - Identifier: "[a-zA-Z_]\w*";
+    // 11 - Identifier: /[a-zA-Z_]\w*/;
     Production {
         lhs: 3,
         production: &[ParseType::T(5)],
     },
-    // 11 - Escaped: "\u{5c}[\u{22}\u{5c}bfnt]";
+    // 12 - Escaped: /\["\\bfnt]/;
     Production {
         lhs: 1,
         production: &[ParseType::T(6)],
     },
-    // 12 - EscapedLineEnd: "\u{5c}[\s^\n\r]*\r?\n";
+    // 13 - EscapedLineEnd: /\[\s--\n\r]*\r?\n/;
     Production {
         lhs: 2,
         production: &[ParseType::T(7)],
     },
-    // 13 - NoneQuote: "[^\u{22}\u{5c}]+";
+    // 14 - NoneQuote: /[^"\\]+/;
     Production {
         lhs: 4,
         production: &[ParseType::T(8)],
     },
-    // 14 - StringDelimiter: "\u{22}";
+    // 15 - StringDelimiter: /"/;
     Production {
-        lhs: 8,
+        lhs: 9,
         production: &[ParseType::T(9)],
     },
 ];

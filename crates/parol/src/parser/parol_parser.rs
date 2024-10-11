@@ -43,9 +43,9 @@ pub const TERMINALS: &[&str; 41] = &[
     /* 21 */ r"\|",
     /* 22 */ r"<",
     /* 23 */ r">",
-    /* 24 */ r#""(\\.|[^\\])*?""#,
-    /* 25 */ r"'(\\'|[^'])*?'",
-    /* 26 */ r"\u{2F}(\\.|[^\\])*?\u{2F}",
+    /* 24 */ r#""(\\.|[^"])*""#,
+    /* 25 */ r"'(\\.|[^'])*'",
+    /* 26 */ r"/(\\.|[^\/])*/",
     /* 27 */ r"\(",
     /* 28 */ r"\)",
     /* 29 */ r"\[",
@@ -112,8 +112,8 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 35]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"(//.*(\r\n|\r|\n|$))",
-        /*  4 */ r"((?ms)/\*.*?\*/)",
+        /*  3 */ r"//.*(\r\n|\r|\n)",
+        /*  4 */ r"/\*([.\r\n--*]|\*[^/])*\*/",
     ],
     &[
         5,  /* PercentStart */
@@ -880,17 +880,17 @@ pub const PRODUCTIONS: &[Production; 73] = &[
         lhs: 38,
         production: &[],
     },
-    // 45 - String: /"(\\.|[^\\])*?"/;
+    // 45 - String: /"(\\.|[^"])*"/;
     Production {
         lhs: 34,
         production: &[ParseType::T(24)],
     },
-    // 46 - RawString: /'(\\'|[^'])*?'/;
+    // 46 - RawString: /'(\\.|[^'])*'/;
     Production {
         lhs: 23,
         production: &[ParseType::T(25)],
     },
-    // 47 - Regex: /\u{2F}(\\.|[^\\])*?\u{2F}/;
+    // 47 - Regex: "/(\\.|[^\/])*/";
     Production {
         lhs: 24,
         production: &[ParseType::T(26)],

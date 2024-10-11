@@ -149,7 +149,13 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
         .scanner_configurations
         .iter()
         .enumerate()
-        .map(|(i, sc)| (i, sc.generate_build_information(&grammar_config.cfg)))
+        .map(|(i, sc)| {
+            sc.generate_build_information(&grammar_config.cfg)
+                .map(|info| (i, info))
+        })
+        .collect::<Result<Vec<(usize, (Vec<String>, Vec<TerminalIndex>, String))>, anyhow::Error>>(
+        )?
+        .into_iter()
         .map(|(i, (sp, ti, n))| {
             ScannerBuildInfo::from_scanner_build_info(i, n, &terminal_names, width, &sp, &ti)
         })

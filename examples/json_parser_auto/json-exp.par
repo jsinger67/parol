@@ -5,23 +5,23 @@
 %%
 
 /*  0 */ Json: Value;
-/*  1 */ Object: "\{"^ /* Clipped */ ObjectSuffix;
-/*  2 */ ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;
-/*  3 */ ObjectSuffix: "\}"^ /* Clipped */;
-/*  4 */ ObjectList /* Vec<T>::Push */: ","^ /* Clipped */ Pair ObjectList;
+/*  1 */ Object: '{'^ /* Clipped */ ObjectSuffix;
+/*  2 */ ObjectSuffix: Pair ObjectList /* Vec */ '}'^ /* Clipped */;
+/*  3 */ ObjectSuffix: '}'^ /* Clipped */;
+/*  4 */ ObjectList /* Vec<T>::Push */: ','^ /* Clipped */ Pair ObjectList;
 /*  5 */ ObjectList /* Vec<T>::New */: ;
-/*  6 */ Pair: String ":"^ /* Clipped */ Value;
-/*  7 */ Array: "\["^ /* Clipped */ ArraySuffix;
-/*  8 */ ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;
-/*  9 */ ArraySuffix: "\]"^ /* Clipped */;
-/* 10 */ ArrayList /* Vec<T>::Push */: ","^ /* Clipped */ Value ArrayList;
+/*  6 */ Pair: String ':'^ /* Clipped */ Value;
+/*  7 */ Array: '['^ /* Clipped */ ArraySuffix;
+/*  8 */ ArraySuffix: Value ArrayList /* Vec */ ']'^ /* Clipped */;
+/*  9 */ ArraySuffix: ']'^ /* Clipped */;
+/* 10 */ ArrayList /* Vec<T>::Push */: ','^ /* Clipped */ Value ArrayList;
 /* 11 */ ArrayList /* Vec<T>::New */: ;
 /* 12 */ Value: String;
 /* 13 */ Value: Number;
 /* 14 */ Value: Object;
 /* 15 */ Value: Array;
-/* 16 */ Value: "true"^ /* Clipped */;
-/* 17 */ Value: "false"^ /* Clipped */;
-/* 18 */ Value: "null"^ /* Clipped */;
-/* 19 */ String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
-/* 20 */ Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
+/* 16 */ Value: 'true'^ /* Clipped */;
+/* 17 */ Value: 'false'^ /* Clipped */;
+/* 18 */ Value: 'null'^ /* Clipped */;
+/* 19 */ String: /"(\\.|[^"])*"/;
+/* 20 */ Number: /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?/;

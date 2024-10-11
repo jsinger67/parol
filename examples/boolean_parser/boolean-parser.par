@@ -2,7 +2,7 @@
 %title "Boolean Parser Example"
 %comment "Inspired by Tom Humphrey's project https://github.com/Tom01098/BooleanParser"
 %line_comment "//"
-%block_comment "\(\*" "\*\)"
+%block_comment '(*' '*)'
 
 %%
 
@@ -19,19 +19,19 @@ BinaryOperator  : AndOp
                 | NorOp
                 | NandOp
                 | XnorOp;
-AndOp           : "(?i)AND";
-OrOp            : "(?i)OR";
-XorOp           : "(?i)XOR";
-NorOp           : "(?i)NOR";
-NandOp          : "(?i)NAND";
-XnorOp          : "(?i)XNOR";
-True            : "(?i)TRUE";
-False           : "(?i)FALSE";
-Not             : "(?i)NOT";
+AndOp           : "[aA][nN][dD]";
+OrOp            : "[oO][rR]";
+XorOp           : "[xX][oO][rR]";
+NorOp           : "[nN][oO][rR]";
+NandOp          : "[nN][aA][nN][dD]";
+XnorOp          : "[xX][nN][oO][rR]";
+True            : "[tT][rR][uU][eE]";
+False           : "[fF][aA][lL][sS][eE]";
+Not             : "[nN][oO][tT]";
 Parenthesized   : LeftParenthesis Expression RightParenthesis;
-Semicolon       : ";";
-LeftParenthesis : "\(";
-RightParenthesis: "\)";
+Semicolon       : ';';
+LeftParenthesis : '(';
+RightParenthesis: ')';
 Factor          : Boolean
                 | Parenthesized;
 

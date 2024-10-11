@@ -751,7 +751,7 @@ pub struct PrologList0 {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RawString<'t> {
-    pub raw_string: Token<'t>, /* '(\\'|[^'])*?' */
+    pub raw_string: Token<'t>, /* '(\\.|[^'])*' */
 }
 
 ///
@@ -761,7 +761,7 @@ pub struct RawString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Regex<'t> {
-    pub regex: Token<'t>, /* \u{2F}(\\.|[^\\])*?\u{2F} */
+    pub regex: Token<'t>, /* /(\\.|[^\/])*\/ */
 }
 
 ///
@@ -877,7 +877,7 @@ pub struct StartDeclaration<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct String<'t> {
-    pub string: Token<'t>, /* "(\\.|[^\\])*?" */
+    pub string: Token<'t>, /* "(\\.|[^"])*" */
 }
 
 ///
@@ -2006,7 +2006,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// `String: /"(\\.|[^\\])*?"/;`
+    /// `String: /"(\\.|[^"])*"/;`
     ///
     #[parol_runtime::function_name::named]
     fn string(&mut self, string: &ParseTreeType<'t>) -> Result<()> {
@@ -2022,7 +2022,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// `RawString: /'(\\'|[^'])*?'/;`
+    /// `RawString: /'(\\.|[^'])*'/;`
     ///
     #[parol_runtime::function_name::named]
     fn raw_string(&mut self, raw_string: &ParseTreeType<'t>) -> Result<()> {
@@ -2038,7 +2038,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// `Regex: /\u{2F}(\\.|[^\\])*?\u{2F}/;`
+    /// `Regex: "/(\\.|[^\/])*/";`
     ///
     #[parol_runtime::function_name::named]
     fn regex(&mut self, regex: &ParseTreeType<'t>) -> Result<()> {

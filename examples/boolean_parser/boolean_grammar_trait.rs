@@ -207,7 +207,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 21:
     ///
-    /// `AndOp: "(?i)AND";`
+    /// `AndOp: "[aA][nN][dD]";`
     ///
     fn and_op(&mut self, _and_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -215,7 +215,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 22:
     ///
-    /// `OrOp: "(?i)OR";`
+    /// `OrOp: "[oO][rR]";`
     ///
     fn or_op(&mut self, _or_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -223,7 +223,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 23:
     ///
-    /// `XorOp: "(?i)XOR";`
+    /// `XorOp: "[xX][oO][rR]";`
     ///
     fn xor_op(&mut self, _xor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -231,7 +231,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 24:
     ///
-    /// `NorOp: "(?i)NOR";`
+    /// `NorOp: "[nN][oO][rR]";`
     ///
     fn nor_op(&mut self, _nor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -239,7 +239,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 25:
     ///
-    /// `NandOp: "(?i)NAND";`
+    /// `NandOp: "[nN][aA][nN][dD]";`
     ///
     fn nand_op(&mut self, _nand_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -247,7 +247,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 26:
     ///
-    /// `XnorOp: "(?i)XNOR";`
+    /// `XnorOp: "[xX][nN][oO][rR]";`
     ///
     fn xnor_op(&mut self, _xnor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -255,7 +255,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 27:
     ///
-    /// `True: "(?i)TRUE";`
+    /// `True: "[tT][rR][uU][eE]";`
     ///
     fn r#true(&mut self, _true: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -263,7 +263,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 28:
     ///
-    /// `False: "(?i)FALSE";`
+    /// `False: "[fF][aA][lL][sS][eE]";`
     ///
     fn r#false(&mut self, _false: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -271,7 +271,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 29:
     ///
-    /// `Not: "(?i)NOT";`
+    /// `Not: "[nN][oO][tT]";`
     ///
     fn not(&mut self, _not: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -292,7 +292,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 31:
     ///
-    /// `Semicolon: ";";`
+    /// `Semicolon: ';';`
     ///
     fn semicolon(&mut self, _semicolon: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -300,7 +300,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 32:
     ///
-    /// `LeftParenthesis: "\(";`
+    /// `LeftParenthesis: '(';`
     ///
     fn left_parenthesis(&mut self, _left_parenthesis: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -308,7 +308,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 33:
     ///
-    /// `RightParenthesis: "\)";`
+    /// `RightParenthesis: ')';`
     ///
     fn right_parenthesis(&mut self, _right_parenthesis: &ParseTreeType) -> Result<()> {
         Ok(())

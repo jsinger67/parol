@@ -1,10 +1,12 @@
 use crate::{
-    lexer::{location, Token, Tokenizer, RX_NEW_LINE},
+    lexer::{location, Token},
     Location, TokenNumber,
 };
 use location::LocationBuilder;
 use log::trace;
-use regex_automata::dfa::{dense::DFA, regex::FindMatches};
+use scnr::{
+    scanner::Scanner, FindMatches, MatchExt, MatchExtIterator, ScannerModeSwitcher, WithPositions,
+};
 use std::{path::PathBuf, sync::Arc};
 
 ///
@@ -12,17 +14,11 @@ use std::{path::PathBuf, sync::Arc};
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 pub struct TokenIter<'t> {
-    /// Line number, starting with 1
-    line: u32,
-
-    /// Column number, starting with 1
-    col: u32,
-
     /// An iterator over token matches
-    find_iter: FindMatches<'static, 't, DFA<Vec<u32>>>,
+    pub(crate) find_iter: WithPositions<FindMatches<'t>>,
 
     /// The tokenizer itself
-    rx: &'static Tokenizer,
+    pub(crate) scanner: Scanner,
 
     /// The input text
     pub(crate) input: &'t str,
@@ -43,12 +39,10 @@ impl<'t> TokenIter<'t> {
     /// This function creates a token iterator from a tokenizer and an input.
     /// k determines the number of lookahead tokens the stream shall support.
     ///
-    pub fn new(rx: &'static Tokenizer, input: &'t str, file_name: Arc<PathBuf>, k: usize) -> Self {
+    pub fn new(scanner: Scanner, input: &'t str, file_name: Arc<PathBuf>, k: usize) -> Self {
         Self {
-            line: 1,
-            col: 1,
-            find_iter: rx.rx.find_iter(input.as_bytes()),
-            rx,
+            find_iter: scanner.find_iter(input).with_positions(),
+            scanner,
             input,
             k,
             file_name: file_name.clone(),
@@ -57,77 +51,70 @@ impl<'t> TokenIter<'t> {
         }
     }
 
-    /// Sets the initial position of the iterator.
-    pub fn with_position(mut self, line: u32, column: u32) -> Self {
-        self.line = line;
-        self.col = column;
-        self
+    /// Returns the name of the scanner mode with the given index.
+    pub(crate) fn scanner_mode_name(&self, index: usize) -> Option<&str> {
+        self.scanner.mode_name(index)
     }
 
-    ///
-    /// Counts the occurrences of newlines in the given text.
-    /// If at least one newline is counted it also calculates the column position after the last
-    /// matched newline.
-    /// It is used to update `line` and `col` members.
-    ///
-    /// Returns a tuple of line count and new column number.
-    ///
-    pub(crate) fn count_nl(s: &str) -> (u32, u32) {
-        let matches = RX_NEW_LINE.find_iter(s.as_bytes()).collect::<Vec<_>>();
-        let lines = matches.len() as u32;
-        if let Some(&right_most_match) = matches.last().as_ref() {
-            (lines, (s.len() - right_most_match.end()) as u32 + 1)
+    /// Returns the index of the current scanner mode.
+    pub(crate) fn current_mode(&self) -> usize {
+        self.scanner.current_mode()
+    }
+
+    pub(crate) fn token_from_match(&mut self, matched: MatchExt) -> Option<Token<'t>> {
+        let token_type = matched.token_type();
+        if let Ok(location) = LocationBuilder::default()
+            .start_line(matched.start_position().line as u32)
+            .start_column(matched.start_position().column as u32)
+            .end_line(matched.end_position().line as u32)
+            .end_column(matched.end_position().column as u32)
+            .length(matched.len() as u32)
+            .offset(matched.end())
+            .file_name(self.file_name.clone())
+            .build()
+        {
+            self.last_location = Some(location.clone());
+
+            // The token's text is taken from the match
+            let text = &self.input[matched.range()];
+            let token = Token::with(text, token_type as u16, location, self.token_number);
+
+            if !token.is_skip_token() || token.is_comment_token() {
+                self.token_number += 1;
+            }
+            Some(token)
         } else {
-            // Column number 0 means invalid
-            (lines, 0)
+            // Error
+            trace!("Error: Runtime builder error");
+            None
         }
+    }
+
+    /// Set the iterator to the given position.
+    ///
+    /// If the position is equal to the current position, the function does nothing.
+    /// If the position is greater than the current position, the function advances the iterator to
+    /// the given position.
+    /// If the position is less than the current position, the function creates a new iterator and
+    /// advances it to the given position.
+    pub fn set_position(&mut self, position: usize) {
+        self.find_iter = self
+            .scanner
+            .find_iter(self.input)
+            .with_offset(position)
+            .with_positions();
+    }
+
+    pub(crate) fn set_mode(&mut self, scanner_index: usize) {
+        self.find_iter.set_mode(scanner_index);
     }
 }
 
 impl<'t> Iterator for TokenIter<'t> {
     type Item = Token<'t>;
     fn next(&mut self) -> Option<Token<'t>> {
-        if let Some(ref multi_match) = self.find_iter.next() {
-            let token_type = self.rx.terminal_index_of_pattern(multi_match.pattern());
-            // The token's text is taken from the match
-            let text = &self.input[multi_match.range()];
-            let length = text.len() as u32;
-            // The token position is calculated from the matched text
-            let start_line = self.line;
-            let start_column = self.col;
-
-            // Set the inner position behind the scanned token
-            let (new_lines, column_after_nl) = Self::count_nl(text);
-            let pos = multi_match.end();
-            self.line += new_lines;
-            self.col = if new_lines > 0 {
-                column_after_nl
-            } else {
-                debug_assert!(column_after_nl == 0);
-                self.col + length
-            };
-            if let Ok(location) = LocationBuilder::default()
-                .start_line(start_line)
-                .start_column(start_column)
-                .end_line(start_line + new_lines)
-                .end_column(self.col)
-                .length(length)
-                .offset(pos)
-                .file_name(self.file_name.clone())
-                .build()
-            {
-                self.last_location = Some(location.clone());
-                let token = Token::with(text, token_type, location, self.token_number);
-                if !token.is_skip_token() || token.is_comment_token() {
-                    self.token_number += 1;
-                }
-                trace!("{}, newline count: {}", token, new_lines);
-                Some(token)
-            } else {
-                // Error
-                trace!("Error: Runtime builder error");
-                None
-            }
+        if let Some(matched) = self.find_iter.next() {
+            self.token_from_match(matched)
         } else if self.k > 0 {
             // Return at most k EOI tokens
             self.k -= 1;

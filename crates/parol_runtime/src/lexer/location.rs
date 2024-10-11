@@ -29,13 +29,15 @@ pub struct Location {
     /// Length of the matched input terminal
     /// A value of 0 indicates a virtual token, for instance an EOF token.
     /// Be careful: User tokens with length 0 are always invalid!!!
+    /// We use 0 also when dealing with artificial tokens introduced by the parser during error
+    /// recovery.
+    #[builder(default)]
     pub length: u32,
 
-    /// Start position in the input stream as byte offset at last scanner switching.
+    /// Absolute position in the haystack as byte offset.
+    /// We use default when dealing with artificial tokens introduced by the parser during error
+    /// recovery.
     #[builder(default)]
-    pub scanner_switch_pos: usize,
-
-    /// Relative position from scanner_switch_pos as byte offset.
     pub offset: usize,
 
     /// The name of the input file
@@ -58,7 +60,7 @@ impl Display for Location {
 
 impl From<&Location> for Range<usize> {
     fn from(location: &Location) -> Self {
-        let start = location.scanner_switch_pos + location.offset - location.length as usize;
+        let start = location.offset - location.length as usize;
         Range {
             start,
             end: start + location.length as usize,

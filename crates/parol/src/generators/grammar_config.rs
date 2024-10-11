@@ -309,15 +309,16 @@ mod test {
 
         let (special_terminals, terminal_indices, scanner_name) = grammar_config
             .scanner_configurations[0]
-            .generate_build_information(&grammar_config.cfg);
+            .generate_build_information(&grammar_config.cfg)
+            .expect("Error generate_build_information");
 
         assert_eq!(
             [
                 "UNMATCHABLE_TOKEN",
                 "NEW_LINE_TOKEN",
                 "WHITESPACE_TOKEN",
-                r"(//.*(\r\n|\r|\n|$))",
-                r"((?ms)/\*.*?\*/)"
+                r"//.*(\r\n|\r|\n)",
+                r"/\*([.\r\n--*]|\*[^/])*\*/"
             ]
             .iter()
             .map(|t| (*t).to_owned())
@@ -382,7 +383,8 @@ mod test {
     #[test]
     fn check_generate_augmented_terminals_generic() {
         for (i, test) in TESTS.iter().enumerate() {
-            let grammar_config = obtain_grammar_config_from_string(test.input, false).unwrap();
+            let grammar_config = obtain_grammar_config_from_string(test.input, false)
+                .unwrap_or_else(|e| panic!("Error parsing text #{i}: '{}'\n{e:?}", test.input));
             let augment_terminals = grammar_config.generate_augmented_terminals();
             assert_eq!(
                 test.augment_terminals, augment_terminals,

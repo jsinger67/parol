@@ -2,6 +2,7 @@ use std::{borrow::Cow, cell::RefCell, path::Path};
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use parol_runtime::{once_cell::sync::Lazy, ScannerConfig, TerminalIndex, TokenStream, Tokenizer};
+use scnr::{ScannerBuilder, ScannerMode};
 
 const LEXER_INPUT: &str = include_str!("./input_1.txt");
 
@@ -12,11 +13,11 @@ const PATTERNS: &[&str] = &[
     parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN,
     parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN,
     parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN,
-    r"(?:(?:(?://.*(?:\r\n|\r|\n|$))|(?:(?ms)/\u{2a}.*?\u{2a}/))\s*)+",
-    r"[0-9]+(?:_[0-9]+)*\.[0-9]+(?:_[0-9]+)*[eE][+-]?[0-9]+(?:_[0-9]+)*",
-    r"[0-9]+(?:_[0-9]+)*\.[0-9]+(?:_[0-9]+)*",
-    r"[0-9]+(?:_[0-9]+)*'[bodh][0-9a-fA-FxzXZ]+(?:_[0-9a-fA-FxzXZ]+)*",
-    r"[0-9]+(?:_[0-9]+)*",
+    r"(((//.*(\r\n|\r|\n))|(/\u{2a}[.\r\n]*?\u{2a}/))\s*)+",
+    r"[0-9]+(_[0-9]+)*\.[0-9]+(_[0-9]+)*[eE][+-]?[0-9]+(_[0-9]+)*",
+    r"[0-9]+(_[0-9]+)*\.[0-9]+(_[0-9]+)*",
+    r"[0-9]+(_[0-9]+)*'[bodh][0-9a-fA-FxzXZ]+(_[0-9a-fA-FxzXZ]+)*",
+    r"[0-9]+(_[0-9]+)*",
     r"'[01xzXZ]",
     r"\-:",
     r"\->",
@@ -50,52 +51,52 @@ const PATTERNS: &[&str] = &[
     r"\)",
     r";",
     r"\*",
-    r"(?-u:\b)always_comb(?-u:\b)",
-    r"(?-u:\b)always_ff(?-u:\b)",
-    r"(?-u:\b)assign(?-u:\b)",
-    r"(?-u:\b)async_high(?-u:\b)",
-    r"(?-u:\b)async_low(?-u:\b)",
-    r"(?-u:\b)as(?-u:\b)",
-    r"(?-u:\b)bit(?-u:\b)",
-    r"(?-u:\b)case(?-u:\b)",
-    r"(?-u:\b)default(?-u:\b)",
-    r"(?-u:\b)else(?-u:\b)",
-    r"(?-u:\b)enum(?-u:\b)",
-    r"(?-u:\b)export(?-u:\b)",
-    r"(?-u:\b)f32(?-u:\b)",
-    r"(?-u:\b)f64(?-u:\b)",
-    r"(?-u:\b)for(?-u:\b)",
-    r"(?-u:\b)function(?-u:\b)",
-    r"(?-u:\b)i32(?-u:\b)",
-    r"(?-u:\b)i64(?-u:\b)",
-    r"(?-u:\b)if_reset(?-u:\b)",
-    r"(?-u:\b)if(?-u:\b)",
-    r"(?-u:\b)import(?-u:\b)",
-    r"(?-u:\b)inout(?-u:\b)",
-    r"(?-u:\b)input(?-u:\b)",
-    r"(?-u:\b)inst(?-u:\b)",
-    r"(?-u:\b)interface(?-u:\b)",
-    r"(?-u:\b)in(?-u:\b)",
-    r"(?-u:\b)localparam(?-u:\b)",
-    r"(?-u:\b)logic(?-u:\b)",
-    r"(?-u:\b)modport(?-u:\b)",
-    r"(?-u:\b)module(?-u:\b)",
-    r"(?-u:\b)negedge(?-u:\b)",
-    r"(?-u:\b)output(?-u:\b)",
-    r"(?-u:\b)package(?-u:\b)",
-    r"(?-u:\b)parameter(?-u:\b)",
-    r"(?-u:\b)posedge(?-u:\b)",
-    r"(?-u:\b)ref(?-u:\b)",
-    r"(?-u:\b)repeat(?-u:\b)",
-    r"(?-u:\b)return(?-u:\b)",
-    r"(?-u:\b)step(?-u:\b)",
-    r"(?-u:\b)struct(?-u:\b)",
-    r"(?-u:\b)sync_high(?-u:\b)",
-    r"(?-u:\b)sync_low(?-u:\b)",
-    r"(?-u:\b)tri(?-u:\b)",
-    r"(?-u:\b)u32(?-u:\b)",
-    r"(?-u:\b)u64(?-u:\b)",
-    r"(?-u:\b)var(?-u:\b)",
+    r"always_comb",
+    r"always_ff",
+    r"assign",
+    r"async_high",
+    r"async_low",
+    r"as",
+    r"bit",
+    r"case",
+    r"default",
+    r"else",
+    r"enum",
+    r"export",
+    r"f32",
+    r"f64",
+    r"for",
+    r"function",
+    r"i32",
+    r"i64",
+    r"if_reset",
+    r"if",
+    r"import",
+    r"inout",
+    r"input",
+    r"inst",
+    r"interface",
+    r"in",
+    r"localparam",
+    r"logic",
+    r"modport",
+    r"module",
+    r"negedge",
+    r"output",
+    r"package",
+    r"parameter",
+    r"posedge",
+    r"ref",
+    r"repeat",
+    r"return",
+    r"step",
+    r"struct",
+    r"sync_high",
+    r"sync_low",
+    r"tri",
+    r"u32",
+    r"u64",
+    r"var",
     r"[a-zA-Z_][0-9a-zA-Z_]*",
     r".",
 ];
@@ -126,33 +127,19 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     }]
 });
 
-static USED_PATTERNS: Lazy<Vec<&str>> = Lazy::new(|| {
-    let internal_terminals =
-        SCANNER_SPECIFICS
-            .iter()
-            .fold(Vec::with_capacity(PATTERNS.len()), |mut acc, t| {
-                if *t != parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN {
-                    acc.push(*t);
-                }
-                acc
-            });
-    let mut patterns = SCANNER_TERMINAL_INDICES
+static USED_MODES: Lazy<Vec<ScannerMode>> = Lazy::new(|| {
+    SCANNERS
         .iter()
-        .map(|term_idx| PATTERNS[*term_idx as usize])
-        .fold(internal_terminals, |mut acc, pattern| {
-            acc.push(pattern);
-            acc
-        });
-    let error_token_type = (PATTERNS.len() - 1) as TerminalIndex;
-    patterns.push(PATTERNS[error_token_type as usize]);
-    patterns
+        .map(|s| s.into())
+        .collect::<Vec<ScannerMode>>()
 });
 
 fn build_scanner() {
     let _scanner = black_box(
-        regex_automata::dfa::regex::Regex::builder()
-            .build_many(&USED_PATTERNS)
-            .expect("Regex build failed"),
+        ScannerBuilder::new()
+            .add_scanner_modes(&USED_MODES)
+            .build()
+            .expect("Scanner build failed"),
     );
 }
 
@@ -162,7 +149,11 @@ fn tokenize_1() {
         RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &SCANNERS, MAX_K).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         let tok = token_stream.borrow_mut().lookahead(0).unwrap();
-        assert_ne!(tok.token_type, ERROR_TOKEN_INDEX);
+        assert_ne!(
+            tok.token_type, ERROR_TOKEN_INDEX,
+            "Error token found: {:?}",
+            tok
+        );
         token_stream.borrow_mut().consume().unwrap();
     }
 }

@@ -69,25 +69,33 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// `StringContent: StringElement StringContent;`
+    /// `StringContent: StringContentList /* Vec */;`
     ///
-    fn string_content_0(
-        &mut self,
-        _string_element: &ParseTreeType,
-        _string_content: &ParseTreeType,
-    ) -> Result<()> {
+    fn string_content(&mut self, _string_content_list: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 6:
     ///
-    /// `StringContent: ;`
+    /// `StringContentList /* Vec<T>::Push */: StringElement StringContentList;`
     ///
-    fn string_content_1(&mut self) -> Result<()> {
+    fn string_content_list_0(
+        &mut self,
+        _string_element: &ParseTreeType,
+        _string_content_list: &ParseTreeType,
+    ) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 7:
+    ///
+    /// `StringContentList /* Vec<T>::New */: ;`
+    ///
+    fn string_content_list_1(&mut self) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 8:
     ///
     /// `StringElement: Escaped;`
     ///
@@ -95,7 +103,7 @@ pub trait ScannerStatesGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 8:
+    /// Semantic action for production 9:
     ///
     /// `StringElement: EscapedLineEnd;`
     ///
@@ -103,7 +111,7 @@ pub trait ScannerStatesGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 9:
+    /// Semantic action for production 10:
     ///
     /// `StringElement: NoneQuote;`
     ///
@@ -111,41 +119,41 @@ pub trait ScannerStatesGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 10:
+    /// Semantic action for production 11:
     ///
-    /// `Identifier: "[a-zA-Z_]\w*";`
+    /// `Identifier: /[a-zA-Z_]\w*/;`
     ///
     fn identifier(&mut self, _identifier: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 11:
+    /// Semantic action for production 12:
     ///
-    /// `Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";`
+    /// `Escaped: <String>/\["\\bfnt]/;`
     ///
     fn escaped(&mut self, _escaped: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 12:
+    /// Semantic action for production 13:
     ///
-    /// `EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";`
+    /// `EscapedLineEnd: <String>/\[\s--\n\r]*\r?\n/;`
     ///
     fn escaped_line_end(&mut self, _escaped_line_end: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 13:
+    /// Semantic action for production 14:
     ///
-    /// `NoneQuote: <String>"[^\u{22}\u{5c}]+";`
+    /// `NoneQuote: <String>/[^"\\]+/;`
     ///
     fn none_quote(&mut self, _none_quote: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 14:
+    /// Semantic action for production 15:
     ///
-    /// `StringDelimiter: <INITIAL, String>"\u{22}";`
+    /// `StringDelimiter: <INITIAL, String>/"/;`
     ///
     fn string_delimiter(&mut self, _string_delimiter: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -167,16 +175,17 @@ impl UserActionsTrait<'_> for ScannerStatesGrammar {
             2 => self.start_list_1(),
             3 => self.content_0(&children[0]),
             4 => self.content_1(&children[0], &children[1], &children[2]),
-            5 => self.string_content_0(&children[0], &children[1]),
-            6 => self.string_content_1(),
-            7 => self.string_element_0(&children[0]),
-            8 => self.string_element_1(&children[0]),
-            9 => self.string_element_2(&children[0]),
-            10 => self.identifier(&children[0]),
-            11 => self.escaped(&children[0]),
-            12 => self.escaped_line_end(&children[0]),
-            13 => self.none_quote(&children[0]),
-            14 => self.string_delimiter(&children[0]),
+            5 => self.string_content(&children[0]),
+            6 => self.string_content_list_0(&children[0], &children[1]),
+            7 => self.string_content_list_1(),
+            8 => self.string_element_0(&children[0]),
+            9 => self.string_element_1(&children[0]),
+            10 => self.string_element_2(&children[0]),
+            11 => self.identifier(&children[0]),
+            12 => self.escaped(&children[0]),
+            13 => self.escaped_line_end(&children[0]),
+            14 => self.none_quote(&children[0]),
+            15 => self.string_delimiter(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num
