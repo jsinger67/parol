@@ -388,7 +388,7 @@ impl<'t> TokenStream<'t> {
             self.last_consumed_token_end_pos
         );
         self.token_iter
-            .set_position(self.last_consumed_token_end_pos + 1);
+            .set_position(self.last_consumed_token_end_pos);
     }
 
     pub(crate) fn token_types(&self) -> Vec<TerminalIndex> {
