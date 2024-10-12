@@ -1,4 +1,4 @@
-use scnr::ScannerMode;
+use scnr::{Pattern, ScannerMode};
 
 use crate::{ScannerIndex, TerminalIndex, Tokenizer};
 
@@ -47,7 +47,7 @@ impl From<&ScannerConfig> for ScannerMode {
                 .tokenizer
                 .patterns
                 .iter()
-                .map(|(p, t)| (p.clone(), (*t).into())),
+                .map(|(p, t)| Pattern::new(p.clone(), (*t).into())),
             config.transitions.iter().map(|(t, m)| (*t as usize, *m)),
         )
     }

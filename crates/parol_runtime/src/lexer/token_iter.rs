@@ -4,9 +4,7 @@ use crate::{
 };
 use location::LocationBuilder;
 use log::trace;
-use scnr::{
-    scanner::Scanner, FindMatches, MatchExt, MatchExtIterator, ScannerModeSwitcher, WithPositions,
-};
+use scnr::{FindMatches, MatchExt, MatchExtIterator, Scanner, ScannerModeSwitcher, WithPositions};
 use std::{path::PathBuf, sync::Arc};
 
 ///
