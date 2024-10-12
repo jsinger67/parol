@@ -315,7 +315,7 @@ impl Cfg {
     ///
     /// macro_rules! terminal {
     ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-    ///         vec![0], SymbolAttribute::None, None))};
+    ///         vec![0], SymbolAttribute::None, None, None))};
     /// }
     ///
     /// let g = Cfg::with_start_symbol("S")

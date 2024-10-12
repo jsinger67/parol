@@ -1,6 +1,6 @@
 use super::{Decorate, SymbolAttribute};
 use crate::analysis::k_tuple::TerminalMappings;
-use crate::parser::parol_grammar::{Factor, UserDefinedTypeName};
+use crate::parser::parol_grammar::{Factor, LookaheadExpression, UserDefinedTypeName};
 use crate::parser::to_grammar_config::try_from_factor;
 use anyhow::{anyhow, Result};
 use parol_runtime::parser::ScannerIndex;
@@ -119,6 +119,7 @@ pub enum Terminal {
         Vec<usize>,
         SymbolAttribute,
         Option<UserDefinedTypeName>,
+        Option<LookaheadExpression>,
     ),
 
     ///
@@ -138,7 +139,7 @@ pub enum Terminal {
 impl Terminal {
     /// Creates a terminal
     pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
-        Self::Trm(t.to_owned(), TerminalKind::Legacy, s, a, None)
+        Self::Trm(t.to_owned(), TerminalKind::Legacy, s, a, None, None)
     }
     /// Checks if self is a terminal
     pub fn is_trm(&self) -> bool {
@@ -156,8 +157,8 @@ impl Terminal {
     /// Creates a terminal from a [Symbol]
     pub fn create(s: &Symbol) -> Self {
         match s {
-            Symbol::T(Terminal::Trm(t, k, s, a, u)) => {
-                Terminal::Trm(t.to_string(), *k, s.to_vec(), *a, u.clone())
+            Symbol::T(Terminal::Trm(t, k, s, a, u, l)) => {
+                Terminal::Trm(t.to_string(), *k, s.to_vec(), *a, u.clone(), l.clone())
             }
             Symbol::T(Terminal::End) => Terminal::End,
             _ => panic!("Unexpected symbol type: {:?}", s),
@@ -167,7 +168,7 @@ impl Terminal {
     /// Adds a scanner index
     pub fn add_scanner(&mut self, sc: usize) {
         match self {
-            Terminal::Trm(_, _, s, _, _) => {
+            Terminal::Trm(_, _, s, _, _, _) => {
                 if !s.contains(&sc) {
                     s.push(sc);
                     s.sort_unstable();
@@ -186,7 +187,7 @@ impl Terminal {
         S: Fn(&str) -> Option<String>,
     {
         match self {
-            Self::Trm(t, k, s, a, u) => {
+            Self::Trm(t, k, s, a, u, l) => {
                 let mut d = String::new();
                 let delimiter = k.delimiter();
                 a.decorate(&mut d, &format!("{}{}{}", delimiter, t, delimiter))
@@ -199,6 +200,9 @@ impl Terminal {
                             user_type.to_string()
                         };
                     write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
+                }
+                if let Some(la) = l {
+                    write!(d, " {}", la.to_par()).map_err(|e| anyhow!(e))?;
                 }
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
@@ -355,7 +359,7 @@ impl Symbol {
     /// Get the symbol attribute or a default value
     pub fn attribute(&self) -> SymbolAttribute {
         match self {
-            Symbol::N(_, a, _) | Symbol::T(Terminal::Trm(_, _, _, a, _)) => *a,
+            Symbol::N(_, a, _) | Symbol::T(Terminal::Trm(_, _, _, a, _, _)) => *a,
             _ => SymbolAttribute::None,
         }
     }

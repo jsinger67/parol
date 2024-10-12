@@ -79,12 +79,17 @@ TokenLiteral
     | Regex // Treated as a regular expression
     ;
 
+TokenExpression
+    : TokenLiteral [ LookAhead ]
+    
+    ;
+
 SimpleToken
-    : TokenLiteral [ ASTControl ]
+    : TokenExpression [ ASTControl ]
     ;
 
 TokenWithStates
-    : '<'^ IdentifierList '>'^ TokenLiteral [ ASTControl ]
+    : '<'^ IdentifierList '>'^ TokenExpression [ ASTControl ]
     ;
 
 String
@@ -157,4 +162,19 @@ UserTypeDeclaration
 // A valid Rust qualified name
 UserTypeName
     : Identifier { DoubleColon^ Identifier }
+    ;
+
+// The lookahead
+LookAhead
+    : (PositiveLookahead | NegativeLookahead) TokenLiteral
+    ;
+
+// The positive lookahead operator
+PositiveLookahead
+    : '?='^
+    ;
+
+// The negative lookahead operator
+NegativeLookahead
+    : '?!'^
     ;

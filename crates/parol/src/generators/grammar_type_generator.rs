@@ -674,7 +674,7 @@ impl GrammarTypeInfo {
 
     fn deduce_type_of_symbol(&self, symbol: &Symbol) -> Result<TypeEntrails> {
         match symbol {
-            Symbol::T(Terminal::Trm(_, _, _, a, u)) => {
+            Symbol::T(Terminal::Trm(_, _, _, a, u, _)) => {
                 if *a == SymbolAttribute::Clipped {
                     Ok(TypeEntrails::Clipped(MetaSymbolKind::Token))
                 } else if let Some(ref user_defined_type) = u {

@@ -97,6 +97,59 @@ impl TryFrom<&parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
 }
 
 ///
+/// [LookaheadTerminal] is part of the Lookahead structure
+///
+#[derive(Debug, Clone, Eq, PartialEq, Hash, PartialOrd, Ord)]
+pub struct LookaheadExpression {
+    /// If the lookahead oparation is positive or negative
+    pub is_positive: bool,
+    /// The scanned text
+    pub pattern: String,
+    /// interpretation of the terminals context regarding regular expression meta characters
+    pub kind: TerminalKind,
+}
+
+impl LookaheadExpression {
+    fn new(is_positive: bool, pattern: String, kind: TerminalKind) -> Self {
+        Self {
+            is_positive,
+            pattern,
+            kind,
+        }
+    }
+
+    /// Generate parol's syntax
+    pub fn to_par(&self) -> String {
+        let delimiter = self.kind.delimiter();
+        format!(
+            "{} {}{}{}",
+            if self.is_positive { "?=" } else { "?!" },
+            delimiter,
+            self.pattern,
+            delimiter
+        )
+    }
+}
+
+impl TryFrom<&parol_grammar_trait::LookAhead<'_>> for LookaheadExpression {
+    type Error = anyhow::Error;
+    fn try_from(
+        lookahead: &parol_grammar_trait::LookAhead<'_>,
+    ) -> std::result::Result<Self, Self::Error> {
+        let (content, kind) = ParolGrammar::measure_token_literal(&lookahead.token_literal);
+
+        Ok(Self::new(
+            matches!(
+                lookahead.look_ahead_group,
+                parol_grammar_trait::LookAheadGroup::PositiveLookahead(_)
+            ),
+            ParolGrammar::trim_quotes(content),
+            kind,
+        ))
+    }
+}
+
+///
 /// [Factor] is part of the structure of the grammar representation
 ///
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -120,6 +173,8 @@ pub enum Factor {
         SymbolAttribute,
         /// A possibly provided user destination type
         Option<UserDefinedTypeName>,
+        /// An optional lookahead
+        Option<LookaheadExpression>,
     ),
     /// A non-terminal with a symbol attribute an an optional user type name
     NonTerminal(String, SymbolAttribute, Option<UserDefinedTypeName>),
@@ -153,7 +208,7 @@ impl Factor {
             Self::Group(g) => format!("({})", g.to_par()),
             Self::Repeat(r) => format!("{{{}}}", r.to_par()),
             Self::Optional(o) => format!("[{}]", o.to_par()),
-            Self::Terminal(t, k, s, a, u) => {
+            Self::Terminal(t, k, s, a, u, l) => {
                 let mut d = String::new();
                 a.decorate(&mut d, &format!("T({})", t))
                     .expect("Failed to decorate terminal!");
@@ -162,14 +217,19 @@ impl Factor {
                 }
                 let delimiter = k.delimiter();
                 format!(
-                    "<{}>{}{}{}",
+                    "<{}>{}{}{}{}",
                     s.iter()
                         .map(|s| format!("{}", s))
                         .collect::<Vec<String>>()
                         .join(", "),
                     delimiter,
                     d,
-                    delimiter
+                    delimiter,
+                    if let Some(ref lookahead) = l {
+                        format!(" {}", lookahead.to_par())
+                    } else {
+                        "".to_string()
+                    }
                 )
             }
             Self::NonTerminal(n, a, u) => {
@@ -190,7 +250,7 @@ impl Factor {
 
     fn is_used_scanner(&self, scanner_index: usize) -> bool {
         match self {
-            Factor::Terminal(_, _, s, _, _) => s.contains(&scanner_index),
+            Factor::Terminal(_, _, s, _, _, _) => s.contains(&scanner_index),
             Factor::Group(a) | Factor::Repeat(a) | Factor::Optional(a) => {
                 a.is_used_scanner(scanner_index)
             }
@@ -205,7 +265,7 @@ impl Display for Factor {
             Self::Group(g) => write!(f, "G({})", g),
             Self::Repeat(r) => write!(f, "R{{{}}}", r),
             Self::Optional(o) => write!(f, "O[{}]", o),
-            Self::Terminal(t, k, s, a, u) => {
+            Self::Terminal(t, k, s, a, u, l) => {
                 let mut d = String::new();
                 let delimiter = k.delimiter();
                 a.decorate(&mut d, &format!("T({}{}{})", delimiter, t, delimiter))?;
@@ -214,12 +274,17 @@ impl Display for Factor {
                 }
                 write!(
                     f,
-                    "<{}>{}",
+                    "<{}>{}{}",
                     s.iter()
                         .map(|s| format!("{}", s))
                         .collect::<Vec<String>>()
                         .join(", "),
-                    d
+                    d,
+                    if let Some(ref lookahead) = l {
+                        format!(" {}", lookahead.to_par())
+                    } else {
+                        "".to_string()
+                    }
                 )
             }
             Self::NonTerminal(n, a, u) => {
@@ -282,13 +347,13 @@ impl Alternation {
     }
 
     fn is_terminal(&self) -> bool {
-        self.0.len() == 1 && matches!(self.0[0], Factor::Terminal(_, _, _, _, _))
+        self.0.len() == 1 && matches!(self.0[0], Factor::Terminal(..))
     }
 
     fn terminal(&self) -> Option<(&str, TerminalKind)> {
         if self.is_terminal() {
             match &self.0[0] {
-                Factor::Terminal(t, k, _, _, _) => Some((t, *k)),
+                Factor::Terminal(t, k, _, _, _, _) => Some((t, *k)),
                 _ => None,
             }
         } else {
@@ -881,14 +946,23 @@ impl ParolGrammar<'_> {
                         ASTControlKind::UserTyped(u) => user_type_name = Some(u),
                     }
                 }
-                let (content, kind) =
-                    Self::measure_token_literal(&simple_token.simple_token.token_literal);
+                let (content, kind) = Self::measure_token_literal(
+                    &simple_token.simple_token.token_expression.token_literal,
+                );
+                let lookahead = simple_token
+                    .simple_token
+                    .token_expression
+                    .token_expression_opt
+                    .as_ref()
+                    .map(|l| LookaheadExpression::try_from(&l.look_ahead))
+                    .transpose()?;
                 Ok(Factor::Terminal(
                     Self::trim_quotes(content),
                     kind,
                     vec![0],
                     attr,
                     user_type_name,
+                    lookahead,
                 ))
             }
             parol_grammar_trait::Symbol::TokenWithStates(token_with_states) => {
@@ -906,14 +980,26 @@ impl ParolGrammar<'_> {
                         ASTControlKind::UserTyped(u) => user_type_name = Some(u),
                     }
                 }
-                let (content, kind) =
-                    Self::measure_token_literal(&token_with_states.token_with_states.token_literal);
+                let (content, kind) = Self::measure_token_literal(
+                    &token_with_states
+                        .token_with_states
+                        .token_expression
+                        .token_literal,
+                );
+                let lookahead = token_with_states
+                    .token_with_states
+                    .token_expression
+                    .token_expression_opt
+                    .as_ref()
+                    .map(|l| LookaheadExpression::try_from(&l.look_ahead))
+                    .transpose()?;
                 Ok(Factor::Terminal(
                     Self::trim_quotes(content),
                     kind,
                     scanner_states,
                     attr,
                     user_type_name,
+                    lookahead,
                 ))
             }
             parol_grammar_trait::Symbol::ScannerSwitch(scanner_switch) => {
@@ -1143,7 +1229,7 @@ impl ParolGrammar<'_> {
             self.productions.iter().any(|p| {
                 p.rhs.0.iter().any(|a| {
                     if a.0.len() == 1 {
-                        if let Factor::Terminal(t, k, _, _, _) = &a.0[0] {
+                        if let Factor::Terminal(t, k, _, _, _, _) = &a.0[0] {
                             *t == tx && k.behaves_like(kind) && a.is_used_scanner(index)
                         } else {
                             false
@@ -1217,8 +1303,9 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
                     match &symbol.symbol {
                         // Only applicable for SimpleToken ...
                         Symbol::SimpleToken(SymbolSimpleToken { simple_token }) => {
-                            let expanded =
-                                ParolGrammar::expanded_token_literal(&simple_token.token_literal);
+                            let expanded = ParolGrammar::expanded_token_literal(
+                                &simple_token.token_expression.token_literal,
+                            );
                             self.handle_token_alias(
                                 arg.identifier.identifier.to_owned(),
                                 expanded,
@@ -1227,7 +1314,7 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
                         // .. and TokenWithStates!
                         Symbol::TokenWithStates(SymbolTokenWithStates { token_with_states }) => {
                             let expanded = ParolGrammar::expanded_token_literal(
-                                &token_with_states.token_literal,
+                                &token_with_states.token_expression.token_literal,
                             );
                             self.handle_token_alias(
                                 arg.identifier.identifier.to_owned(),

@@ -59,7 +59,7 @@ impl From<&Cfg> for GrammarLalr {
                         crate::Symbol::N(n, _, _) => {
                             lalry::Symbol::Nonterminal(nti.non_terminal_index(n))
                         }
-                        crate::Symbol::T(Terminal::Trm(s, k, _, _, _)) => {
+                        crate::Symbol::T(Terminal::Trm(s, k, _, _, _, _)) => {
                             lalry::Symbol::Terminal(ti.terminal_index(s, *k))
                         }
                         _ => unreachable!(),

@@ -185,6 +185,7 @@ mod test {
                 vec![0],
                 SymbolAttribute::None,
                 None,
+                None,
             ))
         };
     }

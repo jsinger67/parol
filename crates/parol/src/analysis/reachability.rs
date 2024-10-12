@@ -12,7 +12,7 @@ use std::collections::{BTreeMap, BTreeSet};
 ///
 /// macro_rules! terminal {
 ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-///         vec![0], SymbolAttribute::None, None))};
+///         vec![0], SymbolAttribute::None, None, None))};
 /// }
 ///
 /// let g = Cfg::with_start_symbol("S")
@@ -72,7 +72,7 @@ pub fn reachable_non_terminals(cfg: &Cfg) -> BTreeSet<String> {
 ///
 /// macro_rules! terminal {
 ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-///         vec![0], SymbolAttribute::None, None))};
+///         vec![0], SymbolAttribute::None, None, None))};
 /// }
 ///
 /// let g = Cfg::with_start_symbol("S")
@@ -122,7 +122,7 @@ pub fn all_non_terminals_reachable(cfg: &Cfg) -> bool {
 ///
 /// macro_rules! terminal {
 ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-///         vec![0], SymbolAttribute::None, None))};
+///         vec![0], SymbolAttribute::None, None, None))};
 /// }
 ///
 /// let g = Cfg::with_start_symbol("S")
@@ -246,7 +246,7 @@ pub fn reachable_from_production(cfg: &Cfg, prod_num: usize) -> BTreeSet<String>
 ///
 /// macro_rules! terminal {
 ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-///         vec![0], SymbolAttribute::None, None))};
+///         vec![0], SymbolAttribute::None, None, None))};
 /// }
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
@@ -344,7 +344,7 @@ pub fn reachable_from_non_terminal(cfg: &Cfg, nt: &str) -> BTreeSet<String> {
 ///
 /// macro_rules! terminal {
 ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-///         vec![0], SymbolAttribute::None, None))};
+///         vec![0], SymbolAttribute::None, None, None))};
 /// }
 ///
 /// let g = Cfg::with_start_symbol("S")
@@ -416,7 +416,7 @@ pub fn nt_producing_productions(cfg: &Cfg, nt: &str) -> BTreeSet<usize> {
 ///
 /// macro_rules! terminal {
 ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-///         vec![0], SymbolAttribute::None, None))};
+///         vec![0], SymbolAttribute::None, None, None))};
 /// }
 ///
 /// let g = Cfg::with_start_symbol("S")
