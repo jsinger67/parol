@@ -131,6 +131,19 @@ impl LookaheadExpression {
     }
 }
 
+impl Display for LookaheadExpression {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(
+            f,
+            "{} {}{}{}",
+            if self.is_positive { "?=" } else { "?!" },
+            self.kind.delimiter(),
+            self.pattern,
+            self.kind.delimiter()
+        )
+    }
+}
+
 impl TryFrom<&parol_grammar_trait::LookAhead<'_>> for LookaheadExpression {
     type Error = anyhow::Error;
     fn try_from(

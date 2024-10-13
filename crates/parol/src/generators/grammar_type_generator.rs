@@ -297,7 +297,7 @@ impl GrammarTypeInfo {
         self.terminals = cfg
             .get_ordered_terminals()
             .iter()
-            .map(|(t, k, _)| k.expand(t))
+            .map(|(t, k, _, _)| k.expand(t))
             .collect::<Vec<String>>();
 
         self.terminal_names = self.terminals.iter().fold(Vec::new(), |mut acc, e| {

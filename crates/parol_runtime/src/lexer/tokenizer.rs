@@ -28,6 +28,36 @@ pub const WHITESPACE_TOKEN: &str = r"[\s--\r\n]+";
 ///
 pub const ERROR_TOKEN: &str = r###"."###;
 
+#[derive(Debug)]
+pub(crate) struct LookaheadExpression {
+    pub(crate) is_positive: bool,
+    pub(crate) pattern: String,
+}
+
+#[derive(Debug)]
+pub(crate) struct Pattern {
+    pub regex: String,
+    pub terminal: TerminalIndex,
+    pub lookahead: Option<LookaheadExpression>,
+}
+
+impl Pattern {
+    pub fn new(
+        regex: String,
+        terminal: TerminalIndex,
+        lookahead_expression: Option<(bool, &str)>,
+    ) -> Self {
+        Self {
+            regex,
+            terminal,
+            lookahead: lookahead_expression.map(|(is_positive, pattern)| LookaheadExpression {
+                is_positive,
+                pattern: pattern.to_string(),
+            }),
+        }
+    }
+}
+
 ///
 /// The Tokenizer abstracts one specific scanner state or scanner mode.
 /// It is used during generation of the scanner.
@@ -38,7 +68,7 @@ pub struct Tokenizer {
     /// type numbers.
     /// The priorities of the patterns are determined by their order in the vector. Lower indices
     /// have higher priority if multiple patterns match the input and have the same length.
-    pub(crate) patterns: Vec<(String, TerminalIndex)>,
+    pub(crate) patterns: Vec<Pattern>,
 
     /// This is the token index for the special error token.
     /// Its value isn't constant and depends on the given token count.
@@ -58,6 +88,9 @@ impl Tokenizer {
     /// All valid terminals of the grammar. These include the specific common terminals
     /// `EOI`, `NEW_LINE`, `WHITESPACE`, `LINE_COMMENT`, `BLOCK_COMMENT` with the value
     /// `UNMATCHABLE_TOKEN` to provide consistent index handling for all scanner states.
+    /// As of version 2 the augmented_terminals also include optional lookahead expressions
+    /// consisting of a boolean flag and a string. The boolean flag indicates if the lookahead
+    /// is positive or negative. The string is the regular expression for the lookahead.
     ///
     /// ## scanner_specifics
     /// The values of the five scanner specific common terminals `EOI`, `NEW_LINE`, `WHITESPACE`,
@@ -71,38 +104,40 @@ impl Tokenizer {
     ///
     /// This function will return an error if the regex patterns can't be compiled.
     pub fn build(
-        augmented_terminals: &[&str],
+        augmented_terminals: &[(&str, Option<(bool, &str)>)],
         scanner_specifics: &[&str],
         scanner_terminal_indices: &[TerminalIndex],
     ) -> Result<Self> {
         debug_assert_eq!(5, scanner_specifics.len());
-        let mut patterns = Vec::with_capacity(augmented_terminals.len());
+        let mut patterns = Vec::<Pattern>::with_capacity(augmented_terminals.len());
         scanner_specifics.iter().enumerate().for_each(|(i, t)| {
             if *t != UNMATCHABLE_TOKEN {
-                patterns.push((t.to_string(), i as TerminalIndex));
+                patterns.push(Pattern::new(t.to_string(), i as TerminalIndex, None));
             }
         });
         scanner_terminal_indices
             .iter()
             .map(|term_idx| {
-                (
-                    augmented_terminals[*term_idx as usize].to_string(),
+                Pattern::new(
+                    augmented_terminals[*term_idx as usize].0.to_string(),
                     *term_idx,
+                    augmented_terminals[*term_idx as usize].1,
                 )
             })
-            .for_each(|e| {
-                patterns.push(e);
+            .for_each(|p| {
+                patterns.push(p);
             });
         let error_token_type = (augmented_terminals.len() - 1) as TerminalIndex;
 
         debug_assert_eq!(
-            ERROR_TOKEN, augmented_terminals[error_token_type as usize],
+            ERROR_TOKEN, augmented_terminals[error_token_type as usize].0,
             "Last token should always be the error token!"
         );
 
-        patterns.push((
-            augmented_terminals[error_token_type as usize].to_string(),
+        patterns.push(Pattern::new(
+            augmented_terminals[error_token_type as usize].0.to_string(),
             error_token_type,
+            None,
         ));
 
         debug_assert!(

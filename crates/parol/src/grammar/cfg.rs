@@ -1,4 +1,5 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
+use crate::parser::parol_grammar::LookaheadExpression;
 use crate::{Pos, Pr, Symbol, Terminal, TerminalKind};
 use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::{NonTerminalIndex, TerminalIndex};
@@ -13,15 +14,25 @@ pub(crate) static RX_NUM_SUFFIX: Lazy<Regex> =
 /// Trait to resolve terminal indices
 pub trait TerminalIndexFn {
     /// Returns the terminal index for a given terminal string and terminal kind
-    fn terminal_index(&self, t: &str, k: TerminalKind) -> TerminalIndex;
+    fn terminal_index(
+        &self,
+        t: &str,
+        k: TerminalKind,
+        l: &Option<LookaheadExpression>,
+    ) -> TerminalIndex;
 }
 
 impl<F> TerminalIndexFn for F
 where
-    F: Fn(&str, TerminalKind) -> TerminalIndex,
+    F: Fn(&str, TerminalKind, &Option<LookaheadExpression>) -> TerminalIndex,
 {
-    fn terminal_index(&self, t: &str, k: TerminalKind) -> TerminalIndex {
-        self(t, k)
+    fn terminal_index(
+        &self,
+        t: &str,
+        k: TerminalKind,
+        l: &Option<LookaheadExpression>,
+    ) -> TerminalIndex {
+        self(t, k, l)
     }
 }
 
@@ -152,11 +163,11 @@ impl Cfg {
         let vec = self
             .get_ordered_terminals_owned()
             .into_iter()
-            .map(|(s, k, _)| (s, k))
-            .collect::<Vec<(String, TerminalKind)>>();
-        move |t: &str, k: TerminalKind| {
+            .map(|(s, k, l, _)| (s, k, l))
+            .collect::<Vec<(String, TerminalKind, Option<LookaheadExpression>)>>();
+        move |t: &str, k: TerminalKind, l: &Option<LookaheadExpression>| {
             (vec.iter()
-                .position(|(t0, k0)| t == t0 && k.behaves_like(*k0))
+                .position(|(t0, k0, l0)| t == t0 && k.behaves_like(*k0) && l0 == l)
                 .unwrap()) as TerminalIndex
                 + parol_runtime::lexer::FIRST_USER_TOKEN
         }
@@ -170,8 +181,8 @@ impl Cfg {
                 .iter()
                 .fold(HashMap::<TerminalIndex, String>::new(), |mut acc, p| {
                     if p.1.len() == 1 {
-                        if let crate::Symbol::T(Terminal::Trm(s, k, ..)) = &p.1[0] {
-                            let t = terminal_index_finder.terminal_index(s, *k);
+                        if let crate::Symbol::T(Terminal::Trm(s, k, _, _, _, l)) = &p.1[0] {
+                            let t = terminal_index_finder.terminal_index(s, *k, l);
                             acc.insert(t, p.0.get_n().unwrap());
                         }
                     }
@@ -184,21 +195,26 @@ impl Cfg {
     /// Set of Terminals - ordered by occurrence.
     /// Used for Lexer generation.
     ///
-    pub fn get_ordered_terminals(&self) -> Vec<(&str, TerminalKind, Vec<usize>)> {
+    pub fn get_ordered_terminals(
+        &self,
+    ) -> Vec<(&str, TerminalKind, Option<LookaheadExpression>, Vec<usize>)> {
         self.pr.iter().fold(Vec::new(), |mut acc, p| {
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
-                if let Symbol::T(Terminal::Trm(t, k, s, ..)) = s {
+                if let Symbol::T(Terminal::Trm(t, k, s, _, _, l)) = s {
+                    // Unite the scanner states of all terminals withe the same 'behaviour'
+                    // The termials are considered different if they have different lookahead
+                    // expressions.
                     if let Some(pos) = acc
                         .iter_mut()
-                        .position(|(trm, knd, _)| trm == t && knd.behaves_like(*k))
+                        .position(|(trm, knd, la, _)| trm == t && knd.behaves_like(*k) && la == l)
                     {
                         for st in s {
-                            if !acc[pos].2.contains(st) {
-                                acc[pos].2.push(*st);
+                            if !acc[pos].3.contains(st) {
+                                acc[pos].3.push(*st);
                             }
                         }
                     } else {
-                        acc.push((t, *k, s.to_vec()));
+                        acc.push((t, *k, l.clone(), s.to_vec()));
                     }
                 }
                 acc
@@ -210,10 +226,17 @@ impl Cfg {
     ///
     /// Set of Terminals - ordered by occurrence as owned values.
     ///
-    pub fn get_ordered_terminals_owned(&self) -> Vec<(String, TerminalKind, Vec<usize>)> {
+    pub fn get_ordered_terminals_owned(
+        &self,
+    ) -> Vec<(
+        String,
+        TerminalKind,
+        Option<LookaheadExpression>,
+        Vec<usize>,
+    )> {
         self.get_ordered_terminals()
             .into_iter()
-            .map(|(s, k, v)| (s.to_owned(), k, v))
+            .map(|(s, k, l, v)| (s.to_owned(), k, l, v))
             .collect()
     }
 

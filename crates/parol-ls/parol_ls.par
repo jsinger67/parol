@@ -67,11 +67,14 @@ TokenLiteral
     | LiteralString
     | Regex;
 
+TokenExpression
+    : TokenLiteral [ LookAhead ];
+
 SimpleToken
-    : TokenLiteral [ ASTControl ];
+    : TokenExpression [ ASTControl ];
 
 TokenWithStates
-    : "<": OwnedToken IdentifierList ">": OwnedToken TokenLiteral [ ASTControl ];
+    : "<": OwnedToken IdentifierList ">": OwnedToken TokenExpression [ ASTControl ];
 
 Group
     : '(': OwnedToken Alternations ')': OwnedToken;
@@ -119,7 +122,17 @@ UserTypeName
     : Identifier { DoubleColon Identifier };
 
 Regex
-    : /\u{2f}(\\.|[^\\])*?\u{2f}/: OwnedToken // \u{2f} is /
+    : "/(\\.|[^\/])*/": OwnedToken
     ;
 
-// End comment
+// The lookahead
+LookAhead
+    : ( PositiveLookahead | NegativeLookahead ) TokenLiteral;
+
+// The positive lookahead operator
+PositiveLookahead
+    : '?=': OwnedToken;
+
+// The negative lookahead operator
+NegativeLookahead
+    : '?!': OwnedToken;

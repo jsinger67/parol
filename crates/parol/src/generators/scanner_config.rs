@@ -142,7 +142,7 @@ impl ScannerConfig {
             terminals
                 .iter()
                 .enumerate()
-                .fold(Vec::new(), |mut acc, (i, (_, _, s))| {
+                .fold(Vec::new(), |mut acc, (i, (_, _, _, s))| {
                     if s.contains(&self.scanner_state) {
                         acc.push(i as TerminalIndex + FIRST_USER_TOKEN);
                     }

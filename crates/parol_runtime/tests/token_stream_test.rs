@@ -2,29 +2,26 @@
 //! Scanner switching is tested and token spans are checked.
 
 use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN,
-    NEW_LINE_TOKEN,
-    UNMATCHABLE_TOKEN,
-    WHITESPACE_TOKEN,
+    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::{ FileSource, ScannerConfig, TerminalIndex, Token, TokenStream, Tokenizer };
+use parol_runtime::{FileSource, ScannerConfig, TerminalIndex, Token, TokenStream, Tokenizer};
 use std::borrow::Cow;
 use std::cell::RefCell;
-use std::path::{ Path, PathBuf };
+use std::path::{Path, PathBuf};
 
-pub const TERMINALS: &[&str; 11] = &[
-    /*  0 */ UNMATCHABLE_TOKEN,
-    /*  1 */ UNMATCHABLE_TOKEN,
-    /*  2 */ UNMATCHABLE_TOKEN,
-    /*  3 */ UNMATCHABLE_TOKEN,
-    /*  4 */ UNMATCHABLE_TOKEN,
-    /*  5 */ r"[a-zA-Z_]\w*",
-    /*  6 */ r#"\["\\bfnt]"#,
-    /*  7 */ r"\[\s--\n\r]*\r?\n",
-    /*  8 */ r#"[^"\\]+"#,
-    /*  9 */ r#"""#,
-    /* 10 */ ERROR_TOKEN,
+pub const TERMINALS: &[(&str, Option<(bool, &str)>); 11] = &[
+    /*  0 */ (UNMATCHABLE_TOKEN, None),
+    /*  1 */ (UNMATCHABLE_TOKEN, None),
+    /*  2 */ (UNMATCHABLE_TOKEN, None),
+    /*  3 */ (UNMATCHABLE_TOKEN, None),
+    /*  4 */ (UNMATCHABLE_TOKEN, None),
+    /*  5 */ (r"[a-zA-Z_]\w*", None),
+    /*  6 */ (r#"\["\\bfnt]"#, None),
+    /*  7 */ (r"\[\s--\n\r]*\r?\n", None),
+    /*  8 */ (r#"[^"\\]+"#, None),
+    /*  9 */ (r#"""#, None),
+    /* 10 */ (ERROR_TOKEN, None),
 ];
 
 /* SCANNER_0: "INITIAL" */
@@ -48,7 +45,12 @@ const SCANNER_1: (&[&str; 5], &[TerminalIndex; 4]) = (
         /*  3 */ UNMATCHABLE_TOKEN,
         /*  4 */ UNMATCHABLE_TOKEN,
     ],
-    &[6 /* Escaped */, 7 /* EscapedLineEnd */, 8 /* NoneQuote */, 9 /* StringDelimiter */],
+    &[
+        6, /* Escaped */
+        7, /* EscapedLineEnd */
+        8, /* NoneQuote */
+        9, /* StringDelimiter */
+    ],
 );
 
 const MAX_K: usize = 1;
@@ -58,18 +60,17 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
         ScannerConfig::new(
             "INITIAL",
             Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-            &[]
+            &[],
         ),
         ScannerConfig::new(
             "String",
             Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
-            &[]
-        )
+            &[],
+        ),
     ]
 });
 
-const INPUT: &str =
-    r#"Id1
+const INPUT: &str = r#"Id1
 "1. String"
 Id2
 "2. \"String\t\" with \

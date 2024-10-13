@@ -6,11 +6,12 @@ use crate::{
     parol_ls_grammar_trait::{
         ASTControl, Alternation, AlternationList, Alternations, AlternationsList, CutOperator,
         Declaration, DoubleColon, Factor, GrammarDefinition, GrammarDefinitionList, Group,
-        Identifier, IdentifierList, IdentifierListList, LiteralString, NonTerminal, NonTerminalOpt,
-        Optional, ParolLs, Production, ProductionLHS, Prolog, PrologList, PrologList0, Regex,
-        Repeat, ScannerDirectives, ScannerState, ScannerStateList, ScannerSwitch, ScannerSwitchOpt,
-        SimpleToken, SimpleTokenOpt, StartDeclaration, Symbol, TokenLiteral, TokenWithStates,
-        TokenWithStatesOpt, UserTypeDeclaration, UserTypeName, UserTypeNameList,
+        Identifier, IdentifierList, IdentifierListList, LiteralString, LookAhead, LookAheadGroup,
+        NonTerminal, NonTerminalOpt, Optional, ParolLs, Production, ProductionLHS, Prolog,
+        PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState, ScannerStateList,
+        ScannerSwitch, ScannerSwitchOpt, SimpleToken, SimpleTokenOpt, StartDeclaration, Symbol,
+        TokenExpression, TokenExpressionOpt, TokenLiteral, TokenWithStates, TokenWithStatesOpt,
+        UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
     utils::RX_NEW_LINE,
@@ -348,6 +349,35 @@ impl Fmt for LiteralString {
         (self.literal_string.text().to_string(), comments)
     }
 }
+impl Fmt for LookAhead {
+    fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
+        let (look_ahead_group_str, comments) = self.look_ahead_group.txt(options, comments);
+        let (token_literal_str, comments) = self.token_literal.txt(options, comments);
+        (
+            format!("{}{}", look_ahead_group_str, token_literal_str),
+            comments,
+        )
+    }
+}
+impl Fmt for LookAheadGroup {
+    fn txt(&self, _options: &FmtOptions, comments: Comments) -> (String, Comments) {
+        let lookahead_group_str = match self {
+            LookAheadGroup::PositiveLookahead(look_ahead_group_positive_lookahead) => {
+                look_ahead_group_positive_lookahead
+                    .positive_lookahead
+                    .positive_lookahead
+                    .text()
+            }
+            LookAheadGroup::NegativeLookahead(look_ahead_group_negative_lookahead) => {
+                look_ahead_group_negative_lookahead
+                    .negative_lookahead
+                    .negative_lookahead
+                    .text()
+            }
+        };
+        (lookahead_group_str.to_string(), comments)
+    }
+}
 impl Fmt for NonTerminal {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (ast_control_str, comments) =
@@ -637,7 +667,7 @@ impl Fmt for ScannerSwitchOpt {
 }
 impl Fmt for SimpleToken {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
-        let (token_literal, comments) = self.token_literal.txt(options, comments);
+        let (token_literal, comments) = self.token_expression.txt(options, comments);
         let (simple_token_opt, comments) =
             if let Some(simple_token_opt) = self.simple_token_opt.as_ref() {
                 simple_token_opt.txt(options, comments)
@@ -708,6 +738,27 @@ impl Fmt for Symbol {
         handle_symbol(self, options, comments)
     }
 }
+impl Fmt for TokenExpression {
+    fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
+        let (token_literal, comments) = self.token_literal.txt(options, comments);
+        let (token_expression_opt, comments) =
+            if let Some(token_expression_opt) = self.token_expression_opt.as_ref() {
+                token_expression_opt.txt(options, comments)
+            } else {
+                (String::default(), comments)
+            };
+        (
+            format!("{}{}", token_literal, token_expression_opt),
+            comments,
+        )
+    }
+}
+impl Fmt for TokenExpressionOpt {
+    fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
+        let (la, comments) = self.look_ahead.txt(options, comments);
+        (format!("{}", la), comments)
+    }
+}
 impl Fmt for TokenLiteral {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         match self {
@@ -720,7 +771,7 @@ impl Fmt for TokenLiteral {
 impl Fmt for TokenWithStates {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (mut state_list, comments) = self.identifier_list.txt(options, comments);
-        let (token_literal, comments) = self.token_literal.txt(options, comments);
+        let (token_literal, comments) = self.token_expression.txt(options, comments);
         let (token_with_states_opt, comments) =
             if let Some(token_with_states_opt) = self.token_with_states_opt.as_ref() {
                 token_with_states_opt.txt(options, comments)

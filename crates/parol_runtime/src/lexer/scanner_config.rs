@@ -1,5 +1,3 @@
-use scnr::{Pattern, ScannerMode};
-
 use crate::{ScannerIndex, TerminalIndex, Tokenizer};
 
 /// Scanner configuration fed into a TokenStream
@@ -39,15 +37,21 @@ impl ScannerConfig {
     }
 }
 
-impl From<&ScannerConfig> for ScannerMode {
+impl From<&ScannerConfig> for scnr::ScannerMode {
     fn from(config: &ScannerConfig) -> Self {
-        ScannerMode::new(
+        scnr::ScannerMode::new(
             config.name,
-            config
-                .tokenizer
-                .patterns
-                .iter()
-                .map(|(p, t)| Pattern::new(p.clone(), (*t).into())),
+            config.tokenizer.patterns.iter().map(|p| {
+                let sp = scnr::Pattern::new(p.regex.clone(), p.terminal as usize);
+                if let Some(lookahead) = p.lookahead.as_ref() {
+                    sp.with_lookahead(scnr::Lookahead {
+                        is_positive: lookahead.is_positive,
+                        pattern: lookahead.pattern.clone(),
+                    })
+                } else {
+                    sp
+                }
+            }),
             config.transitions.iter().map(|(t, m)| (*t as usize, *m)),
         )
     }

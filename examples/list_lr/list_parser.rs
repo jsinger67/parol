@@ -19,15 +19,15 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 
-pub const TERMINALS: &[&str; 8] = &[
-    /* 0 */ UNMATCHABLE_TOKEN,
-    /* 1 */ UNMATCHABLE_TOKEN,
-    /* 2 */ UNMATCHABLE_TOKEN,
-    /* 3 */ UNMATCHABLE_TOKEN,
-    /* 4 */ UNMATCHABLE_TOKEN,
-    /* 5 */ r",",
-    /* 6 */ r"0|[1-9][0-9]*",
-    /* 7 */ ERROR_TOKEN,
+pub const TERMINALS: &[(&str, Option<(bool, &str)>); 8] = &[
+    /* 0 */ (UNMATCHABLE_TOKEN, None),
+    /* 1 */ (UNMATCHABLE_TOKEN, None),
+    /* 2 */ (UNMATCHABLE_TOKEN, None),
+    /* 3 */ (UNMATCHABLE_TOKEN, None),
+    /* 4 */ (UNMATCHABLE_TOKEN, None),
+    /* 5 */ (r",", None),
+    /* 6 */ (r"0|[1-9][0-9]*", None),
+    /* 7 */ (ERROR_TOKEN, None),
 ];
 
 pub const TERMINAL_NAMES: &[&str; 8] = &[

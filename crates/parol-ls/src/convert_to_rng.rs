@@ -68,6 +68,29 @@ impl From<&LiteralString> for Rng {
     }
 }
 
+impl From<&LookAhead> for Rng {
+    fn from(val: &LookAhead) -> Self {
+        Self::from(&val.look_ahead_group).extend(Self::from(&val.token_literal))
+    }
+}
+
+impl From<&LookAheadGroup> for Rng {
+    fn from(val: &LookAheadGroup) -> Self {
+        match val {
+            LookAheadGroup::PositiveLookahead(look_ahead_group_positive_lookahead) => Self::from(
+                &look_ahead_group_positive_lookahead
+                    .positive_lookahead
+                    .positive_lookahead,
+            ),
+            LookAheadGroup::NegativeLookahead(look_ahead_group_negative_lookahead) => Self::from(
+                &look_ahead_group_negative_lookahead
+                    .negative_lookahead
+                    .negative_lookahead,
+            ),
+        }
+    }
+}
+
 impl From<&DoubleColon> for Rng {
     fn from(val: &DoubleColon) -> Self {
         Self::from(&val.double_colon)
@@ -242,7 +265,7 @@ impl From<&ScannerSwitchOpt> for Rng {
 
 impl From<&SimpleToken> for Rng {
     fn from(val: &SimpleToken) -> Self {
-        let rng = Self::from(&val.token_literal);
+        let rng = Self::from(&val.token_expression);
         val.simple_token_opt
             .as_ref()
             .map_or(rng, |simple_token_opt| {
@@ -297,6 +320,21 @@ impl From<&Symbol> for Rng {
     }
 }
 
+impl From<&TokenExpression> for Rng {
+    fn from(val: &TokenExpression) -> Self {
+        let rng = Self::from(&val.token_literal);
+        val.token_expression_opt
+            .as_ref()
+            .map_or(rng, |lookahead| rng.extend(Self::from(lookahead)))
+    }
+}
+
+impl From<&TokenExpressionOpt> for Rng {
+    fn from(val: &TokenExpressionOpt) -> Self {
+        Self::from(&val.look_ahead)
+    }
+}
+
 impl From<&TokenLiteral> for Rng {
     fn from(val: &TokenLiteral) -> Self {
         match val {
@@ -311,7 +349,7 @@ impl From<&TokenWithStates> for Rng {
     fn from(val: &TokenWithStates) -> Self {
         let rng = Self::from(&val.l_t);
         val.token_with_states_opt.as_ref().map_or(
-            rng.extend(Self::from(&val.token_literal)),
+            rng.extend(Self::from(&val.token_expression)),
             |token_with_states| rng.extend(Self::from(token_with_states)),
         )
     }

@@ -2,7 +2,7 @@ use parol_runtime::log::trace;
 use parol_runtime::once_cell::sync::Lazy;
 
 use super::ScannerConfig;
-use crate::parser::parol_grammar::GrammarType;
+use crate::parser::parol_grammar::{GrammarType, LookaheadExpression};
 use crate::parser::try_to_convert;
 use crate::{Cfg, ParolGrammar};
 use anyhow::Result;
@@ -135,23 +135,22 @@ impl GrammarConfig {
     /// Generates the augmented tokens vector in the format needed by the lexer
     /// generator.
     ///
-    pub fn generate_augmented_terminals(&self) -> Vec<String> {
+    pub fn generate_augmented_terminals(&self) -> Vec<(String, Option<LookaheadExpression>)> {
         let terminals = vec![
-            "UNMATCHABLE_TOKEN".to_owned(),
-            "UNMATCHABLE_TOKEN".to_owned(),
-            "UNMATCHABLE_TOKEN".to_owned(),
-            "UNMATCHABLE_TOKEN".to_owned(),
-            "UNMATCHABLE_TOKEN".to_owned(),
+            ("UNMATCHABLE_TOKEN".to_owned(), None),
+            ("UNMATCHABLE_TOKEN".to_owned(), None),
+            ("UNMATCHABLE_TOKEN".to_owned(), None),
+            ("UNMATCHABLE_TOKEN".to_owned(), None),
+            ("UNMATCHABLE_TOKEN".to_owned(), None),
         ];
-        let mut terminals =
-            self.cfg
-                .get_ordered_terminals()
-                .into_iter()
-                .fold(terminals, |mut acc, (t, k, _)| {
-                    acc.push(k.expand(t));
-                    acc
-                });
-        terminals.push("ERROR_TOKEN".to_owned());
+        let mut terminals = self.cfg.get_ordered_terminals().into_iter().fold(
+            terminals,
+            |mut acc, (t, k, l, _)| {
+                acc.push((k.expand(t), l.clone()));
+                acc
+            },
+        );
+        terminals.push(("ERROR_TOKEN".to_owned(), None));
         terminals
     }
 
@@ -225,6 +224,7 @@ impl TryFrom<ParolGrammar<'_>> for GrammarConfig {
 #[cfg(test)]
 mod test {
     use crate::generators::{GrammarConfig, ScannerConfig};
+    use crate::parser::parol_grammar::LookaheadExpression;
     use crate::{
         obtain_grammar_config_from_string, Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind,
     };
@@ -245,13 +245,13 @@ mod test {
     macro_rules! augmented_terminals {
         ($($term:literal),+) => {
             &[
-                "UNMATCHABLE_TOKEN",
-                "UNMATCHABLE_TOKEN",
-                "UNMATCHABLE_TOKEN",
-                "UNMATCHABLE_TOKEN",
-                "UNMATCHABLE_TOKEN",
-                $($term,)*
-                "ERROR_TOKEN",
+                ("UNMATCHABLE_TOKEN", None),
+                ("UNMATCHABLE_TOKEN", None),
+                ("UNMATCHABLE_TOKEN", None),
+                ("UNMATCHABLE_TOKEN", None),
+                ("UNMATCHABLE_TOKEN", None),
+                $(($term, None),)*
+                ("ERROR_TOKEN", None),
             ]
         };
     }
@@ -293,18 +293,18 @@ mod test {
 
         assert_eq!(
             [
-                "UNMATCHABLE_TOKEN",
-                "UNMATCHABLE_TOKEN",
-                "UNMATCHABLE_TOKEN",
-                "UNMATCHABLE_TOKEN",
-                "UNMATCHABLE_TOKEN",
-                r###"a"###,
-                r###"b"###,
-                "ERROR_TOKEN"
+                ("UNMATCHABLE_TOKEN", None),
+                ("UNMATCHABLE_TOKEN", None),
+                ("UNMATCHABLE_TOKEN", None),
+                ("UNMATCHABLE_TOKEN", None),
+                ("UNMATCHABLE_TOKEN", None),
+                (r###"a"###, None),
+                (r###"b"###, None),
+                ("ERROR_TOKEN", None),
             ]
             .iter()
-            .map(|t| (*t).to_owned())
-            .collect::<Vec<String>>(),
+            .map(|(t, l)| ((*t).to_owned(), l.clone()))
+            .collect::<Vec<(String, Option<LookaheadExpression>)>>(),
             augment_terminals
         );
 
@@ -335,7 +335,7 @@ mod test {
     #[derive(Debug)]
     struct TestData {
         input: &'static str,
-        augment_terminals: &'static [&'static str],
+        augment_terminals: &'static [(&'static str, Option<LookaheadExpression>)],
     }
 
     const TESTS: &[TestData] = &[
@@ -386,7 +386,12 @@ mod test {
         for (i, test) in TESTS.iter().enumerate() {
             let grammar_config = obtain_grammar_config_from_string(test.input, false)
                 .unwrap_or_else(|e| panic!("Error parsing text #{i}: '{}'\n{e:?}", test.input));
-            let augment_terminals = grammar_config.generate_augmented_terminals();
+            let original_augment_terminals = grammar_config.generate_augmented_terminals();
+            let augment_terminals = original_augment_terminals
+                .iter()
+                .map(|(t, l)| (t.as_str(), l.clone()))
+                .collect::<Vec<(&str, Option<LookaheadExpression>)>>();
+
             assert_eq!(
                 test.augment_terminals, augment_terminals,
                 "Error at test #{i}"

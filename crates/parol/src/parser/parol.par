@@ -81,7 +81,6 @@ TokenLiteral
 
 TokenExpression
     : TokenLiteral [ LookAhead ]
-    
     ;
 
 SimpleToken
@@ -102,7 +101,6 @@ RawString
 
 Regex
     : "/(\\.|[^\/])*/" // \u{2F} is /
-    
     ;
 
 // A non-empty grouping
@@ -166,7 +164,7 @@ UserTypeName
 
 // The lookahead
 LookAhead
-    : (PositiveLookahead | NegativeLookahead) TokenLiteral
+    : ( PositiveLookahead | NegativeLookahead ) TokenLiteral
     ;
 
 // The positive lookahead operator

@@ -3,6 +3,8 @@ use crate::transformation::transform_productions;
 use crate::{generators, Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal, TerminalKind};
 use anyhow::{bail, Result};
 
+use super::parol_grammar::LookaheadExpression;
+
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let st = parol_grammar.start_symbol;
     let non_terminals =
@@ -64,18 +66,21 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
     };
     // Finds the terminal token from the name of the primary non-terminal
     let pr_copy = grammar_config.cfg.pr.clone();
-    let terminal_finder = move |name: &str| -> Option<(String, TerminalKind)> {
-        pr_copy.iter().find_map(|p| {
-            if p.0.get_n_ref().unwrap() == name && p.1.len() == 1 {
-                match &p.1[0] {
-                    Symbol::T(Terminal::Trm(t, k, ..)) => Some((t.to_owned(), *k)),
-                    _ => None,
+    let terminal_finder =
+        move |name: &str| -> Option<(String, TerminalKind, Option<LookaheadExpression>)> {
+            pr_copy.iter().find_map(|p| {
+                if p.0.get_n_ref().unwrap() == name && p.1.len() == 1 {
+                    match &p.1[0] {
+                        Symbol::T(Terminal::Trm(t, k, _, _, _, l)) => {
+                            Some((t.to_owned(), *k, l.clone()))
+                        }
+                        _ => None,
+                    }
+                } else {
+                    None
                 }
-            } else {
-                None
-            }
-        })
-    };
+            })
+        };
     grammar_config
         .scanner_configurations
         .iter_mut()
@@ -97,7 +102,7 @@ fn insert_transitions(
     scanner_configurations: &[crate::parser::parol_grammar::ScannerConfig],
     terminal_resolver: &impl crate::grammar::cfg::TerminalIndexFn,
     scanner_resolver: impl Fn(&str) -> Option<usize>,
-    terminal_finder: impl Fn(&str) -> Option<(String, TerminalKind)>,
+    terminal_finder: impl Fn(&str) -> Option<(String, TerminalKind, Option<LookaheadExpression>)>,
 ) -> Result<()> {
     if let Some(source_configuartion) = scanner_resolver(&sc.scanner_name) {
         let mut transitions = Vec::new();
@@ -105,10 +110,12 @@ fn insert_transitions(
             .transitions
             .iter()
             .try_for_each(|(token, target_state_name)| {
-                if let Some((txt, kind)) = terminal_finder(token.text()) {
+                if let Some((txt, kind, la)) = terminal_finder(token.text()) {
                     if let Some(target_scanner) = scanner_resolver(target_state_name.text()) {
-                        transitions
-                            .push((terminal_resolver.terminal_index(&txt, kind), target_scanner));
+                        transitions.push((
+                            terminal_resolver.terminal_index(&txt, kind, &la),
+                            target_scanner,
+                        ));
                     } else {
                         bail!(
                             "Target scanner configuration {} not found",

@@ -86,26 +86,28 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
     let terminal_count = original_augmented_terminals.len();
     let width = (terminal_count as f32).log10() as usize + 1;
 
-    let augmented_terminals =
-        original_augmented_terminals
-            .iter()
-            .enumerate()
-            .fold(StrVec::new(4), |mut acc, (i, e)| {
-                let e = match e.as_str() {
-                    "UNMATCHABLE_TOKEN" | "NEW_LINE_TOKEN" | "WHITESPACE_TOKEN" | "ERROR_TOKEN" => {
-                        e.to_owned()
-                    }
-                    _ => {
-                        let hashes = determine_hashes_for_raw_string(e);
-                        format!(r#"r{}"{}"{}"#, hashes, e, hashes)
-                    }
-                };
-                acc.push(format!("/* {:w$} */ {},", i, e, w = width));
-                acc
-            });
+    let augmented_terminals = original_augmented_terminals.iter().enumerate().fold(
+        StrVec::new(4),
+        |mut acc, (i, (e, l))| {
+            let e = match e.as_str() {
+                "UNMATCHABLE_TOKEN" | "NEW_LINE_TOKEN" | "WHITESPACE_TOKEN" | "ERROR_TOKEN" => {
+                    format!("({}, None)", e)
+                }
+                _ => {
+                    let hashes = determine_hashes_for_raw_string(e);
+                    let lookahead_expression = l.as_ref().map(|l| (l.is_positive, &l.pattern));
+                    format!(
+                        r#"(r{}"{}"{}, {:#?})"#,
+                        hashes, e, hashes, lookahead_expression
+                    )
+                }
+            };
+            acc.push(format!("/* {:w$} */ {},", i, e, w = width));
+            acc
+        },
+    );
 
     let token_constants: Vec<(&str, bool)> = vec![
-        ("ERROR_TOKEN,", true),
         (
             "NEW_LINE_TOKEN,",
             grammar_config
@@ -121,6 +123,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
                 .iter()
                 .any(|sc| sc.auto_ws),
         ),
+        ("ERROR_TOKEN,", true),
     ];
 
     let used_token_constants = token_constants
@@ -139,7 +142,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
             .fold(Vec::new(), |mut acc, (i, e)| {
                 let n = generate_name(
                     &acc,
-                    generate_terminal_name(e, Some(i as TerminalIndex), &grammar_config.cfg),
+                    generate_terminal_name(&e.0, Some(i as TerminalIndex), &grammar_config.cfg),
                 );
                 acc.push(n);
                 acc
@@ -193,7 +196,7 @@ pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
         .fold(Vec::new(), |mut acc, (i, e)| {
             let n = generate_name(
                 &acc,
-                generate_terminal_name(e, Some(i as TerminalIndex), &grammar_config.cfg),
+                generate_terminal_name(&e.0, Some(i as TerminalIndex), &grammar_config.cfg),
             );
             acc.push(n);
             acc
@@ -217,7 +220,7 @@ impl std::fmt::Display for LexerData {
             #used_token_constants
         };
         #blank_line
-        pub const TERMINALS: &[&str; #terminal_count] = &[
+        pub const TERMINALS: &[(&str, Option<(bool, &str)>); #terminal_count] = &[
         #augmented_terminals];
         #blank_line
         pub const TERMINAL_NAMES: &[&str; #terminal_count] = &[

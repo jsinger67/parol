@@ -59,8 +59,8 @@ impl From<&Cfg> for GrammarLalr {
                         crate::Symbol::N(n, _, _) => {
                             lalry::Symbol::Nonterminal(nti.non_terminal_index(n))
                         }
-                        crate::Symbol::T(Terminal::Trm(s, k, _, _, _, _)) => {
-                            lalry::Symbol::Terminal(ti.terminal_index(s, *k))
+                        crate::Symbol::T(Terminal::Trm(s, k, _, _, _, l)) => {
+                            lalry::Symbol::Terminal(ti.terminal_index(s, *k, l))
                         }
                         _ => unreachable!(),
                     })
@@ -283,11 +283,19 @@ impl Display for LRConflictError {
             let terminals = cfg
                 .get_ordered_terminals()
                 .iter()
-                .map(|(t, _, _)| t.to_string())
+                .map(|(t, _, l, _)| (t.to_string(), l.clone()))
                 .collect::<Vec<_>>();
             Box::new(move |ti: TerminalIndex| {
                 if ti >= FIRST_USER_TOKEN {
-                    terminals[(ti - FIRST_USER_TOKEN) as usize].clone()
+                    format!(
+                        "{}{}",
+                        terminals[(ti - FIRST_USER_TOKEN) as usize].0,
+                        if let Some(ref la) = terminals[(ti - FIRST_USER_TOKEN) as usize].1 {
+                            format!(" {}", la)
+                        } else {
+                            "".to_owned()
+                        }
+                    )
                 } else {
                     match ti {
                         EOI => "<$>".to_owned(),

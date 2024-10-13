@@ -17,18 +17,18 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 
-pub const TERMINALS: &[&str; 11] = &[
-    /*  0 */ UNMATCHABLE_TOKEN,
-    /*  1 */ UNMATCHABLE_TOKEN,
-    /*  2 */ UNMATCHABLE_TOKEN,
-    /*  3 */ UNMATCHABLE_TOKEN,
-    /*  4 */ UNMATCHABLE_TOKEN,
-    /*  5 */ r";",
-    /*  6 */ r"[bB][eE][gG][iI][nN]",
-    /*  7 */ r"[eE][nN][dD]",
-    /*  8 */ r"[vV][aA][rR]",
-    /*  9 */ r"[a-zA-Z_][a-zA-Z0-9_]*",
-    /* 10 */ ERROR_TOKEN,
+pub const TERMINALS: &[(&str, Option<(bool, &str)>); 11] = &[
+    /*  0 */ (UNMATCHABLE_TOKEN, None),
+    /*  1 */ (UNMATCHABLE_TOKEN, None),
+    /*  2 */ (UNMATCHABLE_TOKEN, None),
+    /*  3 */ (UNMATCHABLE_TOKEN, None),
+    /*  4 */ (UNMATCHABLE_TOKEN, None),
+    /*  5 */ (r";", None),
+    /*  6 */ (r"[bB][eE][gG][iI][nN]", None),
+    /*  7 */ (r"[eE][nN][dD]", None),
+    /*  8 */ (r"[vV][aA][rR]", None),
+    /*  9 */ (r"[a-zA-Z_][a-zA-Z0-9_]*", None),
+    /* 10 */ (ERROR_TOKEN, None),
 ];
 
 pub const TERMINAL_NAMES: &[&str; 11] = &[

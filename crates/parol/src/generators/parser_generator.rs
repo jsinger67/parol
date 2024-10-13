@@ -616,7 +616,7 @@ fn get_terminals(grammar_config: &GrammarConfig) -> Vec<&str> {
         .cfg
         .get_ordered_terminals()
         .iter()
-        .map(|(t, _, _)| *t)
+        .map(|(t, _, _, _)| *t)
         .collect::<Vec<&str>>()
 }
 
