@@ -118,6 +118,9 @@ pub struct LLKParser<'t> {
     ///
     trim_parse_tree: bool,
 
+    /// Enables error recovery
+    enable_recovery: bool,
+
     ///
     /// The parser can generate multiple syntax errors during the course of recovering from an error
     ///
@@ -145,6 +148,7 @@ impl<'t> LLKParser<'t> {
             terminal_names,
             non_terminal_names,
             trim_parse_tree: false,
+            enable_recovery: true,
             error_entries: Vec::new(),
         }
     }
@@ -157,6 +161,12 @@ impl<'t> LLKParser<'t> {
     ///
     pub fn trim_parse_tree(&mut self) {
         self.trim_parse_tree = true;
+    }
+
+    /// Disables error recovery
+    /// The recovery is enabled by default
+    pub fn disable_recovery(&mut self) {
+        self.enable_recovery = false;
     }
 
     fn input_accepted(&self) -> bool {
@@ -491,6 +501,9 @@ impl<'t> LLKParser<'t> {
         non_terminal: NonTerminalIndex,
         stream: Rc<RefCell<TokenStream<'t>>>,
     ) -> Result<ProductionIndex> {
+        if !self.enable_recovery {
+            return Err(ParserError::RecoveryFailed.into());
+        }
         let scanned_token_types = stream.borrow().token_types();
         let la_dfa = &self.lookahead_automata[non_terminal];
         let mut possible_terminal_strings =
@@ -554,6 +567,9 @@ impl<'t> LLKParser<'t> {
 
     // Sync input tokens with expected tokens if possible
     fn recover_from_token_mismatch(&mut self, stream: Rc<RefCell<TokenStream<'t>>>) -> Result<()> {
+        if !self.enable_recovery {
+            return Err(ParserError::RecoveryFailed.into());
+        }
         stream.borrow_mut().ensure_buffer()?;
         let scanned_token_types = stream.borrow().token_types();
         let expected_token_types = self.parser_stack.expected_token_types();

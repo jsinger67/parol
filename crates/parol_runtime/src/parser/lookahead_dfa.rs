@@ -171,8 +171,8 @@ impl LookaheadDFA {
             );
             return Err(ParserError::PredictionError {
                 cause: format!(
-                    "Production prediction failed for non-terminal {}, trying to recover...",
-                    non_terminal
+                    "Production prediction failed for non-terminal {}",
+                    non_terminal,
                 ),
             }
             .into());

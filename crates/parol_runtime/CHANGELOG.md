@@ -19,21 +19,22 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ## 2.0.0 - Not released yet
 
-Integration of scanner crate `scnr`. `parol_runtime` now uses this crate as scanner crate instead
+- Integration of scanner crate `scnr`. `parol_runtime` now uses this crate as scanner crate instead
 of regexes created with the help of the `regex-automata` crate. I hope that this way we can better
 fulfill the specific needs in context of tokenization. On the other hand I'm aware that we will
 surely loose some comfort. I'm curious how things will work out here. Please give feedback on any
 problems you encounter.
 
-The changes coming with this switch to `scnr` lead to a lot of changes internally and in the public
+- The changes coming with this switch to `scnr` lead to a lot of changes internally and in the public
 interface as well as in the behavior of generated parsers from the perspective of tokenization.
-Thus the bump in the major version.
-
+Thus the bump in the major version. 
 Especially regarding these differences in behavior please have a look at the `scnr`'s 
 [README](https://github.com/jsinger67/scnr/blob/main/README.md).
 
-The version 1 will be supported and updated regularly on branch `release1.0`, so you aren't forced
+- The version 1 will be supported and updated regularly on branch `release1.0`, so you aren't forced
 to switch to version 2 any time soon.
+
+- Error recovery on generated LL(k) parsers can now be disabled
 
 ## 1.0.0 - 2024-09-02
 
