@@ -19,6 +19,10 @@ pub fn main(args: &Args) -> Result<()> {
     let file_name = &args.grammar_file;
 
     let grammar_config = obtain_grammar_config(file_name, true)?;
+    if matches!(grammar_config.grammar_type, parol::parser::GrammarType::LLK) {
+        bail!("Only LL grammars are supported for calculating maximum lookahead");
+    }
+
     let max_k = args.lookahead;
 
     if max_k > MAX_K {

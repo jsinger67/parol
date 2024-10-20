@@ -23,13 +23,15 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ## 2.0.0 - Not released yet
 
-Integration of scanner crate `scnr`. `parol_runtime` now uses this crate as scanner crate instead
+- Integration of scanner crate `scnr`. `parol_runtime` now uses this crate as scanner crate instead
 of regexes created with the help of the `regex-automata` crate. Please have a look at
 [parol_runtime's CHANGELOG](../parol_runtime/CHANGELOG.md).
 
-
-The version 1 will be supported and updated regularly on branch `release1.0`, so you aren't forced
+- The version 1 will be supported and updated regularly on branch `release1.0`, so you aren't forced
 to switch to version 2 any time soon.
+
+- Refactor some grammar tools to enforce LL grammar type
+
 
 ## 1.0.0 - 2024-09-02
 
