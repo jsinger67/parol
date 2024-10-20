@@ -204,6 +204,8 @@ pub struct Builder {
     /// Enables trimming of the parse tree during parsing.
     /// Generates the call to trim_parse_tree on the parser object before the call of parse.
     pub(crate) trim_parse_tree: bool,
+    /// Disbales the error recovery mechanism in the generated parser
+    pub(crate) disable_recovery: bool,
 }
 
 impl Builder {
@@ -280,6 +282,7 @@ impl Builder {
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
             trim_parse_tree: false,
+            disable_recovery: false,
         }
     }
     /// By default, we require that the generated parser and action files are not discarded.
@@ -400,6 +403,12 @@ impl Builder {
         self
     }
 
+    /// Disables the error recovery mechanism in the generated parser
+    pub fn disable_recovery(&mut self) -> &mut Self {
+        self.disable_recovery = true;
+        self
+    }
+
     /// Begin the process of generating the grammar
     /// using the specified listener (or None if no listener is desired).
     ///
@@ -472,6 +481,10 @@ impl CommonGeneratorConfig for Builder {
 impl ParserGeneratorConfig for Builder {
     fn trim_parse_tree(&self) -> bool {
         self.trim_parse_tree
+    }
+
+    fn recovery_disabled(&self) -> bool {
+        self.disable_recovery
     }
 }
 

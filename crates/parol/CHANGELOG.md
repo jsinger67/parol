@@ -25,6 +25,8 @@ new minor version numbers. Please note that this is no version handling covered 
 
 - Refactor some grammar tools to enforce LL grammar type
 - Updated dependencies
+- Error recovery on generated LL(k) parsers can now be disabled, via Builder API (`disable_recovery`)
+and via command line argument (`--disable_recovery`)
 
 
 ## 1.0.1 - 2024-10-08

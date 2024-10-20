@@ -66,6 +66,9 @@ fn run(args: &CliArgs) -> Result<u128> {
     if args.trim_parse_tree {
         builder.trim_parse_tree();
     }
+    if args.disable_recovery {
+        builder.disable_recovery();
+    }
     if args.auto_generate {
         builder.enable_auto_generation();
     }

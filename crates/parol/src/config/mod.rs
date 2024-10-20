@@ -27,6 +27,9 @@ pub trait ParserGeneratorConfig {
     /// Enables trimming of the parse tree during parsing.
     /// Generates the call to trim_parse_tree on the parser object before the call of parse.
     fn trim_parse_tree(&self) -> bool;
+
+    /// If true error recovery in the generated parser should be disabled.
+    fn recovery_disabled(&self) -> bool;
 }
 
 // ---------------------------------------------------

@@ -264,6 +264,7 @@ struct ParserData<'a> {
     user_type_life_time: &'static str,
     module_name: &'a str,
     trim_parse_tree: bool,
+    disable_recovery: bool,
 }
 
 impl std::fmt::Display for ParserData<'_> {
@@ -282,6 +283,7 @@ impl std::fmt::Display for ParserData<'_> {
             user_type_life_time,
             module_name,
             trim_parse_tree,
+            disable_recovery,
         } = self;
 
         writeln!(
@@ -368,6 +370,11 @@ impl std::fmt::Display for ParserData<'_> {
         } else {
             ""
         };
+        let recovery = if *disable_recovery {
+            "llk_parser.disable_recovery();\n"
+        } else {
+            ""
+        };
         f.write_fmt(ume::ume! {
             pub fn parse<'t, T>(
                 input: &'t str,
@@ -382,6 +389,7 @@ impl std::fmt::Display for ParserData<'_> {
                     NON_TERMINALS,
                 );
                 #enable_trimming
+                #recovery
                 #auto_wrapper
                 llk_parser.parse(TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
                     #mut_ref_user_actions)
@@ -586,6 +594,7 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
         user_type_life_time,
         module_name: config.module_name(),
         trim_parse_tree: config.trim_parse_tree(),
+        disable_recovery: config.recovery_disabled(),
     };
 
     Ok(format!("{}", parser_data))
