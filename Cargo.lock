@@ -1150,7 +1150,7 @@ dependencies = [
 [[package]]
 name = "scnr"
 version = "0.4.0"
-source = "git+https://github.com/jsinger67/scnr#1009a92c36073e7bedb62f4ab9cc389d49ca0e45"
+source = "git+https://github.com/jsinger67/scnr#07131e07cae740327c30b1f3a86195f23251e905"
 dependencies = [
  "dot-writer",
  "log",
@@ -1212,9 +1212,9 @@ dependencies = [
 
 [[package]]
 name = "seshat-unicode"
-version = "0.2.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "224ed657abcbb05935ff6d88a4309837b2fb773e00a1674bef73ed728918594c"
+checksum = "6c383601b899fbb8a859ae943fe23eb0385b7cd30ebd6d24e6827bc786635c48"
 dependencies = [
  "num",
 ]
