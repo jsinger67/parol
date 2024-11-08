@@ -832,7 +832,7 @@ dependencies = [
  "syntree",
  "syntree_layout",
  "tempfile",
- "thiserror 1.0.68",
+ "thiserror 2.0.0",
  "ts-rs",
  "ume",
 ]
@@ -858,7 +858,7 @@ dependencies = [
  "serde",
  "serde_json",
  "syntree",
- "thiserror 1.0.68",
+ "thiserror 2.0.0",
 ]
 
 [[package]]
@@ -885,7 +885,7 @@ dependencies = [
  "serde_json",
  "syntree",
  "syntree_layout",
- "thiserror 1.0.68",
+ "thiserror 2.0.0",
 ]
 
 [[package]]
