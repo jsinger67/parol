@@ -78,6 +78,9 @@ fn run(args: &CliArgs) -> Result<u128> {
     if args.range {
         builder.range();
     }
+    if args.use_nfa {
+        builder.use_nfa();
+    }
     if args.verbose {
         builder.debug_verbose();
     }

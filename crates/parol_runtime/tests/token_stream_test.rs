@@ -86,7 +86,7 @@ fn init() {
 fn scanner_switch_and_named_source() {
     init();
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
-    let stream = RefCell::new(TokenStream::new(INPUT, file_name, &SCANNERS, MAX_K).unwrap());
+    let stream = RefCell::new(TokenStream::new(INPUT, file_name, &SCANNERS, MAX_K, false).unwrap());
     eprintln!("'{INPUT:#?}'");
 
     assert_eq!(stream.borrow().current_scanner_index(), 0);

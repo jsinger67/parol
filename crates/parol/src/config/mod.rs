@@ -30,6 +30,9 @@ pub trait ParserGeneratorConfig {
 
     /// If true error recovery in the generated parser should be disabled.
     fn recovery_disabled(&self) -> bool;
+
+    /// Whether to use NFAs for the lexer. If false, the lexer will use DFAs
+    fn use_nfa(&self) -> bool;
 }
 
 // ---------------------------------------------------
