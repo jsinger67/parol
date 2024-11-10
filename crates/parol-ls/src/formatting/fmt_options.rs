@@ -126,9 +126,7 @@ impl FmtOptions {
                     line + "\n"
                 }
             }
-            LineEnd::ForceRemove => line
-                .trim_end_matches(|c| c == '\r' || c == '\n')
-                .to_string(),
+            LineEnd::ForceRemove => line.trim_end_matches(['\r', '\n']).to_string(),
             LineEnd::ForceSingleNewline => {
                 let mut trimmed = line.trim_matches(|c| c == '\r' || c == '\n').to_string();
                 trimmed.push('\n');

@@ -1155,7 +1155,7 @@ where
     // Initialize wrapper
     let mut user_actions = BasicGrammarAuto::new(user_actions);
     llk_parser.parse(
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(input, file_name, &SCANNERS, MAX_K, false).unwrap(),
         &mut user_actions,
     )
 }

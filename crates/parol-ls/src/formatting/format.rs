@@ -756,7 +756,7 @@ impl Fmt for TokenExpression {
 impl Fmt for TokenExpressionOpt {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (la, comments) = self.look_ahead.txt(options, comments);
-        (format!("{}", la), comments)
+        (la.to_string(), comments)
     }
 }
 impl Fmt for TokenLiteral {

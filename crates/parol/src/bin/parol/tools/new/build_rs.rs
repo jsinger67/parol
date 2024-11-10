@@ -5,6 +5,7 @@ pub(crate) struct BuildRsData<'a> {
     crate_name: &'a str,
     grammar_name: String,
     tree_gen: bool,
+    use_nfa: bool,
 }
 
 impl std::fmt::Display for BuildRsData<'_> {
@@ -13,9 +14,15 @@ impl std::fmt::Display for BuildRsData<'_> {
             crate_name,
             grammar_name,
             tree_gen,
+            use_nfa,
         } = self;
 
-        let trim_parse_tree = if *tree_gen { "" } else { "\n        .trim_parse_tree()" };
+        let trim_parse_tree = if *tree_gen {
+            ""
+        } else {
+            "\n        .trim_parse_tree()"
+        };
+        let use_nfa = if *use_nfa { "" } else { "\n        .use_nfa()" };
 
         write!(
             f,
@@ -34,7 +41,7 @@ fn main() {{
         .actions_output_file("{crate_name}_grammar_trait.rs")
         .enable_auto_generation()
         .user_type_name("{grammar_name}Grammar")
-        .user_trait_module_name("{crate_name}_grammar"){trim_parse_tree}
+        .user_trait_module_name("{crate_name}_grammar"){trim_parse_tree}{use_nfa}
         .generate_parser()
     {{
         ParolErrorReporter::report_error(&err, "{crate_name}.par").unwrap_or_default();
