@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) and LALR(1) parser generator for Rust"
 default-run = "parol"

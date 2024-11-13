@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 1.0.2 - Not released yet
+## 1.0.2 - 2024-11-13
 
 - Refactor some grammar tools to enforce LL grammar type
 - Updated dependencies
