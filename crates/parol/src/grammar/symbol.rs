@@ -192,6 +192,9 @@ impl Terminal {
                 let delimiter = k.delimiter();
                 a.decorate(&mut d, &format!("{}{}{}", delimiter, t, delimiter))
                     .map_err(|e| anyhow!("Decorate error!: {}", e))?;
+                if let Some(la) = l {
+                    write!(d, " {}", la.to_par()).map_err(|e| anyhow!(e))?;
+                }
                 if let Some(ref user_type) = u {
                     let user_type =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
@@ -200,9 +203,6 @@ impl Terminal {
                             user_type.to_string()
                         };
                     write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
-                }
-                if let Some(la) = l {
-                    write!(d, " {}", la.to_par()).map_err(|e| anyhow!(e))?;
                 }
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
