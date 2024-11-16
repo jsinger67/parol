@@ -165,7 +165,7 @@ fn build_nfa_scanner() {
 fn tokenize() {
     let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
     let token_stream =
-        RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &SCANNERS, MAX_K, false).unwrap());
+        RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &SCANNERS, MAX_K, true).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         let tok = token_stream.borrow_mut().lookahead(0).unwrap();
         assert_ne!(
@@ -180,7 +180,7 @@ fn tokenize() {
 fn tokenize_nfa() {
     let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
     let token_stream =
-        RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &SCANNERS, MAX_K, true).unwrap());
+        RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &SCANNERS, MAX_K, false).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         let tok = token_stream.borrow_mut().lookahead(0).unwrap();
         assert_ne!(

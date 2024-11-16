@@ -84,9 +84,9 @@ pub(crate) struct CliArgs {
     #[arg(long)]
     pub disable_recovery: bool,
 
-    /// Whether to use NFAs for the lexer. If false, the lexer will use DFAs
+    /// Whether to use DFAs for the lexer. If false, the lexer will use NFAs by default
     #[arg(long)]
-    pub use_nfa: bool,
+    pub use_dfa: bool,
 
     #[command(subcommand)]
     pub subcommand: Option<super::tools::ToolsSubcommands>,

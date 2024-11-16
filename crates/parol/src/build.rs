@@ -206,8 +206,8 @@ pub struct Builder {
     pub(crate) trim_parse_tree: bool,
     /// Disbales the error recovery mechanism in the generated parser
     pub(crate) disable_recovery: bool,
-    /// Whether to use NFAs for the lexer. If false, the lexer will use DFAs
-    use_nfa: bool,
+    /// Whether to use DFAs for the lexer. If false, the lexer will use NFAs by default
+    use_dfa: bool,
 }
 
 impl Builder {
@@ -285,7 +285,7 @@ impl Builder {
             output_sanity_checks: true,
             trim_parse_tree: false,
             disable_recovery: false,
-            use_nfa: false,
+            use_dfa: false,
         }
     }
     /// By default, we require that the generated parser and action files are not discarded.
@@ -413,8 +413,8 @@ impl Builder {
     }
 
     /// Whether to use NFAs for the lexer. If false, the lexer will use DFAs
-    pub fn use_nfa(&mut self) -> &mut Self {
-        self.use_nfa = true;
+    pub fn use_dfa(&mut self) -> &mut Self {
+        self.use_dfa = true;
         self
     }
 
@@ -496,8 +496,8 @@ impl ParserGeneratorConfig for Builder {
         self.disable_recovery
     }
 
-    fn use_nfa(&self) -> bool {
-        self.use_nfa
+    fn use_dfa(&self) -> bool {
+        self.use_dfa
     }
 }
 

@@ -40,6 +40,9 @@ to switch to version 2 any time soon.
 
 - Fixed clippy warnings new in Rust 1.80.0
 
+>**The version 1 is maintained on branch `release1.0`. All changes for this version therefore are
+ only visible on this branch. This includes this change log too.**
+
 ## 0.24.1 - 2024-06-24
 
 - Fix issue [#357](https://github.com/jsinger67/parol/issues/357)

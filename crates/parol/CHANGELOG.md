@@ -37,6 +37,9 @@ and via command line argument (`--disable_recovery`)
 - Merged PR [#393](https://github.com/jsinger67/parol/pull/393) from [ryo33](https://github.com/ryo33)
  This fixes a bug in range generation of enums.
 
+>**The version 1 is maintained on branch `release1.0`. All changes for this version therefore are
+ only visible on this branch. This includes this change log too.**
+
 ## 0.31.0 - 2024-06-21
 
 - Referencing `parol_runtime` 0.24.0 which introduced braking changes, due to new parser error types.

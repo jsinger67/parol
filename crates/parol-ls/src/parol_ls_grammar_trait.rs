@@ -738,7 +738,7 @@ pub struct IdentifierListList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LiteralString {
-    pub literal_string: crate::parol_ls_grammar::OwnedToken, /* '(\\'|[^'])*?' */
+    pub literal_string: crate::parol_ls_grammar::OwnedToken, /* '(\\.|[^'])*' */
 }
 
 ///
@@ -1008,7 +1008,7 @@ pub struct StartDeclaration {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct String {
-    pub string: crate::parol_ls_grammar::OwnedToken, /* "(\\.|[^\\])*?" */
+    pub string: crate::parol_ls_grammar::OwnedToken, /* "(\\.|[^"])*" */
 }
 
 ///
@@ -2516,7 +2516,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 56:
     ///
-    /// `String: /"(\\.|[^\\])*?"/ : OwnedToken;`
+    /// `String: /"(\\.|[^"])*"/ : OwnedToken;`
     ///
     #[parol_runtime::function_name::named]
     fn string(&mut self, string: &ParseTreeType<'t>) -> Result<()> {
@@ -2535,7 +2535,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// `LiteralString: /'(\\'|[^'])*?'/ : OwnedToken;`
+    /// `LiteralString: /'(\\.|[^'])*'/ : OwnedToken;`
     ///
     #[parol_runtime::function_name::named]
     fn literal_string(&mut self, literal_string: &ParseTreeType<'t>) -> Result<()> {

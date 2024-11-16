@@ -80,7 +80,7 @@ fn lexer_token_production_dfa() {
     let k = 3;
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k, false).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k, true).unwrap());
     let mut tok = Token::default();
     while !token_stream.borrow().all_input_consumed() {
         tok = token_stream.borrow_mut().lookahead(0).unwrap();
@@ -129,7 +129,7 @@ fn lexer_token_production_nfa() {
     let k = 3;
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k, true).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k, false).unwrap());
     let mut tok = Token::default();
     while !token_stream.borrow().all_input_consumed() {
         tok = token_stream.borrow_mut().lookahead(0).unwrap();

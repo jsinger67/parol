@@ -50,8 +50,8 @@ pub const TERMINALS: &[(&str, Option<(bool, &str)>); 43] = &[
     /* 28 */ (r"\{", None),
     /* 29 */ (r"\}", None),
     /* 30 */ (r"[a-zA-Z_][a-zA-Z0-9_]*", None),
-    /* 31 */ (r#""(\\.|[^\\])*?""#, None),
-    /* 32 */ (r"'(\\'|[^'])*?'", None),
+    /* 31 */ (r#""(\\.|[^"])*""#, None),
+    /* 32 */ (r"'(\\.|[^'])*'", None),
     /* 33 */ (r"%scanner", None),
     /* 34 */ (r",", None),
     /* 35 */ (r"%sc", None),
@@ -1006,12 +1006,12 @@ pub const PRODUCTIONS: &[Production; 82] = &[
         lhs: 12,
         production: &[ParseType::T(30)],
     },
-    // 56 - String: /"(\\.|[^\\])*?"/;
+    // 56 - String: /"(\\.|[^"])*"/;
     Production {
         lhs: 39,
         production: &[ParseType::T(31)],
     },
-    // 57 - LiteralString: /'(\\'|[^'])*?'/;
+    // 57 - LiteralString: /'(\\.|[^'])*'/;
     Production {
         lhs: 15,
         production: &[ParseType::T(32)],

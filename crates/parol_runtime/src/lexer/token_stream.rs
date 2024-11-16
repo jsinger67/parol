@@ -65,7 +65,7 @@ impl<'t> TokenStream<'t> {
         file_name: T,
         scanners: &'static [ScannerConfig],
         k: usize,
-        use_nfa: bool,
+        use_dfa: bool,
     ) -> Result<Self, LexerError>
     where
         T: AsRef<Path>,
@@ -77,7 +77,7 @@ impl<'t> TokenStream<'t> {
             .collect::<Vec<ScannerMode>>();
         debug!("Scanner modes: {}", serde_json::to_string(&modes).unwrap());
         let scanner = ScannerBuilder::new().add_scanner_modes(&modes);
-        let scanner = if use_nfa { scanner.use_nfa() } else { scanner }.build()?;
+        let scanner = if use_dfa { scanner } else { scanner.use_nfa() }.build()?;
         // To enable debug output of compliled automata as dot file:
         // $env:RUST_LOG="scnr::internal::scanner_impl=debug"
         let _ = scanner.log_compiled_automata_as_dot(&modes);

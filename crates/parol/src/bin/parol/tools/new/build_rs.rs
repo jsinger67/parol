@@ -5,7 +5,7 @@ pub(crate) struct BuildRsData<'a> {
     crate_name: &'a str,
     grammar_name: String,
     tree_gen: bool,
-    use_nfa: bool,
+    use_dfa: bool,
 }
 
 impl std::fmt::Display for BuildRsData<'_> {
@@ -14,7 +14,7 @@ impl std::fmt::Display for BuildRsData<'_> {
             crate_name,
             grammar_name,
             tree_gen,
-            use_nfa,
+            use_dfa,
         } = self;
 
         let trim_parse_tree = if *tree_gen {
@@ -22,7 +22,7 @@ impl std::fmt::Display for BuildRsData<'_> {
         } else {
             "\n        .trim_parse_tree()"
         };
-        let use_nfa = if *use_nfa { "" } else { "\n        .use_nfa()" };
+        let use_nfa = if *use_dfa { "" } else { "\n        .use_nfa()" };
 
         write!(
             f,

@@ -63,8 +63,8 @@
 /* 53 */ NonTerminalOpt /* Option<T>::Some */: ASTControl;
 /* 54 */ NonTerminalOpt /* Option<T>::None */: ;
 /* 55 */ Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/ : OwnedToken;
-/* 56 */ String: /"(\\.|[^\\])*?"/ : OwnedToken;
-/* 57 */ LiteralString: /'(\\'|[^'])*?'/ : OwnedToken;
+/* 56 */ String: /"(\\.|[^"])*"/ : OwnedToken;
+/* 57 */ LiteralString: /'(\\.|[^'])*'/ : OwnedToken;
 /* 58 */ ScannerState: "%scanner" : OwnedToken Identifier '{' : OwnedToken ScannerStateList /* Vec */ '}' : OwnedToken;
 /* 59 */ ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;
 /* 60 */ ScannerStateList /* Vec<T>::New */: ;
