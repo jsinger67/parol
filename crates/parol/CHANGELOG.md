@@ -20,6 +20,11 @@ We defined for this project that while being on major version zero we mark incom
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
 ---
+## 1.0.3 - 2024-11-19
+
+- Updated dependencies
+- Fix bug Missing negation in LL(k) check for decidable subcommand #489
+  * Also fixed similar bug in subcommand `calculate-k` and `calculate-k-tuples`
 
 ## 1.0.2 - 2024-11-13
 
