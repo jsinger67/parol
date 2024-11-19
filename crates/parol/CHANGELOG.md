@@ -32,6 +32,9 @@ of regexes created with the help of the `regex-automata` crate. Please have a lo
 - Error recovery on generated LL(k) parsers can now be disabled, via Builder API (`disable_recovery`)
 and via command line argument (`--disable_recovery`)
 
+- Fix bug Missing negation in LL(k) check for decidable subcommand #489
+  * Also fixed similar bug in subcommand `calculate-k` and `calculate-k-tuples`
+
 ## 1.0.0 - 2024-09-02
 
 - Merged PR [#393](https://github.com/jsinger67/parol/pull/393) from [ryo33](https://github.com/ryo33)
