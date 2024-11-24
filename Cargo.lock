@@ -1168,7 +1168,8 @@ dependencies = [
 [[package]]
 name = "scnr"
 version = "0.5.0"
-source = "git+https://github.com/jsinger67/scnr?branch=main#bd6efa9ccaacff72dca4d25fdd2fcdbf033c880f"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a6f54409a57ac5f2b685347b4407681cce784deaadbcee4da08687aee9c29095"
 dependencies = [
  "dot-writer",
  "log",
