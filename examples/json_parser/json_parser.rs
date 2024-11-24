@@ -319,7 +319,7 @@ where
         NON_TERMINALS,
     );
     llk_parser.parse(
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K, false).unwrap(),
+        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
         user_actions,
     )
 }

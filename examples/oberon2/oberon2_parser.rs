@@ -2888,7 +2888,7 @@ where
     // Initialize wrapper
     let mut user_actions = Oberon2GrammarAuto::new(user_actions);
     llk_parser.parse(
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K, false).unwrap(),
+        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
         &mut user_actions,
     )
 }

@@ -175,7 +175,7 @@ where
     // Initialize wrapper
     let mut user_actions = ListGrammarAuto::new(user_actions);
     lr_parser.parse(
-        TokenStream::new(input, file_name, &SCANNERS, 1, false).unwrap(),
+        TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
         &mut user_actions,
     )
 }

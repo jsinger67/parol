@@ -80,7 +80,7 @@ fn lexer_token_production_dfa() {
     let k = 3;
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k, true).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k).unwrap());
     let mut tok = Token::default();
     while !token_stream.borrow().all_input_consumed() {
         tok = token_stream.borrow_mut().lookahead(0).unwrap();
@@ -129,7 +129,7 @@ fn lexer_token_production_nfa() {
     let k = 3;
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k, false).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k).unwrap());
     let mut tok = Token::default();
     while !token_stream.borrow().all_input_consumed() {
         tok = token_stream.borrow_mut().lookahead(0).unwrap();
@@ -176,7 +176,7 @@ fn lexer_token_production_nfa() {
 #[should_panic(expected = "LookaheadExceedsMaximum")]
 fn lookahead_must_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
-    let mut token_stream = TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1, false).unwrap();
+    let mut token_stream = TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap();
     let _tok = token_stream.lookahead(1).unwrap();
 }
 
@@ -185,7 +185,7 @@ fn lookahead_must_fail() {
 fn lookahead_beyond_buffer_must_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1, false).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         if token_stream.borrow_mut().consume().is_ok() {
             let tok = token_stream.borrow_mut().lookahead(0).unwrap();

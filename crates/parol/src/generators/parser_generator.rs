@@ -265,7 +265,6 @@ struct ParserData<'a> {
     module_name: &'a str,
     trim_parse_tree: bool,
     disable_recovery: bool,
-    use_dfa: bool,
 }
 
 impl std::fmt::Display for ParserData<'_> {
@@ -285,7 +284,6 @@ impl std::fmt::Display for ParserData<'_> {
             module_name,
             trim_parse_tree,
             disable_recovery,
-            use_dfa,
         } = self;
 
         writeln!(
@@ -377,7 +375,6 @@ impl std::fmt::Display for ParserData<'_> {
         } else {
             ""
         };
-        let use_dfa = if *use_dfa { "true" } else { "false" };
         f.write_fmt(ume::ume! {
             pub fn parse<'t, T>(
                 input: &'t str,
@@ -394,7 +391,7 @@ impl std::fmt::Display for ParserData<'_> {
                 #enable_trimming
                 #recovery
                 #auto_wrapper
-                llk_parser.parse(TokenStream::new(input, file_name, &SCANNERS, MAX_K, #use_dfa).unwrap(), // Use the new parameter
+                llk_parser.parse(TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
                     #mut_ref_user_actions)
             }
         })
@@ -415,7 +412,6 @@ struct LRParserData<'a> {
     module_name: &'a str,
     trim_parse_tree: bool,
     parse_table_source: String,
-    use_dfa: bool,
 }
 
 impl std::fmt::Display for LRParserData<'_> {
@@ -433,7 +429,6 @@ impl std::fmt::Display for LRParserData<'_> {
             module_name,
             trim_parse_tree,
             parse_table_source,
-            use_dfa,
         } = self;
 
         writeln!(
@@ -522,7 +517,6 @@ impl std::fmt::Display for LRParserData<'_> {
         } else {
             ""
         };
-        let use_dfa = if *use_dfa { "true" } else { "false" };
 
         f.write_fmt(ume::ume! {
             pub fn parse<'t, T>(
@@ -539,7 +533,7 @@ impl std::fmt::Display for LRParserData<'_> {
                 );
                 #enable_trimming
                 #auto_wrapper
-                lr_parser.parse(TokenStream::new(input, file_name, &SCANNERS, 1, #use_dfa).unwrap(), // Use the new parameter
+                lr_parser.parse(TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
                     #mut_ref_user_actions)
             }
         })
@@ -602,7 +596,6 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
         module_name: config.module_name(),
         trim_parse_tree: config.trim_parse_tree(),
         disable_recovery: config.recovery_disabled(),
-        use_dfa: config.use_dfa(),
     };
 
     Ok(format!("{}", parser_data))
@@ -702,7 +695,6 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
         module_name: config.module_name(),
         trim_parse_tree: config.trim_parse_tree(),
         parse_table_source,
-        use_dfa: config.use_dfa(),
     };
 
     Ok(format!("{}", parser_data))
