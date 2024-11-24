@@ -1,0 +1,6 @@
+%start S
+%grammar_type 'LALR(1)'
+%%
+S: A "End";
+A: 'a' A | 'a' C;
+C: 'c';

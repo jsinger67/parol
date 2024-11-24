@@ -1,0 +1,4 @@
+%start Start
+%grammar_type 'LALR(1)'
+%%
+Start: "Var" { /[a-z_][a-zA-Z0-9_]*/ } "End";

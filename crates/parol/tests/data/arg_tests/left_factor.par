@@ -1,0 +1,5 @@
+%start S
+%%
+S: A "End";
+A: 'a' A | 'a' C;
+C: 'c';
