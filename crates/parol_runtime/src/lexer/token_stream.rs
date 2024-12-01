@@ -50,6 +50,9 @@ pub struct TokenStream<'t> {
 
     /// Scanner stack to support push and pop operations for scanner configurations
     scanner_stack: Vec<ScannerIndex>,
+
+    /// Flag to indicate if the parser is in error recovery mode
+    pub(crate) recovering: bool,
 }
 
 impl<'t> TokenStream<'t> {
@@ -96,6 +99,7 @@ impl<'t> TokenStream<'t> {
             column: 1,
             last_consumed_token_end_pos: 0,
             scanner_stack: Vec::new(),
+            recovering: false,
         };
         token_stream.read_tokens(k)?;
         Ok(token_stream)
@@ -113,7 +117,12 @@ impl<'t> TokenStream<'t> {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
-                Err(LexerError::LookaheadExceedsTokenBufferLength)
+                if self.tokens.is_empty() && self.recovering {
+                    trace!("LA({}): EOI for recovery", n);
+                    Ok(Token::eoi(self.token_iter.next_token_number()))
+                } else {
+                    Err(LexerError::LookaheadExceedsTokenBufferLength)
+                }
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].clone())
@@ -134,7 +143,12 @@ impl<'t> TokenStream<'t> {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
-                Err(LexerError::LookaheadExceedsTokenBufferLength)
+                if self.tokens.is_empty() && self.recovering {
+                    trace!("Type(LA({})): EOI for recovery", n);
+                    Ok(EOI)
+                } else {
+                    Err(LexerError::LookaheadExceedsTokenBufferLength)
+                }
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].token_type)
@@ -478,5 +492,12 @@ impl<'t> TokenStream<'t> {
     #[inline]
     fn clear_token_buffer(&mut self) {
         self.tokens.clear();
+    }
+
+    /// Sets the token stream in error recovery mode.
+    /// In this mode the parser can try to read more tokens even if the end of input is reached.
+    /// The token stream will return EOI tokens if the token buffer is empty.
+    pub(crate) fn enter_recovery_mode(&mut self) {
+        self.recovering = true;
     }
 }

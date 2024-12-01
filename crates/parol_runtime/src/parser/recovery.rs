@@ -1,6 +1,6 @@
 use std::{
     cmp::max,
-    collections::{BTreeMap, HashSet},
+    collections::{BTreeMap, BTreeSet},
     ops::Range,
 };
 
@@ -107,7 +107,7 @@ impl Recovery {
     // with a maximum range.
     pub(crate) fn minimal_token_difference(
         scanned_token_types: &[TerminalIndex],
-        possible_terminal_strings: &mut HashSet<Vec<TerminalIndex>>,
+        possible_terminal_strings: &mut BTreeSet<Vec<TerminalIndex>>,
     ) -> Option<Vec<TerminalIndex>> {
         trace!("scanned_token_types: {scanned_token_types:?}");
         trace!("possible_terminal_strings: {possible_terminal_strings:?}");
@@ -133,9 +133,9 @@ impl Recovery {
     pub(crate) fn restore_terminal_strings(
         transitions: &[Trans],
         prod0: CompiledProductionIndex,
-    ) -> HashSet<Vec<TerminalIndex>> {
-        let mut result = HashSet::new();
-        let mut nodes = HashSet::<(usize, bool)>::new();
+    ) -> BTreeSet<Vec<TerminalIndex>> {
+        let mut result = BTreeSet::new();
+        let mut nodes = BTreeSet::<(usize, bool)>::new();
         let root_key = (0, prod0 != INVALID_PROD);
         nodes.insert(root_key);
         for t in transitions {
