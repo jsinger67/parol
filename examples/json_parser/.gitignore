@@ -1,6 +1,0 @@
-/.vscode
-/target
-/json/*.svg
-
-# Visual Studio
-.vs/**
