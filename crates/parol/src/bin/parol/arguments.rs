@@ -47,10 +47,6 @@ pub(crate) struct CliArgs {
     #[arg(short, long)]
     pub module: Option<String>,
 
-    /// Activates the auto-generation of semantic actions in expanded grammar - recommended
-    #[arg(short = 'g', long)]
-    pub auto_generate: bool,
-
     /// Activates the generation of a SVG file with the parse tree of the given grammar
     #[arg(short = 's', long = "svg")]
     pub generate_tree_graph: bool,

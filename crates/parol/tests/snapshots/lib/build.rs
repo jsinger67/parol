@@ -11,7 +11,6 @@ fn main() {
         .expanded_grammar_output_file("../snapshot_lib-exp.par")
         .parser_output_file("snapshot_lib_parser.rs")
         .actions_output_file("snapshot_lib_grammar_trait.rs")
-        .enable_auto_generation()
         .user_type_name("SnapshotLibGrammar")
         .user_trait_module_name("snapshot_lib_grammar")
         .trim_parse_tree()

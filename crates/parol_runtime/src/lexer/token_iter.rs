@@ -104,6 +104,7 @@ impl<'t> TokenIter<'t> {
     }
 
     pub(crate) fn set_mode(&mut self, scanner_index: usize) {
+        self.scanner.set_mode(scanner_index);
         self.find_iter.set_mode(scanner_index);
     }
 }

@@ -6,12 +6,13 @@
 
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
-use parol_runtime::parser::{
-    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
-};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
+
+use crate::scanner_states_grammar::ScannerStatesGrammar;
+use crate::scanner_states_grammar_trait::ScannerStatesGrammarAuto;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -24,8 +25,8 @@ pub const TERMINALS: &[(&str, Option<(bool, &str)>); 11] = &[
     /*  3 */ (UNMATCHABLE_TOKEN, None),
     /*  4 */ (UNMATCHABLE_TOKEN, None),
     /*  5 */ (r"[a-zA-Z_]\w*", None),
-    /*  6 */ (r#"\["\\bfnt]"#, None),
-    /*  7 */ (r"\[\s--\n\r]*\r?\n", None),
+    /*  6 */ (r#"\\["\\bfnt]"#, None),
+    /*  7 */ (r"\\[\s--\n\r]*\r?\n", None),
     /*  8 */ (r#"[^"\\]+"#, None),
     /*  9 */ (r#"""#, None),
     /* 10 */ (ERROR_TOKEN, None),
@@ -231,12 +232,12 @@ pub const PRODUCTIONS: &[Production; 16] = &[
         lhs: 3,
         production: &[ParseType::T(5)],
     },
-    // 12 - Escaped: /\["\\bfnt]/;
+    // 12 - Escaped: /\\["\\bfnt]/;
     Production {
         lhs: 1,
         production: &[ParseType::T(6)],
     },
-    // 13 - EscapedLineEnd: /\[\s--\n\r]*\r?\n/;
+    // 13 - EscapedLineEnd: /\\[\s--\n\r]*\r?\n/;
     Production {
         lhs: 2,
         production: &[ParseType::T(7)],
@@ -271,7 +272,7 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut dyn UserActionsTrait<'t>,
+    user_actions: &mut ScannerStatesGrammar<'t>,
 ) -> Result<ParseTree<'t>, ParolError>
 where
     T: AsRef<Path>,
@@ -283,8 +284,12 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    llk_parser.disable_recovery();
+
+    // Initialize wrapper
+    let mut user_actions = ScannerStatesGrammarAuto::new(user_actions);
     llk_parser.parse(
         TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
-        user_actions,
+        &mut user_actions,
     )
 }

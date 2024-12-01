@@ -6,34 +6,89 @@
 
 %%
 
-Expressions     : Expression { Semicolon Expression } [ Semicolon ];
-Expression      : Term TailExpression;
-TailExpression  : { BinaryOperator Term };
-Term            : [ UnaryOperator ] Factor;
-Boolean         : True
-                | False;
-UnaryOperator   : Not;
-BinaryOperator  : AndOp
-                | OrOp
-                | XorOp
-                | NorOp
-                | NandOp
-                | XnorOp;
-AndOp           : "[aA][nN][dD]";
-OrOp            : "[oO][rR]";
-XorOp           : "[xX][oO][rR]";
-NorOp           : "[nN][oO][rR]";
-NandOp          : "[nN][aA][nN][dD]";
-XnorOp          : "[xX][nN][oO][rR]";
-True            : "[tT][rR][uU][eE]";
-False           : "[fF][aA][lL][sS][eE]";
-Not             : "[nN][oO][tT]";
-Parenthesized   : LeftParenthesis Expression RightParenthesis;
-Semicolon       : ';';
-LeftParenthesis : '(';
-RightParenthesis: ')';
-Factor          : Boolean
-                | Parenthesized;
+Expressions
+    : Expression { Semicolon^ Expression } TrailingSemicolon^
+    ;
 
+TrailingSemicolon
+    : [ Semicolon ]
+    ;
 
+Expression
+    : Term { BinaryOperator Term }
+    ;
 
+Term: [ UnaryOperator ] Factor
+    ;
+
+Boolean
+    : True
+    | False
+    ;
+
+UnaryOperator
+    : Not
+    ;
+
+BinaryOperator
+    : AndOp
+    | OrOp
+    | XorOp
+    | NorOp
+    | NandOp
+    | XnorOp
+    ;
+
+AndOp
+    : "[aA][nN][dD]"^
+    ;
+
+OrOp: "[oO][rR]"^
+    ;
+
+XorOp
+    : "[xX][oO][rR]"^
+    ;
+
+NorOp
+    : "[nN][oO][rR]"^
+    ;
+
+NandOp
+    : "[nN][aA][nN][dD]"^
+    ;
+
+XnorOp
+    : "[xX][nN][oO][rR]"^
+    ;
+
+True: "[tT][rR][uU][eE]"^
+    ;
+
+False
+    : "[fF][aA][lL][sS][eE]"^
+    ;
+
+Not : "[nN][oO][tT]"^
+    ;
+
+Parenthesized
+    : LeftParenthesis^ Expression RightParenthesis^
+    ;
+
+Semicolon
+    : ';'
+    ;
+
+LeftParenthesis
+    : '('
+    ;
+
+RightParenthesis
+    : ')'
+    ;
+
+Factor
+    : Boolean
+    | Parenthesized
+    ;

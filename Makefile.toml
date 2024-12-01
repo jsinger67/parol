@@ -25,14 +25,14 @@ dependencies = ["build_parol"]
 run_task = { name = [
     "generate_basic",
     "generate_boolean_parser",
-    "generate_calc",
+    # "generate_calc",
     "generate_calc_auto",
     "generate_calc_lr",
-    "generate_json_parser",
+    # "generate_json_parser",
     "generate_json_parser_auto",
     "generate_keywords",
     "generate_keywords2",
-    "generate_list",
+    # "generate_list",
     "generate_list_auto",
     "generate_list_lr",
     "generate_oberon_0",
@@ -49,7 +49,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/crates/parol"
 script_runner = "@shell"
 script = '''
 echo "Building parol's parser sources..."
-${PAROL_TARGET} -f ./src/parser/parol.par -e ./src/parser/parol-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -g -b
+${PAROL_TARGET} -f ./src/parser/parol.par -e ./src/parser/parol-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -b
 '''
 
 [tasks.generate_basic]
@@ -58,7 +58,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/basic_interpreter"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'basic'..."
-${PAROL_TARGET} -f ./basic.par -e ./basic-exp.par -p ./basic_parser.rs -a ./basic_grammar_trait.rs -t BasicGrammar -m basic_grammar -g -b
+${PAROL_TARGET} -f ./basic.par -e ./basic-exp.par -p ./basic_parser.rs -a ./basic_grammar_trait.rs -t BasicGrammar -m basic_grammar -b
 '''
 
 [tasks.generate_boolean_parser]
@@ -67,17 +67,17 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/boolean_parser"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'boolean_parser'..."
-${PAROL_TARGET} -f ./boolean-parser.par -e ./boolean-parser-exp.par -p ./boolean_parser.rs -a ./boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar
+${PAROL_TARGET} -f ./boolean-parser.par -e ./boolean-parser-exp.par -p ./boolean_parser.rs -a ./boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar -b
 '''
 
-[tasks.generate_calc]
-workspace = false
-cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/calc"
-script_runner = "@shell"
-script = '''
-echo "Building parser sources of example 'calc'..."
-${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar
-'''
+# [tasks.generate_calc]
+# workspace = false
+# cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/calc"
+# script_runner = "@shell"
+# script = '''
+# echo "Building parser sources of example 'calc'..."
+# ${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar
+# '''
 
 [tasks.generate_calc_auto]
 workspace = false
@@ -85,7 +85,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/calc_auto"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'calc_auto'..."
-${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -g -b -x
+${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -b -x
 '''
 
 [tasks.generate_calc_lr]
@@ -94,18 +94,18 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/calc_lr"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'calc_lr'..."
-${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -g -b -x
+${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -b -x
 '''
 
 
-[tasks.generate_json_parser]
-workspace = false
-cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/json_parser"
-script_runner = "@shell"
-script = '''
-echo "Building parser sources of example 'json_parser'..."
-${PAROL_TARGET} -f ./json.par -e ./json-exp.par -p ./json_parser.rs -a ./json_grammar_trait.rs -t JsonGrammar -m json_grammar
-'''
+# [tasks.generate_json_parser]
+# workspace = false
+# cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/json_parser"
+# script_runner = "@shell"
+# script = '''
+# echo "Building parser sources of example 'json_parser'..."
+# ${PAROL_TARGET} -f ./json.par -e ./json-exp.par -p ./json_parser.rs -a ./json_grammar_trait.rs -t JsonGrammar -m json_grammar
+# '''
 
 [tasks.generate_json_parser_auto]
 workspace = false
@@ -113,7 +113,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/json_parser_auto"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'json_parser_auto'..."
-${PAROL_TARGET} -f ./json.par -e ./json-exp.par -p ./json_parser.rs -a ./json_grammar_trait.rs -t JsonGrammar -m json_grammar -g -b -x
+${PAROL_TARGET} -f ./json.par -e ./json-exp.par -p ./json_parser.rs -a ./json_grammar_trait.rs -t JsonGrammar -m json_grammar -b -x
 '''
 
 [tasks.generate_keywords]
@@ -134,14 +134,14 @@ echo "Building parser sources of example 'keywords2'..."
 ${PAROL_TARGET} -f ./keywords.par -e ./keywords-exp.par -p ./keywords_parser.rs -a ./keywords_grammar_trait.rs -t KeywordsGrammar -m keywords_grammar
 '''
 
-[tasks.generate_list]
-workspace = false
-cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/list"
-script_runner = "@shell"
-script = '''
-echo "Building parser sources of example 'list'..."
-${PAROL_TARGET} -f ./list.par -e ./list-exp.par -p ./list_parser.rs -a ./list_grammar_trait.rs -t ListGrammar -m list_grammar
-'''
+# [tasks.generate_list]
+# workspace = false
+# cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/list"
+# script_runner = "@shell"
+# script = '''
+# echo "Building parser sources of example 'list'..."
+# ${PAROL_TARGET} -f ./list.par -e ./list-exp.par -p ./list_parser.rs -a ./list_grammar_trait.rs -t ListGrammar -m list_grammar
+# '''
 
 [tasks.generate_list_auto]
 workspace = false
@@ -149,7 +149,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/list_auto"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'list_auto'..."
-${PAROL_TARGET} -f ./list.par -e ./list-exp.par -p ./list_parser.rs -a ./list_grammar_trait.rs -t ListGrammar -m list_grammar -g -b -x
+${PAROL_TARGET} -f ./list.par -e ./list-exp.par -p ./list_parser.rs -a ./list_grammar_trait.rs -t ListGrammar -m list_grammar -b -x
 '''
 
 [tasks.generate_list_lr]
@@ -158,7 +158,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/list_lr"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'list_lr'..."
-${PAROL_TARGET} -f ./list.par -e ./list-exp.par -p ./list_parser.rs -a ./list_grammar_trait.rs -t ListGrammar -m list_grammar -g -b -x
+${PAROL_TARGET} -f ./list.par -e ./list-exp.par -p ./list_parser.rs -a ./list_grammar_trait.rs -t ListGrammar -m list_grammar -b -x
 '''
 
 [tasks.generate_oberon_0]
@@ -167,7 +167,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/oberon_0"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'oberon_0'..."
-${PAROL_TARGET} -f ./oberon_0.par -e ./oberon_0-exp.par -p ./oberon_0_parser.rs -a ./oberon_0_grammar_trait.rs -t Oberon0Grammar -m oberon_0_grammar -g -b -x
+${PAROL_TARGET} -f ./oberon_0.par -e ./oberon_0-exp.par -p ./oberon_0_parser.rs -a ./oberon_0_grammar_trait.rs -t Oberon0Grammar -m oberon_0_grammar -b -x
 '''
 
 [tasks.generate_oberon2]
@@ -176,7 +176,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/oberon2"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'oberon2'..."
-${PAROL_TARGET} -f ./oberon2.par -e ./oberon2-exp.par -p ./oberon2_parser.rs -a ./oberon2_grammar_trait.rs -t Oberon2Grammar -m oberon2_grammar -g -b -x
+${PAROL_TARGET} -f ./oberon2.par -e ./oberon2-exp.par -p ./oberon2_parser.rs -a ./oberon2_grammar_trait.rs -t Oberon2Grammar -m oberon2_grammar -b -x
 '''
 
 [tasks.generate_scanner_states]
@@ -185,7 +185,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/scanner_states"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'scanner_states'..."
-${PAROL_TARGET} -f ./scanner_states.par -e ./scanner_states-exp.par -p ./scanner_states_parser.rs -a ./scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar
+${PAROL_TARGET} -f ./scanner_states.par -e ./scanner_states-exp.par -p ./scanner_states_parser.rs -a ./scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar --disable-recovery
 '''
 
 [tasks.generate_scanner_states_lr]
@@ -194,7 +194,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/scanner_states_lr"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'scanner_states_lr'..."
-${PAROL_TARGET} -f ./scanner_states.par -e ./scanner_states-exp.par -p ./scanner_states_parser.rs -a ./scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar -g -b -x
+${PAROL_TARGET} -f ./scanner_states.par -e ./scanner_states-exp.par -p ./scanner_states_parser.rs -a ./scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar -b -x
 '''
 
 [tasks.generate_toml]
@@ -203,5 +203,5 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/toml"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'toml'..."
-${PAROL_TARGET} -f ./parol_toml.par -e ./parol_toml-exp.par -p ./parol_toml_parser.rs -a ./parol_toml_grammar_trait.rs -t ParolTomlGrammar -m parol_toml_grammar -g -b -x
+${PAROL_TARGET} -f ./parol_toml.par -e ./parol_toml-exp.par -p ./parol_toml_parser.rs -a ./parol_toml_grammar_trait.rs -t ParolTomlGrammar -m parol_toml_grammar -b -x
 '''

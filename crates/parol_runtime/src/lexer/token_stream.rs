@@ -132,8 +132,12 @@ impl<'t> TokenStream<'t> {
             Err(LexerError::LookaheadExceedsMaximum)
         } else {
             // Fill buffer to lookahead size k relative to pos
-            self.ensure_buffer()?;
-            if n >= self.tokens.len() {
+            let read = self.ensure_buffer()?;
+            if read == 0 && n == 0 && self.tokens.is_empty() {
+                // If read is 0 the input was empty.
+                // We return EOI if the token buffer is empty.
+                Ok(EOI)
+            } else if n >= self.tokens.len() {
                 Err(LexerError::LookaheadExceedsTokenBufferLength)
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);
@@ -380,6 +384,8 @@ impl<'t> TokenStream<'t> {
     /// position (aka scanner state switching).
     ///
     fn switch_to(&mut self, scanner_index: usize) {
+        self.token_iter
+            .set_position(self.last_consumed_token_end_pos);
         self.token_iter.set_mode(scanner_index);
         trace!(
             "Switched to scanner {} <{}>. Last consumed token's end position: {}",
@@ -387,8 +393,6 @@ impl<'t> TokenStream<'t> {
             self.scanner_mode_name(scanner_index),
             self.last_consumed_token_end_pos
         );
-        self.token_iter
-            .set_position(self.last_consumed_token_end_pos);
     }
 
     pub(crate) fn token_types(&self) -> Vec<TerminalIndex> {

@@ -259,7 +259,6 @@ struct ParserData<'a> {
     productions: String,
     max_k: usize,
     scanner_builds: StrVec,
-    auto_generate: bool,
     user_type_name: &'a str,
     user_type_life_time: &'static str,
     module_name: &'a str,
@@ -278,7 +277,6 @@ impl std::fmt::Display for ParserData<'_> {
             productions,
             max_k,
             scanner_builds,
-            auto_generate,
             user_type_name,
             user_type_life_time,
             module_name,
@@ -297,32 +295,25 @@ impl std::fmt::Display for ParserData<'_> {
             "
         )?;
 
-        let user_action_trait = if *auto_generate {
-            "".into()
-        } else {
-            ume::ume!(UserActionsTrait,).to_string()
-        };
         f.write_fmt(ume::ume! {
             use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
             #[allow(unused_imports)]
             use parol_runtime::parser::{
-                ParseTreeType, Trans, LLKParser, LookaheadDFA, ParseType, Production, #user_action_trait
+                ParseTreeType, Trans, LLKParser, LookaheadDFA, ParseType, Production
             };
             use std::path::Path;
         })?;
 
         writeln!(f, "\n")?;
         let auto_name = format!("{}Auto", user_type_name);
-        if *auto_generate {
-            let trait_module_name = format!("{}_trait", module_name);
-            f.write_fmt(ume::ume! {
-                use crate::#module_name::#user_type_name;
-                use crate::#trait_module_name::#auto_name;
-            })?;
-            writeln!(f, "\n")?;
-        }
+        let trait_module_name = format!("{}_trait", module_name);
+        f.write_fmt(ume::ume! {
+            use crate::#module_name::#user_type_name;
+            use crate::#trait_module_name::#auto_name;
+        })?;
+        writeln!(f, "\n")?;
 
         writeln!(f, "{}\n", lexer_source)?;
 
@@ -345,26 +336,14 @@ impl std::fmt::Display for ParserData<'_> {
 
         writeln!(f, "\n")?;
 
-        let user_actions = if *auto_generate {
-            ume::ume!(&mut #user_type_name #user_type_life_time).to_string()
-        } else {
-            ume::ume!(&mut dyn UserActionsTrait<'t>).to_string()
-        };
-        let auto_wrapper = if *auto_generate {
-            format!(
-                "\n// Initialize wrapper\n{}",
-                ume::ume! {
-                    let mut user_actions = #auto_name::new(user_actions);
-                }
-            )
-        } else {
-            "".into()
-        };
-        let mut_ref_user_actions = if *auto_generate {
-            ume::ume!(&mut user_actions)
-        } else {
-            ume::ume!(user_actions)
-        };
+        let user_actions = ume::ume!(&mut #user_type_name #user_type_life_time).to_string();
+        let auto_wrapper = format!(
+            "\n// Initialize wrapper\n{}",
+            ume::ume! {
+                let mut user_actions = #auto_name::new(user_actions);
+            }
+        );
+        let mut_ref_user_actions = ume::ume!(&mut user_actions);
         let enable_trimming = if *trim_parse_tree {
             "llk_parser.trim_parse_tree();\n"
         } else {
@@ -406,7 +385,6 @@ struct LRParserData<'a> {
     non_terminal_count: usize,
     productions: String,
     scanner_builds: StrVec,
-    auto_generate: bool,
     user_type_name: &'a str,
     user_type_life_time: &'static str,
     module_name: &'a str,
@@ -423,7 +401,6 @@ impl std::fmt::Display for LRParserData<'_> {
             non_terminal_count,
             productions,
             scanner_builds,
-            auto_generate,
             user_type_name,
             user_type_life_time,
             module_name,
@@ -442,33 +419,24 @@ impl std::fmt::Display for LRParserData<'_> {
             "
         )?;
 
-        let user_action_trait = if *auto_generate {
-            "".into()
-        } else {
-            ume::ume!(UserActionsTrait,).to_string()
-        };
         f.write_fmt(ume::ume! {
             use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
             #[allow(unused_imports)]
-            use parol_runtime::parser::{
-                ParseTreeType, Trans, ParseType, Production, #user_action_trait
-            };
+            use parol_runtime::parser::{ParseTreeType, Trans, ParseType, Production};
             use parol_runtime::lr_parser::{LRParseTable, LRParser, LRProduction, LR1State, LRAction};
             use std::path::Path;
         })?;
 
         writeln!(f, "\n")?;
         let auto_name = format!("{}Auto", user_type_name);
-        if *auto_generate {
-            let trait_module_name = format!("{}_trait", module_name);
-            f.write_fmt(ume::ume! {
-                use crate::#module_name::#user_type_name;
-                use crate::#trait_module_name::#auto_name;
-            })?;
-            writeln!(f, "\n")?;
-        }
+        let trait_module_name = format!("{}_trait", module_name);
+        f.write_fmt(ume::ume! {
+            use crate::#module_name::#user_type_name;
+            use crate::#trait_module_name::#auto_name;
+        })?;
+        writeln!(f, "\n")?;
 
         writeln!(f, "{}\n", lexer_source)?;
 
@@ -492,26 +460,14 @@ impl std::fmt::Display for LRParserData<'_> {
 
         writeln!(f, "\n")?;
 
-        let user_actions = if *auto_generate {
-            ume::ume!(&mut #user_type_name #user_type_life_time).to_string()
-        } else {
-            ume::ume!(&mut dyn UserActionsTrait<'t>).to_string()
-        };
-        let auto_wrapper = if *auto_generate {
-            format!(
-                "\n// Initialize wrapper\n{}",
-                ume::ume! {
-                    let mut user_actions = #auto_name::new(user_actions);
-                }
-            )
-        } else {
-            "".into()
-        };
-        let mut_ref_user_actions = if *auto_generate {
-            ume::ume!(&mut user_actions)
-        } else {
-            ume::ume!(user_actions)
-        };
+        let user_actions = ume::ume!(&mut #user_type_name #user_type_life_time).to_string();
+        let auto_wrapper = format!(
+            "\n// Initialize wrapper\n{}",
+            ume::ume! {
+                let mut user_actions = #auto_name::new(user_actions);
+            }
+        );
+        let mut_ref_user_actions = ume::ume!(&mut user_actions);
         let enable_trimming = if *trim_parse_tree {
             "lr_parser.trim_parse_tree();\n"
         } else {
@@ -590,7 +546,6 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
         productions,
         max_k,
         scanner_builds,
-        auto_generate: config.auto_generate(),
         user_type_name: config.user_type_name(),
         user_type_life_time,
         module_name: config.module_name(),
@@ -689,7 +644,6 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
         non_terminal_count,
         productions,
         scanner_builds,
-        auto_generate: config.auto_generate(),
         user_type_name: config.user_type_name(),
         user_type_life_time,
         module_name: config.module_name(),

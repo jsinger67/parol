@@ -67,9 +67,6 @@ pub struct GrammarTypeInfo {
     /// We use this as ASTType for the generated source.
     pub(crate) ast_enum_type: SymbolId,
 
-    /// Indicates if the auto generation mode is active
-    pub(crate) auto_generate: bool,
-
     ///
     /// If true, the generation of boxed types is minimized over the whole grammar
     ///
@@ -151,14 +148,6 @@ impl GrammarTypeInfo {
         )?;
 
         Ok(me)
-    }
-
-    /// Set the auto-generate mode
-    /// Internally it adjust the used flags on the arguments of the actions.
-    /// The arguments keep their used state only if auto generation is active.
-    pub fn set_auto_generate(&mut self, auto_generate: bool) -> Result<()> {
-        self.auto_generate = auto_generate;
-        self.adjust_arguments_used(auto_generate)
     }
 
     /// Sets the minimize boxed types flag
@@ -260,12 +249,12 @@ impl GrammarTypeInfo {
     }
 
     /// Sets the used flag on all arguments of the user actions in the adapter struct.
-    fn adjust_arguments_used(&mut self, used: bool) -> Result<()> {
+    fn adjust_arguments_used(&mut self) -> Result<()> {
         for action_id in self.adapter_actions.values() {
             let arguments_scope = self.symbol_table.symbol_as_type(*action_id).member_scope();
             let args = self.symbol_table.scope(arguments_scope).symbols.clone();
             for arg in args {
-                self.symbol_table.set_instance_used(arg, used)?;
+                self.symbol_table.set_instance_used(arg, true)?;
             }
         }
         Ok(())
@@ -313,6 +302,7 @@ impl GrammarTypeInfo {
         self.add_user_actions(grammar_config)?;
         self.do_minimize_boxed_types()?;
         self.symbol_table.propagate_lifetimes();
+        self.adjust_arguments_used()?;
         Ok(())
     }
 
@@ -880,8 +870,6 @@ impl Display for GrammarTypeInfo {
 
         writeln!(f, "// AST enum type:")?;
         writeln!(f, "{:?}", self.ast_enum_type)?;
-
-        writeln!(f, "// Auto generate = {}", self.auto_generate)?;
 
         writeln!(f, "// Minimize boxed types = {}", self.minimize_boxed_types)?;
 

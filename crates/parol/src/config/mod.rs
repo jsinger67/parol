@@ -10,8 +10,6 @@ pub trait CommonGeneratorConfig {
     fn user_type_name(&self) -> &str;
     /// User type's module name
     fn module_name(&self) -> &str;
-    /// Enable feature auto-generation for expanded grammar's semantic actions
-    fn auto_generate(&self) -> bool;
     /// Activate the minimization of boxed types in the generated parser
     fn minimize_boxed_types(&self) -> bool;
     /// Generate range information for AST types

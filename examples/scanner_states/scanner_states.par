@@ -54,14 +54,14 @@ Identifier
 
 Escaped
     // This terminal is only valid in scanner state 'String'
-    : <String>/\["\\bfnt]/
+    : <String>/\\["\\bfnt]/
     ;
 
 EscapedLineEnd
     // This terminal is only valid in scanner state 'String'
     // NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
     // Otherwise, the regex will greedily pickup newlines See issue #5
-    : <String>/\[\s--\n\r]*\r?\n/
+    : <String>/\\[\s--\n\r]*\r?\n/
     ;
 
 NoneQuote

@@ -69,9 +69,6 @@ fn run(args: &CliArgs) -> Result<u128> {
     if args.disable_recovery {
         builder.disable_recovery();
     }
-    if args.auto_generate {
-        builder.enable_auto_generation();
-    }
     if args.minimize_boxed_types {
         builder.minimize_boxed_types();
     }
