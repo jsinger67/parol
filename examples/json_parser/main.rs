@@ -15,7 +15,7 @@ use std::process::ExitCode;
 use std::time::Instant;
 
 // To generate:
-// parol -f ./json.par -e ./json-exp.par -p ./src/json_parser.rs -a ./src/json_grammar_trait.rs -t JsonGrammar -m json_grammar -g
+// parol -f ./json.par -e ./json-exp.par -p ./src/json_parser.rs -a ./src/json_grammar_trait.rs -t JsonGrammar -m json_grammar
 
 struct JSONErrorReporter;
 impl Report for JSONErrorReporter {}

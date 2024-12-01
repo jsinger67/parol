@@ -12,7 +12,7 @@ use std::env;
 use std::fs;
 
 // To generate:
-// parol -f ./examples/list_auto/list.par -e ./examples/list_auto/list-exp.par -p ./examples/list_auto/list_parser.rs -a ./examples/list_auto/list_grammar_trait.rs -t ListGrammar -m list_grammar -g
+// parol -f ./examples/list_auto/list.par -e ./examples/list_auto/list-exp.par -p ./examples/list_auto/list_parser.rs -a ./examples/list_auto/list_grammar_trait.rs -t ListGrammar -m list_grammar
 
 // To run the example
 // cargo run --example list_auto -- ./examples/list_auto/list_test.txt

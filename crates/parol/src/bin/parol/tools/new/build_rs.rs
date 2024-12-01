@@ -30,7 +30,7 @@ use parol_runtime::Report;
 
 fn main() {{
     // CLI equivalent is:
-    // parol -f ./{crate_name}.par -e ./{crate_name}-exp.par -p ./src/{crate_name}_parser.rs -a ./src/{crate_name}_grammar_trait.rs -t {grammar_name}Grammar -m {crate_name}_grammar -g
+    // parol -f ./{crate_name}.par -e ./{crate_name}-exp.par -p ./src/{crate_name}_parser.rs -a ./src/{crate_name}_grammar_trait.rs -t {grammar_name}Grammar -m {crate_name}_grammar
     if let Err(err) = Builder::with_explicit_output_dir("src")
         .grammar_file("{crate_name}.par")
         .expanded_grammar_output_file("../{crate_name}-exp.par")
