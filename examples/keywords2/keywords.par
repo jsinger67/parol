@@ -11,7 +11,7 @@
 Grammar     : { Items };
 Items       : Declaration
             | Block;
-// We switch the scanner state around Identifier            
+// We switch the scanner state around Identifier to avoid conflicts with keywords.
 Declaration : Var %sc(Identifier) Identifier %sc() ";";
 Block       : Begin { Items } End;
 

@@ -288,7 +288,7 @@ mod adjacency_list {
             };
         }
 
-        // Taken from example 'list_auto', Non-terminal "ItemsList"
+        // Taken from example 'list', Non-terminal "ItemsList"
         //   Id(0)
         //   Id(1)
         //   Id(2, accepting), Pr(4)
@@ -382,7 +382,7 @@ mod adjacency_list {
 
         #[test]
         fn test_minimize_multiple_transitions_with_different_terminals() {
-            // Taken from example list_auto, Non-terminal ListOpt
+            // Taken from example list, Non-terminal ListOpt
             // In this case we have already a minimal DFA.
             let transitions = vec![trans!(0, 0, 2, 2), trans!(0, 5, 2, 2), trans!(0, 6, 1, 1)];
             let dfa = CompiledDFA {

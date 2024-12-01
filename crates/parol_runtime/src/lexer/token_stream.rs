@@ -132,12 +132,8 @@ impl<'t> TokenStream<'t> {
             Err(LexerError::LookaheadExceedsMaximum)
         } else {
             // Fill buffer to lookahead size k relative to pos
-            let read = self.ensure_buffer()?;
-            if read == 0 && n == 0 && self.tokens.is_empty() {
-                // If read is 0 the input was empty.
-                // We return EOI if the token buffer is empty.
-                Ok(EOI)
-            } else if n >= self.tokens.len() {
+            self.ensure_buffer()?;
+            if n >= self.tokens.len() {
                 Err(LexerError::LookaheadExceedsTokenBufferLength)
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);

@@ -67,16 +67,16 @@ name = "boolean_parser"
 path = "../../examples/boolean_parser/main.rs"
 
 [[example]]
-name = "calc_auto"
-path = "../../examples/calc_auto/main.rs"
+name = "calc"
+path = "../../examples/calc/main.rs"
 
 [[example]]
 name = "calc_lr"
 path = "../../examples/calc_lr/main.rs"
 
 [[example]]
-name = "json_parser_auto"
-path = "../../examples/json_parser_auto/main.rs"
+name = "json_parser"
+path = "../../examples/json_parser/main.rs"
 
 [[example]]
 name = "keywords"
@@ -87,8 +87,8 @@ name = "keywords2"
 path = "../../examples/keywords2/main.rs"
 
 [[example]]
-name = "list_auto"
-path = "../../examples/list_auto/main.rs"
+name = "list"
+path = "../../examples/list/main.rs"
 
 [[example]]
 name = "list_lr"

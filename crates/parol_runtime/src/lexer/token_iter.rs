@@ -107,6 +107,12 @@ impl<'t> TokenIter<'t> {
         self.scanner.set_mode(scanner_index);
         self.find_iter.set_mode(scanner_index);
     }
+
+    #[inline]
+    pub(crate) fn next_token_number(&mut self) -> TokenNumber {
+        self.token_number += 1;
+        self.token_number
+    }
 }
 
 impl<'t> Iterator for TokenIter<'t> {
@@ -118,7 +124,7 @@ impl<'t> Iterator for TokenIter<'t> {
             // Return at most k EOI tokens
             self.k -= 1;
             trace!("EOI");
-            let mut eoi = Token::eoi(self.token_number);
+            let mut eoi = Token::eoi(self.next_token_number());
             if let Some(location) = self.last_location.as_mut() {
                 location.end_column += 1;
                 eoi = eoi.with_location(location.clone());

@@ -113,7 +113,7 @@ ${PAROL_TARGET} -f ./keywords.par -e ./keywords-exp.par -p ./keywords_parser.rs 
 '''
 
 
-[tasks.generate_list_auto]
+[tasks.generate_list]
 workspace = false
 cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/list"
 script_runner = "@shell"

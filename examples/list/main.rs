@@ -12,10 +12,10 @@ use std::env;
 use std::fs;
 
 // To generate:
-// parol -f ./examples/list_auto/list.par -e ./examples/list_auto/list-exp.par -p ./examples/list_auto/list_parser.rs -a ./examples/list_auto/list_grammar_trait.rs -t ListGrammar -m list_grammar
+// parol -f ./examples/list/list.par -e ./examples/list/list-exp.par -p ./examples/list/list_parser.rs -a ./examples/list/list_grammar_trait.rs -t ListGrammar -m list_grammar
 
 // To run the example
-// cargo run --example list_auto -- ./examples/list_auto/list_test.txt
+// cargo run --example list -- ./examples/list/list_test.txt
 
 fn main() -> Result<()> {
     env_logger::init();
