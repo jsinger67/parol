@@ -760,7 +760,7 @@ dependencies = [
  "syntree",
  "syntree_layout",
  "tempfile",
- "thiserror 1.0.69",
+ "thiserror 2.0.3",
  "ts-rs",
  "ume",
 ]
@@ -786,7 +786,7 @@ dependencies = [
  "serde",
  "serde_json",
  "syntree",
- "thiserror 1.0.69",
+ "thiserror 2.0.3",
 ]
 
 [[package]]
@@ -812,7 +812,7 @@ dependencies = [
  "regex-automata 0.4.9",
  "syntree",
  "syntree_layout",
- "thiserror 1.0.69",
+ "thiserror 2.0.3",
 ]
 
 [[package]]
