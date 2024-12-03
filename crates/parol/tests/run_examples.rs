@@ -196,6 +196,19 @@ fn run_keywords2_examples() -> Result<()> {
             assert!(exit_status.success());
         }
     }
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/keywords/testfiles/invalid"
+    ))
+    .read_dir()?
+    .flatten()
+    {
+        if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
+            println!("Parsing {} should fail...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(!exit_status.success());
+        }
+    }
     Ok(())
 }
 

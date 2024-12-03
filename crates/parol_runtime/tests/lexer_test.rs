@@ -1,3 +1,4 @@
+use log::trace;
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
@@ -82,12 +83,15 @@ fn lexer_token_production() {
     let token_stream =
         RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k).unwrap());
     let mut tok = Token::default();
+    let mut token_count = 0;
     while !token_stream.borrow().all_input_consumed() {
-        tok = token_stream.borrow_mut().lookahead(0).unwrap();
-        println!("{:?}", tok);
-        token_stream.borrow_mut().consume().unwrap();
+        tok = token_stream.borrow_mut().consume().unwrap();
+        println!("{:w$}: {:?}", token_count, tok, w = 3);
+        token_count += 1;
     }
-    // assert_eq!(k, token_stream.borrow().tokens.len());
+    trace!("Token buffer: {:?}", token_stream.borrow().tokens);
+    assert_eq!(65, token_count);
+    assert_eq!(k, token_stream.borrow().tokens.len());
     assert_eq!(
         Token::with(
             ";",
@@ -107,7 +111,7 @@ fn lexer_token_production() {
         tok
     );
     assert_eq!(
-        Token::eoi(80).with_location(
+        Token::eoi(81).with_location(
             LocationBuilder::default()
                 .start_line(21)
                 .start_column(1)
@@ -120,6 +124,21 @@ fn lexer_token_production() {
                 .unwrap()
         ),
         token_stream.borrow().tokens[0]
+    );
+    assert_eq!(
+        Token::eoi(82).with_location(
+            LocationBuilder::default()
+                .start_line(21)
+                .start_column(1)
+                .end_line(21)
+                .end_column(4)
+                .length(1)
+                .offset(545)
+                .file_name(token_stream.borrow().file_name.clone())
+                .build()
+                .unwrap()
+        ),
+        token_stream.borrow().tokens[1]
     );
 }
 

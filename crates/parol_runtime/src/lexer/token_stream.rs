@@ -1,6 +1,6 @@
 use crate::lexer::EOI;
 use crate::parser::ScannerIndex;
-use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter};
+use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter, TokenNumber};
 use log::{debug, trace};
 use scnr::{ScannerBuilder, ScannerMode};
 
@@ -119,7 +119,7 @@ impl<'t> TokenStream<'t> {
             if n >= self.tokens.len() {
                 if self.tokens.is_empty() && self.recovering {
                     trace!("LA({}): EOI for recovery", n);
-                    Ok(Token::eoi(self.token_iter.next_token_number()))
+                    Ok(Token::eoi(TokenNumber::MAX))
                 } else {
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
@@ -293,7 +293,7 @@ impl<'t> TokenStream<'t> {
             );
             self.scanner_stack.push(self.token_iter.current_mode());
             self.switch_to(scanner_index);
-            self.tokens.clear();
+            self.clear_token_buffer();
             self.ensure_buffer()?;
             trace!(
                 "push_scanner: Resulting scanner stack: {:?}",
@@ -321,7 +321,7 @@ impl<'t> TokenStream<'t> {
                     self.scanner_mode_name(scanner_index),
                 );
                 self.switch_to(scanner_index);
-                self.tokens.clear();
+                self.clear_token_buffer();
                 self.ensure_buffer()?;
                 trace!(
                     "pop_scanner: Resulting scanner stack: {:?}",
@@ -491,6 +491,7 @@ impl<'t> TokenStream<'t> {
     /// Clears the token buffer.
     #[inline]
     fn clear_token_buffer(&mut self) {
+        trace!("Clearing token buffer.");
         self.tokens.clear();
     }
 

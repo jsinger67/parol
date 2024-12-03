@@ -373,7 +373,7 @@ impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// `Declaration: Var %sc(Identifier) Identifier %sc() ";";`
+    /// `Declaration: Var %sc(Identifier) Identifier %sc() ';';`
     ///
     #[parol_runtime::function_name::named]
     fn declaration(
@@ -463,7 +463,7 @@ impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// `Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";`
+    /// `Identifier: <Identifier>/[a-zA-Z_][a-zA-Z0-9_]*/;`
     ///
     #[parol_runtime::function_name::named]
     fn identifier(&mut self, identifier: &ParseTreeType<'t>) -> Result<()> {
@@ -479,7 +479,7 @@ impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// `Begin: "[bB][eE][gG][iI][nN]";`
+    /// `Begin: /[bB][eE][gG][iI][nN]/;`
     ///
     #[parol_runtime::function_name::named]
     fn begin(&mut self, begin: &ParseTreeType<'t>) -> Result<()> {
@@ -495,7 +495,7 @@ impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// `End: "[eE][nN][dD]";`
+    /// `End: /[eE][nN][dD]/;`
     ///
     #[parol_runtime::function_name::named]
     fn end(&mut self, end: &ParseTreeType<'t>) -> Result<()> {
@@ -511,7 +511,7 @@ impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// `Var: "[vV][aA][rR]";`
+    /// `Var: /[vV][aA][rR]/;`
     ///
     #[parol_runtime::function_name::named]
     fn var(&mut self, var: &ParseTreeType<'t>) -> Result<()> {

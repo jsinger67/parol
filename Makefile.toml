@@ -109,7 +109,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/keywords2"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'keywords2'..."
-${PAROL_TARGET} -f ./keywords.par -e ./keywords-exp.par -p ./keywords_parser.rs -a ./keywords_grammar_trait.rs -t KeywordsGrammar -m keywords_grammar
+${PAROL_TARGET} -f ./keywords.par -e ./keywords-exp.par -p ./keywords_parser.rs -a ./keywords_grammar_trait.rs -t KeywordsGrammar -m keywords_grammar --disable-recovery
 '''
 
 

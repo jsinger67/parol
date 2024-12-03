@@ -179,7 +179,7 @@ pub const PRODUCTIONS: &[Production; 13] = &[
         lhs: 8,
         production: &[ParseType::N(1)],
     },
-    // 5 - Declaration: Var S(1) Identifier S(0) ";";
+    // 5 - Declaration: Var S(1) Identifier S(0) ';';
     Production {
         lhs: 3,
         production: &[
@@ -205,22 +205,22 @@ pub const PRODUCTIONS: &[Production; 13] = &[
         lhs: 2,
         production: &[],
     },
-    // 9 - Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+    // 9 - Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
     Production {
         lhs: 7,
         production: &[ParseType::T(6)],
     },
-    // 10 - Begin: "[bB][eE][gG][iI][nN]";
+    // 10 - Begin: /[bB][eE][gG][iI][nN]/;
     Production {
         lhs: 0,
         production: &[ParseType::T(7)],
     },
-    // 11 - End: "[eE][nN][dD]";
+    // 11 - End: /[eE][nN][dD]/;
     Production {
         lhs: 4,
         production: &[ParseType::T(8)],
     },
-    // 12 - Var: "[vV][aA][rR]";
+    // 12 - Var: /[vV][aA][rR]/;
     Production {
         lhs: 9,
         production: &[ParseType::T(9)],
@@ -257,6 +257,8 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    llk_parser.disable_recovery();
+
     // Initialize wrapper
     let mut user_actions = KeywordsGrammarAuto::new(user_actions);
     llk_parser.parse(
