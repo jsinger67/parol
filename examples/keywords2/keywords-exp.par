@@ -11,11 +11,11 @@
 /*  2 */ GrammarList /* Vec<T>::New */: ;
 /*  3 */ Items: Declaration;
 /*  4 */ Items: Block;
-/*  5 */ Declaration: Var %sc(Identifier) Identifier %sc() ";";
+/*  5 */ Declaration: Var %sc(Identifier) Identifier %sc() ';';
 /*  6 */ Block: Begin BlockList /* Vec */ End;
 /*  7 */ BlockList /* Vec<T>::Push */: Items BlockList;
 /*  8 */ BlockList /* Vec<T>::New */: ;
-/*  9 */ Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";
-/* 10 */ Begin: "[bB][eE][gG][iI][nN]";
-/* 11 */ End: "[eE][nN][dD]";
-/* 12 */ Var: "[vV][aA][rR]";
+/*  9 */ Identifier: <Identifier>/[a-zA-Z_][a-zA-Z0-9_]*/;
+/* 10 */ Begin: /[bB][eE][gG][iI][nN]/;
+/* 11 */ End: /[eE][nN][dD]/;
+/* 12 */ Var: /[vV][aA][rR]/;

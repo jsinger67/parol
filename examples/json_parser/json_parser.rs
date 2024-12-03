@@ -6,12 +6,13 @@
 
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
-use parol_runtime::parser::{
-    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
-};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
+
+use crate::json_grammar::JsonGrammar;
+use crate::json_grammar_trait::JsonGrammarAuto;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -306,7 +307,7 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut dyn UserActionsTrait<'t>,
+    user_actions: &mut JsonGrammar<'t>,
 ) -> Result<ParseTree<'t>, ParolError>
 where
     T: AsRef<Path>,
@@ -318,8 +319,12 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    llk_parser.trim_parse_tree();
+
+    // Initialize wrapper
+    let mut user_actions = JsonGrammarAuto::new(user_actions);
     llk_parser.parse(
         TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
-        user_actions,
+        &mut user_actions,
     )
 }

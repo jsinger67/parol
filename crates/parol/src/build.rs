@@ -191,8 +191,6 @@ pub struct Builder {
     ///
     /// The CLI needs to be able to override this (mostly for debugging), hence the option.
     output_sanity_checks: bool,
-    /// Enables auto-generation of expanded grammar's semantic actions - experimental
-    pub(crate) auto_generate: bool,
     /// Activate the minimization of boxed types in the generated parser
     pub(crate) minimize_boxed_types: bool,
     /// Internal debugging for CLI.
@@ -276,7 +274,6 @@ impl Builder {
             parser_output_file: None,
             actions_output_file: None,
             expanded_grammar_output_file: None,
-            auto_generate: false,
             minimize_boxed_types: false,
             inner_attributes: Vec::new(),
             // By default, we require that output files != /dev/null
@@ -384,12 +381,6 @@ impl Builder {
         self.inner_attributes = inner_attributes;
         self
     }
-    /// Enables the auto-generation of expanded grammar's semantic actions - experimental
-    ///
-    pub fn enable_auto_generation(&mut self) -> &mut Self {
-        self.auto_generate = true;
-        self
-    }
     /// Activate the minimization of boxed types in the generated parser
     pub fn minimize_boxed_types(&mut self) -> &mut Self {
         self.minimize_boxed_types = true;
@@ -463,10 +454,6 @@ impl CommonGeneratorConfig for Builder {
 
     fn module_name(&self) -> &str {
         &self.module_name
-    }
-
-    fn auto_generate(&self) -> bool {
-        self.auto_generate
     }
 
     fn minimize_boxed_types(&self) -> bool {

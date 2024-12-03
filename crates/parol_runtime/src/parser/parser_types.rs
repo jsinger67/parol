@@ -504,6 +504,7 @@ impl<'t> LLKParser<'t> {
         if !self.enable_recovery {
             return Err(ParserError::RecoveryFailed.into());
         }
+        stream.borrow_mut().enter_recovery_mode();
         let scanned_token_types = stream.borrow().token_types();
         let la_dfa = &self.lookahead_automata[non_terminal];
         let mut possible_terminal_strings =
@@ -570,6 +571,7 @@ impl<'t> LLKParser<'t> {
         if !self.enable_recovery {
             return Err(ParserError::RecoveryFailed.into());
         }
+        stream.borrow_mut().enter_recovery_mode();
         stream.borrow_mut().ensure_buffer()?;
         let scanned_token_types = stream.borrow().token_types();
         let expected_token_types = self.parser_stack.expected_token_types();

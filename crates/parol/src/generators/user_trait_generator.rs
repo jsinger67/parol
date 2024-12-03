@@ -29,14 +29,13 @@ impl<'a> UserTraitGenerator<'a> {
         Self { grammar_config }
     }
 
-    fn generate_adapter_function_args<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_adapter_function_args(
         &self,
-        config: &C,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
     ) -> Result<String> {
         // We reference the parse_tree argument only if a token is in the argument list
-        let lifetime = if config.auto_generate() { "<'t>" } else { "" };
+        let lifetime = "<'t>";
         let mut arguments = Vec::new();
 
         for member_id in symbol_table.members(action_id)? {
@@ -52,32 +51,21 @@ impl<'a> UserTraitGenerator<'a> {
     }
 
     /// Generates the code that creates the context for the adapter function.
-    fn generate_context<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
-        &self,
-        config: &C,
-        code: &mut StrVec,
-    ) {
-        if config.auto_generate() {
-            code.push("let context = function_name!();".to_string());
-            code.push("trace!(\"{}\", self.trace_item_stack(context));".to_string());
-        }
+    fn generate_context(&self, code: &mut StrVec) {
+        code.push("let context = function_name!();".to_string());
+        code.push("trace!(\"{}\", self.trace_item_stack(context));".to_string());
     }
 
     /// Generates the code that assigns the token to the token argument of the adapter function to a
     /// local variable that is later transformed into the ASTType (in `generate_result_builder`).
     /// If the token argument is a user-defined type, then the code for the conversion into it is
     /// generated.
-    fn generate_token_assignments<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_token_assignments(
         &self,
-        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
     ) -> Result<()> {
-        if !config.auto_generate() {
-            return Ok(());
-        }
-
         for member_id in symbol_table.members(action_id)? {
             let arg_inst = symbol_table.symbol_as_instance(*member_id);
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
@@ -97,55 +85,12 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    // /// Checks if the option item popped from the stack needs to be modified when later built
-    // /// into a struct that is put into an ASTType enum variant.
-    // /// The possible case is when the option item's inner type is a simple type and the ASTType
-    // /// enum variant's inner struct type has an Option type with a Box of the inner type at this
-    // /// place.
-    // /// This can be necessary because the Box could have been later introduced during removal of
-    // /// type recursion at the ASTType enum variant's inner struct type.
-    // fn need_to_box_popped_option_item(
-    //     member_id: &SymbolId,
-    //     type_info: &GrammarTypeInfo,
-    // ) -> Result<bool> {
-    //     let symbol_table = &type_info.symbol_table;
-    //     let arg_inst = symbol_table.symbol_as_instance(*member_id);
-    //     let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
-    //     if let TypeEntrails::Option(inner_type) = arg_type.entrails() {
-    //         let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
-    //         if !matches!(inner_type_symbol.entrails(), TypeEntrails::Box(_)) {
-    //             // The inner type is not a Box
-    //             // Check if the ASTType enum variant is an Option type with a Box of the inner type
-    //             let ast_type = symbol_table.symbol_as_type(type_info.ast_enum_type);
-    //             return Ok(ast_type.members().iter().any(|m| {
-    //                 let m_type = symbol_table.symbol_as_type(*m);
-    //                 if let TypeEntrails::Option(inner_type) = m_type.entrails() {
-    //                     let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
-    //                     matches!(
-    //                         inner_type_symbol.entrails(),
-    //                         TypeEntrails::Box(inner_type) if *inner_type == arg_inst.type_id()
-    //                     )
-    //                 } else {
-    //                     false
-    //                 }
-    //             }));
-    //         }
-    //     }
-
-    //     Ok(false)
-    // }
-
-    fn generate_stack_pops<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
-        config: &C,
+    fn generate_stack_pops(
         grammar_type: GrammarType,
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
     ) -> Result<()> {
-        if !config.auto_generate() {
-            return Ok(());
-        }
-
         let symbol_table = &type_info.symbol_table;
         let function = symbol_table.symbol_as_function(action_id)?;
 
@@ -192,9 +137,8 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn generate_push_semantic<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_push_semantic(
         &self,
-        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
@@ -203,7 +147,7 @@ impl<'a> UserTraitGenerator<'a> {
         let fn_type = symbol_table.symbol_as_type(action_id);
         let fn_name = symbol_table.name(fn_type.my_id()).to_string();
 
-        if config.auto_generate() && function.sem == ProductionAttribute::AddToCollection {
+        if function.sem == ProductionAttribute::AddToCollection {
             match self.grammar_config.grammar_type {
                 GrammarType::LLK => {
                     let last_arg = symbol_table
@@ -279,17 +223,12 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn generate_result_builder<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_result_builder(
         &self,
-        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
     ) -> Result<()> {
-        if !config.auto_generate() {
-            return Ok(());
-        }
-
         let symbol_table = &type_info.symbol_table;
         let function = symbol_table.symbol_as_function(action_id)?;
         let fn_type = symbol_table.symbol_as_type(action_id);
@@ -416,16 +355,12 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn generate_user_action_call<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_user_action_call(
         &self,
-        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
     ) -> Result<()> {
-        if !config.auto_generate() {
-            return Ok(());
-        }
         let symbol_table = &type_info.symbol_table;
         let function = symbol_table.symbol_as_function(action_id)?;
         let fn_type = symbol_table.symbol_as_type(action_id);
@@ -444,93 +379,90 @@ impl<'a> UserTraitGenerator<'a> {
     /// Generates the code that pushes the result of the adapter function for a given production as
     /// ASTType onto the stack. The enum variant of the ASTType is the type generated for the
     /// non-terminal on the left-hand side of the production.
-    fn generate_stack_push<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_stack_push(
         &self,
-        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
     ) -> Result<()> {
         let symbol_table = &type_info.symbol_table;
-        if config.auto_generate() {
-            let function = symbol_table.symbol_as_function(action_id)?;
-            let fn_type = symbol_table.symbol_as_type(action_id);
-            let fn_name = symbol_table.name(fn_type.my_id()).to_string();
-            let fn_out_type = symbol_table.symbol_as_type(
-                *type_info
-                    .production_types
-                    .get(&function.prod_num)
-                    .ok_or_else(|| anyhow!("Production output type not accessible!"))?,
-            );
+        let function = symbol_table.symbol_as_function(action_id)?;
+        let fn_type = symbol_table.symbol_as_type(action_id);
+        let fn_name = symbol_table.name(fn_type.my_id()).to_string();
+        let fn_out_type = symbol_table.symbol_as_type(
+            *type_info
+                .production_types
+                .get(&function.prod_num)
+                .ok_or_else(|| anyhow!("Production output type not accessible!"))?,
+        );
 
-            if function.sem == ProductionAttribute::AddToCollection {
-                // The output type of the action is the type generated for the action's non-terminal
-                // filled with type of the action's last argument (the vector)
-                match self.grammar_config.grammar_type {
-                    GrammarType::LLK => {
-                        let last_arg = symbol_table
-                            .members(action_id)?
-                            .iter()
-                            .last()
-                            .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
-                        let arg_inst = symbol_table.symbol_as_instance(*last_arg);
-                        let arg_name = symbol_table.name(arg_inst.my_id());
+        if function.sem == ProductionAttribute::AddToCollection {
+            // The output type of the action is the type generated for the action's non-terminal
+            // filled with type of the action's last argument (the vector)
+            match self.grammar_config.grammar_type {
+                GrammarType::LLK => {
+                    let last_arg = symbol_table
+                        .members(action_id)?
+                        .iter()
+                        .last()
+                        .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
+                    let arg_inst = symbol_table.symbol_as_instance(*last_arg);
+                    let arg_name = symbol_table.name(arg_inst.my_id());
 
-                        code.push(format!(
-                            "self.push(ASTType::{}({}), context);",
-                            NmHlp::to_upper_camel_case(&function.non_terminal),
-                            arg_name
-                        ));
-                    }
-                    GrammarType::LALR1 => {
-                        let first_arg = symbol_table
-                            .members(action_id)?
-                            .iter()
-                            .next()
-                            .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
-                        let arg_inst = symbol_table.symbol_as_instance(*first_arg);
-                        let arg_name = symbol_table.name(arg_inst.my_id());
-
-                        code.push(format!(
-                            "self.push(ASTType::{}({}), context);",
-                            NmHlp::to_upper_camel_case(&function.non_terminal),
-                            arg_name
-                        ));
-                    }
+                    code.push(format!(
+                        "self.push(ASTType::{}({}), context);",
+                        NmHlp::to_upper_camel_case(&function.non_terminal),
+                        arg_name
+                    ));
                 }
-            } else if function.sem == ProductionAttribute::OptionalNone {
-                code.push(format!(
-                    "self.push(ASTType::{}(None), context);",
-                    NmHlp::to_upper_camel_case(&function.non_terminal),
-                ));
-            } else if function.sem == ProductionAttribute::OptionalSome {
-                match fn_out_type.entrails() {
-                    TypeEntrails::Box(inner_type) => {
-                        let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
-                        let inner_type_name = symbol_table.name(inner_type_symbol.my_id());
-                        code.push(format!(
-                            "self.push(ASTType::{}(Some(Box::new({}_built))), context);",
-                            NmHlp::to_upper_camel_case(&function.non_terminal),
-                            inner_type_name,
-                        ));
-                    }
-                    _ => {
-                        code.push(format!(
-                            "self.push(ASTType::{}(Some({}_built)), context);",
-                            NmHlp::to_upper_camel_case(&function.non_terminal),
-                            fn_name,
-                        ));
-                    }
+                GrammarType::LALR1 => {
+                    let first_arg = symbol_table
+                        .members(action_id)?
+                        .iter()
+                        .next()
+                        .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
+                    let arg_inst = symbol_table.symbol_as_instance(*first_arg);
+                    let arg_name = symbol_table.name(arg_inst.my_id());
+
+                    code.push(format!(
+                        "self.push(ASTType::{}({}), context);",
+                        NmHlp::to_upper_camel_case(&function.non_terminal),
+                        arg_name
+                    ));
                 }
-            } else {
-                // The output type of the action is the type generated for the action's non-terminal
-                // filled with type kind of the action
-                code.push(format!(
-                    "self.push(ASTType::{}({}_built), context);",
-                    NmHlp::to_upper_camel_case(&function.non_terminal),
-                    fn_name,
-                ));
             }
+        } else if function.sem == ProductionAttribute::OptionalNone {
+            code.push(format!(
+                "self.push(ASTType::{}(None), context);",
+                NmHlp::to_upper_camel_case(&function.non_terminal),
+            ));
+        } else if function.sem == ProductionAttribute::OptionalSome {
+            match fn_out_type.entrails() {
+                TypeEntrails::Box(inner_type) => {
+                    let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
+                    let inner_type_name = symbol_table.name(inner_type_symbol.my_id());
+                    code.push(format!(
+                        "self.push(ASTType::{}(Some(Box::new({}_built))), context);",
+                        NmHlp::to_upper_camel_case(&function.non_terminal),
+                        inner_type_name,
+                    ));
+                }
+                _ => {
+                    code.push(format!(
+                        "self.push(ASTType::{}(Some({}_built)), context);",
+                        NmHlp::to_upper_camel_case(&function.non_terminal),
+                        fn_name,
+                    ));
+                }
+            }
+        } else {
+            // The output type of the action is the type generated for the action's non-terminal
+            // filled with type kind of the action
+            code.push(format!(
+                "self.push(ASTType::{}({}_built), context);",
+                NmHlp::to_upper_camel_case(&function.non_terminal),
+                fn_name,
+            ));
         }
         Ok(())
     }
@@ -642,19 +574,15 @@ impl<'a> UserTraitGenerator<'a> {
         grammar_type: GrammarType,
         type_info: &mut GrammarTypeInfo,
     ) -> Result<String> {
-        if config.range() && !config.auto_generate() {
-            bail!("Range information can only be generated in auto-generation mode!");
-        }
         if config.minimize_boxed_types() {
             type_info.minimize_boxed_types();
         }
         type_info.set_grammar_type(grammar_type);
         type_info.build(self.grammar_config)?;
-        type_info.set_auto_generate(config.auto_generate())?;
 
         type_info.symbol_table.propagate_lifetimes();
 
-        let production_output_types = if config.auto_generate() {
+        let production_output_types = {
             type_info
                 .production_types
                 .iter()
@@ -680,29 +608,23 @@ impl<'a> UserTraitGenerator<'a> {
                 .try_fold(StrVec::new(0), |acc, (t, f)| {
                     Self::generate_single_production_output_type(f, t, type_info, acc, config)
                 })?
-        } else {
-            StrVec::new(0)
         };
 
-        let non_terminal_types = if config.auto_generate() {
+        let non_terminal_types = {
             type_info
                 .non_terminal_types
                 .iter()
                 .try_fold(StrVec::new(0), |acc, (s, t)| {
                     Self::generate_single_non_terminal_type(s, t, type_info, acc, config)
                 })?
-        } else {
-            StrVec::new(0)
         };
 
-        let mut ast_type_decl = if config.auto_generate() {
+        let mut ast_type_decl = {
             let mut comment = StrVec::new(0);
             comment.push(String::default());
             comment.push("Deduced ASTType of expanded grammar".to_string());
             comment.push(String::default());
             Self::format_type(type_info.ast_enum_type, &type_info.symbol_table, comment)?.unwrap()
-        } else {
-            String::default()
         };
 
         if config.range() {
@@ -716,19 +638,15 @@ impl<'a> UserTraitGenerator<'a> {
             .adapter_actions
             .iter()
             .try_fold(StrVec::new(0).first_line_no_indent(), |acc, a| {
-                self.generate_single_adapter_function(a, type_info, config, grammar_type, acc)
+                self.generate_single_adapter_function(a, type_info, grammar_type, acc)
             })?;
 
-        let user_trait_functions = if config.auto_generate() {
-            type_info
-                .get_user_actions()
-                .iter()
-                .try_fold(StrVec::new(0).first_line_no_indent(), |acc, fn_id| {
-                    Self::generate_single_user_trait_function(type_info, fn_id, acc)
-                })?
-        } else {
-            StrVec::default()
-        };
+        let user_trait_functions = type_info
+            .get_user_actions()
+            .iter()
+            .try_fold(StrVec::new(0).first_line_no_indent(), |acc, fn_id| {
+                Self::generate_single_user_trait_function(type_info, fn_id, acc)
+            })?;
 
         trace!("user_trait_functions:\n{}", user_trait_functions);
 
@@ -748,7 +666,6 @@ impl<'a> UserTraitGenerator<'a> {
         let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
         let user_trait_data = UserTraitDataBuilder::default()
             .user_type_name(config.user_type_name())
-            .auto_generate(config.auto_generate())
             .range(config.range())
             .user_provided_attributes(config.inner_attributes().iter().fold(
                 StrVec::new(0),
@@ -763,7 +680,6 @@ impl<'a> UserTraitGenerator<'a> {
             .ast_type_has_lifetime(ast_type_has_lifetime)
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
-            .module_name(config.module_name())
             .user_trait_functions(user_trait_functions)
             .build()
             .unwrap();
@@ -771,11 +687,10 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(format!("{}", user_trait_data))
     }
 
-    fn generate_single_adapter_function<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_single_adapter_function(
         &self,
         a: (&usize, &SymbolId),
         type_info: &GrammarTypeInfo,
-        config: &C,
         grammar_type: GrammarType,
         mut acc: StrVec,
     ) -> std::result::Result<StrVec, anyhow::Error> {
@@ -786,21 +701,21 @@ impl<'a> UserTraitGenerator<'a> {
         let prod_num = function.prod_num;
         let prod_string = function.prod_string;
         let fn_arguments =
-            self.generate_adapter_function_args(config, action_id, &type_info.symbol_table)?;
+            self.generate_adapter_function_args(action_id, &type_info.symbol_table)?;
         let mut code = StrVec::new(8);
-        self.generate_context(config, &mut code);
-        self.generate_token_assignments(config, &mut code, action_id, &type_info.symbol_table)?;
-        Self::generate_stack_pops(config, grammar_type, &mut code, action_id, type_info)?;
-        self.generate_result_builder(config, &mut code, action_id, type_info)?;
-        self.generate_push_semantic(config, &mut code, action_id, &type_info.symbol_table)?;
-        self.generate_user_action_call(config, &mut code, action_id, type_info)?;
-        self.generate_stack_push(config, &mut code, action_id, type_info)?;
+        self.generate_context(&mut code);
+        self.generate_token_assignments(&mut code, action_id, &type_info.symbol_table)?;
+        Self::generate_stack_pops(grammar_type, &mut code, action_id, type_info)?;
+        self.generate_result_builder(&mut code, action_id, type_info)?;
+        self.generate_push_semantic(&mut code, action_id, &type_info.symbol_table)?;
+        self.generate_user_action_call(&mut code, action_id, type_info)?;
+        self.generate_stack_push(&mut code, action_id, type_info)?;
         let user_trait_function_data = UserTraitFunctionDataBuilder::default()
             .fn_name(fn_name)
             .prod_num(prod_num)
             .fn_arguments(fn_arguments)
             .prod_string(prod_string)
-            .named(config.auto_generate())
+            .named(true)
             .code(code)
             .inner(true)
             .build()

@@ -9,20 +9,291 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use crate::keywords_grammar::KeywordsGrammar;
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result, Token};
-///
-/// The `KeywordsGrammarTrait` trait is automatically generated for the
-/// given grammar.
+
+/// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
+pub trait KeywordsGrammarTrait<'t> {
+    /// Semantic action for non-terminal 'Grammar'
+    fn grammar(&mut self, _arg: &Grammar<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Items'
+    fn items(&mut self, _arg: &Items<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Declaration'
+    fn declaration(&mut self, _arg: &Declaration<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Block'
+    fn block(&mut self, _arg: &Block<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Identifier'
+    fn identifier(&mut self, _arg: &Identifier<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Begin'
+    fn begin(&mut self, _arg: &Begin<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'End'
+    fn end(&mut self, _arg: &End<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Var'
+    fn var(&mut self, _arg: &Var<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// This method provides skipped language comments.
+    /// If you need comments please provide your own implementation of this method.
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+}
+
+// -------------------------------------------------------------------------------------------------
+//
+// Output Types of productions deduced from the structure of the transformed grammar
+//
+
 ///
-pub trait KeywordsGrammarTrait {
+/// Type derived for production 3
+///
+/// `Items: Declaration;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ItemsDeclaration<'t> {
+    pub declaration: Box<Declaration<'t>>,
+}
+
+///
+/// Type derived for production 4
+///
+/// `Items: Block;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ItemsBlock<'t> {
+    pub block: Box<Block<'t>>,
+}
+
+// -------------------------------------------------------------------------------------------------
+//
+// Types of non-terminals deduced from the structure of the transformed grammar
+//
+
+///
+/// Type derived for non-terminal Begin
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Begin<'t> {
+    pub begin: Token<'t>, /* [bB][eE][gG][iI][nN] */
+}
+
+///
+/// Type derived for non-terminal Block
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Block<'t> {
+    pub begin: Box<Begin<'t>>,
+    pub block_list: Vec<BlockList<'t>>,
+    pub end: Box<End<'t>>,
+}
+
+///
+/// Type derived for non-terminal BlockList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BlockList<'t> {
+    pub items: Box<Items<'t>>,
+}
+
+///
+/// Type derived for non-terminal Declaration
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Declaration<'t> {
+    pub var: Box<Var<'t>>,
+    pub identifier: Box<Identifier<'t>>,
+    pub semicolon: Token<'t>, /* ; */
+}
+
+///
+/// Type derived for non-terminal End
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct End<'t> {
+    pub end: Token<'t>, /* [eE][nN][dD] */
+}
+
+///
+/// Type derived for non-terminal Grammar
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Grammar<'t> {
+    pub grammar_list: Vec<GrammarList<'t>>,
+}
+
+///
+/// Type derived for non-terminal GrammarList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct GrammarList<'t> {
+    pub items: Box<Items<'t>>,
+}
+
+///
+/// Type derived for non-terminal Identifier
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Identifier<'t> {
+    pub identifier: Token<'t>, /* [a-zA-Z_][a-zA-Z0-9_]* */
+}
+
+///
+/// Type derived for non-terminal Items
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Items<'t> {
+    Declaration(ItemsDeclaration<'t>),
+    Block(ItemsBlock<'t>),
+}
+
+///
+/// Type derived for non-terminal Var
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Var<'t> {
+    pub var: Token<'t>, /* [vV][aA][rR] */
+}
+
+// -------------------------------------------------------------------------------------------------
+
+///
+/// Deduced ASTType of expanded grammar
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ASTType<'t> {
+    Begin(Begin<'t>),
+    Block(Block<'t>),
+    BlockList(Vec<BlockList<'t>>),
+    Declaration(Declaration<'t>),
+    End(End<'t>),
+    Grammar(Grammar<'t>),
+    GrammarList(Vec<GrammarList<'t>>),
+    Identifier(Identifier<'t>),
+    Items(Items<'t>),
+    Var(Var<'t>),
+}
+
+/// Auto-implemented adapter grammar
+///
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+/// The lifetime parameter `'u` refers to the lifetime of user grammar object.
+///
+#[allow(dead_code)]
+pub struct KeywordsGrammarAuto<'t, 'u>
+where
+    't: 'u,
+{
+    // Mutable reference of the actual user grammar to be able to call the semantic actions on it
+    user_grammar: &'u mut dyn KeywordsGrammarTrait<'t>,
+    // Stack to construct the AST on it
+    item_stack: Vec<ASTType<'t>>,
+}
+
+///
+/// The `KeywordsGrammarAuto` impl is automatically generated for the
+/// given grammar.
+///
+impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
+    pub fn new(user_grammar: &'u mut dyn KeywordsGrammarTrait<'t>) -> Self {
+        Self {
+            user_grammar,
+            item_stack: Vec::new(),
+        }
+    }
+
+    #[allow(dead_code)]
+    fn push(&mut self, item: ASTType<'t>, context: &str) {
+        trace!("push    {}: {:?}", context, item);
+        self.item_stack.push(item)
+    }
+
+    #[allow(dead_code)]
+    fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
+        let item = self.item_stack.pop();
+        if let Some(ref item) = item {
+            trace!("pop     {}: {:?}", context, item);
+        }
+        item
+    }
+
+    #[allow(dead_code)]
+    // Use this function for debugging purposes:
+    // trace!("{}", self.trace_item_stack(context));
+    fn trace_item_stack(&self, context: &str) -> std::string::String {
+        format!(
+            "Item stack at {}:\n{}",
+            context,
+            self.item_stack
+                .iter()
+                .rev()
+                .map(|s| format!("  {:?}", s))
+                .collect::<Vec<std::string::String>>()
+                .join("\n")
+        )
+    }
+
     /// Semantic action for production 0:
     ///
     /// `Grammar: GrammarList /* Vec */;`
     ///
-    fn grammar(&mut self, _grammar_list: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn grammar(&mut self, _grammar_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let grammar_list = pop_and_reverse_item!(self, grammar_list, GrammarList, context);
+        let grammar_built = Grammar { grammar_list };
+        // Calling user action here
+        self.user_grammar.grammar(&grammar_built)?;
+        self.push(ASTType::Grammar(grammar_built), context);
         Ok(())
     }
 
@@ -30,11 +301,22 @@ pub trait KeywordsGrammarTrait {
     ///
     /// `GrammarList /* Vec<T>::Push */: Items GrammarList;`
     ///
+    #[parol_runtime::function_name::named]
     fn grammar_list_0(
         &mut self,
-        _items: &ParseTreeType,
-        _grammar_list: &ParseTreeType,
+        _items: &ParseTreeType<'t>,
+        _grammar_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut grammar_list = pop_item!(self, grammar_list, GrammarList, context);
+        let items = pop_item!(self, items, Items, context);
+        let grammar_list_0_built = GrammarList {
+            items: Box::new(items),
+        };
+        // Add an element to the vector
+        grammar_list.push(grammar_list_0_built);
+        self.push(ASTType::GrammarList(grammar_list), context);
         Ok(())
     }
 
@@ -42,7 +324,12 @@ pub trait KeywordsGrammarTrait {
     ///
     /// `GrammarList /* Vec<T>::New */: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn grammar_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let grammar_list_1_built = Vec::new();
+        self.push(ASTType::GrammarList(grammar_list_1_built), context);
         Ok(())
     }
 
@@ -50,7 +337,18 @@ pub trait KeywordsGrammarTrait {
     ///
     /// `Items: Declaration;`
     ///
-    fn items_0(&mut self, _declaration: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn items_0(&mut self, _declaration: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let declaration = pop_item!(self, declaration, Declaration, context);
+        let items_0_built = ItemsDeclaration {
+            declaration: Box::new(declaration),
+        };
+        let items_0_built = Items::Declaration(items_0_built);
+        // Calling user action here
+        self.user_grammar.items(&items_0_built)?;
+        self.push(ASTType::Items(items_0_built), context);
         Ok(())
     }
 
@@ -58,20 +356,45 @@ pub trait KeywordsGrammarTrait {
     ///
     /// `Items: Block;`
     ///
-    fn items_1(&mut self, _block: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn items_1(&mut self, _block: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let block = pop_item!(self, block, Block, context);
+        let items_1_built = ItemsBlock {
+            block: Box::new(block),
+        };
+        let items_1_built = Items::Block(items_1_built);
+        // Calling user action here
+        self.user_grammar.items(&items_1_built)?;
+        self.push(ASTType::Items(items_1_built), context);
         Ok(())
     }
 
     /// Semantic action for production 5:
     ///
-    /// `Declaration: Var %sc(Identifier) Identifier %sc() ";";`
+    /// `Declaration: Var %sc(Identifier) Identifier %sc() ';';`
     ///
+    #[parol_runtime::function_name::named]
     fn declaration(
         &mut self,
-        _var: &ParseTreeType,
-        _identifier: &ParseTreeType,
-        _semicolon: &ParseTreeType,
+        _var: &ParseTreeType<'t>,
+        _identifier: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let identifier = pop_item!(self, identifier, Identifier, context);
+        let var = pop_item!(self, var, Var, context);
+        let declaration_built = Declaration {
+            var: Box::new(var),
+            identifier: Box::new(identifier),
+            semicolon,
+        };
+        // Calling user action here
+        self.user_grammar.declaration(&declaration_built)?;
+        self.push(ASTType::Declaration(declaration_built), context);
         Ok(())
     }
 
@@ -79,12 +402,26 @@ pub trait KeywordsGrammarTrait {
     ///
     /// `Block: Begin BlockList /* Vec */ End;`
     ///
+    #[parol_runtime::function_name::named]
     fn block(
         &mut self,
-        _begin: &ParseTreeType,
-        _block_list: &ParseTreeType,
-        _end: &ParseTreeType,
+        _begin: &ParseTreeType<'t>,
+        _block_list: &ParseTreeType<'t>,
+        _end: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let end = pop_item!(self, end, End, context);
+        let block_list = pop_and_reverse_item!(self, block_list, BlockList, context);
+        let begin = pop_item!(self, begin, Begin, context);
+        let block_built = Block {
+            begin: Box::new(begin),
+            block_list,
+            end: Box::new(end),
+        };
+        // Calling user action here
+        self.user_grammar.block(&block_built)?;
+        self.push(ASTType::Block(block_built), context);
         Ok(())
     }
 
@@ -92,7 +429,22 @@ pub trait KeywordsGrammarTrait {
     ///
     /// `BlockList /* Vec<T>::Push */: Items BlockList;`
     ///
-    fn block_list_0(&mut self, _items: &ParseTreeType, _block_list: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn block_list_0(
+        &mut self,
+        _items: &ParseTreeType<'t>,
+        _block_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut block_list = pop_item!(self, block_list, BlockList, context);
+        let items = pop_item!(self, items, Items, context);
+        let block_list_0_built = BlockList {
+            items: Box::new(items),
+        };
+        // Add an element to the vector
+        block_list.push(block_list_0_built);
+        self.push(ASTType::BlockList(block_list), context);
         Ok(())
     }
 
@@ -100,51 +452,88 @@ pub trait KeywordsGrammarTrait {
     ///
     /// `BlockList /* Vec<T>::New */: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn block_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let block_list_1_built = Vec::new();
+        self.push(ASTType::BlockList(block_list_1_built), context);
         Ok(())
     }
 
     /// Semantic action for production 9:
     ///
-    /// `Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";`
+    /// `Identifier: <Identifier>/[a-zA-Z_][a-zA-Z0-9_]*/;`
     ///
-    fn identifier(&mut self, _identifier: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn identifier(&mut self, identifier: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let identifier = identifier.token()?.clone();
+        let identifier_built = Identifier { identifier };
+        // Calling user action here
+        self.user_grammar.identifier(&identifier_built)?;
+        self.push(ASTType::Identifier(identifier_built), context);
         Ok(())
     }
 
     /// Semantic action for production 10:
     ///
-    /// `Begin: "[bB][eE][gG][iI][nN]";`
+    /// `Begin: /[bB][eE][gG][iI][nN]/;`
     ///
-    fn begin(&mut self, _begin: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn begin(&mut self, begin: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let begin = begin.token()?.clone();
+        let begin_built = Begin { begin };
+        // Calling user action here
+        self.user_grammar.begin(&begin_built)?;
+        self.push(ASTType::Begin(begin_built), context);
         Ok(())
     }
 
     /// Semantic action for production 11:
     ///
-    /// `End: "[eE][nN][dD]";`
+    /// `End: /[eE][nN][dD]/;`
     ///
-    fn end(&mut self, _end: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn end(&mut self, end: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let end = end.token()?.clone();
+        let end_built = End { end };
+        // Calling user action here
+        self.user_grammar.end(&end_built)?;
+        self.push(ASTType::End(end_built), context);
         Ok(())
     }
 
     /// Semantic action for production 12:
     ///
-    /// `Var: "[vV][aA][rR]";`
+    /// `Var: /[vV][aA][rR]/;`
     ///
-    fn var(&mut self, _var: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn var(&mut self, var: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let var = var.token()?.clone();
+        let var_built = Var { var };
+        // Calling user action here
+        self.user_grammar.var(&var_built)?;
+        self.push(ASTType::Var(var_built), context);
         Ok(())
     }
 }
 
-impl UserActionsTrait<'_> for KeywordsGrammar {
+impl<'t> UserActionsTrait<'t> for KeywordsGrammarAuto<'t, '_> {
     ///
     /// This function is implemented automatically for the user's item KeywordsGrammar.
     ///
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeType],
+        children: &[ParseTreeType<'t>],
     ) -> Result<()> {
         match prod_num {
             0 => self.grammar(&children[0]),
@@ -167,8 +556,8 @@ impl UserActionsTrait<'_> for KeywordsGrammar {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'_>) {
-        // This is currently only supported for auto generate mode.
-        // Please, file an issue if need arises.
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
     }
 }

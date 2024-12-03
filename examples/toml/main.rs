@@ -16,7 +16,7 @@ use std::time::Instant;
 use syntree_layout::Layouter;
 
 // To generate:
-// parol -f ./parol_toml.par -e ./parol_toml-exp.par -p ./src/parol_toml_parser.rs -a ./src/parol_toml_grammar_trait.rs -t ParolTomlGrammar -m parol_toml_grammar -g
+// parol -f ./parol_toml.par -e ./parol_toml-exp.par -p ./src/parol_toml_parser.rs -a ./src/parol_toml_grammar_trait.rs -t ParolTomlGrammar -m parol_toml_grammar
 
 fn main() -> Result<()> {
     env_logger::init();

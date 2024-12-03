@@ -9,38 +9,637 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use crate::boolean_grammar::BooleanGrammar;
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result, Token};
-///
-/// The `BooleanGrammarTrait` trait is automatically generated for the
-/// given grammar.
+
+/// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
+pub trait BooleanGrammarTrait<'t> {
+    /// Semantic action for non-terminal 'Expressions'
+    fn expressions(&mut self, _arg: &Expressions) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'TrailingSemicolon'
+    fn trailing_semicolon(&mut self, _arg: &TrailingSemicolon<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Expression'
+    fn expression(&mut self, _arg: &Expression) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Term'
+    fn term(&mut self, _arg: &Term) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Boolean'
+    fn boolean(&mut self, _arg: &Boolean) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'UnaryOperator'
+    fn unary_operator(&mut self, _arg: &UnaryOperator) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'BinaryOperator'
+    fn binary_operator(&mut self, _arg: &BinaryOperator) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'AndOp'
+    fn and_op(&mut self, _arg: &AndOp) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'OrOp'
+    fn or_op(&mut self, _arg: &OrOp) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'XorOp'
+    fn xor_op(&mut self, _arg: &XorOp) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'NorOp'
+    fn nor_op(&mut self, _arg: &NorOp) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'NandOp'
+    fn nand_op(&mut self, _arg: &NandOp) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'XnorOp'
+    fn xnor_op(&mut self, _arg: &XnorOp) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'True'
+    fn r#true(&mut self, _arg: &True) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'False'
+    fn r#false(&mut self, _arg: &False) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Not'
+    fn not(&mut self, _arg: &Not) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Parenthesized'
+    fn parenthesized(&mut self, _arg: &Parenthesized) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Semicolon'
+    fn semicolon(&mut self, _arg: &Semicolon<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'LeftParenthesis'
+    fn left_parenthesis(&mut self, _arg: &LeftParenthesis<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RightParenthesis'
+    fn right_parenthesis(&mut self, _arg: &RightParenthesis<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Factor'
+    fn factor(&mut self, _arg: &Factor) -> Result<()> {
+        Ok(())
+    }
+
+    /// This method provides skipped language comments.
+    /// If you need comments please provide your own implementation of this method.
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+}
+
+// -------------------------------------------------------------------------------------------------
+//
+// Output Types of productions deduced from the structure of the transformed grammar
+//
+
 ///
-pub trait BooleanGrammarTrait {
+/// Type derived for production 12
+///
+/// `Boolean: True;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BooleanTrue {
+    pub r#true: True,
+}
+
+///
+/// Type derived for production 13
+///
+/// `Boolean: False;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BooleanFalse {
+    pub r#false: False,
+}
+
+///
+/// Type derived for production 15
+///
+/// `BinaryOperator: AndOp;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BinaryOperatorAndOp {
+    pub and_op: AndOp,
+}
+
+///
+/// Type derived for production 16
+///
+/// `BinaryOperator: OrOp;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BinaryOperatorOrOp {
+    pub or_op: OrOp,
+}
+
+///
+/// Type derived for production 17
+///
+/// `BinaryOperator: XorOp;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BinaryOperatorXorOp {
+    pub xor_op: XorOp,
+}
+
+///
+/// Type derived for production 18
+///
+/// `BinaryOperator: NorOp;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BinaryOperatorNorOp {
+    pub nor_op: NorOp,
+}
+
+///
+/// Type derived for production 19
+///
+/// `BinaryOperator: NandOp;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BinaryOperatorNandOp {
+    pub nand_op: NandOp,
+}
+
+///
+/// Type derived for production 20
+///
+/// `BinaryOperator: XnorOp;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct BinaryOperatorXnorOp {
+    pub xnor_op: XnorOp,
+}
+
+///
+/// Type derived for production 34
+///
+/// `Factor: Boolean;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FactorBoolean {
+    pub boolean: Boolean,
+}
+
+///
+/// Type derived for production 35
+///
+/// `Factor: Parenthesized;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct FactorParenthesized {
+    pub parenthesized: Box<Parenthesized>,
+}
+
+// -------------------------------------------------------------------------------------------------
+//
+// Types of non-terminals deduced from the structure of the transformed grammar
+//
+
+///
+/// Type derived for non-terminal AndOp
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct AndOp {}
+
+///
+/// Type derived for non-terminal BinaryOperator
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum BinaryOperator {
+    AndOp(BinaryOperatorAndOp),
+    OrOp(BinaryOperatorOrOp),
+    XorOp(BinaryOperatorXorOp),
+    NorOp(BinaryOperatorNorOp),
+    NandOp(BinaryOperatorNandOp),
+    XnorOp(BinaryOperatorXnorOp),
+}
+
+///
+/// Type derived for non-terminal Boolean
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Boolean {
+    True(BooleanTrue),
+    False(BooleanFalse),
+}
+
+///
+/// Type derived for non-terminal Expression
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Expression {
+    pub term: Term,
+    pub expression_list: Vec<ExpressionList>,
+}
+
+///
+/// Type derived for non-terminal ExpressionList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ExpressionList {
+    pub binary_operator: BinaryOperator,
+    pub term: Term,
+}
+
+///
+/// Type derived for non-terminal Expressions
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Expressions {
+    pub expression: Expression,
+    pub expressions_list: Vec<ExpressionsList>,
+}
+
+///
+/// Type derived for non-terminal ExpressionsList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ExpressionsList {
+    pub expression: Expression,
+}
+
+///
+/// Type derived for non-terminal Factor
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Factor {
+    Boolean(FactorBoolean),
+    Parenthesized(FactorParenthesized),
+}
+
+///
+/// Type derived for non-terminal False
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct False {}
+
+///
+/// Type derived for non-terminal LeftParenthesis
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct LeftParenthesis<'t> {
+    pub left_parenthesis: Token<'t>, /* ( */
+}
+
+///
+/// Type derived for non-terminal NandOp
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct NandOp {}
+
+///
+/// Type derived for non-terminal NorOp
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct NorOp {}
+
+///
+/// Type derived for non-terminal Not
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Not {}
+
+///
+/// Type derived for non-terminal OrOp
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct OrOp {}
+
+///
+/// Type derived for non-terminal Parenthesized
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Parenthesized {
+    pub expression: Expression,
+}
+
+///
+/// Type derived for non-terminal RightParenthesis
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct RightParenthesis<'t> {
+    pub right_parenthesis: Token<'t>, /* ) */
+}
+
+///
+/// Type derived for non-terminal Semicolon
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Semicolon<'t> {
+    pub semicolon: Token<'t>, /* ; */
+}
+
+///
+/// Type derived for non-terminal Term
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct Term {
+    pub term_opt: Option<TermOpt>,
+    pub factor: Factor,
+}
+
+///
+/// Type derived for non-terminal TermOpt
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct TermOpt {
+    pub unary_operator: UnaryOperator,
+}
+
+///
+/// Type derived for non-terminal TrailingSemicolon
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct TrailingSemicolon<'t> {
+    pub trailing_semicolon_opt: Option<TrailingSemicolonOpt<'t>>,
+}
+
+///
+/// Type derived for non-terminal TrailingSemicolonOpt
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct TrailingSemicolonOpt<'t> {
+    pub semicolon: Semicolon<'t>,
+}
+
+///
+/// Type derived for non-terminal True
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct True {}
+
+///
+/// Type derived for non-terminal UnaryOperator
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct UnaryOperator {
+    pub not: Not,
+}
+
+///
+/// Type derived for non-terminal XnorOp
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct XnorOp {}
+
+///
+/// Type derived for non-terminal XorOp
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct XorOp {}
+
+// -------------------------------------------------------------------------------------------------
+
+///
+/// Deduced ASTType of expanded grammar
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ASTType<'t> {
+    AndOp(AndOp),
+    BinaryOperator(BinaryOperator),
+    Boolean(Boolean),
+    Expression(Expression),
+    ExpressionList(Vec<ExpressionList>),
+    Expressions(Expressions),
+    ExpressionsList(Vec<ExpressionsList>),
+    Factor(Factor),
+    False(False),
+    LeftParenthesis(LeftParenthesis<'t>),
+    NandOp(NandOp),
+    NorOp(NorOp),
+    Not(Not),
+    OrOp(OrOp),
+    Parenthesized(Parenthesized),
+    RightParenthesis(RightParenthesis<'t>),
+    Semicolon(Semicolon<'t>),
+    Term(Term),
+    TermOpt(Option<TermOpt>),
+    TrailingSemicolon(TrailingSemicolon<'t>),
+    TrailingSemicolonOpt(Option<TrailingSemicolonOpt<'t>>),
+    True(True),
+    UnaryOperator(UnaryOperator),
+    XnorOp(XnorOp),
+    XorOp(XorOp),
+}
+
+/// Auto-implemented adapter grammar
+///
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+/// The lifetime parameter `'u` refers to the lifetime of user grammar object.
+///
+#[allow(dead_code)]
+pub struct BooleanGrammarAuto<'t, 'u>
+where
+    't: 'u,
+{
+    // Mutable reference of the actual user grammar to be able to call the semantic actions on it
+    user_grammar: &'u mut dyn BooleanGrammarTrait<'t>,
+    // Stack to construct the AST on it
+    item_stack: Vec<ASTType<'t>>,
+}
+
+///
+/// The `BooleanGrammarAuto` impl is automatically generated for the
+/// given grammar.
+///
+impl<'t, 'u> BooleanGrammarAuto<'t, 'u> {
+    pub fn new(user_grammar: &'u mut dyn BooleanGrammarTrait<'t>) -> Self {
+        Self {
+            user_grammar,
+            item_stack: Vec::new(),
+        }
+    }
+
+    #[allow(dead_code)]
+    fn push(&mut self, item: ASTType<'t>, context: &str) {
+        trace!("push    {}: {:?}", context, item);
+        self.item_stack.push(item)
+    }
+
+    #[allow(dead_code)]
+    fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
+        let item = self.item_stack.pop();
+        if let Some(ref item) = item {
+            trace!("pop     {}: {:?}", context, item);
+        }
+        item
+    }
+
+    #[allow(dead_code)]
+    // Use this function for debugging purposes:
+    // trace!("{}", self.trace_item_stack(context));
+    fn trace_item_stack(&self, context: &str) -> std::string::String {
+        format!(
+            "Item stack at {}:\n{}",
+            context,
+            self.item_stack
+                .iter()
+                .rev()
+                .map(|s| format!("  {:?}", s))
+                .collect::<Vec<std::string::String>>()
+                .join("\n")
+        )
+    }
+
     /// Semantic action for production 0:
     ///
-    /// `Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;`
+    /// `Expressions: Expression ExpressionsList /* Vec */ TrailingSemicolon^ /* Clipped */;`
     ///
+    #[parol_runtime::function_name::named]
     fn expressions(
         &mut self,
-        _expression: &ParseTreeType,
-        _expressions_list: &ParseTreeType,
-        _expressions_opt: &ParseTreeType,
+        _expression: &ParseTreeType<'t>,
+        _expressions_list: &ParseTreeType<'t>,
+        _trailing_semicolon: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.pop(context);
+        let expressions_list =
+            pop_and_reverse_item!(self, expressions_list, ExpressionsList, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let expressions_built = Expressions {
+            expression,
+            expressions_list,
+        };
+        // Calling user action here
+        self.user_grammar.expressions(&expressions_built)?;
+        self.push(ASTType::Expressions(expressions_built), context);
         Ok(())
     }
 
     /// Semantic action for production 1:
     ///
-    /// `ExpressionsList /* Vec<T>::Push */: Semicolon Expression ExpressionsList;`
+    /// `ExpressionsList /* Vec<T>::Push */: Semicolon^ /* Clipped */ Expression ExpressionsList;`
     ///
+    #[parol_runtime::function_name::named]
     fn expressions_list_0(
         &mut self,
-        _semicolon: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _expressions_list: &ParseTreeType,
+        _semicolon: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        _expressions_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut expressions_list = pop_item!(self, expressions_list, ExpressionsList, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        self.pop(context);
+        let expressions_list_0_built = ExpressionsList { expression };
+        // Add an element to the vector
+        expressions_list.push(expressions_list_0_built);
+        self.push(ASTType::ExpressionsList(expressions_list), context);
         Ok(())
     }
 
@@ -48,64 +647,127 @@ pub trait BooleanGrammarTrait {
     ///
     /// `ExpressionsList /* Vec<T>::New */: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn expressions_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let expressions_list_1_built = Vec::new();
+        self.push(ASTType::ExpressionsList(expressions_list_1_built), context);
         Ok(())
     }
 
     /// Semantic action for production 3:
     ///
-    /// `ExpressionsOpt /* Option<T>::Some */: Semicolon;`
+    /// `TrailingSemicolon: TrailingSemicolonOpt /* Option */;`
     ///
-    fn expressions_opt_0(&mut self, _semicolon: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn trailing_semicolon(&mut self, _trailing_semicolon_opt: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let trailing_semicolon_opt =
+            pop_item!(self, trailing_semicolon_opt, TrailingSemicolonOpt, context);
+        let trailing_semicolon_built = TrailingSemicolon {
+            trailing_semicolon_opt,
+        };
+        // Calling user action here
+        self.user_grammar
+            .trailing_semicolon(&trailing_semicolon_built)?;
+        self.push(
+            ASTType::TrailingSemicolon(trailing_semicolon_built),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 4:
     ///
-    /// `ExpressionsOpt /* Option<T>::None */: ;`
+    /// `TrailingSemicolonOpt /* Option<T>::Some */: Semicolon;`
     ///
-    fn expressions_opt_1(&mut self) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn trailing_semicolon_opt_0(&mut self, _semicolon: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = pop_item!(self, semicolon, Semicolon, context);
+        let trailing_semicolon_opt_0_built = TrailingSemicolonOpt { semicolon };
+        self.push(
+            ASTType::TrailingSemicolonOpt(Some(trailing_semicolon_opt_0_built)),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 5:
     ///
-    /// `Expression: Term TailExpression;`
+    /// `TrailingSemicolonOpt /* Option<T>::None */: ;`
     ///
-    fn expression(
-        &mut self,
-        _term: &ParseTreeType,
-        _tail_expression: &ParseTreeType,
-    ) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn trailing_semicolon_opt_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::TrailingSemicolonOpt(None), context);
         Ok(())
     }
 
     /// Semantic action for production 6:
     ///
-    /// `TailExpression: TailExpressionList /* Vec */;`
+    /// `Expression: Term ExpressionList /* Vec */;`
     ///
-    fn tail_expression(&mut self, _tail_expression_list: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn expression(
+        &mut self,
+        _term: &ParseTreeType<'t>,
+        _expression_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let expression_list = pop_and_reverse_item!(self, expression_list, ExpressionList, context);
+        let term = pop_item!(self, term, Term, context);
+        let expression_built = Expression {
+            term,
+            expression_list,
+        };
+        // Calling user action here
+        self.user_grammar.expression(&expression_built)?;
+        self.push(ASTType::Expression(expression_built), context);
         Ok(())
     }
 
     /// Semantic action for production 7:
     ///
-    /// `TailExpressionList /* Vec<T>::Push */: BinaryOperator Term TailExpressionList;`
+    /// `ExpressionList /* Vec<T>::Push */: BinaryOperator Term ExpressionList;`
     ///
-    fn tail_expression_list_0(
+    #[parol_runtime::function_name::named]
+    fn expression_list_0(
         &mut self,
-        _binary_operator: &ParseTreeType,
-        _term: &ParseTreeType,
-        _tail_expression_list: &ParseTreeType,
+        _binary_operator: &ParseTreeType<'t>,
+        _term: &ParseTreeType<'t>,
+        _expression_list: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut expression_list = pop_item!(self, expression_list, ExpressionList, context);
+        let term = pop_item!(self, term, Term, context);
+        let binary_operator = pop_item!(self, binary_operator, BinaryOperator, context);
+        let expression_list_0_built = ExpressionList {
+            term,
+            binary_operator,
+        };
+        // Add an element to the vector
+        expression_list.push(expression_list_0_built);
+        self.push(ASTType::ExpressionList(expression_list), context);
         Ok(())
     }
 
     /// Semantic action for production 8:
     ///
-    /// `TailExpressionList /* Vec<T>::New */: ;`
+    /// `ExpressionList /* Vec<T>::New */: ;`
     ///
-    fn tail_expression_list_1(&mut self) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn expression_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let expression_list_1_built = Vec::new();
+        self.push(ASTType::ExpressionList(expression_list_1_built), context);
         Ok(())
     }
 
@@ -113,7 +775,16 @@ pub trait BooleanGrammarTrait {
     ///
     /// `Term: TermOpt /* Option */ Factor;`
     ///
-    fn term(&mut self, _term_opt: &ParseTreeType, _factor: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn term(&mut self, _term_opt: &ParseTreeType<'t>, _factor: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let factor = pop_item!(self, factor, Factor, context);
+        let term_opt = pop_item!(self, term_opt, TermOpt, context);
+        let term_built = Term { term_opt, factor };
+        // Calling user action here
+        self.user_grammar.term(&term_built)?;
+        self.push(ASTType::Term(term_built), context);
         Ok(())
     }
 
@@ -121,7 +792,13 @@ pub trait BooleanGrammarTrait {
     ///
     /// `TermOpt /* Option<T>::Some */: UnaryOperator;`
     ///
-    fn term_opt_0(&mut self, _unary_operator: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn term_opt_0(&mut self, _unary_operator: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let unary_operator = pop_item!(self, unary_operator, UnaryOperator, context);
+        let term_opt_0_built = TermOpt { unary_operator };
+        self.push(ASTType::TermOpt(Some(term_opt_0_built)), context);
         Ok(())
     }
 
@@ -129,7 +806,11 @@ pub trait BooleanGrammarTrait {
     ///
     /// `TermOpt /* Option<T>::None */: ;`
     ///
+    #[parol_runtime::function_name::named]
     fn term_opt_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::TermOpt(None), context);
         Ok(())
     }
 
@@ -137,7 +818,16 @@ pub trait BooleanGrammarTrait {
     ///
     /// `Boolean: True;`
     ///
-    fn boolean_0(&mut self, _true: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn boolean_0(&mut self, _true: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r#true = pop_item!(self, r#true, True, context);
+        let boolean_0_built = BooleanTrue { r#true };
+        let boolean_0_built = Boolean::True(boolean_0_built);
+        // Calling user action here
+        self.user_grammar.boolean(&boolean_0_built)?;
+        self.push(ASTType::Boolean(boolean_0_built), context);
         Ok(())
     }
 
@@ -145,7 +835,16 @@ pub trait BooleanGrammarTrait {
     ///
     /// `Boolean: False;`
     ///
-    fn boolean_1(&mut self, _false: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn boolean_1(&mut self, _false: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r#false = pop_item!(self, r#false, False, context);
+        let boolean_1_built = BooleanFalse { r#false };
+        let boolean_1_built = Boolean::False(boolean_1_built);
+        // Calling user action here
+        self.user_grammar.boolean(&boolean_1_built)?;
+        self.push(ASTType::Boolean(boolean_1_built), context);
         Ok(())
     }
 
@@ -153,7 +852,15 @@ pub trait BooleanGrammarTrait {
     ///
     /// `UnaryOperator: Not;`
     ///
-    fn unary_operator(&mut self, _not: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn unary_operator(&mut self, _not: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let not = pop_item!(self, not, Not, context);
+        let unary_operator_built = UnaryOperator { not };
+        // Calling user action here
+        self.user_grammar.unary_operator(&unary_operator_built)?;
+        self.push(ASTType::UnaryOperator(unary_operator_built), context);
         Ok(())
     }
 
@@ -161,7 +868,17 @@ pub trait BooleanGrammarTrait {
     ///
     /// `BinaryOperator: AndOp;`
     ///
-    fn binary_operator_0(&mut self, _and_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn binary_operator_0(&mut self, _and_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let and_op = pop_item!(self, and_op, AndOp, context);
+        let binary_operator_0_built = BinaryOperatorAndOp { and_op };
+        let binary_operator_0_built = BinaryOperator::AndOp(binary_operator_0_built);
+        // Calling user action here
+        self.user_grammar
+            .binary_operator(&binary_operator_0_built)?;
+        self.push(ASTType::BinaryOperator(binary_operator_0_built), context);
         Ok(())
     }
 
@@ -169,7 +886,17 @@ pub trait BooleanGrammarTrait {
     ///
     /// `BinaryOperator: OrOp;`
     ///
-    fn binary_operator_1(&mut self, _or_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn binary_operator_1(&mut self, _or_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let or_op = pop_item!(self, or_op, OrOp, context);
+        let binary_operator_1_built = BinaryOperatorOrOp { or_op };
+        let binary_operator_1_built = BinaryOperator::OrOp(binary_operator_1_built);
+        // Calling user action here
+        self.user_grammar
+            .binary_operator(&binary_operator_1_built)?;
+        self.push(ASTType::BinaryOperator(binary_operator_1_built), context);
         Ok(())
     }
 
@@ -177,7 +904,17 @@ pub trait BooleanGrammarTrait {
     ///
     /// `BinaryOperator: XorOp;`
     ///
-    fn binary_operator_2(&mut self, _xor_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn binary_operator_2(&mut self, _xor_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let xor_op = pop_item!(self, xor_op, XorOp, context);
+        let binary_operator_2_built = BinaryOperatorXorOp { xor_op };
+        let binary_operator_2_built = BinaryOperator::XorOp(binary_operator_2_built);
+        // Calling user action here
+        self.user_grammar
+            .binary_operator(&binary_operator_2_built)?;
+        self.push(ASTType::BinaryOperator(binary_operator_2_built), context);
         Ok(())
     }
 
@@ -185,7 +922,17 @@ pub trait BooleanGrammarTrait {
     ///
     /// `BinaryOperator: NorOp;`
     ///
-    fn binary_operator_3(&mut self, _nor_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn binary_operator_3(&mut self, _nor_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let nor_op = pop_item!(self, nor_op, NorOp, context);
+        let binary_operator_3_built = BinaryOperatorNorOp { nor_op };
+        let binary_operator_3_built = BinaryOperator::NorOp(binary_operator_3_built);
+        // Calling user action here
+        self.user_grammar
+            .binary_operator(&binary_operator_3_built)?;
+        self.push(ASTType::BinaryOperator(binary_operator_3_built), context);
         Ok(())
     }
 
@@ -193,7 +940,17 @@ pub trait BooleanGrammarTrait {
     ///
     /// `BinaryOperator: NandOp;`
     ///
-    fn binary_operator_4(&mut self, _nand_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn binary_operator_4(&mut self, _nand_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let nand_op = pop_item!(self, nand_op, NandOp, context);
+        let binary_operator_4_built = BinaryOperatorNandOp { nand_op };
+        let binary_operator_4_built = BinaryOperator::NandOp(binary_operator_4_built);
+        // Calling user action here
+        self.user_grammar
+            .binary_operator(&binary_operator_4_built)?;
+        self.push(ASTType::BinaryOperator(binary_operator_4_built), context);
         Ok(())
     }
 
@@ -201,92 +958,175 @@ pub trait BooleanGrammarTrait {
     ///
     /// `BinaryOperator: XnorOp;`
     ///
-    fn binary_operator_5(&mut self, _xnor_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn binary_operator_5(&mut self, _xnor_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let xnor_op = pop_item!(self, xnor_op, XnorOp, context);
+        let binary_operator_5_built = BinaryOperatorXnorOp { xnor_op };
+        let binary_operator_5_built = BinaryOperator::XnorOp(binary_operator_5_built);
+        // Calling user action here
+        self.user_grammar
+            .binary_operator(&binary_operator_5_built)?;
+        self.push(ASTType::BinaryOperator(binary_operator_5_built), context);
         Ok(())
     }
 
     /// Semantic action for production 21:
     ///
-    /// `AndOp: "[aA][nN][dD]";`
+    /// `AndOp: "[aA][nN][dD]"^ /* Clipped */;`
     ///
-    fn and_op(&mut self, _and_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn and_op(&mut self, _and_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let and_op_built = AndOp {};
+        // Calling user action here
+        self.user_grammar.and_op(&and_op_built)?;
+        self.push(ASTType::AndOp(and_op_built), context);
         Ok(())
     }
 
     /// Semantic action for production 22:
     ///
-    /// `OrOp: "[oO][rR]";`
+    /// `OrOp: "[oO][rR]"^ /* Clipped */;`
     ///
-    fn or_op(&mut self, _or_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn or_op(&mut self, _or_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let or_op_built = OrOp {};
+        // Calling user action here
+        self.user_grammar.or_op(&or_op_built)?;
+        self.push(ASTType::OrOp(or_op_built), context);
         Ok(())
     }
 
     /// Semantic action for production 23:
     ///
-    /// `XorOp: "[xX][oO][rR]";`
+    /// `XorOp: "[xX][oO][rR]"^ /* Clipped */;`
     ///
-    fn xor_op(&mut self, _xor_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn xor_op(&mut self, _xor_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let xor_op_built = XorOp {};
+        // Calling user action here
+        self.user_grammar.xor_op(&xor_op_built)?;
+        self.push(ASTType::XorOp(xor_op_built), context);
         Ok(())
     }
 
     /// Semantic action for production 24:
     ///
-    /// `NorOp: "[nN][oO][rR]";`
+    /// `NorOp: "[nN][oO][rR]"^ /* Clipped */;`
     ///
-    fn nor_op(&mut self, _nor_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn nor_op(&mut self, _nor_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let nor_op_built = NorOp {};
+        // Calling user action here
+        self.user_grammar.nor_op(&nor_op_built)?;
+        self.push(ASTType::NorOp(nor_op_built), context);
         Ok(())
     }
 
     /// Semantic action for production 25:
     ///
-    /// `NandOp: "[nN][aA][nN][dD]";`
+    /// `NandOp: "[nN][aA][nN][dD]"^ /* Clipped */;`
     ///
-    fn nand_op(&mut self, _nand_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn nand_op(&mut self, _nand_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let nand_op_built = NandOp {};
+        // Calling user action here
+        self.user_grammar.nand_op(&nand_op_built)?;
+        self.push(ASTType::NandOp(nand_op_built), context);
         Ok(())
     }
 
     /// Semantic action for production 26:
     ///
-    /// `XnorOp: "[xX][nN][oO][rR]";`
+    /// `XnorOp: "[xX][nN][oO][rR]"^ /* Clipped */;`
     ///
-    fn xnor_op(&mut self, _xnor_op: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn xnor_op(&mut self, _xnor_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let xnor_op_built = XnorOp {};
+        // Calling user action here
+        self.user_grammar.xnor_op(&xnor_op_built)?;
+        self.push(ASTType::XnorOp(xnor_op_built), context);
         Ok(())
     }
 
     /// Semantic action for production 27:
     ///
-    /// `True: "[tT][rR][uU][eE]";`
+    /// `True: "[tT][rR][uU][eE]"^ /* Clipped */;`
     ///
-    fn r#true(&mut self, _true: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn r#true(&mut self, _true: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r#true_built = True {};
+        // Calling user action here
+        self.user_grammar.r#true(&r#true_built)?;
+        self.push(ASTType::True(r#true_built), context);
         Ok(())
     }
 
     /// Semantic action for production 28:
     ///
-    /// `False: "[fF][aA][lL][sS][eE]";`
+    /// `False: "[fF][aA][lL][sS][eE]"^ /* Clipped */;`
     ///
-    fn r#false(&mut self, _false: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn r#false(&mut self, _false: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r#false_built = False {};
+        // Calling user action here
+        self.user_grammar.r#false(&r#false_built)?;
+        self.push(ASTType::False(r#false_built), context);
         Ok(())
     }
 
     /// Semantic action for production 29:
     ///
-    /// `Not: "[nN][oO][tT]";`
+    /// `Not: "[nN][oO][tT]"^ /* Clipped */;`
     ///
-    fn not(&mut self, _not: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn not(&mut self, _not: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let not_built = Not {};
+        // Calling user action here
+        self.user_grammar.not(&not_built)?;
+        self.push(ASTType::Not(not_built), context);
         Ok(())
     }
 
     /// Semantic action for production 30:
     ///
-    /// `Parenthesized: LeftParenthesis Expression RightParenthesis;`
+    /// `Parenthesized: LeftParenthesis^ /* Clipped */ Expression RightParenthesis^ /* Clipped */;`
     ///
+    #[parol_runtime::function_name::named]
     fn parenthesized(
         &mut self,
-        _left_parenthesis: &ParseTreeType,
-        _expression: &ParseTreeType,
-        _right_parenthesis: &ParseTreeType,
+        _left_parenthesis: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        _right_parenthesis: &ParseTreeType<'t>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.pop(context);
+        let expression = pop_item!(self, expression, Expression, context);
+        self.pop(context);
+        let parenthesized_built = Parenthesized { expression };
+        // Calling user action here
+        self.user_grammar.parenthesized(&parenthesized_built)?;
+        self.push(ASTType::Parenthesized(parenthesized_built), context);
         Ok(())
     }
 
@@ -294,7 +1134,15 @@ pub trait BooleanGrammarTrait {
     ///
     /// `Semicolon: ';';`
     ///
-    fn semicolon(&mut self, _semicolon: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn semicolon(&mut self, semicolon: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let semicolon_built = Semicolon { semicolon };
+        // Calling user action here
+        self.user_grammar.semicolon(&semicolon_built)?;
+        self.push(ASTType::Semicolon(semicolon_built), context);
         Ok(())
     }
 
@@ -302,7 +1150,16 @@ pub trait BooleanGrammarTrait {
     ///
     /// `LeftParenthesis: '(';`
     ///
-    fn left_parenthesis(&mut self, _left_parenthesis: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn left_parenthesis(&mut self, left_parenthesis: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let left_parenthesis = left_parenthesis.token()?.clone();
+        let left_parenthesis_built = LeftParenthesis { left_parenthesis };
+        // Calling user action here
+        self.user_grammar
+            .left_parenthesis(&left_parenthesis_built)?;
+        self.push(ASTType::LeftParenthesis(left_parenthesis_built), context);
         Ok(())
     }
 
@@ -310,7 +1167,16 @@ pub trait BooleanGrammarTrait {
     ///
     /// `RightParenthesis: ')';`
     ///
-    fn right_parenthesis(&mut self, _right_parenthesis: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn right_parenthesis(&mut self, right_parenthesis: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let right_parenthesis = right_parenthesis.token()?.clone();
+        let right_parenthesis_built = RightParenthesis { right_parenthesis };
+        // Calling user action here
+        self.user_grammar
+            .right_parenthesis(&right_parenthesis_built)?;
+        self.push(ASTType::RightParenthesis(right_parenthesis_built), context);
         Ok(())
     }
 
@@ -318,7 +1184,16 @@ pub trait BooleanGrammarTrait {
     ///
     /// `Factor: Boolean;`
     ///
-    fn factor_0(&mut self, _boolean: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn factor_0(&mut self, _boolean: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let boolean = pop_item!(self, boolean, Boolean, context);
+        let factor_0_built = FactorBoolean { boolean };
+        let factor_0_built = Factor::Boolean(factor_0_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_0_built)?;
+        self.push(ASTType::Factor(factor_0_built), context);
         Ok(())
     }
 
@@ -326,30 +1201,41 @@ pub trait BooleanGrammarTrait {
     ///
     /// `Factor: Parenthesized;`
     ///
-    fn factor_1(&mut self, _parenthesized: &ParseTreeType) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn factor_1(&mut self, _parenthesized: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let parenthesized = pop_item!(self, parenthesized, Parenthesized, context);
+        let factor_1_built = FactorParenthesized {
+            parenthesized: Box::new(parenthesized),
+        };
+        let factor_1_built = Factor::Parenthesized(factor_1_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_1_built)?;
+        self.push(ASTType::Factor(factor_1_built), context);
         Ok(())
     }
 }
 
-impl UserActionsTrait<'_> for BooleanGrammar {
+impl<'t> UserActionsTrait<'t> for BooleanGrammarAuto<'t, '_> {
     ///
     /// This function is implemented automatically for the user's item BooleanGrammar.
     ///
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeType],
+        children: &[ParseTreeType<'t>],
     ) -> Result<()> {
         match prod_num {
             0 => self.expressions(&children[0], &children[1], &children[2]),
             1 => self.expressions_list_0(&children[0], &children[1], &children[2]),
             2 => self.expressions_list_1(),
-            3 => self.expressions_opt_0(&children[0]),
-            4 => self.expressions_opt_1(),
-            5 => self.expression(&children[0], &children[1]),
-            6 => self.tail_expression(&children[0]),
-            7 => self.tail_expression_list_0(&children[0], &children[1], &children[2]),
-            8 => self.tail_expression_list_1(),
+            3 => self.trailing_semicolon(&children[0]),
+            4 => self.trailing_semicolon_opt_0(&children[0]),
+            5 => self.trailing_semicolon_opt_1(),
+            6 => self.expression(&children[0], &children[1]),
+            7 => self.expression_list_0(&children[0], &children[1], &children[2]),
+            8 => self.expression_list_1(),
             9 => self.term(&children[0], &children[1]),
             10 => self.term_opt_0(&children[0]),
             11 => self.term_opt_1(),
@@ -384,8 +1270,8 @@ impl UserActionsTrait<'_> for BooleanGrammar {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'_>) {
-        // This is currently only supported for auto generate mode.
-        // Please, file an issue if need arises.
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
     }
 }

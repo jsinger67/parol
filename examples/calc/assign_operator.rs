@@ -1,3 +1,5 @@
+use anyhow::anyhow;
+use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::result::Result;
 
@@ -34,21 +36,22 @@ impl Display for AssignOperator {
     }
 }
 
-impl From<&str> for AssignOperator {
-    fn from(s: &str) -> Self {
+impl TryFrom<&str> for AssignOperator {
+    type Error = anyhow::Error;
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
         match s {
-            "=" => Self::Assign,
-            "+=" => Self::Plus,
-            "-=" => Self::Minus,
-            "*=" => Self::Mul,
-            "/=" => Self::Div,
-            "%=" => Self::Mod,
-            "<<=" => Self::ShiftLeft,
-            ">>=" => Self::ShiftRight,
-            "&=" => Self::BitwiseAnd,
-            "^=" => Self::BitwiseXOr,
-            "|=" => Self::BitwiseOr,
-            _ => panic!("Unexpected assignment operator {}", s),
+            "=" => Ok(Self::Assign),
+            "+=" => Ok(Self::Plus),
+            "-=" => Ok(Self::Minus),
+            "*=" => Ok(Self::Mul),
+            "/=" => Ok(Self::Div),
+            "%=" => Ok(Self::Mod),
+            "<<=" => Ok(Self::ShiftLeft),
+            ">>=" => Ok(Self::ShiftRight),
+            "&=" => Ok(Self::BitwiseAnd),
+            "^=" => Ok(Self::BitwiseXOr),
+            "|=" => Ok(Self::BitwiseOr),
+            _ => Err(anyhow!("Unexpected assignment operator {}", s)),
         }
     }
 }

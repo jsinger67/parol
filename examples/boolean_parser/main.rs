@@ -13,7 +13,7 @@ use std::env;
 use std::fs;
 
 // To generate:
-// parol -f ./examples/boolean_parser/boolean-parser.par -e ./examples/boolean_parser/boolean-parser-exp.par -p ./examples/boolean_parser/boolean_parser.rs -a ./examples/boolean_parser/boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar
+// parol -f ./boolean-parser.par -e ./boolean-parser-exp.par -p ./boolean_parser.rs -a ./boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar -b
 
 // To run the example
 // cargo run --example boolean_parser -- ./examples/boolean_parser/boolean_parser_test.txt
@@ -33,7 +33,6 @@ fn main() -> Result<()> {
         let mut boolean_grammar = BooleanGrammar::new();
         let syntax_tree = parse(&input, &file_name, &mut boolean_grammar)
             .with_context(|| format!("Failed parsing file {}", file_name))?;
-        println!("{}", boolean_grammar);
         generate_tree_layout(&syntax_tree, &file_name).context("Error generating tree layout")
     } else {
         Err(anyhow!("Please provide a file name as single parameter!"))

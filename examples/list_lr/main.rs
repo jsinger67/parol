@@ -11,7 +11,7 @@ use parol_runtime::{log::debug, Report};
 use std::{env, fs, time::Instant};
 
 // To generate:
-// parol -f ./examples/list_lr/list.par -e ./examples/list_lr/list-exp.par -p ./examples/list_lr/list_parser.rs -a ./examples/list_lr/list_grammar_trait.rs -t ListGrammar -m list_grammar -g -b
+// parol -f ./examples/list_lr/list.par -e ./examples/list_lr/list-exp.par -p ./examples/list_lr/list_parser.rs -a ./examples/list_lr/list_grammar_trait.rs -t ListGrammar -m list_grammar -b
 
 // To run the example
 // cargo run --example list_lr -- ./examples/list_lr/list_test.txt

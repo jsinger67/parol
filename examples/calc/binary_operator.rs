@@ -1,3 +1,5 @@
+use anyhow::anyhow;
+use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::result::Result;
 
@@ -48,28 +50,29 @@ impl Display for BinaryOperator {
     }
 }
 
-impl From<&str> for BinaryOperator {
-    fn from(s: &str) -> Self {
+impl TryFrom<&str> for BinaryOperator {
+    type Error = anyhow::Error;
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
         match s {
-            "+" => Self::Add,
-            "-" => Self::Sub,
-            "*" => Self::Mul,
-            "/" => Self::Div,
-            "%" => Self::Mod,
-            "**" => Self::Pow,
-            "==" => Self::Eq,
-            "!=" => Self::Ne,
-            "<" => Self::Lt,
-            "<=" => Self::Le,
-            ">" => Self::Gt,
-            ">=" => Self::Ge,
-            "<<" => Self::BitShl,
-            ">>" => Self::BitShr,
-            "&" => Self::BitAnd,
-            "|" => Self::BitOr,
-            "&&" => Self::LogAnd,
-            "||" => Self::LogOr,
-            _ => panic!("Unexpected assignment operator {}", s),
+            "+" => Ok(Self::Add),
+            "-" => Ok(Self::Sub),
+            "*" => Ok(Self::Mul),
+            "/" => Ok(Self::Div),
+            "%" => Ok(Self::Mod),
+            "**" => Ok(Self::Pow),
+            "==" => Ok(Self::Eq),
+            "!=" => Ok(Self::Ne),
+            "<" => Ok(Self::Lt),
+            "<=" => Ok(Self::Le),
+            ">" => Ok(Self::Gt),
+            ">=" => Ok(Self::Ge),
+            "<<" => Ok(Self::BitShl),
+            ">>" => Ok(Self::BitShr),
+            "&" => Ok(Self::BitAnd),
+            "|" => Ok(Self::BitOr),
+            "&&" => Ok(Self::LogAnd),
+            "||" => Ok(Self::LogOr),
+            _ => Err(anyhow!("Unexpected assignment operator {}", s)),
         }
     }
 }

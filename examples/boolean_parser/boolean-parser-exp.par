@@ -6,15 +6,15 @@
 
 %%
 
-/*  0 */ Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;
-/*  1 */ ExpressionsList /* Vec<T>::Push */: Semicolon Expression ExpressionsList;
+/*  0 */ Expressions: Expression ExpressionsList /* Vec */ TrailingSemicolon^ /* Clipped */;
+/*  1 */ ExpressionsList /* Vec<T>::Push */: Semicolon^ /* Clipped */ Expression ExpressionsList;
 /*  2 */ ExpressionsList /* Vec<T>::New */: ;
-/*  3 */ ExpressionsOpt /* Option<T>::Some */: Semicolon;
-/*  4 */ ExpressionsOpt /* Option<T>::None */: ;
-/*  5 */ Expression: Term TailExpression;
-/*  6 */ TailExpression: TailExpressionList /* Vec */;
-/*  7 */ TailExpressionList /* Vec<T>::Push */: BinaryOperator Term TailExpressionList;
-/*  8 */ TailExpressionList /* Vec<T>::New */: ;
+/*  3 */ TrailingSemicolon: TrailingSemicolonOpt /* Option */;
+/*  4 */ TrailingSemicolonOpt /* Option<T>::Some */: Semicolon;
+/*  5 */ TrailingSemicolonOpt /* Option<T>::None */: ;
+/*  6 */ Expression: Term ExpressionList /* Vec */;
+/*  7 */ ExpressionList /* Vec<T>::Push */: BinaryOperator Term ExpressionList;
+/*  8 */ ExpressionList /* Vec<T>::New */: ;
 /*  9 */ Term: TermOpt /* Option */ Factor;
 /* 10 */ TermOpt /* Option<T>::Some */: UnaryOperator;
 /* 11 */ TermOpt /* Option<T>::None */: ;
@@ -27,16 +27,16 @@
 /* 18 */ BinaryOperator: NorOp;
 /* 19 */ BinaryOperator: NandOp;
 /* 20 */ BinaryOperator: XnorOp;
-/* 21 */ AndOp: "[aA][nN][dD]";
-/* 22 */ OrOp: "[oO][rR]";
-/* 23 */ XorOp: "[xX][oO][rR]";
-/* 24 */ NorOp: "[nN][oO][rR]";
-/* 25 */ NandOp: "[nN][aA][nN][dD]";
-/* 26 */ XnorOp: "[xX][nN][oO][rR]";
-/* 27 */ True: "[tT][rR][uU][eE]";
-/* 28 */ False: "[fF][aA][lL][sS][eE]";
-/* 29 */ Not: "[nN][oO][tT]";
-/* 30 */ Parenthesized: LeftParenthesis Expression RightParenthesis;
+/* 21 */ AndOp: "[aA][nN][dD]"^ /* Clipped */;
+/* 22 */ OrOp: "[oO][rR]"^ /* Clipped */;
+/* 23 */ XorOp: "[xX][oO][rR]"^ /* Clipped */;
+/* 24 */ NorOp: "[nN][oO][rR]"^ /* Clipped */;
+/* 25 */ NandOp: "[nN][aA][nN][dD]"^ /* Clipped */;
+/* 26 */ XnorOp: "[xX][nN][oO][rR]"^ /* Clipped */;
+/* 27 */ True: "[tT][rR][uU][eE]"^ /* Clipped */;
+/* 28 */ False: "[fF][aA][lL][sS][eE]"^ /* Clipped */;
+/* 29 */ Not: "[nN][oO][tT]"^ /* Clipped */;
+/* 30 */ Parenthesized: LeftParenthesis^ /* Clipped */ Expression RightParenthesis^ /* Clipped */;
 /* 31 */ Semicolon: ';';
 /* 32 */ LeftParenthesis: '(';
 /* 33 */ RightParenthesis: ')';

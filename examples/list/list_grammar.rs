@@ -1,56 +1,95 @@
-use crate::list_grammar_trait::ListGrammarTrait;
-use parol_macros::parol;
-use parol_runtime::{ParseTreeType, Result};
+use crate::list_grammar_trait::{Items, List, ListGrammarTrait, ListOpt};
+use parol_runtime::lexer::Token;
+use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
-
-///
-/// The value range for the supported list elements
-///
-pub type DefinitionRange = usize;
 
 ///
 /// Data structure that implements the semantic actions for our list grammar
 ///
 #[derive(Debug, Default)]
 pub struct ListGrammar {
-    pub numbers: Vec<DefinitionRange>,
+    pub list: Option<List>,
 }
 
 impl ListGrammar {
     pub fn new() -> Self {
         ListGrammar::default()
     }
+}
 
-    fn push(&mut self, item: DefinitionRange) {
-        self.numbers.push(item)
+/// User defined type for a single number
+#[derive(Clone, Debug, Default)]
+pub struct Number(u32);
+
+impl<'t> TryFrom<&Token<'t>> for Number {
+    type Error = anyhow::Error;
+
+    fn try_from(number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
+        Ok(Self(number.text().parse::<u32>()?))
     }
 }
 
-impl Display for ListGrammar {
+/// User defined type for a vector of number
+#[derive(Clone, Debug, Default)]
+pub struct Numbers(Vec<u32>);
+
+impl Display for Numbers {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        writeln!(
+        write!(
             f,
-            "[{}]",
-            self.numbers
+            "{}",
+            self.0
                 .iter()
-                .map(|e| format!("{}", e))
+                .map(|v| v.to_string())
                 .collect::<Vec<String>>()
                 .join(", ")
         )
     }
 }
 
+impl TryFrom<&Items> for Numbers {
+    type Error = anyhow::Error;
+
+    fn try_from(items: &Items) -> std::result::Result<Self, Self::Error> {
+        Ok(Self(items.items_list.iter().fold(
+            vec![items.num.num.0],
+            |mut acc, e| {
+                acc.push(e.num.num.0);
+                acc
+            },
+        )))
+    }
+}
+
+impl Display for List {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        if let Some(list) = &self.list_opt {
+            write!(f, "[{}]", list)
+        } else {
+            write!(f, "[]")
+        }
+    }
+}
+
+impl Display for ListOpt {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(f, "{}", self.items)
+    }
+}
+
+impl Display for ListGrammar {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        match &self.list {
+            Some(list) => writeln!(f, "{}", list),
+            None => write!(f, "No parse result"),
+        }
+    }
+}
+
 impl ListGrammarTrait for ListGrammar {
-    /// Semantic action for production 6:
-    ///
-    /// Num: "[0-9]+";
-    ///
-    fn num(&mut self, num: &ParseTreeType<'_>) -> Result<()> {
-        let symbol = num.text()?;
-        let number = symbol
-            .parse::<DefinitionRange>()
-            .map_err(|e| parol!("num_6: Parse error: {e}"))?;
-        self.push(number);
+    /// Semantic action for non-terminal 'List'
+    fn list(&mut self, arg: &List) -> Result<()> {
+        self.list = Some(arg.clone());
         Ok(())
     }
 }

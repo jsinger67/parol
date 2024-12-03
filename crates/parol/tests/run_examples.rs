@@ -45,30 +45,12 @@ fn run_examples_test() -> Result<()> {
         )],
     )?;
 
-    println!("Running CalcAuto example...");
-    run(
-        &example_path!("calc_auto"),
-        &[concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../../examples/calc_auto/calc_test.txt"
-        )],
-    )?;
-
     println!("Running List example...");
     run(
         &example_path!("list"),
         &[concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/../../examples/list/list_test.txt"
-        )],
-    )?;
-
-    println!("Running ListAuto example...");
-    run(
-        &example_path!("list_auto"),
-        &[concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../../examples/list_auto/list_test.txt"
         )],
     )?;
 
@@ -119,9 +101,6 @@ fn run_examples_test() -> Result<()> {
 
     println!("Running JSON Parser examples...");
     run_json_examples()?;
-
-    println!("Running JSON Parser Auto examples...");
-    run_json_auto_examples()?;
 
     Ok(())
 }
@@ -206,7 +185,7 @@ fn run_keywords2_examples() -> Result<()> {
     let parser = example_path!("keywords2");
     for entry in std::path::Path::new(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../examples/keywords2/testfiles/valid"
+        "/../../examples/keywords/testfiles/valid"
     ))
     .read_dir()?
     .flatten()
@@ -215,6 +194,19 @@ fn run_keywords2_examples() -> Result<()> {
             println!("Parsing {}...", entry.path().display());
             let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
             assert!(exit_status.success());
+        }
+    }
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/keywords/testfiles/invalid"
+    ))
+    .read_dir()?
+    .flatten()
+    {
+        if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
+            println!("Parsing {} should fail...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(!exit_status.success());
         }
     }
     Ok(())
@@ -253,21 +245,6 @@ fn run_basic_interpreter_examples() -> Result<()> {
 
 fn run_json_examples() -> Result<()> {
     let parser = example_path!("json_parser");
-    for entry in std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/../../examples/json"))
-        .read_dir()?
-        .flatten()
-    {
-        if entry.path().extension().unwrap().to_str().unwrap() == "json" {
-            println!("Parsing {}...", entry.path().display());
-            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-            assert!(exit_status.success());
-        }
-    }
-    Ok(())
-}
-
-fn run_json_auto_examples() -> Result<()> {
-    let parser = example_path!("json_parser_auto");
     for entry in std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/../../examples/json"))
         .read_dir()?
         .flatten()

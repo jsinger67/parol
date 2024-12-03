@@ -12,7 +12,7 @@ use parol_runtime::{log::debug, Report};
 use std::{env, fs, time::Instant};
 
 // To generate:
-// parol -f ./snapshot_bin.par -e ./snapshot_bin-exp.par -p ./src/snapshot_bin_parser.rs -a ./src/snapshot_bin_grammar_trait.rs -t SnapshotBinGrammar -m snapshot_bin_grammar -g
+// parol -f ./snapshot_bin.par -e ./snapshot_bin-exp.par -p ./src/snapshot_bin_parser.rs -a ./src/snapshot_bin_grammar_trait.rs -t SnapshotBinGrammar -m snapshot_bin_grammar
 
 struct ErrorReporter;
 impl Report for ErrorReporter {}

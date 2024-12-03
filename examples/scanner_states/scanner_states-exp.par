@@ -23,7 +23,7 @@
 /*  9 */ StringElement: EscapedLineEnd;
 /* 10 */ StringElement: NoneQuote;
 /* 11 */ Identifier: /[a-zA-Z_]\w*/;
-/* 12 */ Escaped: <String>/\["\\bfnt]/;
-/* 13 */ EscapedLineEnd: <String>/\[\s--\n\r]*\r?\n/;
+/* 12 */ Escaped: <String>/\\["\\bfnt]/;
+/* 13 */ EscapedLineEnd: <String>/\\[\s--\n\r]*\r?\n/;
 /* 14 */ NoneQuote: <String>/[^"\\]+/;
 /* 15 */ StringDelimiter: <INITIAL, String>/"/;

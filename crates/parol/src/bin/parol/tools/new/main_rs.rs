@@ -56,13 +56,16 @@ use crate::{crate_name}_parser::parse;
 
         write!(f, "\
 // To generate:
-// parol -f ./{crate_name}.par -e ./{crate_name}-exp.par -p ./src/{crate_name}_parser.rs -a ./src/{crate_name}_grammar_trait.rs -t {grammar_name}Grammar -m {crate_name}_grammar -g
+// parol -f ./{crate_name}.par -e ./{crate_name}-exp.par -p ./src/{crate_name}_parser.rs -a ./src/{crate_name}_grammar_trait.rs -t {grammar_name}Grammar -m {crate_name}_grammar
 ")?;
 
-        write!(f, "\n
+        write!(
+            f,
+            "\n
         struct ErrorReporter;
         impl Report for ErrorReporter {{}}
-\n")?;
+\n"
+        )?;
 
         let grammar = format!("{grammar_name}Grammar");
         let crate_name_grammar = format!("{crate_name}_grammar");

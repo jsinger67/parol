@@ -18,7 +18,7 @@ use std::time::Instant;
 use syntree_layout::Layouter;
 
 // To generate:
-// parol -f ./basic.par -e ./basic-exp.par -p ./src/basic_parser.rs -a ./src/basic_grammar_trait.rs -t BasicGrammar -m basic_grammar -g
+// parol -f ./basic.par -e ./basic-exp.par -p ./src/basic_parser.rs -a ./src/basic_grammar_trait.rs -t BasicGrammar -m basic_grammar
 
 fn main() -> anyhow::Result<std::process::ExitCode> {
     env_logger::init();

@@ -1,6 +1,6 @@
 use crate::lexer::EOI;
 use crate::parser::ScannerIndex;
-use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter};
+use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter, TokenNumber};
 use log::{debug, trace};
 use scnr::{ScannerBuilder, ScannerMode};
 
@@ -50,6 +50,9 @@ pub struct TokenStream<'t> {
 
     /// Scanner stack to support push and pop operations for scanner configurations
     scanner_stack: Vec<ScannerIndex>,
+
+    /// Flag to indicate if the parser is in error recovery mode
+    pub(crate) recovering: bool,
 }
 
 impl<'t> TokenStream<'t> {
@@ -96,6 +99,7 @@ impl<'t> TokenStream<'t> {
             column: 1,
             last_consumed_token_end_pos: 0,
             scanner_stack: Vec::new(),
+            recovering: false,
         };
         token_stream.read_tokens(k)?;
         Ok(token_stream)
@@ -113,7 +117,12 @@ impl<'t> TokenStream<'t> {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
-                Err(LexerError::LookaheadExceedsTokenBufferLength)
+                if self.tokens.is_empty() && self.recovering {
+                    trace!("LA({}): EOI for recovery", n);
+                    Ok(Token::eoi(TokenNumber::MAX))
+                } else {
+                    Err(LexerError::LookaheadExceedsTokenBufferLength)
+                }
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].clone())
@@ -134,7 +143,12 @@ impl<'t> TokenStream<'t> {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
-                Err(LexerError::LookaheadExceedsTokenBufferLength)
+                if self.tokens.is_empty() && self.recovering {
+                    trace!("Type(LA({})): EOI for recovery", n);
+                    Ok(EOI)
+                } else {
+                    Err(LexerError::LookaheadExceedsTokenBufferLength)
+                }
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].token_type)
@@ -279,7 +293,7 @@ impl<'t> TokenStream<'t> {
             );
             self.scanner_stack.push(self.token_iter.current_mode());
             self.switch_to(scanner_index);
-            self.tokens.clear();
+            self.clear_token_buffer();
             self.ensure_buffer()?;
             trace!(
                 "push_scanner: Resulting scanner stack: {:?}",
@@ -307,7 +321,7 @@ impl<'t> TokenStream<'t> {
                     self.scanner_mode_name(scanner_index),
                 );
                 self.switch_to(scanner_index);
-                self.tokens.clear();
+                self.clear_token_buffer();
                 self.ensure_buffer()?;
                 trace!(
                     "pop_scanner: Resulting scanner stack: {:?}",
@@ -380,6 +394,8 @@ impl<'t> TokenStream<'t> {
     /// position (aka scanner state switching).
     ///
     fn switch_to(&mut self, scanner_index: usize) {
+        self.token_iter
+            .set_position(self.last_consumed_token_end_pos);
         self.token_iter.set_mode(scanner_index);
         trace!(
             "Switched to scanner {} <{}>. Last consumed token's end position: {}",
@@ -387,8 +403,6 @@ impl<'t> TokenStream<'t> {
             self.scanner_mode_name(scanner_index),
             self.last_consumed_token_end_pos
         );
-        self.token_iter
-            .set_position(self.last_consumed_token_end_pos);
     }
 
     pub(crate) fn token_types(&self) -> Vec<TerminalIndex> {
@@ -477,6 +491,14 @@ impl<'t> TokenStream<'t> {
     /// Clears the token buffer.
     #[inline]
     fn clear_token_buffer(&mut self) {
+        trace!("Clearing token buffer.");
         self.tokens.clear();
+    }
+
+    /// Sets the token stream in error recovery mode.
+    /// In this mode the parser can try to read more tokens even if the end of input is reached.
+    /// The token stream will return EOI tokens if the token buffer is empty.
+    pub(crate) fn enter_recovery_mode(&mut self) {
+        self.recovering = true;
     }
 }

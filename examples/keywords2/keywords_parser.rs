@@ -6,12 +6,13 @@
 
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
-use parol_runtime::parser::{
-    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
-};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
+
+use crate::keywords_grammar::KeywordsGrammar;
+use crate::keywords_grammar_trait::KeywordsGrammarAuto;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -178,7 +179,7 @@ pub const PRODUCTIONS: &[Production; 13] = &[
         lhs: 8,
         production: &[ParseType::N(1)],
     },
-    // 5 - Declaration: Var S(1) Identifier S(0) ";";
+    // 5 - Declaration: Var S(1) Identifier S(0) ';';
     Production {
         lhs: 3,
         production: &[
@@ -204,22 +205,22 @@ pub const PRODUCTIONS: &[Production; 13] = &[
         lhs: 2,
         production: &[],
     },
-    // 9 - Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+    // 9 - Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
     Production {
         lhs: 7,
         production: &[ParseType::T(6)],
     },
-    // 10 - Begin: "[bB][eE][gG][iI][nN]";
+    // 10 - Begin: /[bB][eE][gG][iI][nN]/;
     Production {
         lhs: 0,
         production: &[ParseType::T(7)],
     },
-    // 11 - End: "[eE][nN][dD]";
+    // 11 - End: /[eE][nN][dD]/;
     Production {
         lhs: 4,
         production: &[ParseType::T(8)],
     },
-    // 12 - Var: "[vV][aA][rR]";
+    // 12 - Var: /[vV][aA][rR]/;
     Production {
         lhs: 9,
         production: &[ParseType::T(9)],
@@ -244,7 +245,7 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut dyn UserActionsTrait<'t>,
+    user_actions: &mut KeywordsGrammar<'t>,
 ) -> Result<ParseTree<'t>, ParolError>
 where
     T: AsRef<Path>,
@@ -256,8 +257,12 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    llk_parser.disable_recovery();
+
+    // Initialize wrapper
+    let mut user_actions = KeywordsGrammarAuto::new(user_actions);
     llk_parser.parse(
         TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
-        user_actions,
+        &mut user_actions,
     )
 }

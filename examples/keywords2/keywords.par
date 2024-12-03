@@ -11,13 +11,13 @@
 Grammar     : { Items };
 Items       : Declaration
             | Block;
-// We switch the scanner state around Identifier            
-Declaration : Var %sc(Identifier) Identifier %sc() ";";
+// We switch the scanner state around Identifier to avoid conflicts with keywords.
+Declaration : Var %sc(Identifier) Identifier %sc() ';';
 Block       : Begin { Items } End;
 
 // Special sort order is not needed here.
-Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";
+Identifier: <Identifier>/[a-zA-Z_][a-zA-Z0-9_]*/;
 
-Begin:      "[bB][eE][gG][iI][nN]";
-End:        "[eE][nN][dD]";
-Var:        "[vV][aA][rR]";
+Begin:      /[bB][eE][gG][iI][nN]/;
+End:        /[eE][nN][dD]/;
+Var:        /[vV][aA][rR]/;

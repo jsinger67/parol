@@ -14,7 +14,7 @@ use std::fs;
 use std::time::Instant;
 
 // To generate:
-// parol -f ./oberon2.par -e ./oberon2-exp.par -p ./oberon2_parser.rs -a ./oberon2_grammar_trait.rs -t Oberon2Grammar -m oberon2_grammar -g
+// parol -f ./oberon2.par -e ./oberon2-exp.par -p ./oberon2_parser.rs -a ./oberon2_grammar_trait.rs -t Oberon2Grammar -m oberon2_grammar
 
 fn main() -> Result<()> {
     env_logger::init();

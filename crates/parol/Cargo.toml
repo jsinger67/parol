@@ -71,20 +71,12 @@ name = "calc"
 path = "../../examples/calc/main.rs"
 
 [[example]]
-name = "calc_auto"
-path = "../../examples/calc_auto/main.rs"
-
-[[example]]
 name = "calc_lr"
 path = "../../examples/calc_lr/main.rs"
 
 [[example]]
 name = "json_parser"
 path = "../../examples/json_parser/main.rs"
-
-[[example]]
-name = "json_parser_auto"
-path = "../../examples/json_parser_auto/main.rs"
 
 [[example]]
 name = "keywords"
@@ -97,10 +89,6 @@ path = "../../examples/keywords2/main.rs"
 [[example]]
 name = "list"
 path = "../../examples/list/main.rs"
-
-[[example]]
-name = "list_auto"
-path = "../../examples/list_auto/main.rs"
 
 [[example]]
 name = "list_lr"

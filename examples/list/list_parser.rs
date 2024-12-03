@@ -6,12 +6,13 @@
 
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
-use parol_runtime::parser::{
-    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
-};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
+
+use crate::list_grammar::ListGrammar;
+use crate::list_grammar_trait::ListGrammarAuto;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -53,104 +54,116 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
 
 const MAX_K: usize = 2;
 
-pub const NON_TERMINALS: &[&str; 6] = &[
-    /* 0 */ "List",
-    /* 1 */ "ListOpt",
-    /* 2 */ "ListOpt0",
-    /* 3 */ "ListRest",
-    /* 4 */ "ListRestOpt",
-    /* 5 */ "Num",
+pub const NON_TERMINALS: &[&str; 7] = &[
+    /* 0 */ "Items",
+    /* 1 */ "ItemsList",
+    /* 2 */ "List",
+    /* 3 */ "ListOpt",
+    /* 4 */ "Num",
+    /* 5 */ "TrailingComma",
+    /* 6 */ "TrailingCommaOpt",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 6] = &[
-    /* 0 - "List" */
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 7] = &[
+    /* 0 - "Items" */
+    LookaheadDFA {
+        prod0: 3,
+        transitions: &[],
+        k: 0,
+    },
+    /* 1 - "ItemsList" */
+    LookaheadDFA {
+        prod0: -1,
+        transitions: &[
+            Trans(0, 0, 3, 5),
+            Trans(0, 5, 1, -1),
+            Trans(1, 0, 3, 5),
+            Trans(1, 6, 2, 4),
+        ],
+        k: 2,
+    },
+    /* 2 - "List" */
     LookaheadDFA {
         prod0: 0,
         transitions: &[],
         k: 0,
     },
-    /* 1 - "ListOpt" */
+    /* 3 - "ListOpt" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 0, 2, 4), Trans(0, 6, 1, 1)],
+        transitions: &[Trans(0, 0, 2, 2), Trans(0, 5, 2, 2), Trans(0, 6, 1, 1)],
         k: 1,
     },
-    /* 2 - "ListOpt0" */
+    /* 4 - "Num" */
     LookaheadDFA {
-        prod0: -1,
-        transitions: &[Trans(0, 0, 2, 3), Trans(0, 5, 1, 2)],
-        k: 1,
-    },
-    /* 3 - "ListRest" */
-    LookaheadDFA {
-        prod0: 5,
+        prod0: 6,
         transitions: &[],
         k: 0,
     },
-    /* 4 - "ListRestOpt" */
+    /* 5 - "TrailingComma" */
     LookaheadDFA {
-        prod0: -1,
-        transitions: &[
-            Trans(0, 0, 3, 7),
-            Trans(0, 5, 1, -1),
-            Trans(1, 0, 3, 7),
-            Trans(1, 6, 2, 6),
-        ],
-        k: 2,
-    },
-    /* 5 - "Num" */
-    LookaheadDFA {
-        prod0: 8,
+        prod0: 7,
         transitions: &[],
         k: 0,
+    },
+    /* 6 - "TrailingCommaOpt" */
+    LookaheadDFA {
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 9), Trans(0, 5, 1, 8)],
+        k: 1,
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 9] = &[
-    // 0 - List: ListOpt /* Option */;
-    Production {
-        lhs: 0,
-        production: &[ParseType::N(1)],
-    },
-    // 1 - ListOpt: Num ListRest ListOpt0 /* Option */;
-    Production {
-        lhs: 1,
-        production: &[ParseType::N(2), ParseType::N(3), ParseType::N(5)],
-    },
-    // 2 - ListOpt0: ",";
+pub const PRODUCTIONS: &[Production; 10] = &[
+    // 0 - List: ListOpt /* Option */ TrailingComma^ /* Clipped */;
     Production {
         lhs: 2,
-        production: &[ParseType::T(5)],
+        production: &[ParseType::N(5), ParseType::N(3)],
     },
-    // 3 - ListOpt0: ;
-    Production {
-        lhs: 2,
-        production: &[],
-    },
-    // 4 - ListOpt: ;
-    Production {
-        lhs: 1,
-        production: &[],
-    },
-    // 5 - ListRest: ListRestOpt /* Option */;
+    // 1 - ListOpt: Items : crate::list_grammar::Numbers ;
     Production {
         lhs: 3,
-        production: &[ParseType::N(4)],
+        production: &[ParseType::N(0)],
     },
-    // 6 - ListRestOpt: "," Num ListRest;
+    // 2 - ListOpt: ;
     Production {
-        lhs: 4,
-        production: &[ParseType::N(3), ParseType::N(5), ParseType::T(5)],
-    },
-    // 7 - ListRestOpt: ;
-    Production {
-        lhs: 4,
+        lhs: 3,
         production: &[],
     },
-    // 8 - Num: "0|[1-9][0-9]*";
+    // 3 - Items: Num ItemsList /* Vec */;
+    Production {
+        lhs: 0,
+        production: &[ParseType::N(1), ParseType::N(4)],
+    },
+    // 4 - ItemsList: ","^ /* Clipped */ Num ItemsList;
+    Production {
+        lhs: 1,
+        production: &[ParseType::N(1), ParseType::N(4), ParseType::T(5)],
+    },
+    // 5 - ItemsList: ;
+    Production {
+        lhs: 1,
+        production: &[],
+    },
+    // 6 - Num: "0|[1-9][0-9]*";
+    Production {
+        lhs: 4,
+        production: &[ParseType::T(6)],
+    },
+    // 7 - TrailingComma: TrailingCommaOpt /* Option */;
     Production {
         lhs: 5,
-        production: &[ParseType::T(6)],
+        production: &[ParseType::N(6)],
+    },
+    // 8 - TrailingCommaOpt: ","^ /* Clipped */;
+    Production {
+        lhs: 6,
+        production: &[ParseType::T(5)],
+    },
+    // 9 - TrailingCommaOpt: ;
+    Production {
+        lhs: 6,
+        production: &[],
     },
 ];
 
@@ -165,20 +178,24 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut dyn UserActionsTrait<'t>,
+    user_actions: &mut ListGrammar,
 ) -> Result<ParseTree<'t>, ParolError>
 where
     T: AsRef<Path>,
 {
     let mut llk_parser = LLKParser::new(
-        0,
+        2,
         LOOKAHEAD_AUTOMATA,
         PRODUCTIONS,
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    llk_parser.trim_parse_tree();
+
+    // Initialize wrapper
+    let mut user_actions = ListGrammarAuto::new(user_actions);
     llk_parser.parse(
         TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
-        user_actions,
+        &mut user_actions,
     )
 }

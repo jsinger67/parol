@@ -40,7 +40,10 @@ fn main() -> Result<()> {
                     Ok(())
                 }
             }
-            Err(e) => ErrorReporter::report_error(&e, file_name),
+            Err(e) => {
+                let _ = ErrorReporter::report_error(&e, file_name);
+                Err(anyhow!("Parse error!"))
+            }
         }
     } else {
         Err(anyhow!("Please provide a file name as single parameter!"))

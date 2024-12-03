@@ -6,12 +6,13 @@
 
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
-use parol_runtime::parser::{
-    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
-};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
+
+use crate::boolean_grammar::BooleanGrammar;
+use crate::boolean_grammar_trait::BooleanGrammarAuto;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -91,9 +92,9 @@ pub const NON_TERMINALS: &[&str; 25] = &[
     /*  1 */ "BinaryOperator",
     /*  2 */ "Boolean",
     /*  3 */ "Expression",
-    /*  4 */ "Expressions",
-    /*  5 */ "ExpressionsList",
-    /*  6 */ "ExpressionsOpt",
+    /*  4 */ "ExpressionList",
+    /*  5 */ "Expressions",
+    /*  6 */ "ExpressionsList",
     /*  7 */ "Factor",
     /*  8 */ "False",
     /*  9 */ "LeftParenthesis",
@@ -104,10 +105,10 @@ pub const NON_TERMINALS: &[&str; 25] = &[
     /* 14 */ "Parenthesized",
     /* 15 */ "RightParenthesis",
     /* 16 */ "Semicolon",
-    /* 17 */ "TailExpression",
-    /* 18 */ "TailExpressionList",
-    /* 19 */ "Term",
-    /* 20 */ "TermOpt",
+    /* 17 */ "Term",
+    /* 18 */ "TermOpt",
+    /* 19 */ "TrailingSemicolon",
+    /* 20 */ "TrailingSemicolonOpt",
     /* 21 */ "True",
     /* 22 */ "UnaryOperator",
     /* 23 */ "XnorOp",
@@ -142,17 +143,33 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
     },
     /* 3 - "Expression" */
     LookaheadDFA {
-        prod0: 5,
+        prod0: 6,
         transitions: &[],
         k: 0,
     },
-    /* 4 - "Expressions" */
+    /* 4 - "ExpressionList" */
+    LookaheadDFA {
+        prod0: -1,
+        transitions: &[
+            Trans(0, 0, 2, 8),
+            Trans(0, 5, 1, 7),
+            Trans(0, 6, 1, 7),
+            Trans(0, 7, 1, 7),
+            Trans(0, 8, 1, 7),
+            Trans(0, 9, 1, 7),
+            Trans(0, 10, 1, 7),
+            Trans(0, 14, 2, 8),
+            Trans(0, 16, 2, 8),
+        ],
+        k: 1,
+    },
+    /* 5 - "Expressions" */
     LookaheadDFA {
         prod0: 0,
         transitions: &[],
         k: 0,
     },
-    /* 5 - "ExpressionsList" */
+    /* 6 - "ExpressionsList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -165,12 +182,6 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
             Trans(1, 15, 2, 1),
         ],
         k: 2,
-    },
-    /* 6 - "ExpressionsOpt" */
-    LookaheadDFA {
-        prod0: -1,
-        transitions: &[Trans(0, 0, 2, 4), Trans(0, 14, 1, 3)],
-        k: 1,
     },
     /* 7 - "Factor" */
     LookaheadDFA {
@@ -236,35 +247,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
         transitions: &[],
         k: 0,
     },
-    /* 17 - "TailExpression" */
-    LookaheadDFA {
-        prod0: 6,
-        transitions: &[],
-        k: 0,
-    },
-    /* 18 - "TailExpressionList" */
-    LookaheadDFA {
-        prod0: -1,
-        transitions: &[
-            Trans(0, 0, 2, 8),
-            Trans(0, 5, 1, 7),
-            Trans(0, 6, 1, 7),
-            Trans(0, 7, 1, 7),
-            Trans(0, 8, 1, 7),
-            Trans(0, 9, 1, 7),
-            Trans(0, 10, 1, 7),
-            Trans(0, 14, 2, 8),
-            Trans(0, 16, 2, 8),
-        ],
-        k: 1,
-    },
-    /* 19 - "Term" */
+    /* 17 - "Term" */
     LookaheadDFA {
         prod0: 9,
         transitions: &[],
         k: 0,
     },
-    /* 20 - "TermOpt" */
+    /* 18 - "TermOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -273,6 +262,18 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
             Trans(0, 13, 1, 10),
             Trans(0, 15, 2, 11),
         ],
+        k: 1,
+    },
+    /* 19 - "TrailingSemicolon" */
+    LookaheadDFA {
+        prod0: 3,
+        transitions: &[],
+        k: 0,
+    },
+    /* 20 - "TrailingSemicolonOpt" */
+    LookaheadDFA {
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 5), Trans(0, 14, 1, 4)],
         k: 1,
     },
     /* 21 - "True" */
@@ -302,64 +303,64 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 36] = &[
-    // 0 - Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;
-    Production {
-        lhs: 4,
-        production: &[ParseType::N(6), ParseType::N(5), ParseType::N(3)],
-    },
-    // 1 - ExpressionsList: Semicolon Expression ExpressionsList;
+    // 0 - Expressions: Expression ExpressionsList /* Vec */ TrailingSemicolon^ /* Clipped */;
     Production {
         lhs: 5,
-        production: &[ParseType::N(5), ParseType::N(3), ParseType::N(16)],
+        production: &[ParseType::N(19), ParseType::N(6), ParseType::N(3)],
+    },
+    // 1 - ExpressionsList: Semicolon^ /* Clipped */ Expression ExpressionsList;
+    Production {
+        lhs: 6,
+        production: &[ParseType::N(6), ParseType::N(3), ParseType::N(16)],
     },
     // 2 - ExpressionsList: ;
     Production {
-        lhs: 5,
+        lhs: 6,
         production: &[],
     },
-    // 3 - ExpressionsOpt: Semicolon;
+    // 3 - TrailingSemicolon: TrailingSemicolonOpt /* Option */;
     Production {
-        lhs: 6,
+        lhs: 19,
+        production: &[ParseType::N(20)],
+    },
+    // 4 - TrailingSemicolonOpt: Semicolon;
+    Production {
+        lhs: 20,
         production: &[ParseType::N(16)],
     },
-    // 4 - ExpressionsOpt: ;
+    // 5 - TrailingSemicolonOpt: ;
     Production {
-        lhs: 6,
+        lhs: 20,
         production: &[],
     },
-    // 5 - Expression: Term TailExpression;
+    // 6 - Expression: Term ExpressionList /* Vec */;
     Production {
         lhs: 3,
-        production: &[ParseType::N(17), ParseType::N(19)],
+        production: &[ParseType::N(4), ParseType::N(17)],
     },
-    // 6 - TailExpression: TailExpressionList /* Vec */;
+    // 7 - ExpressionList: BinaryOperator Term ExpressionList;
     Production {
-        lhs: 17,
-        production: &[ParseType::N(18)],
+        lhs: 4,
+        production: &[ParseType::N(4), ParseType::N(17), ParseType::N(1)],
     },
-    // 7 - TailExpressionList: BinaryOperator Term TailExpressionList;
+    // 8 - ExpressionList: ;
     Production {
-        lhs: 18,
-        production: &[ParseType::N(18), ParseType::N(19), ParseType::N(1)],
-    },
-    // 8 - TailExpressionList: ;
-    Production {
-        lhs: 18,
+        lhs: 4,
         production: &[],
     },
     // 9 - Term: TermOpt /* Option */ Factor;
     Production {
-        lhs: 19,
-        production: &[ParseType::N(7), ParseType::N(20)],
+        lhs: 17,
+        production: &[ParseType::N(7), ParseType::N(18)],
     },
     // 10 - TermOpt: UnaryOperator;
     Production {
-        lhs: 20,
+        lhs: 18,
         production: &[ParseType::N(22)],
     },
     // 11 - TermOpt: ;
     Production {
-        lhs: 20,
+        lhs: 18,
         production: &[],
     },
     // 12 - Boolean: True;
@@ -407,52 +408,52 @@ pub const PRODUCTIONS: &[Production; 36] = &[
         lhs: 1,
         production: &[ParseType::N(23)],
     },
-    // 21 - AndOp: "[aA][nN][dD]";
+    // 21 - AndOp: "[aA][nN][dD]"^ /* Clipped */;
     Production {
         lhs: 0,
         production: &[ParseType::T(5)],
     },
-    // 22 - OrOp: "[oO][rR]";
+    // 22 - OrOp: "[oO][rR]"^ /* Clipped */;
     Production {
         lhs: 13,
         production: &[ParseType::T(6)],
     },
-    // 23 - XorOp: "[xX][oO][rR]";
+    // 23 - XorOp: "[xX][oO][rR]"^ /* Clipped */;
     Production {
         lhs: 24,
         production: &[ParseType::T(7)],
     },
-    // 24 - NorOp: "[nN][oO][rR]";
+    // 24 - NorOp: "[nN][oO][rR]"^ /* Clipped */;
     Production {
         lhs: 11,
         production: &[ParseType::T(8)],
     },
-    // 25 - NandOp: "[nN][aA][nN][dD]";
+    // 25 - NandOp: "[nN][aA][nN][dD]"^ /* Clipped */;
     Production {
         lhs: 10,
         production: &[ParseType::T(9)],
     },
-    // 26 - XnorOp: "[xX][nN][oO][rR]";
+    // 26 - XnorOp: "[xX][nN][oO][rR]"^ /* Clipped */;
     Production {
         lhs: 23,
         production: &[ParseType::T(10)],
     },
-    // 27 - True: "[tT][rR][uU][eE]";
+    // 27 - True: "[tT][rR][uU][eE]"^ /* Clipped */;
     Production {
         lhs: 21,
         production: &[ParseType::T(11)],
     },
-    // 28 - False: "[fF][aA][lL][sS][eE]";
+    // 28 - False: "[fF][aA][lL][sS][eE]"^ /* Clipped */;
     Production {
         lhs: 8,
         production: &[ParseType::T(12)],
     },
-    // 29 - Not: "[nN][oO][tT]";
+    // 29 - Not: "[nN][oO][tT]"^ /* Clipped */;
     Production {
         lhs: 12,
         production: &[ParseType::T(13)],
     },
-    // 30 - Parenthesized: LeftParenthesis Expression RightParenthesis;
+    // 30 - Parenthesized: LeftParenthesis^ /* Clipped */ Expression RightParenthesis^ /* Clipped */;
     Production {
         lhs: 14,
         production: &[ParseType::N(15), ParseType::N(3), ParseType::N(9)],
@@ -495,20 +496,22 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut dyn UserActionsTrait<'t>,
+    user_actions: &mut BooleanGrammar<'t>,
 ) -> Result<ParseTree<'t>, ParolError>
 where
     T: AsRef<Path>,
 {
     let mut llk_parser = LLKParser::new(
-        4,
+        5,
         LOOKAHEAD_AUTOMATA,
         PRODUCTIONS,
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    // Initialize wrapper
+    let mut user_actions = BooleanGrammarAuto::new(user_actions);
     llk_parser.parse(
         TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
-        user_actions,
+        &mut user_actions,
     )
 }

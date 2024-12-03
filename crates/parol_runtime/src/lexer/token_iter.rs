@@ -4,7 +4,10 @@ use crate::{
 };
 use location::LocationBuilder;
 use log::trace;
-use scnr::{FindMatches, MatchExt, MatchExtIterator, Scanner, ScannerModeSwitcher, WithPositions};
+use scnr::{
+    FindMatches, MatchExt, MatchExtIterator, PositionProvider, Scanner, ScannerModeSwitcher,
+    WithPositions,
+};
 use std::{path::PathBuf, sync::Arc};
 
 ///
@@ -96,15 +99,18 @@ impl<'t> TokenIter<'t> {
     /// If the position is less than the current position, the function creates a new iterator and
     /// advances it to the given position.
     pub fn set_position(&mut self, position: usize) {
-        self.find_iter = self
-            .scanner
-            .find_iter(self.input)
-            .with_offset(position)
-            .with_positions();
+        self.find_iter.set_offset(position);
     }
 
     pub(crate) fn set_mode(&mut self, scanner_index: usize) {
+        self.scanner.set_mode(scanner_index);
         self.find_iter.set_mode(scanner_index);
+    }
+
+    #[inline]
+    pub(crate) fn next_token_number(&mut self) -> TokenNumber {
+        self.token_number += 1;
+        self.token_number
     }
 }
 
@@ -117,7 +123,7 @@ impl<'t> Iterator for TokenIter<'t> {
             // Return at most k EOI tokens
             self.k -= 1;
             trace!("EOI");
-            let mut eoi = Token::eoi(self.token_number);
+            let mut eoi = Token::eoi(self.next_token_number());
             if let Some(location) = self.last_location.as_mut() {
                 location.end_column += 1;
                 eoi = eoi.with_location(location.clone());
