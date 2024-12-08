@@ -94,6 +94,8 @@ pub(crate) use utils::{generate_name, group_by};
 pub use utils::{generate_tree_layout, obtain_grammar_config, obtain_grammar_config_from_string};
 
 ///
-/// Internal lookahead limit
+/// Constant lookahead limit, which is used for the calculation of the lookahead sets.
+/// The value is used to limit the number of iterations in the calculation of the lookahead sets.
+/// Grammar with a higher value will be rejected.
 ///
 pub const MAX_K: usize = 10;

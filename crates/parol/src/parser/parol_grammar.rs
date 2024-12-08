@@ -97,7 +97,7 @@ impl TryFrom<&parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
 }
 
 ///
-/// [LookaheadTerminal] is part of the Lookahead structure
+/// [LookaheadExpression] is part of the [Factor::Terminal] enum variant
 ///
 #[derive(Debug, Clone, Eq, PartialEq, Hash, PartialOrd, Ord)]
 pub struct LookaheadExpression {

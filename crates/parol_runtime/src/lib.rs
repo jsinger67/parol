@@ -7,10 +7,6 @@ all necessary scaffolding and plumping for the typical user automatically.
 
 The most likely used parts are those returned to the user including the error types defined in the
 module [errors].
-
-If you use parsers generated in [vanilla mode](https://jsinger67.github.io/VanillaMode.html) you
-should understand the types that are handed over to your semantic actions. You will find them in the
-module [parser::parse_tree_type].
  */
 
 ///

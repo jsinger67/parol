@@ -160,7 +160,7 @@ impl ScannerConfig {
     /// of the comment. Since the end comment can be any string, we need to build an alternation
     /// of all possible substrings of the end comment.
     /// If the comment end is "*/" the regular expression is:
-    /// r"/\*([.\r\n--*][^*]|\*[^/])*\*/"
+    /// `r"/\*([.\r\n--*][^*]|\*[^/])*\*/"`
     fn format_block_comment(s: &str, e: &str) -> Result<String> {
         let len_with_escaped_chars = |s: &str| {
             let mut prev = None;

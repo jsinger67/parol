@@ -17,7 +17,7 @@ pub struct Pos {
 
     /// Index of the symbol within the production
     /// 0: Always the index of the left-hand-side of the production
-    /// >0: Index of a symbol on the hight-hand-side of the production
+    /// > 0: Index of a symbol on the hight-hand-side of the production
     sy_index: usize,
 }
 

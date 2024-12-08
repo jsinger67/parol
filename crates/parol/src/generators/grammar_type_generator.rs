@@ -36,11 +36,11 @@ pub struct GrammarTypeInfo {
     /// the given grammar.
     /// It also contains the function 'on_comment_parsed' that is called when a comment is parsed.
     /// The user action trait is created in global scope.
-    /// The type name is <GrammarName>GrammarTrait
+    /// The type name is <`GrammarName`>GrammarTrait
     pub(crate) semantic_actions_trait_id: Option<SymbolId>,
 
     /// The type id of the adapter struct that is created for the given grammar in global scope.
-    /// The type name is <GrammarName>GrammarAuto.
+    /// The type name is <`GrammarName`>GrammarAuto.
     /// The adapter struct contains functions for each production of the given grammar.
     /// It is an adapter and calls the semantic actions functions in the appropriate places with
     /// the constructed arguments of the corresponding non-terminal type.

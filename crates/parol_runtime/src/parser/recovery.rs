@@ -21,7 +21,7 @@ impl Recovery {
     /// parser during recovery.
     /// To be successful the sub match must either reach until the end of the input tokens or
     /// until the end of the expected tokens.
-    /// This is checked in the inner loop by evaluating the result of the inner [try_expand].
+    /// This is checked in the inner loop by evaluating the result of the inner `try_expand`.
     ///
     pub(crate) fn calculate_match_ranges(
         act: &[TerminalIndex],
