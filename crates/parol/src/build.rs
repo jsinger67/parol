@@ -706,7 +706,7 @@ pub trait BuildListener {
 }
 #[derive(Default)]
 struct MaybeBuildListener<'l>(Option<&'l mut dyn BuildListener>);
-impl<'l> BuildListener for MaybeBuildListener<'l> {
+impl BuildListener for MaybeBuildListener<'_> {
     fn on_initial_grammar_parse(
         &mut self,
         syntax_tree: &ParseTree<'_>,

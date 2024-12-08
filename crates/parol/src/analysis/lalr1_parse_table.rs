@@ -27,7 +27,6 @@ use parol_runtime::{
 
 /// Type aliases for the LALR(1) parse table construction.
 /// The generic parameters are defined to be terminal, non-terminal, and production indices.
-
 type LR1ParseTableLalr<'a> =
     lalry::LR1ParseTable<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
 type LR1StateLalr<'a> = lalry::LR1State<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>;
