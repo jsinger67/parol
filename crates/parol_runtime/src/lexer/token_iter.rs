@@ -59,7 +59,7 @@ impl<'t> TokenIter<'t> {
 
     /// Returns the index of the current scanner mode.
     pub(crate) fn current_mode(&self) -> usize {
-        self.scanner.current_mode()
+        self.find_iter.current_mode()
     }
 
     pub(crate) fn token_from_match(&mut self, matched: MatchExt) -> Option<Token<'t>> {
