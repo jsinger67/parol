@@ -7,3 +7,8 @@ title = "The Parol Parser Generator"
 
 [output.html]
 mathjax-support = true
+preferred-dark-theme = "navy"
+
+[output.html.print]
+enable = true    # include support for printable output
+page-break = true # insert page-break after each chapter

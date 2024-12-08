@@ -1,5 +1,6 @@
 # Summary
 
+# Version 1
 - [Introduction](./Introduction.md)
 - [History](./History.md)
 - [Getting started](./GettingStarted.md)
@@ -11,3 +12,6 @@
 - [Semantic actions](./SemanticActions.md)
 - [Useful tips](./UsefulTips.md)
 - [Q&A](./QnA.md)
+
+# Version 2
+- [Changes in version 2](./ParolVersion2.md)

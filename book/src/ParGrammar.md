@@ -143,8 +143,8 @@ It's best to show an example for such a situation.
 Say you have two terminals "-" and "--", _minus_ and _decrement_. The generated scanner is then
 based on the following regular expression:
 
-```parol
-    /-|--/
+```regexp
+/-|--/
 ```
 
 The Rust regex will now match two times _minus_ when actually a _decrement_ operator should be
@@ -155,8 +155,8 @@ strategy.
 Fortunately there is a simple way to achieve what we want. We just need a resulting regular
 expression with a different order:
 
-```parol
-    /--|-/
+```regexp
+/--|-/
 ```
 
 This will perfectly do the job.
