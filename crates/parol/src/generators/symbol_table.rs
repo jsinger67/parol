@@ -333,8 +333,11 @@ impl Instance {
         let desc = if self.description.is_empty() {
             String::default()
         } else {
-            // "*/" must be escaped
-            format!("/* {} */", self.description.replace("*/", "*\\/"))
+            // "*/" and "/*" must be escaped
+            format!(
+                "/* {} */",
+                self.description.replace("*/", "*\\/").replace("/*", "/\\*")
+            )
         };
         format!(
             "{}: {}, {}",
