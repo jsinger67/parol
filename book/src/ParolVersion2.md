@@ -89,7 +89,7 @@ The above solution can be phrased like this:
 of the end comment part and `/` is the next character after the start of the end comment part.
 
 I know that this is cumbersome and maybe sometimes not even feasible when the following part is too
-complex. Therefore there exist a second approach to cope with missing non-greediness.
+complex. Therefore there exists a second approach to cope with missing non-greediness.
 
 #### Scanner modes
 
