@@ -85,7 +85,7 @@ impl<'t> TokenStream<'t> {
         let token_iter = TokenIter::new(scanner, input, file_name.clone(), k);
 
         // issue #54 "Lookahead exceeds token buffer length" with simple grammar:
-        // Ensure that k is at least 1
+        // Ensure that k is at least 1 and at most MAX_K
         let k = std::cmp::max(1, k);
 
         let mut token_stream = Self {
@@ -492,7 +492,8 @@ impl<'t> TokenStream<'t> {
     #[inline]
     fn clear_token_buffer(&mut self) {
         trace!("Clearing token buffer.");
-        self.tokens.clear();
+        // Remove all tokens from the buffer except the EOI token
+        self.tokens.retain(|t| t.token_type == EOI);
     }
 
     /// Sets the token stream in error recovery mode.
