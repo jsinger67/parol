@@ -321,7 +321,6 @@ impl std::fmt::Display for EnumRangeCalc {
 }
 
 #[cfg(test)]
-
 mod tests {
     use super::*;
 

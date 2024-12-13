@@ -20,6 +20,11 @@ We defined for this project that while being on major version zero we mark incom
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
 ---
+## 1.0.4 - Not released yet
+
+- Updated dependencies
+- Removed clippy warnings
+
 ## 1.0.3 - 2024-11-19
 
 - Updated dependencies
