@@ -13,7 +13,7 @@ of the parser runtime exceeded the share of actual parsing times by a factor of 
 for the advantage of fast parsing you had to sacrifice a lot of costs for building this efficient
 scanner.
 
-This doesn't mean that `regex-automata` is in any way bad, on the contrary, it is a very versatile
+This doesn't mean that `regex-automata` is in any way poor, on the contrary, it is a very versatile
 and valuable crate for a multitude of uses cases. It only means that the use in a lexical scanner,
 where you don't need the majority of features like named and unnamed capture groups is not the
 optimal decision.
@@ -34,11 +34,11 @@ In both cases the same conditions are applied. The regex comprised 118 terminals
 
 Then some measurements of parsing speed.
 
-| Input (Bytes, Tokens) | Version 1 | Version 2 |
+| Input (Bytes; Tokens) | Version 1 | Version 2 |
 |---|--:|--:|
-|549, 175 | 0.01ms + 33ms | 1.2ms + 1ms
-|58525, 3111 | 0.76ms + 33ms | 2.34ms + 1 ms |
-|5873100, 1159200 | 122ms + 33ms |  80ms + 1ms |
+|549; 175 | 0.01ms + 33ms | 1.2ms + 1ms
+|58525; 3111 | 0.76ms + 33ms | 2.34ms + 1 ms |
+|5873100; 1159200 | 122ms + 33ms |  80ms + 1ms |
 
 The added value in cells with times is the constant time to create the tokenizer, which is required
 once for each call to the generated parser.
@@ -99,7 +99,6 @@ This mode is entered on the **comment start** `/\*`, then handles all tokens ins
 enters `INITIAL` mode on the **comment end** `\*/` again.
 
 ```parol
-
 %start NgBlockComment
 %comment "Non-greedy block comment"
 
@@ -123,3 +122,41 @@ CommentContent: <COMMENT>/[.\r\n]/; // Valid in mode COMMENT
 
 The `CommentEnd` terminal has precedence over `CommentContent` simply by preceding it in the
 grammar description. This way it can't be 'eaten up' by the `CommentContent` terminal.
+
+## Lookahead for terminals
+
+Having an own scanner implementation enables us to support more features common for lexical analysis.
+Since version 2 parol's scanner generation supports positive and negative lookahead.
+
+The syntax can be seen in the following examples:
+
+```parol
+FunctionName: /[a-zA-Z_][0-9a-zA-Z_]*/ ?= /\s*\(/;
+Operator: /<:|>:/ ?! ':';
+```
+
+The semantic can be described as follows:
+* Match the terminal `FunctionName` only if it is followed by a left parenthesis.
+* Match the terminal `Operator` only if it is **NOT** followed by a colon.
+
+The right sides of the lookahead operators `?=` and `?!` are not considered part of the read token.
+
+Note that the syntax is explicitly defined as a `TokenLiteral` follow by an optional `LookAhead`
+that in turn is defined as positive or negative lookahead operator followed by a `TokenLiteral`.
+
+This means that a terminal
+```parol
+XTerm1: "x" ?= "y";
+```
+is different from the terminal
+```parol
+XTerm2: "x";
+```
+in the sense that parol generates two different terminals for the scanner generator, `"x" ?= "y"`
+and `"x"` that have different terminal types.
+
+Be sure to define a "primary non-terminal for a terminal"
+(see [Grammar description syntax](./ParGrammar.md#terminal-name-generation)) as in the examples
+above to let `parol` generate different terminal names (here `XTerm1` and `XTerm2`). Using
+terminals with the same left hand side and differing lookahead expressions directly in productions,
+i.e. without defining separate primary non-terminals for each, can lead to unexpected behavior.
