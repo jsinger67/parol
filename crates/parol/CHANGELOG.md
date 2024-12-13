@@ -5,21 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
----
 
-Be aware that this project is still v0.y.z which means that anything can change anytime:
-
-> "4. Major version zero (0.y.z) is for initial development. Anything MAY change at any time. The
-> public API SHOULD NOT be considered stable."
->
-> (Semantic Versioning Specification)
-
-## Indicating incompatible changes on major version zero
-
-We defined for this project that while being on major version zero we mark incompatible changes with
-new minor version numbers. Please note that this is no version handling covered by `Semver`.
-
----
 ## 1.0.4 - Not released yet
 
 - Updated dependencies
