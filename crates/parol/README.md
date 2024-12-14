@@ -151,12 +151,8 @@ example project.
 
 ## State of the project
 
-`parol` has proved its ability in many examples and tests during its development. Early adopters can
-quite safely use it.
-
-But `parol` is not ready for production yet. Features are still in development and the crate's
-interface can change at any time. There is still a lot of work to be done and any help is
-appreciated.
+Version 1 of `parol` is stable and production ready with all the usual disclaimers. You should use the latest releases available on crates.io with version >=1.
+Version 2 is still in its Beta phase.
 
 ## Dependencies
 
