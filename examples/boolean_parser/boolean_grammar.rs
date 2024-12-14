@@ -16,7 +16,7 @@ pub struct BooleanGrammar<'t> {
     phantom: PhantomData<&'t str>,
 }
 
-impl<'t> BooleanGrammar<'t> {
+impl BooleanGrammar<'_> {
     pub fn new() -> Self {
         BooleanGrammar::default()
     }

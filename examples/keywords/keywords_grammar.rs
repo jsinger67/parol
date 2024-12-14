@@ -11,7 +11,7 @@ pub struct KeywordsGrammar<'t> {
     phantom: PhantomData<&'t str>,
 }
 
-impl<'t> KeywordsGrammar<'t> {
+impl KeywordsGrammar<'_> {
     pub fn new() -> Self {
         KeywordsGrammar {
             phantom: PhantomData,
