@@ -160,3 +160,33 @@ Be sure to define a "primary non-terminal for a terminal"
 above to let `parol` generate different terminal names (here `XTerm1` and `XTerm2`). Using
 terminals with the same left hand side and differing lookahead expressions directly in productions,
 i.e. without defining separate primary non-terminals for each, can lead to unexpected behavior.
+
+## No vanilla mode
+
+The so called [Vanilla mode](./VanillaMode.md) is not supported anymore.
+
+It turned out that this mode, although potentially a little more efficient, is not really used by
+anyone noticeable. The effort of maintaining two different modes is therefore no longer justified.
+
+The vanilla mode has in summary the following disadvantages:
+* Maintenance is hard, especially if you often change your grammar
+* Only for power users because it requires deeper insight into the inner structure and the inner
+mode of operation
+* It tends to distract or confuse new users of `parol`
+
+### Consequences
+
+The auto generation mode is now the only mode `parol` provides. No distinction between two different
+modes is necessary anymore. In version 2 you can forget about modes entirely.
+
+All configurations that explicitly enabled the auto generation mode are removed and should be also
+removed from your code when switching from version 1 to version 2.
+
+Things you need to change:
+
+* Remove the call of `enable_auto_generation()` on the `Builder` in your `build.rs`.
+* Remove the switch `--auto-generate` resp. `-g` from the command line arguments of the `parol` tool.
+
+If you want to keep your implementation in the vanilla mode your only option is to stay on
+version 1. This should although be no problem, since this version is kept stable and will of course
+receive fixes in the future as well.
