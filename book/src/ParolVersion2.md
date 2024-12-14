@@ -47,8 +47,9 @@ As you can see, `scnr` does its job well.
 
 ### Impact on lexical analysis
 
-Since `scnr` doesn't support some regex feature which are either complicated, costly or unnecessary,
-some things can't be resolved simply by the means regex crates like `regex-automata` provide.
+Since `scnr` doesn't support some regex features which are either complicated, costly or
+unnecessary, some things can't be resolved simply by the means regex crates like `regex-automata`
+provide.
 One major feature worth mentioning is non-greediness. Lets dive in this topic with the help of an
 example.
 
@@ -158,7 +159,7 @@ and `"x"` that have different terminal types.
 Be sure to define a "primary non-terminal for a terminal"
 (see [Grammar description syntax](./ParGrammar.md#terminal-name-generation)) as in the examples
 above to let `parol` generate different terminal names (here `XTerm1` and `XTerm2`). Using
-terminals with the same left hand side and differing lookahead expressions directly in productions,
+terminals with the same `TokenLiteral` and differing lookahead expressions directly in productions,
 i.e. without defining separate primary non-terminals for each, can lead to unexpected behavior.
 
 ## No vanilla mode
