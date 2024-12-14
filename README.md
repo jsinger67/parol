@@ -180,12 +180,9 @@ example project.
 
 ## State of the project
 
-`parol` has proven its performance in many examples and tests during its development.
-Also, projects ranging from small to large scale are using `parol` as their parser generator
-successfully.
-
-As of the release of version 1.0.0 `parol` can be used in production like environments. Please,
-check the licenses for the terms of use.
+Version 1 of `parol` is stable and production ready with all the usual disclaimers.
+You should use the latest releases available on crates.io with version >=1.
+Version 2 is still in its Beta phase.
 
 ## Dependencies
 
