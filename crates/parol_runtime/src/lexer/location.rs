@@ -1,12 +1,20 @@
-use std::fmt::{Debug, Display, Error, Formatter};
-use std::ops::Range;
-use std::path::PathBuf;
-use std::sync::Arc;
+use std::{
+    fmt::{Debug, Display, Error, Formatter},
+    ops::Range,
+    path::PathBuf,
+    sync::Arc,
+};
 
 use derive_builder::Builder;
 
 ///
 /// Common Location type
+/// This type is used to store the location of a token in the input text.
+/// The location is stored as line and column numbers, and as start and end positions in the input
+/// text.
+///
+/// We don't use std::ops::Range<usize> for the span information because we need to implement Ord
+/// and PartialOrd for Location.
 ///
 #[derive(Builder, Debug, Default, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Location {
@@ -26,22 +34,54 @@ pub struct Location {
     /// A value of 0 indicates an invalid position, for instance for EOF token.
     pub end_column: u32,
 
-    /// Length of the matched input terminal
-    /// A value of 0 indicates a virtual token, for instance an EOF token.
-    /// Be careful: User tokens with length 0 are always invalid!!!
+    /// The start of the span of the token in the input text
     /// We use 0 also when dealing with artificial tokens introduced by the parser during error
     /// recovery.
     #[builder(default)]
-    pub length: u32,
+    pub start: u32,
 
-    /// Absolute position in the haystack as byte offset.
-    /// We use default when dealing with artificial tokens introduced by the parser during error
+    /// The end of the span of the token in the input text
+    /// The end is exclusive. It is the first character after the span.
+    /// We use 0 also when dealing with artificial tokens introduced by the parser during error
     /// recovery.
     #[builder(default)]
-    pub offset: usize,
+    pub end: u32,
 
     /// The name of the input file
     pub file_name: Arc<PathBuf>,
+}
+
+impl Location {
+    /// Calculate the length of the location
+    #[inline]
+    pub fn len(&self) -> usize {
+        self.end.saturating_sub(self.start) as usize
+    }
+
+    /// Returns true if the location is empty
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.start >= self.end
+    }
+
+    /// Create a std::ops::Range<usize> from the location
+    /// This is useful to extract the text of the token from the input text.
+    #[inline]
+    pub fn range(&self) -> Range<usize> {
+        self.start as usize..self.end as usize
+    }
+
+    /// Returns the start of the location
+    #[inline]
+    pub fn start(&self) -> usize {
+        self.start as usize
+    }
+
+    /// Returns the end of the location
+    #[inline]
+    pub fn end(&self) -> usize {
+        self.end as usize
+    }
 }
 
 impl Display for Location {
@@ -60,10 +100,6 @@ impl Display for Location {
 
 impl From<&Location> for Range<usize> {
     fn from(location: &Location) -> Self {
-        let start = location.offset - location.length as usize;
-        Range {
-            start,
-            end: start + location.length as usize,
-        }
+        location.range()
     }
 }

@@ -69,8 +69,8 @@ impl<'t> TokenIter<'t> {
             .start_column(matched.start_position().column as u32)
             .end_line(matched.end_position().line as u32)
             .end_column(matched.end_position().column as u32)
-            .length(matched.len() as u32)
-            .offset(matched.end())
+            .start(matched.start() as u32)
+            .end(matched.end() as u32)
             .file_name(self.file_name.clone())
             .build()
         {

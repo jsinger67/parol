@@ -184,8 +184,8 @@ impl<'t> TokenStream<'t> {
     fn update_position(&mut self) {
         let token = &self.tokens[0];
         self.line = token.location.start_line;
-        self.column = token.location.start_column + token.location.length;
-        self.last_consumed_token_end_pos = token.location.offset;
+        self.column = token.location.start_column + token.location.len() as u32;
+        self.last_consumed_token_end_pos = token.location.end();
         trace!(
             "Updated line: {}, column: {}, last consumed token end position: {}",
             self.line,
@@ -461,7 +461,6 @@ impl<'t> TokenStream<'t> {
                     .start_column(self.column)
                     .end_line(self.line)
                     .end_column(self.column)
-                    .length(0)
                     .file_name(self.file_name.clone())
                     .build()
                     .unwrap()
