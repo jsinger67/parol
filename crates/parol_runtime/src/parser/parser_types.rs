@@ -7,6 +7,8 @@ use log::trace;
 use std::{cell::RefCell, cmp::Ord, rc::Rc};
 use syntree::{Builder, Tree};
 
+use super::parse_tree_type::SynTree;
+
 ///
 /// The type that contains all data to process a production within the parser.
 ///
@@ -52,10 +54,10 @@ impl Production {
 }
 
 /// The type used for the parse tree
-pub type ParseTree<'t> = Tree<ParseTreeType<'t>, u32, usize>;
+pub type ParseTree = Tree<SynTree, u32, usize>;
 
 /// The parse tree builder type
-pub(crate) type TreeBuilder<'t> = Builder<ParseTreeType<'t>, u32, usize>;
+pub(crate) type TreeBuilder = Builder<SynTree, u32, usize>;
 
 ///
 /// The actual LLK parser.
@@ -203,7 +205,7 @@ impl<'t> LLKParser<'t> {
 
     fn push_production(
         &mut self,
-        tree_builder: &mut TreeBuilder<'t>,
+        tree_builder: &mut TreeBuilder,
         prod_num: ProductionIndex,
     ) -> Result<()> {
         self.parser_stack.stack.push(ParseType::E(prod_num));
@@ -214,7 +216,7 @@ impl<'t> LLKParser<'t> {
         // Open a 'production entry' node in the tree
         if !self.trim_parse_tree {
             tree_builder
-                .open(ParseTreeType::N(
+                .open(SynTree::NonTerminal(
                     self.non_terminal_names[self.productions[prod_num].lhs],
                 ))
                 .map_err(|source| ParserError::TreeError { source })?;
@@ -238,7 +240,7 @@ impl<'t> LLKParser<'t> {
 
     fn process_item_stack<'u>(
         &mut self,
-        tree_builder: &mut TreeBuilder<'t>,
+        tree_builder: &mut TreeBuilder,
         prod_num: ProductionIndex,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()> {
@@ -318,7 +320,7 @@ impl<'t> LLKParser<'t> {
         &mut self,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<ParseTree<'t>> {
+    ) -> Result<Tree<SynTree, u32, usize>> {
         let stream = Rc::new(RefCell::new(stream));
         let prod_num = match self.predict_production(self.start_symbol_index, stream.clone()) {
             Ok(prod_num) => prod_num,
@@ -347,7 +349,7 @@ impl<'t> LLKParser<'t> {
                             self.parser_stack.stack.pop();
                             if !self.trim_parse_tree {
                                 tree_builder
-                                    .token(ParseTreeType::T(token.clone()), 1)
+                                    .token(SynTree::Terminal((&token).into()), 1)
                                     .map_err(|source| ParserError::TreeError { source })?;
                             }
                             self.parse_tree_stack.push(ParseTreeType::T(token));

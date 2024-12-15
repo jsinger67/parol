@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, fmt::Display};
 
-use crate::{ParseTreeType, Token};
+use crate::{parser::parse_tree_type::SynTree, ParseTreeType, Token};
 use syntree::{Builder, Tree};
 
 /// Parse tree representation.
@@ -40,16 +40,16 @@ impl Display for LRParseTree<'_> {
 // parse tree is built during parsing, it is unlikely that the parse tree is too deep.
 // Otherwise, we need to convert this function to an iterative function.
 fn build_tree<'t>(
-    builder: &mut Builder<ParseTreeType<'t>, u32, usize>,
+    builder: &mut Builder<SynTree, u32, usize>,
     parse_tree: LRParseTree<'t>,
 ) -> Result<(), syntree::Error> {
     match parse_tree {
         LRParseTree::Terminal(token) => {
-            let len = token.text().len();
-            builder.token(ParseTreeType::T(token), len)?;
+            let len = token.location.len();
+            builder.token(SynTree::Terminal((&token).into()), len)?;
         }
         LRParseTree::NonTerminal(name, children) => {
-            builder.open(ParseTreeType::N(name))?;
+            builder.open(SynTree::NonTerminal(name))?;
             if let Some(children) = children {
                 for child in children {
                     build_tree(builder, child)?;
@@ -57,14 +57,14 @@ fn build_tree<'t>(
             }
             builder.close()?;
         }
-    }
+    };
     Ok(())
 }
 
 // Convert a parse tree to a syntree tree.
 // Since syntree must be built from the root, we use the LRParseTree during parsing and convert it
 // to a syntree tree afterwards.
-impl<'t> TryFrom<LRParseTree<'t>> for Tree<ParseTreeType<'t>, u32, usize> {
+impl<'t> TryFrom<LRParseTree<'t>> for Tree<SynTree, u32, usize> {
     type Error = syntree::Error;
 
     fn try_from(parse_tree: LRParseTree<'t>) -> Result<Self, Self::Error> {

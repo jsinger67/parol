@@ -222,7 +222,7 @@ pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
     user_actions: &mut KeywordsGrammar<'t>,
-) -> Result<ParseTree<'t>, ParolError>
+) -> Result<ParseTree, ParolError>
 where
     T: AsRef<Path>,
 {

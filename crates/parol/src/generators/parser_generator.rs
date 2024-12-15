@@ -359,7 +359,7 @@ impl std::fmt::Display for ParserData<'_> {
                 input: &'t str,
                 file_name: T,
                 user_actions: #user_actions,
-            ) -> Result<ParseTree<'t>, ParolError> where T: AsRef<Path> {
+            ) -> Result<ParseTree, ParolError> where T: AsRef<Path> {
                 let mut llk_parser = LLKParser::new(
                     #start_symbol_index,
                     LOOKAHEAD_AUTOMATA,
@@ -479,7 +479,7 @@ impl std::fmt::Display for LRParserData<'_> {
                 input: &'t str,
                 file_name: T,
                 user_actions: #user_actions,
-            ) -> Result<ParseTree<'t>, ParolError> where T: AsRef<Path> {
+            ) -> Result<ParseTree, ParolError> where T: AsRef<Path> {
                 let mut lr_parser = LRParser::new(
                     #start_symbol_index,
                     &PARSE_TABLE,

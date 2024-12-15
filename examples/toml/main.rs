@@ -45,7 +45,7 @@ fn main() -> Result<()> {
     }
 }
 
-fn generate_tree_layout(syntax_tree: &ParseTree<'_>, input_file_name: &str) -> Result<()> {
+fn generate_tree_layout(syntax_tree: &ParseTree, input_file_name: &str) -> Result<()> {
     let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
     svg_full_file_name.set_extension("svg");
 

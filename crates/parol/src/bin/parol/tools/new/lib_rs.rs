@@ -46,7 +46,7 @@ pub use {crate_name}_parser::parse;
         if *tree_gen {
             write!(f, "\n\n")?;
             f.write_fmt(ume::ume! {
-                pub fn generate_tree_layout(syntax_tree: &ParseTree<'_>, input_file_name: &str) -> parol_runtime::syntree_layout::Result<()> {
+                pub fn generate_tree_layout(syntax_tree: &ParseTree, input_file_name: &str) -> parol_runtime::syntree_layout::Result<()> {
                     let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
                     svg_full_file_name.set_extension("svg");
 

@@ -8,11 +8,13 @@ use core::str;
 use std::{cell::RefCell, collections::BTreeSet, convert::TryInto, rc::Rc};
 
 use log::trace;
+use syntree::Tree;
 
 use crate::{
-    parser::parser_types::TreeBuilder, FileSource, LRParseTree, NonTerminalIndex, ParolError,
-    ParseTree, ParseTreeStack, ParseTreeType, ParserError, ProductionIndex, Result, SyntaxError,
-    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    parser::{parse_tree_type::SynTree, parser_types::TreeBuilder},
+    FileSource, LRParseTree, NonTerminalIndex, ParolError, ParseTreeStack, ParseTreeType,
+    ParserError, ProductionIndex, Result, SyntaxError, TerminalIndex, TokenStream, TokenVec,
+    UnexpectedToken, UserActionsTrait,
 };
 
 /// The type of the index of a LR action in the parse table's actions array.
@@ -308,7 +310,7 @@ impl<'t> LRParser<'t> {
         &mut self,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<ParseTree<'t>> {
+    ) -> Result<Tree<SynTree, u32, usize>> {
         let stream = Rc::new(RefCell::new(stream));
 
         // Initialize the parse stack and the parse tree stack.

@@ -171,7 +171,7 @@ pub fn obtain_grammar_config_from_string(input: &str, verbose: bool) -> Result<G
 ///
 /// Utility function for generating tree layouts
 ///
-pub fn generate_tree_layout<T>(syntax_tree: &ParseTree<'_>, input_file_name: T) -> Result<()>
+pub fn generate_tree_layout<T>(syntax_tree: &ParseTree, input_file_name: T) -> Result<()>
 where
     T: AsRef<Path>,
 {

@@ -691,7 +691,7 @@ enum State {
 pub trait BuildListener {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &ParseTree<'_>,
+        syntax_tree: &ParseTree,
         grammar: &ParolGrammar,
     ) -> Result<()> {
         Ok(())
@@ -709,7 +709,7 @@ struct MaybeBuildListener<'l>(Option<&'l mut dyn BuildListener>);
 impl BuildListener for MaybeBuildListener<'_> {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &ParseTree<'_>,
+        syntax_tree: &ParseTree,
         grammar: &ParolGrammar,
     ) -> Result<()> {
         if let Some(ref mut inner) = self.0 {

@@ -207,6 +207,20 @@ pub struct PTToken {
     pub token_number: TokenNumber,
 }
 
+impl PTToken {
+    /// Calculate the length of the token
+    #[inline]
+    pub fn len(&self) -> usize {
+        self.end.saturating_sub(self.start)
+    }
+
+    /// Returns true if the token is empty
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.start >= self.end
+    }
+}
+
 impl From<&Token<'_>> for PTToken {
     fn from(token: &Token<'_>) -> Self {
         Self {

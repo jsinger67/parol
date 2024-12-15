@@ -115,7 +115,7 @@ impl CLIListener<'_> {
 impl BuildListener for CLIListener<'_> {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &ParseTree<'_>,
+        syntax_tree: &ParseTree,
         parol_grammar: &ParolGrammar,
     ) -> Result<()> {
         if self.verbose() {
