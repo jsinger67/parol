@@ -43,7 +43,7 @@ fn main() -> Result<()> {
                     Ok(())
                 } else {
                     println!("{}", scanner_states_grammar);
-                    generate_tree_layout(&syntax_tree, &file_name)
+                    generate_tree_layout(&syntax_tree, &input, &file_name)
                         .context("Error generating tree layout")
                 }
             }

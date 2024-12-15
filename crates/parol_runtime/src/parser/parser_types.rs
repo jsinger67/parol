@@ -53,11 +53,19 @@ impl Production {
     }
 }
 
+syntree::flavor! {
+    /// The flavor of the syntax tree
+    pub struct SynTreeFlavor {
+        type Index = u32;
+        type Width = usize;
+    }
+}
+
 /// The type used for the parse tree
-pub type ParseTree = Tree<SynTree, u32, usize>;
+pub type ParseTree = Tree<SynTree, SynTreeFlavor>;
 
 /// The parse tree builder type
-pub(crate) type TreeBuilder = Builder<SynTree, u32, usize>;
+pub(crate) type TreeBuilder = Builder<SynTree, SynTreeFlavor>;
 
 ///
 /// The actual LLK parser.
@@ -320,7 +328,7 @@ impl<'t> LLKParser<'t> {
         &mut self,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<Tree<SynTree, u32, usize>> {
+    ) -> Result<Tree<SynTree, SynTreeFlavor>> {
         let stream = Rc::new(RefCell::new(stream));
         let prod_num = match self.predict_production(self.start_symbol_index, stream.clone()) {
             Ok(prod_num) => prod_num,
@@ -333,7 +341,7 @@ impl<'t> LLKParser<'t> {
             }
         };
 
-        let mut tree_builder = TreeBuilder::new();
+        let mut tree_builder = TreeBuilder::new_with();
 
         self.push_production(&mut tree_builder, prod_num)?;
 
@@ -349,7 +357,7 @@ impl<'t> LLKParser<'t> {
                             self.parser_stack.stack.pop();
                             if !self.trim_parse_tree {
                                 tree_builder
-                                    .token(SynTree::Terminal((&token).into()), 1)
+                                    .token(SynTree::Terminal((&token).into()), token.location.len())
                                     .map_err(|source| ParserError::TreeError { source })?;
                             }
                             self.parse_tree_stack.push(ParseTreeType::T(token));

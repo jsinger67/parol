@@ -34,7 +34,7 @@ fn main() -> Result<()> {
                 if args.len() > 2 && args[2] == "-q" {
                     Ok(())
                 } else {
-                    generate_tree_layout(&syntax_tree, &file_name)
+                    generate_tree_layout(&syntax_tree, &input, &file_name)
                         .context("Error generating tree layout")?;
                     println!("Success!\n{}", keywords_grammar);
                     Ok(())

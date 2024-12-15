@@ -81,23 +81,11 @@ pub enum SynTree {
     NonTerminal(&'static str),
 }
 
-impl Visualize for SynTree {
-    fn visualize(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            SynTree::Terminal(t) => write!(f, "{}", t),
-            SynTree::NonTerminal(n) => write!(f, "{}", n),
-        }
-    }
-    fn emphasize(&self) -> bool {
-        matches!(self, SynTree::Terminal(_))
-    }
-}
-
 impl Display for SynTree {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         match self {
-            SynTree::Terminal(t) => write!(f, "T({})", t),
-            SynTree::NonTerminal(n) => write!(f, "N({})", n),
+            SynTree::Terminal(t) => write!(f, "{}", t),
+            SynTree::NonTerminal(n) => write!(f, "{}", n),
         }
     }
 }

@@ -161,8 +161,8 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     )]
 });
 
-pub fn parse<'t, T>(
-    input: &'t str,
+pub fn parse<T>(
+    input: &str,
     file_name: T,
     user_actions: &mut ListGrammar,
 ) -> Result<ParseTree, ParolError>

@@ -337,6 +337,16 @@ impl std::fmt::Display for ParserData<'_> {
         writeln!(f, "\n")?;
 
         let user_actions = ume::ume!(&mut #user_type_name #user_type_life_time).to_string();
+        let lifetime_on_parse = if *user_type_life_time == "<'t>" {
+            "'t,"
+        } else {
+            ""
+        };
+        let lifetime_on_input = if *user_type_life_time == "<'t>" {
+            "'t"
+        } else {
+            ""
+        };
         let auto_wrapper = format!(
             "\n// Initialize wrapper\n{}",
             ume::ume! {
@@ -355,8 +365,8 @@ impl std::fmt::Display for ParserData<'_> {
             ""
         };
         f.write_fmt(ume::ume! {
-            pub fn parse<'t, T>(
-                input: &'t str,
+            pub fn parse<#lifetime_on_parse T>(
+                input: &#lifetime_on_input str,
                 file_name: T,
                 user_actions: #user_actions,
             ) -> Result<ParseTree, ParolError> where T: AsRef<Path> {
@@ -461,6 +471,16 @@ impl std::fmt::Display for LRParserData<'_> {
         writeln!(f, "\n")?;
 
         let user_actions = ume::ume!(&mut #user_type_name #user_type_life_time).to_string();
+        let lifetime_on_parse = if *user_type_life_time == "<'t>" {
+            "'t,"
+        } else {
+            ""
+        };
+        let lifetime_on_input = if *user_type_life_time == "<'t>" {
+            "'t"
+        } else {
+            ""
+        };
         let auto_wrapper = format!(
             "\n// Initialize wrapper\n{}",
             ume::ume! {
@@ -475,8 +495,8 @@ impl std::fmt::Display for LRParserData<'_> {
         };
 
         f.write_fmt(ume::ume! {
-            pub fn parse<'t, T>(
-                input: &'t str,
+            pub fn parse<#lifetime_on_parse T>(
+                input: &#lifetime_on_input str,
                 file_name: T,
                 user_actions: #user_actions,
             ) -> Result<ParseTree, ParolError> where T: AsRef<Path> {

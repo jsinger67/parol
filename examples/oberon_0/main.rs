@@ -32,7 +32,8 @@ fn main() -> Result<()> {
             .with_context(|| format!("Failed parsing file {}", file_name))?;
         println!("\n{} successfully parsed!", file_name);
         println!("{}", oberon_0_grammar);
-        generate_tree_layout(&syntax_tree, &file_name).context("Error generating tree layout")
+        generate_tree_layout(&syntax_tree, &input, &file_name)
+            .context("Error generating tree layout")
     } else {
         Err(anyhow!("Please provide a file name as single parameter!"))
     }

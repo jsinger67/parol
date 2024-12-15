@@ -11,7 +11,10 @@ use log::trace;
 use syntree::Tree;
 
 use crate::{
-    parser::{parse_tree_type::SynTree, parser_types::TreeBuilder},
+    parser::{
+        parse_tree_type::SynTree,
+        parser_types::{SynTreeFlavor, TreeBuilder},
+    },
     FileSource, LRParseTree, NonTerminalIndex, ParolError, ParseTreeStack, ParseTreeType,
     ParserError, ProductionIndex, Result, SyntaxError, TerminalIndex, TokenStream, TokenVec,
     UnexpectedToken, UserActionsTrait,
@@ -310,7 +313,7 @@ impl<'t> LRParser<'t> {
         &mut self,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<Tree<SynTree, u32, usize>> {
+    ) -> Result<Tree<SynTree, SynTreeFlavor>> {
         let stream = Rc::new(RefCell::new(stream));
 
         // Initialize the parse stack and the parse tree stack.
@@ -408,7 +411,7 @@ impl<'t> LRParser<'t> {
         }
         let parse_tree = if self.trim_parse_tree {
             // Return an empty parse tree
-            TreeBuilder::new().build()
+            TreeBuilder::new_with().build()
         } else {
             // The parse tree stack should contain only one element at this point
             debug_assert!(self.parse_tree_stack.len() == 1);

@@ -36,7 +36,7 @@ fn main() -> Result<()> {
         match parse(&input, &file_name, &mut scanner_states_grammar) {
             Ok(syntax_tree) => {
                 println!("{}", scanner_states_grammar);
-                generate_tree_layout(&syntax_tree, &file_name)
+                generate_tree_layout(&syntax_tree, &input, &file_name)
                     .context("Error generating tree layout")
             }
             Err(e) => {
