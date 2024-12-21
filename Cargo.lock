@@ -1276,11 +1276,12 @@ checksum = "00c99c9cda412afe293a6b962af651b4594161ba88c1affe7ef66459ea040a06"
 [[package]]
 name = "syntree_layout"
 version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24d027955f5f14d526450b6a11ef5aa962761e924dcd092298dd0d1466570565"
 dependencies = [
  "anyhow",
- "log",
  "syntree",
- "thiserror 2.0.7",
+ "thiserror 2.0.8",
  "xml_writer",
 ]
 
