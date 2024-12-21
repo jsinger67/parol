@@ -31,6 +31,9 @@ its functions have default implementations.
 
 ## Semantic actions in Vanilla mode
 
+>Note that this mode is not supported anymore in versions greater 1. To comprehend the realization
+back then you should visit branch [release1.0](https://github.com/jsinger67/parol/tree/release1.0).
+
 In the less comfortable vanilla mode there are some differences we will address next.
 
 The functions in the semantic actions trait correspond to the *productions* of the
@@ -69,13 +72,13 @@ This is only the semantic action for production 5:
 The first thing you will notice is that the trait function has a default implementation. It does
 nothing but returning `Ok`.
 
-The second property of a all these functions is that the first argument always is a mutable
+The second property of all these functions is that the first argument always is a mutable
 reference to the implementing item, in this case a reference to `VanillaListGrammar`.
 
 The rest of the arguments correspond to the right-hand side of the respective production.
 
 Next you see a concrete implementation of a semantic action, where all arguments of the semantic
-action are used. This is not always necessary the case and depends on your own language
+action are used. This is not necessarily always the case and depends on your own language
 implementation.
 
 ```rust
@@ -95,7 +98,7 @@ impl VanillaListGrammarTrait for VanillaListGrammar {
 }
 ```
 
-You can see that the parameter of the semantic actions which correspond to the right-hand side of
+You can see that the parameters of the semantic actions which correspond to the right-hand side of
 the respective productions are all of type `&ParseTreeType`. This type from the
 [parol_runtime](https://github.com/jsinger67/parol/blob/main/crates/parol_runtime/src/parser/parse_tree_type.rs)
 crate is defined this way:
@@ -163,7 +166,7 @@ these results of earlier semantic actions later from other semantic actions and 
 result step by step using them.
 
 A good demonstration of this approach can be found at the example
-[calc](https://github.com/jsinger67/parol/blob/main/examples/calc/calc_grammar.rs).
+[calc](https://github.com/jsinger67/parol/blob/release1.0/examples/calc/calc_grammar.rs).
 
 The direction in which the parser derives the symbols of your grammar guarantees that when a
 semantic action of a production is called all elements of the production have been processed before.
@@ -188,16 +191,16 @@ actions accordingly.
 This and the automatic AST type inference are the most outstanding properties of `parol`.
 
 We will use the example
-[calc_auto](https://github.com/jsinger67/parol/tree/main/examples/calc_auto) for detailed
+[calc_auto](https://github.com/jsinger67/parol/tree/release1.0/examples/calc_auto) for detailed
 explanations.
 
 The file
-[calc_grammar_trait.rs](https://github.com/jsinger67/parol/blob/main/examples/calc_auto/calc_grammar_trait.rs)
+[calc_grammar_trait.rs](https://github.com/jsinger67/parol/tree/release1.0/examples/calc_auto/calc_grammar_trait.rs)
 contains the generated traits and types we are interested in.
 
 First we will have a look at the `CalcGrammarTrait` at the top of this file. For each non-terminal
 of the input grammar
-[calc.par](https://github.com/jsinger67/parol/blob/main/examples/calc_auto/calc.par) it contains
+[calc.par](https://github.com/jsinger67/parol/tree/release1.0/examples/calc_auto/calc.par) it contains
 exactly one semantic action.
 
 ```rust
@@ -216,7 +219,7 @@ The approach taken in this example is quite interesting. We only implement the s
 the start symbol of our grammar: *calc*.
 
 The implementation can be found in
-[calc_grammar.rs](https://github.com/jsinger67/parol/blob/main/examples/calc_auto/calc_grammar.rs).
+[calc_grammar.rs](https://github.com/jsinger67/parol/tree/release1.0/examples/calc_auto/calc_grammar.rs).
 
 Near the end you can find the one and only semantic action we implement here and thereby creating
 the functionality of a calculator language.
@@ -296,10 +299,10 @@ This concept is applied for all non-terminals of your grammar. Actually your gra
 
 This means eventually that any variable of type `Calc` can represent a validly parsed input sentence
 that belongs to the grammar defined by
-[calc.par](https://github.com/jsinger67/parol/blob/main/examples/calc_auto/calc.par).
+[calc.par](https://github.com/jsinger67/parol/tree/release1.0/examples/calc_auto/calc.par).
 
 You then only have to evaluate the content of this value as done in this calculator example.
 I recommend to study this example more deeply and the approach will become obvious to you.
 
 As mentioned earlier the implementation can be found here:
-[calc_grammar.rs](https://github.com/jsinger67/parol/blob/main/examples/calc_auto/calc_grammar.rs).
+[calc_grammar.rs](https://github.com/jsinger67/parol/tree/release1.0/examples/calc_auto/calc_grammar.rs).

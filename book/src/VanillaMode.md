@@ -1,5 +1,8 @@
 # Vanilla mode
 
+>Note that this mode is not supported anymore in versions greater 1. To comprehend the realization
+back then you should visit branch [release1.0](https://github.com/jsinger67/parol/tree/release1.0).
+
 Although the auto-generation mode (switch `-g`, `--auto_generate`) is the recommended way to use
 `parol` you can alternatively work in *vanilla mode*.
 
@@ -22,7 +25,7 @@ and showed the vulnerability of the existing implementation to changes in the in
 Anyway, this chapter is dedicated to the way `parol` functions without auto-generation.
 
 You may have a look at example
-[list](https://github.com/jsinger67/parol/tree/main/examples/list) that uses the *vanilla mode* and
+[list](https://github.com/jsinger67/parol/tree/release1.0/examples/list) that uses the *vanilla mode* and
 actually shows how easy it is to work this way.
 
 We will elaborate this by implementing a list example in an alternative way.
