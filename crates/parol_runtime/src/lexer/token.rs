@@ -151,8 +151,14 @@ impl Display for Token<'_> {
         };
         write!(
             f,
-            "{}{}{}, Ty:{}, at {}",
-            c1, self.text, c2, self.token_type, self.location
+            "{}{}{}, Ty:{}, at {}..{}[{}]",
+            c1,
+            self.text,
+            c2,
+            self.token_type,
+            self.location.start,
+            self.location.end,
+            self.location
         )
     }
 }
@@ -188,5 +194,56 @@ impl From<&Token<'_>> for Span {
 impl ToSpan for Token<'_> {
     fn span(&self) -> Span {
         self.into()
+    }
+}
+
+/// Lightweight version of Token that is Copy for use in parse trees
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq)]
+pub struct PTToken {
+    /// The index of the terminal in the augmented terminal list
+    pub token_type: TerminalIndex,
+
+    /// Range start information
+    pub start: usize,
+    /// Range end information
+    pub end: usize,
+
+    /// Unique token number that allows ordering of tokens from different contexts, e.g. comment
+    /// tokens can be intermingled with normal tokens.
+    pub token_number: TokenNumber,
+}
+
+impl PTToken {
+    /// Calculate the length of the token
+    #[inline]
+    pub fn len(&self) -> usize {
+        self.end.saturating_sub(self.start)
+    }
+
+    /// Returns true if the token is empty
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.start >= self.end
+    }
+}
+
+impl From<&Token<'_>> for PTToken {
+    fn from(token: &Token<'_>) -> Self {
+        Self {
+            token_type: token.token_type,
+            start: token.location.start(),
+            end: token.location.end(),
+            token_number: token.token_number,
+        }
+    }
+}
+
+impl Display for PTToken {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(
+            f,
+            "Ty:{}, at {}..{}[{}]",
+            self.token_type, self.start, self.end, self.token_number
+        )
     }
 }

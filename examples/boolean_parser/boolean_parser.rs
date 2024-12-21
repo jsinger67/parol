@@ -66,7 +66,7 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 12]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"//.*(\r\n|\r|\n)",
+        /*  3 */ r"//.*(\r\n|\r|\n)?",
         /*  4 */ r"\(\*([.\r\n--*]|\*[^)])*\*\)",
     ],
     &[
@@ -497,7 +497,7 @@ pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
     user_actions: &mut BooleanGrammar<'t>,
-) -> Result<ParseTree<'t>, ParolError>
+) -> Result<ParseTree, ParolError>
 where
     T: AsRef<Path>,
 {

@@ -33,7 +33,8 @@ fn main() -> Result<()> {
         let mut boolean_grammar = BooleanGrammar::new();
         let syntax_tree = parse(&input, &file_name, &mut boolean_grammar)
             .with_context(|| format!("Failed parsing file {}", file_name))?;
-        generate_tree_layout(&syntax_tree, &file_name).context("Error generating tree layout")
+        generate_tree_layout(&syntax_tree, &input, &file_name)
+            .context("Error generating tree layout")
     } else {
         Err(anyhow!("Please provide a file name as single parameter!"))
     }

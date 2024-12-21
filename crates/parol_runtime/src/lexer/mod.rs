@@ -32,13 +32,13 @@ pub use format_token::FormatToken;
 /// Module with a location type
 ///
 pub mod location;
-pub use location::{ Location, LocationBuilder };
+pub use location::{Location, LocationBuilder};
 
 ///
 /// Module to support handling of std::ops::Range
 ///
 pub mod rng;
-pub use rng::{ Span, ToSpan };
+pub use rng::{Span, ToSpan};
 
 ///
 /// Module that provides the type used for scanner configurations.
@@ -50,7 +50,10 @@ pub use scanner_config::ScannerConfig;
 /// Module that provides basic token implementation.
 ///
 pub mod token;
-pub use token::{ Token, BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE };
+pub use token::{Token, BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE};
+
+mod token_buffer;
+pub(crate) use token_buffer::TokenBuffer;
 
 ///
 /// Module that provides the Tokenizer type.

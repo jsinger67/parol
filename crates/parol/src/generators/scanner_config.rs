@@ -117,7 +117,7 @@ impl ScannerConfig {
             let line_comments_rx = self
                 .line_comments
                 .iter()
-                .map(|s| format!(r###"{}.*(\r\n|\r|\n)"###, s))
+                .map(|s| format!(r###"{}.*(\r\n|\r|\n)?"###, s))
                 .collect::<Vec<String>>()
                 .join("|");
             scanner_specific.push(line_comments_rx);

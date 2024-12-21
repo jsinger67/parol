@@ -171,6 +171,15 @@ fn init() {
     let _ = env_logger::builder().is_test(true).try_init();
 }
 
+fn print_skip_tokens(token_stream: &RefCell<TokenStream<'_>>) {
+    // Print the skip tokens
+    token_stream
+        .borrow_mut()
+        .take_skip_tokens()
+        .into_iter()
+        .for_each(|t| println!("{:?}", t));
+}
+
 #[test]
 fn scanner_switch_and_named_source() {
     init();
@@ -204,6 +213,7 @@ fn scanner_switch_and_named_source() {
             println!("    => switched to scanner {new_state}");
         }
 
+        print_skip_tokens(&stream);
         // Consume the token which will update the iterator position where to reset the scanner
         // after clearing the token buffer.
         stream.borrow_mut().consume().unwrap();

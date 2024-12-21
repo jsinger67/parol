@@ -115,7 +115,8 @@ impl CLIListener<'_> {
 impl BuildListener for CLIListener<'_> {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &ParseTree<'_>,
+        syntax_tree: &ParseTree,
+        input: &str,
         parol_grammar: &ParolGrammar,
     ) -> Result<()> {
         if self.verbose() {
@@ -128,7 +129,7 @@ impl BuildListener for CLIListener<'_> {
         }
 
         if self.config.generate_tree_graph {
-            parol::generate_tree_layout(syntax_tree, self.grammar_file)
+            parol::generate_tree_layout(syntax_tree, input, self.grammar_file)
                 .context("Error generating tree layout")
                 .map_err(|e| parol!(e))?;
         }

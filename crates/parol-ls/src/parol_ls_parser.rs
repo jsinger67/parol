@@ -116,7 +116,7 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 37]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"//.*(\r\n|\r|\n)",
+        /*  3 */ r"//.*(\r\n|\r|\n)?",
         /*  4 */ r"/\*([.\r\n--*]|\*[^/])*\*/",
     ],
     &[
@@ -1162,11 +1162,11 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     )]
 });
 
-pub fn parse<'t, T>(
-    input: &'t str,
+pub fn parse<T>(
+    input: &str,
     file_name: T,
     user_actions: &mut ParolLsGrammar,
-) -> Result<ParseTree<'t>, ParolError>
+) -> Result<ParseTree, ParolError>
 where
     T: AsRef<Path>,
 {

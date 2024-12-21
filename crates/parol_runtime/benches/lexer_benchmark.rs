@@ -199,6 +199,13 @@ fn tokenize() {
             "Error token found: {:?}",
             tok
         );
+        // Drop the skip tokens
+        let _ = token_stream
+            .borrow_mut()
+            .take_skip_tokens()
+            .into_iter()
+            .collect::<Vec<_>>();
+
         token_stream.borrow_mut().consume().unwrap();
     }
 }

@@ -38,7 +38,7 @@ fn main() -> Result<()> {
                     println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                     println!("Success!\n{}", list_grammar);
                 }
-                generate_tree_layout(&syntax_tree, &file_name)
+                generate_tree_layout(&syntax_tree, &input, &file_name)
                     .context("Error generating tree layout")
             }
             Err(e) => ErrorReporter::report_error(&e, file_name),

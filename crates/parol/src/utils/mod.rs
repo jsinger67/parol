@@ -171,7 +171,11 @@ pub fn obtain_grammar_config_from_string(input: &str, verbose: bool) -> Result<G
 ///
 /// Utility function for generating tree layouts
 ///
-pub fn generate_tree_layout<T>(syntax_tree: &ParseTree<'_>, input_file_name: T) -> Result<()>
+pub fn generate_tree_layout<T>(
+    syntax_tree: &ParseTree,
+    input: &str,
+    input_file_name: T,
+) -> Result<()>
 where
     T: AsRef<Path>,
 {
@@ -180,7 +184,7 @@ where
 
     Layouter::new(syntax_tree)
         .with_file_path(&svg_full_file_name)
-        .embed_with_visualize()?
+        .embed_with_source_and_display(input)?
         .write()
         .context("Failed writing layout")
 }

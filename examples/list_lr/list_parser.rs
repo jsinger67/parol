@@ -47,7 +47,7 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
         /* 0 */ UNMATCHABLE_TOKEN,
         /* 1 */ NEW_LINE_TOKEN,
         /* 2 */ WHITESPACE_TOKEN,
-        /* 3 */ r"//.*(\r\n|\r|\n)",
+        /* 3 */ r"//.*(\r\n|\r|\n)?",
         /* 4 */ UNMATCHABLE_TOKEN,
     ],
     &[5 /* Comma */, 6 /* Num */],
@@ -161,17 +161,15 @@ static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
     )]
 });
 
-pub fn parse<'t, T>(
-    input: &'t str,
+pub fn parse<T>(
+    input: &str,
     file_name: T,
     user_actions: &mut ListGrammar,
-) -> Result<ParseTree<'t>, ParolError>
+) -> Result<ParseTree, ParolError>
 where
     T: AsRef<Path>,
 {
     let mut lr_parser = LRParser::new(2, &PARSE_TABLE, PRODUCTIONS, TERMINAL_NAMES, NON_TERMINALS);
-    lr_parser.trim_parse_tree();
-
     // Initialize wrapper
     let mut user_actions = ListGrammarAuto::new(user_actions);
     lr_parser.parse(

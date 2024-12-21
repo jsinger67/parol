@@ -8,11 +8,16 @@ use core::str;
 use std::{cell::RefCell, collections::BTreeSet, convert::TryInto, rc::Rc};
 
 use log::trace;
+use syntree::Tree;
 
 use crate::{
-    parser::parser_types::TreeBuilder, FileSource, LRParseTree, NonTerminalIndex, ParolError,
-    ParseTree, ParseTreeStack, ParseTreeType, ParserError, ProductionIndex, Result, SyntaxError,
-    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    parser::{
+        parse_tree_type::SynTree,
+        parser_types::{SynTreeFlavor, TreeBuilder},
+    },
+    FileSource, LRParseTree, NonTerminalIndex, ParolError, ParseTreeStack, ParseTreeType,
+    ParserError, ProductionIndex, Result, SyntaxError, TerminalIndex, TokenStream, TokenVec,
+    UnexpectedToken, UserActionsTrait,
 };
 
 /// The type of the index of a LR action in the parse table's actions array.
@@ -259,16 +264,24 @@ impl<'t> LRParser<'t> {
         // Calculate the number of symbols in the production
         let n = self.productions[prod_num].len;
 
-        // We remove the last n entries from the parse tree stack
-        let children: Vec<LRParseTree<'_>> = self
-            .parse_tree_stack
-            .split_off(self.parse_tree_stack.len() - n);
+        // We remove the last n entries from the parse tree stack including skip tokens which are
+        // not part of the LALR(1) automaton.
+        let children: Vec<LRParseTree<'_>> = self.parse_tree_stack.pop_n(n, |pt| match pt {
+            LRParseTree::Terminal(t) => !t.is_skip_token(),
+            LRParseTree::NonTerminal(_, _) => true,
+        });
 
         // Prepare the arguments for the user's semantic action
         let arguments = children
             .iter()
+            .filter(|pt| !pt.is_skip_token())
             .map(|pt| pt.into())
             .collect::<Vec<ParseTreeType<'t>>>();
+        debug_assert_eq!(
+            n,
+            arguments.len(),
+            "Number of arguments does not match number of symbols in production"
+        );
 
         // Insert children under the new non-terminal node of the production being reduced
         let non_terminal = LRParseTree::NonTerminal(
@@ -288,17 +301,24 @@ impl<'t> LRParser<'t> {
         Ok(n)
     }
 
-    fn handle_comments<'u>(
+    fn handle_additional_tokens<'u>(
         &mut self,
-        stream: &RefCell<TokenStream<'t>>,
+        stream: Rc<RefCell<TokenStream<'t>>>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()> {
         stream
             .borrow_mut()
-            .drain_comments()
-            .into_iter()
-            .for_each(|c| user_actions.on_comment_parsed(c));
-        Ok(())
+            .take_skip_tokens()
+            .drain(..)
+            .try_for_each(|t| {
+                if !self.trim_parse_tree {
+                    self.parse_tree_stack.push(LRParseTree::Terminal(t.clone()));
+                }
+                if t.is_comment_token() {
+                    user_actions.on_comment_parsed(t);
+                }
+                Ok::<(), ParolError>(())
+            })
     }
 
     ///
@@ -308,14 +328,15 @@ impl<'t> LRParser<'t> {
         &mut self,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<ParseTree<'t>> {
+    ) -> Result<Tree<SynTree, SynTreeFlavor>> {
         let stream = Rc::new(RefCell::new(stream));
 
         // Initialize the parse stack and the parse tree stack.
         self.parser_stack = LRParseStack::new();
+        self.parse_tree_stack = ParseTreeStack::new();
 
         loop {
-            self.handle_comments(&stream, user_actions)?;
+            self.handle_additional_tokens(stream.clone(), user_actions)?;
             let terminal_index = stream.borrow_mut().lookahead_token_type(0)?;
             let current_state = self.parser_stack.current_state();
             trace!(
@@ -406,11 +427,15 @@ impl<'t> LRParser<'t> {
         }
         let parse_tree = if self.trim_parse_tree {
             // Return an empty parse tree
-            TreeBuilder::new().build()
+            TreeBuilder::new_with().build()
         } else {
             // The parse tree stack should contain only one element at this point
-            debug_assert!(self.parse_tree_stack.len() == 1);
-            let parse_tree = self.parse_tree_stack.pop().unwrap();
+            // Handle additional tokens after the last token relevant for the grammar
+            debug_assert!(!self.parse_tree_stack.is_empty());
+            self.handle_additional_tokens(stream.clone(), user_actions)?;
+            // Add a root node to the tree that can receive besides the root symbol all other symbols
+            // of the parse tree, e.g. comments, whitespace, etc.
+            let parse_tree = LRParseTree::NonTerminal("", Some(self.parse_tree_stack.pop_all()));
             parse_tree.try_into()
         };
         Ok(parse_tree.map_err(|source| ParserError::TreeError { source })?)

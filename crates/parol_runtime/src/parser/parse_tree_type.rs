@@ -1,4 +1,4 @@
-use crate::{ParserError, Token};
+use crate::{lexer::token::PTToken, ParserError, Token};
 
 use std::fmt::{Display, Formatter};
 use syntree_layout::Visualize;
@@ -67,6 +67,25 @@ impl Display for ParseTreeType<'_> {
         match self {
             Self::T(t) => write!(f, "T({})", t),
             Self::N(n) => write!(f, "N({})", n),
+        }
+    }
+}
+
+/// Parse tree representation.
+/// It is uses to build the syntree tree. The syntree tree expects the tree type to be Copy.
+#[derive(Debug, Clone, Copy)]
+pub enum SynTree {
+    /// A terminal node
+    Terminal(PTToken),
+    /// A non-terminal node
+    NonTerminal(&'static str),
+}
+
+impl Display for SynTree {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+        match self {
+            SynTree::Terminal(t) => write!(f, "{}", t),
+            SynTree::NonTerminal(n) => write!(f, "{}", n),
         }
     }
 }

@@ -40,7 +40,7 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
                 } else {
                     println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                     println!("Success!\nVariables:\n{}", basic_grammar);
-                    match generate_tree_layout(&syntax_tree, &file_name) {
+                    match generate_tree_layout(&syntax_tree, &input, &file_name) {
                         Ok(_) => (),
                         Err(e) => {
                             println!("Error generating tree layout: {e}");
@@ -61,13 +61,13 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
     }
 }
 
-fn generate_tree_layout(syntax_tree: &ParseTree<'_>, input_file_name: &str) -> Result<()> {
+fn generate_tree_layout(syntax_tree: &ParseTree, input: &str, input_file_name: &str) -> Result<()> {
     let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
     svg_full_file_name.set_extension("svg");
 
     Layouter::new(syntax_tree)
         .with_file_path(&svg_full_file_name)
-        .embed_with_visualize()?
+        .embed_with_source_and_display(input)?
         .write()
         .context("Failed writing layout")
 }

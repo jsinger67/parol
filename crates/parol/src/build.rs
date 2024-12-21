@@ -530,7 +530,7 @@ impl GrammarGenerator<'_> {
         let mut parol_grammar = ParolGrammar::new();
         let syntax_tree = crate::parser::parse(&input, &self.grammar_file, &mut parol_grammar)?;
         self.listener
-            .on_initial_grammar_parse(&syntax_tree, &parol_grammar)?;
+            .on_initial_grammar_parse(&syntax_tree, &input, &parol_grammar)?;
         self.grammar_config = Some(GrammarConfig::try_from(parol_grammar)?);
         self.state = Some(State::Parsed);
         Ok(())
@@ -691,7 +691,8 @@ enum State {
 pub trait BuildListener {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &ParseTree<'_>,
+        syntax_tree: &ParseTree,
+        input: &str,
         grammar: &ParolGrammar,
     ) -> Result<()> {
         Ok(())
@@ -709,11 +710,12 @@ struct MaybeBuildListener<'l>(Option<&'l mut dyn BuildListener>);
 impl BuildListener for MaybeBuildListener<'_> {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &ParseTree<'_>,
+        syntax_tree: &ParseTree,
+        input: &str,
         grammar: &ParolGrammar,
     ) -> Result<()> {
         if let Some(ref mut inner) = self.0 {
-            inner.on_initial_grammar_parse(syntax_tree, grammar)
+            inner.on_initial_grammar_parse(syntax_tree, input, grammar)
         } else {
             Ok(())
         }
