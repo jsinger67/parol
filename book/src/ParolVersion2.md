@@ -191,3 +191,18 @@ Things you need to change:
 If you want to keep your implementation in the vanilla mode your only option is to stay on
 version 1. This should although be no problem, since this version is kept stable and will of course
 receive fixes in the future as well.
+
+## Lossless parse trees in both LL and LR parsers
+
+From the beginning of it's development `parol` generates parse trees and returns them from the
+`parse` function, as far as the parse tree generation is not suppressed.
+
+These parse trees are now lossless. This means that tokens which are normally skipped like
+whitespaces, newlines and comments are now preserved and inserted in the parse tree as well.
+This should foster a whole category of applications, including language servers that need
+precise information about the parsed input available in the parse result.
+
+The parse tree itself is an advanced kind of syntax tree similar to
+[rowan](https://github.com/rust-analyzer/rowan), the one that
+[rust-analyzer](https://github.com/rust-lang/rust-analyzer) uses. More precisely it is a tree from
+the [syntree](https://github.com/udoprog/syntree) crate.
