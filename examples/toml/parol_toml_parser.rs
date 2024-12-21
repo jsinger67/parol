@@ -156,7 +156,7 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 14]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"#.*(\r\n|\r|\n)",
+        /*  3 */ r"#.*(\r\n|\r|\n)?",
         /*  4 */ UNMATCHABLE_TOKEN,
     ],
     &[
@@ -207,7 +207,7 @@ const SCANNER_2: (&[&str; 5], &[TerminalIndex; 25]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"#.*(\r\n|\r|\n)",
+        /*  3 */ r"#.*(\r\n|\r|\n)?",
         /*  4 */ UNMATCHABLE_TOKEN,
     ],
     &[
