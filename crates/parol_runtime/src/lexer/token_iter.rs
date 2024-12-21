@@ -124,9 +124,10 @@ impl<'t> Iterator for TokenIter<'t> {
             self.k -= 1;
             trace!("EOI");
             let mut eoi = Token::eoi(self.next_token_number());
-            if let Some(location) = self.last_location.as_mut() {
-                location.end_column += 1;
-                eoi = eoi.with_location(location.clone());
+            if let Some(mut location) = self.last_location.clone() {
+                location.start = self.input.len() as u32;
+                location.end = self.input.len() as u32;
+                eoi = eoi.with_location(location);
             }
             Some(eoi)
         } else {

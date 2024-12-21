@@ -151,8 +151,14 @@ impl Display for Token<'_> {
         };
         write!(
             f,
-            "{}{}{}, Ty:{}, at {}",
-            c1, self.text, c2, self.token_type, self.location
+            "{}{}{}, Ty:{}, at {}..{}[{}]",
+            c1,
+            self.text,
+            c2,
+            self.token_type,
+            self.location.start,
+            self.location.end,
+            self.location
         )
     }
 }

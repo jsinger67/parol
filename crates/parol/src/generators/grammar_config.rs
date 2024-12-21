@@ -318,7 +318,7 @@ mod test {
                 "UNMATCHABLE_TOKEN",
                 "NEW_LINE_TOKEN",
                 "WHITESPACE_TOKEN",
-                r"//.*(\r\n|\r|\n)",
+                r"//.*(\r\n|\r|\n)?",
                 r"/\*([.\r\n--*]|\*[^/])*\*/"
             ]
             .iter()

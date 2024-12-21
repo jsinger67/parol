@@ -7,7 +7,7 @@ use scnr::{ScannerBuilder, ScannerMode};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use super::ScannerConfig;
+use super::{ScannerConfig, TokenBuffer};
 
 ///
 /// The TokenStream<'t> type is the interface the parser actually uses.
@@ -34,10 +34,7 @@ pub struct TokenStream<'t> {
     token_iter: TokenIter<'t>,
 
     /// Lookahead token buffer, maximum size is k
-    pub tokens: Vec<Token<'t>>,
-
-    /// Comment token buffer
-    pub comments: Vec<Token<'t>>,
+    pub tokens: TokenBuffer<'t>,
 
     /// Line number of last consumed token. Needed for scanner switching. Is initially 1.
     line: u32,
@@ -93,8 +90,7 @@ impl<'t> TokenStream<'t> {
             input,
             file_name,
             token_iter,
-            tokens: Vec::with_capacity(k),
-            comments: Vec::new(),
+            tokens: TokenBuffer::new(),
             line: 1,
             column: 1,
             last_consumed_token_end_pos: 0,
@@ -124,8 +120,8 @@ impl<'t> TokenStream<'t> {
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
             } else {
-                trace!("LA({}): {}", n, self.tokens[n]);
-                Ok(self.tokens[n].clone())
+                trace!("LA({}): {}", n, self.tokens.non_skip_token_at(n).unwrap());
+                Ok(self.tokens.non_skip_token_at(n).unwrap().clone())
             }
         }
     }
@@ -150,10 +146,20 @@ impl<'t> TokenStream<'t> {
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
             } else {
-                trace!("Type(LA({})): {}", n, self.tokens[n]);
-                Ok(self.tokens[n].token_type)
+                trace!(
+                    "Type(LA({})): {}",
+                    n,
+                    self.tokens.non_skip_token_at(n).unwrap()
+                );
+                Ok(self.tokens.non_skip_token_at(n).unwrap().token_type)
             }
         }
+    }
+
+    /// Returns all skip tokens at the beginning of the token buffer.
+    #[inline]
+    pub fn take_skip_tokens(&mut self) -> Vec<Token<'t>> {
+        self.tokens.take_skip_tokens()
     }
 
     ///
@@ -171,10 +177,10 @@ impl<'t> TokenStream<'t> {
             ));
         } else {
             // We consume token LA(1) with buffer index 0.
-            trace!("Consuming {}", &self.tokens[0]);
+            trace!("Consuming {}", &self.tokens.non_skip_token_at(0).unwrap());
             // We store the position of the lookahead token to support scanner switching.
             self.update_position();
-            token = self.tokens.remove(0);
+            token = self.tokens.consume()?;
             self.ensure_buffer()?;
         }
         Ok(token)
@@ -182,30 +188,26 @@ impl<'t> TokenStream<'t> {
 
     // Update the line and column numbers from the token at index 0 in the token buffer.
     fn update_position(&mut self) {
-        let token = &self.tokens[0];
-        self.line = token.location.start_line;
-        self.column = token.location.start_column + token.location.len() as u32;
-        self.last_consumed_token_end_pos = token.location.end();
-        trace!(
-            "Updated line: {}, column: {}, last consumed token end position: {}",
-            self.line,
-            self.column,
-            self.last_consumed_token_end_pos
-        );
-    }
-
-    ///
-    /// Returns and thereby consumes the comments of this [`TokenStream`].
-    ///
-    pub fn drain_comments(&mut self) -> Vec<Token<'t>> {
-        self.comments.drain(0..).collect()
+        if let Some(token) = &self.tokens.non_skip_token_at(0) {
+            self.line = token.location.start_line;
+            self.column = token.location.start_column + token.location.len() as u32;
+            self.last_consumed_token_end_pos = token.location.end();
+            trace!(
+                "Updated line: {}, column: {}, last consumed token end position: {}",
+                self.line,
+                self.column,
+                self.last_consumed_token_end_pos
+            );
+        }
     }
 
     ///
     /// Test if all input was processed by the parser
     ///
     pub fn all_input_consumed(&self) -> bool {
-        self.tokens.is_empty() || self.tokens[0].token_type == super::EOI
+        // The unwrap is safe because the token buffer is not empty here.
+        self.tokens.is_buffer_empty()
+            || self.tokens.non_skip_token_at(0).unwrap().token_type == super::EOI
     }
 
     ///
@@ -213,8 +215,7 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn last_token(&self) -> Result<&Token<'_>, LexerError> {
         self.tokens
-            .iter()
-            .rev()
+            .non_skip_tokens_rev()
             .find(|t| t.token_type != super::EOI)
             .ok_or(LexerError::TokenBufferEmptyError)
     }
@@ -360,16 +361,13 @@ impl<'t> TokenStream<'t> {
     fn read_tokens(&mut self, n: usize) -> Result<usize, LexerError> {
         let mut tokens_read = 0usize;
         for token in &mut self.token_iter {
+            trace!("Read {}: {}", self.tokens.len(), token);
             if !token.is_skip_token() {
                 tokens_read += 1;
-                trace!("Read {}: {}", self.tokens.len(), token);
-                self.tokens.push(token);
-                if tokens_read >= n {
-                    break;
-                }
-            } else if token.is_comment_token() {
-                // Store comment ready for the user
-                self.comments.push(token);
+            }
+            self.tokens.add(token);
+            if tokens_read >= n {
+                break;
             }
         }
         Ok(tokens_read)
@@ -405,15 +403,17 @@ impl<'t> TokenStream<'t> {
         );
     }
 
+    /// Returns the token types of the tokens in the lookahead buffer.
+    /// It only considers non-skip-tokens.
     pub(crate) fn token_types(&self) -> Vec<TerminalIndex> {
-        self.tokens.iter().map(|t| t.token_type).collect::<Vec<_>>()
+        self.tokens.non_skip_token_types()
     }
 
     pub(crate) fn diagnostic_message(&self) -> String {
         format!(
             "Lookahead buffer:\n[\n  {}\n]\n",
             self.tokens
-                .iter()
+                .non_skip_tokens()
                 .enumerate()
                 .map(|(i, t)| format!("LA[{i}]: ({t})"))
                 .collect::<Vec<String>>()
@@ -429,14 +429,14 @@ impl<'t> TokenStream<'t> {
         if self.tokens.len() > index {
             trace!(
                 "replacing token {} at index {} by {}",
-                self.tokens[index],
+                self.tokens.non_skip_token_at(index).unwrap(),
                 index,
                 token_type
             );
-            if (self.tokens[index].token_type) == EOI {
+            if (self.tokens.non_skip_token_at(index).unwrap().token_type) == EOI {
                 Err(LexerError::RecoveryError("Can't replace EOI".to_owned()))
             } else {
-                self.tokens[index].token_type = token_type;
+                self.tokens.non_skip_token_at_mut(index).unwrap().token_type = token_type;
                 Ok(())
             }
         } else {
@@ -454,7 +454,11 @@ impl<'t> TokenStream<'t> {
         if self.tokens.len() >= index {
             trace!("inserting token {} at index {}", token_type, index);
             let location = if self.tokens.len() > index {
-                self.tokens[index].location.clone()
+                self.tokens
+                    .non_skip_token_at(index)
+                    .unwrap()
+                    .location
+                    .clone()
             } else {
                 LocationBuilder::default()
                     .start_line(self.line)
@@ -492,7 +496,7 @@ impl<'t> TokenStream<'t> {
     fn clear_token_buffer(&mut self) {
         trace!("Clearing token buffer.");
         // Remove all tokens from the buffer except the EOI token
-        self.tokens.retain(|t| t.token_type == EOI);
+        self.tokens.clear();
     }
 
     /// Sets the token stream in error recovery mode.

@@ -1,7 +1,7 @@
 use crate::{
     parser::recovery::Recovery, FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex,
-    ParseStack, ParseTreeStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result,
-    SyntaxError, TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    ParolError, ParseStack, ParseTreeStack, ParseTreeType, ParseType, ParserError, ProductionIndex,
+    Result, SyntaxError, TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use log::trace;
 use std::{cell::RefCell, cmp::Ord, rc::Rc};
@@ -285,19 +285,6 @@ impl<'t> LLKParser<'t> {
         lookahead_dfa.eval(&mut stream.borrow_mut(), non_terminal)
     }
 
-    fn handle_comments<'u>(
-        &mut self,
-        stream: &RefCell<TokenStream<'t>>,
-        user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<()> {
-        stream
-            .borrow_mut()
-            .drain_comments()
-            .into_iter()
-            .for_each(|c| user_actions.on_comment_parsed(c));
-        Ok(())
-    }
-
     fn diagnostic_message(&self, msg: &str, stream: Rc<RefCell<TokenStream<'t>>>) -> String {
         trace!(
             "\nParser stack:\n{}\n{}",
@@ -329,6 +316,13 @@ impl<'t> LLKParser<'t> {
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<Tree<SynTree, SynTreeFlavor>> {
+        let mut tree_builder = TreeBuilder::new_with();
+        // Add a root node to the tree that can receive besides the root symbol all other symbols
+        // of the parse tree, e.g. comments, whitespace, etc.
+        tree_builder
+            .open(SynTree::NonTerminal(""))
+            .map_err(|source| ParserError::TreeError { source })?;
+
         let stream = Rc::new(RefCell::new(stream));
         let prod_num = match self.predict_production(self.start_symbol_index, stream.clone()) {
             Ok(prod_num) => prod_num,
@@ -341,8 +335,6 @@ impl<'t> LLKParser<'t> {
             }
         };
 
-        let mut tree_builder = TreeBuilder::new_with();
-
         self.push_production(&mut tree_builder, prod_num)?;
 
         'WHILE: while !self.input_accepted() {
@@ -352,7 +344,11 @@ impl<'t> LLKParser<'t> {
                         let token = stream.borrow_mut().lookahead(0)?;
                         if token.token_type == t {
                             trace!("Consuming token {}", token);
-                            self.handle_comments(&stream, user_actions)?;
+                            self.handle_additional_tokens(
+                                &mut tree_builder,
+                                stream.clone(),
+                                user_actions,
+                            )?;
                             stream.borrow_mut().consume()?;
                             self.parser_stack.stack.pop();
                             if !self.trim_parse_tree {
@@ -428,6 +424,8 @@ impl<'t> LLKParser<'t> {
             }
             .into());
         }
+        // Handle additional tokens after the last token relevant for the grammar
+        self.handle_additional_tokens(&mut tree_builder, stream.clone(), user_actions)?;
         if !stream.borrow().all_input_consumed() {
             Err((ParserError::UnprocessedInput {
                 input: Box::new(FileSource::from_stream(&stream.borrow())),
@@ -435,6 +433,11 @@ impl<'t> LLKParser<'t> {
             })
             .into())
         } else {
+            // We close the global root node,
+            tree_builder
+                .close()
+                .map_err(|source| ParserError::TreeError { source })?;
+            // build the tree and return it
             Ok(tree_builder
                 .build()
                 .map_err(|source| ParserError::TreeError { source })?)
@@ -657,5 +660,30 @@ impl<'t> LLKParser<'t> {
             }
             .into())
         }
+    }
+
+    fn handle_additional_tokens<'u>(
+        &self,
+        tree_builder: &mut Builder<SynTree, SynTreeFlavor>,
+        stream: Rc<RefCell<TokenStream<'t>>>,
+        user_actions: &'u mut dyn UserActionsTrait<'t>,
+    ) -> Result<()> {
+        stream
+            .borrow_mut()
+            .take_skip_tokens()
+            .into_iter()
+            .try_for_each(|t| {
+                if !self.trim_parse_tree {
+                    let _ = tree_builder
+                        .token(SynTree::Terminal((&t).into()), t.location.len())
+                        .map_err(|source| {
+                            ParolError::ParserError(ParserError::TreeError { source })
+                        })?;
+                }
+                if t.is_comment_token() {
+                    user_actions.on_comment_parsed(t);
+                }
+                Ok::<(), ParolError>(())
+            })
     }
 }

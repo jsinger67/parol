@@ -52,7 +52,7 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 4]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ UNMATCHABLE_TOKEN,
+        /*  3 */ r"//.*(\r\n|\r|\n)?",
         /*  4 */ UNMATCHABLE_TOKEN,
     ],
     &[
@@ -69,7 +69,7 @@ const SCANNER_1: (&[&str; 5], &[TerminalIndex; 1]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ UNMATCHABLE_TOKEN,
+        /*  3 */ r"//.*(\r\n|\r|\n)?",
         /*  4 */ UNMATCHABLE_TOKEN,
     ],
     &[6 /* Identifier */],

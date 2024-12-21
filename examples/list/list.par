@@ -3,6 +3,7 @@
 %comment "A trailing comma is allowed."
 %user_type Number = crate::list_grammar::Number
 %user_type Numbers = crate::list_grammar::Numbers
+%line_comment "//"
 
 %%
 

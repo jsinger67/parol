@@ -85,6 +85,7 @@ fn lexer_token_production() {
     let mut tok = Token::default();
     let mut token_count = 0;
     while !token_stream.borrow().all_input_consumed() {
+        print_skip_tokens(&token_stream);
         tok = token_stream.borrow_mut().consume().unwrap();
         println!("{:w$}: {:?}", token_count, tok, w = 3);
         token_count += 1;
@@ -116,14 +117,14 @@ fn lexer_token_production() {
                 .start_line(21)
                 .start_column(1)
                 .end_line(21)
-                .end_column(3)
-                .start(544)
+                .end_column(2)
+                .start(545)
                 .end(545)
                 .file_name(token_stream.borrow().file_name.clone())
                 .build()
                 .unwrap()
         ),
-        token_stream.borrow().tokens[0]
+        *token_stream.borrow().tokens.non_skip_token_at(0).unwrap()
     );
     assert_eq!(
         Token::eoi(82).with_location(
@@ -131,15 +132,24 @@ fn lexer_token_production() {
                 .start_line(21)
                 .start_column(1)
                 .end_line(21)
-                .end_column(4)
-                .start(544)
+                .end_column(2)
+                .start(545)
                 .end(545)
                 .file_name(token_stream.borrow().file_name.clone())
                 .build()
                 .unwrap()
         ),
-        token_stream.borrow().tokens[1]
+        *token_stream.borrow().tokens.non_skip_token_at(1).unwrap()
     );
+}
+
+fn print_skip_tokens(token_stream: &RefCell<TokenStream<'_>>) {
+    // Print the skip tokens
+    token_stream
+        .borrow_mut()
+        .take_skip_tokens()
+        .into_iter()
+        .for_each(|t| println!("{:?}", t));
 }
 
 #[test]
@@ -157,11 +167,13 @@ fn lookahead_beyond_buffer_must_fail() {
     let token_stream =
         RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
+        print_skip_tokens(&token_stream);
         if token_stream.borrow_mut().consume().is_ok() {
             let tok = token_stream.borrow_mut().lookahead(0).unwrap();
             println!("{:?}", tok);
         }
     }
+    print_skip_tokens(&token_stream);
     // Consume the EOI token
     println!("{:?}", token_stream.borrow_mut().consume().unwrap());
     // This must fail

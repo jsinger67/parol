@@ -1,5 +1,7 @@
-Var a;
-Var b;
+Var a // C1
+
+;
+Var b;// C2
 Begin
     Var c;
     Begin
@@ -8,3 +10,4 @@ Begin
 End
 Var e;
 Begin Begin End End
+// C3

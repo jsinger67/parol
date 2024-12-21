@@ -3,6 +3,7 @@
 %start Grammar
 %title "How to handle keywords - approach 1"
 %comment "A demonstration how to handle keywords and avoid conflicts with other identifiers"
+%line_comment "//"
 
 %%
 

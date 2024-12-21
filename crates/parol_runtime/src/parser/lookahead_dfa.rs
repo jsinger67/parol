@@ -191,7 +191,7 @@ impl LookaheadDFA {
         let mut diag_msg = String::new();
         let mut unexpected_tokens = Vec::new();
         let mut expected_tokens = TokenVec::default();
-        for (lookahead, token) in token_stream.tokens.iter().enumerate() {
+        for (lookahead, token) in token_stream.tokens.non_skip_tokens().enumerate() {
             let token_type = token.token_type;
             if let Some(transition) = self
                 .transitions

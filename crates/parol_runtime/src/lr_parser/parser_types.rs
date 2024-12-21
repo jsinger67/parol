@@ -300,7 +300,7 @@ impl<'t> LRParser<'t> {
     ) -> Result<()> {
         stream
             .borrow_mut()
-            .drain_comments()
+            .take_skip_tokens()
             .into_iter()
             .for_each(|c| user_actions.on_comment_parsed(c));
         Ok(())

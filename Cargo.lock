@@ -1277,8 +1277,9 @@ name = "syntree_layout"
 version = "0.4.0"
 dependencies = [
  "anyhow",
+ "log",
  "syntree",
- "thiserror 2.0.6",
+ "thiserror 2.0.7",
  "xml_writer",
 ]
 

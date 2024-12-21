@@ -3,8 +3,11 @@
 %start Grammar
 %title "How to handle keywords - approach 2"
 %comment "A demonstration how to handle keywords and avoid conflicts with other identifiers"
+%line_comment "//"
 
-%scanner Identifier {}
+%scanner Identifier {
+    %line_comment "//"
+}
 
 %%
 
