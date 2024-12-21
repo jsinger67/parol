@@ -14,6 +14,15 @@ pub enum LRParseTree<'t> {
     NonTerminal(&'static str, Option<Vec<LRParseTree<'t>>>),
 }
 
+impl LRParseTree<'_> {
+    pub(crate) fn is_skip_token(&self) -> bool {
+        match self {
+            LRParseTree::Terminal(token) => token.is_skip_token(),
+            LRParseTree::NonTerminal(_, _) => false,
+        }
+    }
+}
+
 impl Display for LRParseTree<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -48,8 +57,7 @@ fn build_tree(
 ) -> Result<(), syntree::Error> {
     match parse_tree {
         LRParseTree::Terminal(token) => {
-            let len = token.location.len();
-            builder.token(SynTree::Terminal((&token).into()), len)?;
+            builder.token(SynTree::Terminal((&token).into()), token.location.len())?;
         }
         LRParseTree::NonTerminal(name, children) => {
             builder.open(SynTree::NonTerminal(name))?;

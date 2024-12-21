@@ -128,7 +128,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/list_lr"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'list_lr'..."
-${PAROL_TARGET} -f ./list.par -e ./list-exp.par -p ./list_parser.rs -a ./list_grammar_trait.rs -t ListGrammar -m list_grammar -b -x
+${PAROL_TARGET} -f ./list.par -e ./list-exp.par -p ./list_parser.rs -a ./list_grammar_trait.rs -t ListGrammar -m list_grammar -b
 '''
 
 [tasks.generate_oberon_0]

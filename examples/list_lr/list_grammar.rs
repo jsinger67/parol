@@ -1,4 +1,5 @@
 use crate::list_grammar_trait::{Items, List, ListGrammarTrait};
+use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::{Result, Token};
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -53,6 +54,7 @@ impl<'t> TryFrom<&Token<'t>> for Number {
     type Error = anyhow::Error;
 
     fn try_from(number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
+        trace!("Converting token to number: {:?}", number);
         Ok(Self(number.text().parse::<u32>()?))
     }
 }
