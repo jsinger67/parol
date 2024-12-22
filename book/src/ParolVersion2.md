@@ -206,3 +206,8 @@ The parse tree itself is an advanced kind of syntax tree similar to
 [rowan](https://github.com/rust-analyzer/rowan), the one that
 [rust-analyzer](https://github.com/rust-lang/rust-analyzer) uses. More precisely it is a tree from
 the [syntree](https://github.com/udoprog/syntree) crate.
+
+## General refactoring and changes in the public API
+
+- `<UserType>GrammarTrait::on_comment_parsed` has been renamed to
+`<UserType>GrammarTrait::on_comment` for clarity

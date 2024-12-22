@@ -34,7 +34,10 @@ interested in language comments.
 handling is currently only supported in `parols`'s auto-generation mode.
 >
 >Any feedback is appreciated.
-
+---
+>In version 2 `<UserType>GrammarTrait::on_comment_parsed` has been renamed to
+`<UserType>GrammarTrait::on_comment` for clarity
+---
 ## Defining the grammar type
 
 In the global header section you can define the grammar type you want to use in your grammar
