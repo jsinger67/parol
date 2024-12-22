@@ -681,7 +681,7 @@ impl<'t> LLKParser<'t> {
                         })?;
                 }
                 if t.is_comment_token() {
-                    user_actions.on_comment_parsed(t);
+                    user_actions.on_comment(t);
                 }
                 Ok::<(), ParolError>(())
             })

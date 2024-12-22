@@ -191,7 +191,7 @@ pub trait ParolGrammarTrait<'t> {
 
     /// This method provides skipped language comments.
     /// If you need comments please provide your own implementation of this method.
-    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+    fn on_comment(&mut self, _token: Token<'t>) {}
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -2950,7 +2950,7 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
         }
     }
 
-    fn on_comment_parsed(&mut self, token: Token<'t>) {
-        self.user_grammar.on_comment_parsed(token)
+    fn on_comment(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment(token)
     }
 }

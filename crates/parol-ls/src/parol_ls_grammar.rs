@@ -721,7 +721,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         Ok(())
     }
 
-    fn on_comment_parsed(&mut self, token: Token<'_>) {
+    fn on_comment(&mut self, token: Token<'_>) {
         self.comments.push_back(OwnedToken(token.into_owned()))
     }
 }

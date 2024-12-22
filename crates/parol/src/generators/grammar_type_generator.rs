@@ -34,7 +34,7 @@ pub struct GrammarTypeInfo {
 
     /// The type id of the *semantic actions trait* that contains functions for each non-terminal of
     /// the given grammar.
-    /// It also contains the function 'on_comment_parsed' that is called when a comment is parsed.
+    /// It also contains the function 'on_comment' that is called when a comment is parsed.
     /// The user action trait is created in global scope.
     /// The type name is <`GrammarName`>GrammarTrait
     pub(crate) semantic_actions_trait_id: Option<SymbolId>,
@@ -48,8 +48,8 @@ pub struct GrammarTypeInfo {
 
     /// The type id of the user action trait that contains only two functions.
     /// The first calls the adapter functions in the adapter struct.
-    /// The second function 'on_comment_parsed' is called when a comment is parsed. This function
-    /// calls the user action function 'on_comment_parsed' in the semantic actions trait.
+    /// The second function 'on_comment' is called when a comment is parsed. This function
+    /// calls the user action function 'on_comment' in the semantic actions trait.
     /// This trait created in global scope.
     /// The type name is always 'UserActionsTrait' and it is the interface called by the parser.
     pub(crate) parser_interface_trait_id: Option<SymbolId>,
@@ -130,14 +130,14 @@ impl GrammarTypeInfo {
             .symbol_table
             .insert_global_type("Token", TypeEntrails::Token)?;
 
-        // Insert the fix 'on_comment_parsed' function into the semantic actions trait to avoid name
+        // Insert the fix 'on_comment' function into the semantic actions trait to avoid name
         // clashes with a possible non-terminal 'OnCommentParsed'
-        let on_comment_parsed_id = me.symbol_table.insert_type(
+        let on_comment_id = me.symbol_table.insert_type(
             me.semantic_actions_trait_id.unwrap(),
-            "on_comment_parsed",
+            "on_comment",
             TypeEntrails::Function(Function::default()),
         )?;
-        let function_type_id = me.symbol_table.symbol_as_type(on_comment_parsed_id).my_id();
+        let function_type_id = me.symbol_table.symbol_as_type(on_comment_id).my_id();
         me.symbol_table.insert_instance(
             function_type_id,
             "token",
@@ -243,7 +243,7 @@ impl GrammarTypeInfo {
             )
             .symbols
             .iter()
-            .filter(|s| self.symbol_table.symbol(**s).name() != "on_comment_parsed")
+            .filter(|s| self.symbol_table.symbol(**s).name() != "on_comment")
             .cloned()
             .collect::<Vec<_>>()
     }
