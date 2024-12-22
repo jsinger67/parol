@@ -18,7 +18,7 @@ derive_builder = { workspace = true }
 function_name = { workspace = true }
 log = { workspace = true }
 once_cell = { workspace = true }
-parol-macros = { path = "../parol-macros", version = "1.0.0", optional = true }
+parol-macros = { path = "../parol-macros", version = "1.0.0" }
 petgraph = { workspace = true }
 scnr = "0.6.0"
 # scnr = { git = "https://github.com/jsinger67/scnr", branch = "main", version = "0.6.0" }
@@ -40,9 +40,6 @@ harness = false
 
 [features]
 default = []
-
-# Auto generation mode requires these crates.
-auto_generation = ["parol-macros"]
 
 # Features to statically disable log levels in binary crates during compile time.
 # Avoid using them in libraries.

@@ -187,6 +187,7 @@ Things you need to change:
 
 * Remove the call of `enable_auto_generation()` on the `Builder` in your `build.rs`.
 * Remove the switch `--auto-generate` resp. `-g` from the command line arguments of the `parol` tool.
+* The feature `aut_generation` has been removed from `parol_runtime` crate.
 
 If you want to keep your implementation in the vanilla mode your only option is to stay on
 version 1. This should although be no problem, since this version is kept stable and will of course

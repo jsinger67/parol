@@ -47,12 +47,10 @@ pub use errors::{
 
 // re-export
 pub use codespan_reporting;
-#[cfg(feature = "auto_generation")]
 pub use derive_builder;
 pub use function_name;
 pub use log;
 pub use once_cell;
-#[cfg(feature = "auto_generation")]
 pub use parol_macros;
 pub use syntree;
 pub use syntree_layout;

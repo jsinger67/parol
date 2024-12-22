@@ -7,14 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.0.0 - Not released yet
 
+>Please note, that changes made in version 2 are also detailed in an extra
+[chapter of the book](https://jsinger67.github.io/ParolVersion2.html)
+
 - Integration of scanner crate `scnr`. `parol_runtime` now uses this crate as scanner crate instead
 of regexes created with the help of the `regex-automata` crate. Please have a look at
 [parol_runtime's CHANGELOG](../parol_runtime/CHANGELOG.md).
 
-- Refactor some grammar tools to enforce LL grammar type
+- Refactor some grammar tools to enforce LL grammar type.
 
 - Error recovery on generated LL(k) parsers can now be disabled, via Builder API (`disable_recovery`)
-and via command line argument (`--disable_recovery`)
+and via command line argument (`--disable_recovery`).
+
+- `parol` creates lossless parse trees in both LL and LR parsers.
 
 - Fix bug Missing negation in LL(k) check for decidable subcommand #489
   * Also fixed similar bug in subcommand `calculate-k` and `calculate-k-tuples`

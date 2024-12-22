@@ -118,7 +118,7 @@ use crate::{crate_name}_parser::parse;
 
                     Layouter::new(syntax_tree)
                         .with_file_path(&svg_full_file_name)
-                        .embed_with_source_and_display()?
+                        .embed_with_source_and_display(input)?
                         .write()
                 }
             })?;

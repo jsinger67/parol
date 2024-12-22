@@ -13,7 +13,7 @@ new minor version numbers. Please note that this is no version handling covered 
 ## 2.0.0 - Not released yet
 
 >Please note, that changes made in version 2 are also detailed in an extra
-[chapter of the book](https://jsinger67.github.io/ParolVersion2.html)
+[chapter of the book](https://jsinger67.github.io/ParolVersion2.html).
 
 - Integration of scanner crate `scnr`. `parol_runtime` now uses this crate as scanner crate instead
 of regexes created with the help of the `regex-automata` crate. I hope that this way we can better
@@ -28,16 +28,15 @@ Especially regarding these differences in behavior please have a look at the `sc
 [README](https://github.com/jsinger67/scnr/blob/main/README.md).
 
 - `<UserType>GrammarTrait::on_comment_parsed` is renamed to `<UserType>GrammarTrait::on_comment` for
-clarity
+clarity.
 
-- Support for vanilla mode has been discontinued.
-
-- `parol` creates lossless parse trees in both LL and LR parsers
+- Support for vanilla mode has been discontinued. The related feature `auto_generation` became
+pointless and has therefore been removed.
 
 - The version 1 will be supported and updated regularly on branch `release1.0`, so you aren't forced
 to switch to version 2 any time soon.
 
-- Error recovery on generated LL(k) parsers can now be disabled
+- Error recovery on generated LL(k) parsers can now be disabled.
 
 ## 1.0.0 - 2024-09-02
 
