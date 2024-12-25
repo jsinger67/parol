@@ -4,7 +4,7 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## v0.3.1 - Not released yet
+## v0.3.1 - 2024-12-25
 
 * Fixed regexes for Regex and String terminals 
 
