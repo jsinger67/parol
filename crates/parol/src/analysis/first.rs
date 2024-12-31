@@ -18,7 +18,10 @@ use super::k_tuples::KTuplesBuilder;
 /// A struct to hold the FIRST k sets for all symbols of a grammar.
 #[derive(Debug, Clone, Default)]
 pub struct FirstSet {
-    /// FIRST sets, i.e. KTuples for productions in production-index order
+    /// FIRST sets, i.e. KTuples for productions in production-index order.
+    ///
+    /// They are intermediate results such that each production for a non-terminal contributes to
+    /// the FIRST set of the non-terminal which are combined in the non_terminal part of the result.
     pub productions: Vec<KTuples>,
     /// FIRST sets, i.e. KTuples for non-terminals in non-terminal-index (alphabetical) order
     pub non_terminals: Vec<KTuples>,
@@ -45,14 +48,16 @@ type ResultVector = Vec<DomainType>;
 
 /// The type of the function in the equation system
 /// It is called for each non-terminal
-type TransferFunction = Rc<dyn Fn(Rc<ResultVector>) -> DomainType + 'static>;
+type TransferFunction<'a> = Box<dyn Fn(Rc<ResultVector>) -> DomainType + 'a>;
 
-type EquationSystem = Vec<TransferFunction>;
+/// The equation system for the FIRST(k) calculation
+type EquationSystem<'a> = Vec<TransferFunction<'a>>;
 
-type StepFunction = Rc<dyn Fn(Rc<ResultVector>) -> ResultVector + 'static>;
+/// The step function for the iteration
+type StepFunction = Box<dyn Fn(Rc<ResultVector>) -> ResultVector>;
 
 ///
-/// Calculates the FIRST k sets for all productions of the given grammar.
+/// Calculates the FIRST(k) sets for all productions of the given grammar.
 /// The indices in the returned vector correspond to the production number.
 ///
 pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCache) -> FirstSet {
@@ -86,8 +91,8 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 es.push(combine_production_equation(
                     pr,
                     pr_count,
-                    ti.clone(),
-                    nti.clone(),
+                    Rc::clone(&ti),
+                    Rc::clone(&nti),
                     k,
                     max_terminal_index,
                 ));
@@ -101,7 +106,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     // Single threaded variant
     let step_function: StepFunction = {
-        Rc::new(move |result_vector: Rc<ResultVector>| {
+        Box::new(move |result_vector: Rc<ResultVector>| {
             let mut new_result_vector: ResultVector = vec![
                 DomainTypeBuilder::new()
                     .k(k)
@@ -165,8 +170,6 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     loop {
         let new_result_vector = Rc::new(step_function(result_vector.clone()));
         trace!("Iteration number {} completed", iterations);
-        // trace!("Old result vector: {:?}", result_vector);
-        // trace!("New result vector: {:?}", new_result_vector);
         if new_result_vector == result_vector {
             break;
         }
@@ -186,17 +189,17 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 ///
 /// Creates a function that calculates the FIRST k set for the given production.
 ///
-fn combine_production_equation<N, T>(
+fn combine_production_equation<'a, N, T>(
     pr: &Pr,
     pr_count: usize,
-    terminal_index: Rc<T>,
-    non_terminal_index: Rc<N>,
+    ti_fn: Rc<T>,
+    nti_fn: Rc<N>,
     k: usize,
     max_terminal_index: usize,
-) -> TransferFunction
+) -> TransferFunction<'a>
 where
-    T: TerminalIndexFn + 'static,
-    N: NonTerminalIndexFn + 'static,
+    T: TerminalIndexFn + 'a,
+    N: NonTerminalIndexFn,
 {
     let parts = pr
         .get_r()
@@ -228,7 +231,7 @@ where
             }
             acc
         });
-    let mut result_function: TransferFunction = Rc::new(move |_| {
+    let mut result_function: TransferFunction = Box::new(move |_| {
         DomainTypeBuilder::new()
             .k(k)
             .max_terminal_index(max_terminal_index)
@@ -245,9 +248,9 @@ where
         // trace!(" + {}", symbol_string);
         match &symbol_string.0[0] {
             Symbol::T(_) => {
-                let terminal_index = terminal_index.clone();
-                result_function = Rc::new(move |result_vector: Rc<ResultVector>| {
-                    let mapper = |s| CompiledTerminal::create(s, terminal_index.clone());
+                let ti_fn = Rc::clone(&ti_fn);
+                result_function = Box::new(move |result_vector: Rc<ResultVector>| {
+                    let mapper = |s| CompiledTerminal::create(s, Rc::clone(&ti_fn));
                     let terminal_indices: Vec<TerminalIndex> =
                         symbol_string.0.iter().map(|s| mapper(s).0).collect();
                     result_function(result_vector).k_concat(
@@ -261,9 +264,10 @@ where
                     )
                 });
             }
+
             Symbol::N(nt, _, _) => {
-                let f = create_union_access_function(nt, pr_count, non_terminal_index.clone());
-                result_function = Rc::new(move |result_vector: Rc<ResultVector>| {
+                let f = create_union_access_function(nt, pr_count, Rc::clone(&nti_fn));
+                result_function = Box::new(move |result_vector: Rc<ResultVector>| {
                     result_function(result_vector.clone()).k_concat(&f(result_vector), k)
                 });
             }
@@ -282,12 +286,14 @@ where
 /// Is used to calculate the union of KTuples of productions that belong to
 /// certain non-terminal.
 ///
-fn create_union_access_function(
+fn create_union_access_function<'a, N>(
     nt: &str,
     pr_count: usize,
-    nti: Rc<dyn NonTerminalIndexFn>,
-) -> TransferFunction {
-    let nt = nt.to_owned();
-    let index = nti.non_terminal_index(&nt);
-    Rc::new(move |result_vector: Rc<ResultVector>| result_vector[pr_count + index].clone())
+    nti: Rc<N>,
+) -> TransferFunction<'a>
+where
+    N: NonTerminalIndexFn,
+{
+    let index = nti.non_terminal_index(nt);
+    Box::new(move |result_vector: Rc<ResultVector>| result_vector[pr_count + index].clone())
 }
