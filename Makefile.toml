@@ -1,5 +1,13 @@
+# profile based environment override
+[env.development]
+PROFILE_FOLDER = "debug"
+
+[env.production]
+PROFILE_FOLDER = "release"
+
 [env]
-PAROL_TARGET = "${CARGO_MAKE_CRATE_TARGET_DIRECTORY}/debug/parol"
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+PAROL_TARGET = "${CARGO_MAKE_CRATE_TARGET_DIRECTORY}/${PROFILE_FOLDER}/parol"
 
 [tasks.default]
 alias = "build"
@@ -48,6 +56,17 @@ script = '''
 echo "Building parol's parser sources..."
 ${PAROL_TARGET} -f ./src/parser/parol.par -e ./src/parser/parol-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -b
 '''
+
+[tasks.generate_parol.condition.files_modified]
+input = ["${CARGO_MAKE_WORKING_DIRECTORY}/src/parser/parol.par"]
+output = [
+    "${CARGO_MAKE_WORKING_DIRECTORY}/src/parser/parol_parser.rs",
+    "${CARGO_MAKE_WORKING_DIRECTORY}/src/parser/parol_grammar_trait.rs"
+]
+
+[tasks.generate_and_build_parol]
+workspace = false
+dependencies = ["generate_parol", "build_parol"]
 
 [tasks.generate_basic]
 workspace = false
