@@ -73,8 +73,7 @@ type EquationSystem = HashMap<Pos, TransferFunction>;
 ///     single result (a k-tuple, i.e. a trie of terminal strings).
 /// ## Return Value
 /// The `StepFunction` returns a `ResultMap` struct that was extended in each iteration step.
-type StepFunction =
-    Rc<dyn Fn(Rc<ResultMap>, Rc<HashMap<Pos, usize>>, Rc<RefCell<FollowSet>>) -> ResultMap>;
+type StepFunction = Box<dyn Fn(Rc<ResultMap>, Rc<RefCell<FollowSet>>) -> ResultMap>;
 
 ///
 /// Calculates the FOLLOW k sets for all non-terminals of the given grammar.
@@ -131,33 +130,37 @@ pub fn follow_k(
         equation_system.len()
     );
 
-    let step_function: StepFunction = Rc::new(
-        move |result_map: Rc<ResultMap>,
-              non_terminal_positions: Rc<HashMap<Pos, usize>>,
-              non_terminal_results: Rc<RefCell<FollowSet>>| {
-            let mut new_result_vector = ResultMap::new();
+    let step_function: StepFunction = {
+        let non_terminal_positions = Rc::clone(&non_terminal_positions);
 
-            result_map.iter().for_each(|(pos, _)| {
-                // Call each function of the equation system
-                let pos_result =
-                    equation_system[pos](Rc::clone(&result_map), Rc::clone(&non_terminal_results));
+        Box::new(
+            move |result_map: Rc<ResultMap>, non_terminal_results: Rc<RefCell<FollowSet>>| {
+                let mut new_result_vector = ResultMap::new();
 
-                // Combine the result to the non_terminal_results.
-                let sym = non_terminal_positions.get(pos).unwrap();
-                if let Some(set) = non_terminal_results
-                    .borrow_mut()
-                    .non_terminals
-                    .get_mut(*sym)
-                {
-                    *set = set.union(&pos_result).0;
-                }
+                result_map.iter().for_each(|(pos, _)| {
+                    // Call each function of the equation system
+                    let pos_result = equation_system[pos](
+                        Rc::clone(&result_map),
+                        Rc::clone(&non_terminal_results),
+                    );
 
-                // And put the result into the new result vector.
-                new_result_vector.insert(*pos, pos_result);
-            });
-            new_result_vector
-        },
-    );
+                    // Combine the result to the non_terminal_results.
+                    let sym = non_terminal_positions.get(pos).unwrap();
+                    if let Some(set) = non_terminal_results
+                        .borrow_mut()
+                        .non_terminals
+                        .get_mut(*sym)
+                    {
+                        *set = set.union(&pos_result).0;
+                    }
+
+                    // And put the result into the new result vector.
+                    new_result_vector.insert(*pos, pos_result);
+                });
+                new_result_vector
+            },
+        )
+    };
 
     let non_terminal_results = Rc::new(RefCell::new(FollowSet::new(
         cfg.get_non_terminal_set()
@@ -215,11 +218,7 @@ pub fn follow_k(
     let mut iterations = 0usize;
     let mut new_result_vector;
     loop {
-        new_result_vector = step_function(
-            Rc::clone(&result_map),
-            Rc::clone(&non_terminal_positions),
-            Rc::clone(&non_terminal_results),
-        );
+        new_result_vector = step_function(Rc::clone(&result_map), Rc::clone(&non_terminal_results));
         if new_result_vector == *result_map {
             break;
         }
