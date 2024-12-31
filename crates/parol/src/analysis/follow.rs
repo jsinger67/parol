@@ -117,7 +117,7 @@ pub fn follow_k(
                 let args = UpdateProductionEquationsArgs {
                     prod_num: i,
                     pr,
-                    first_k_of_nt: first_k_of_nt.clone(),
+                    first_k_of_nt: Rc::clone(&first_k_of_nt),
                     ti: Rc::clone(&ti),
                     nti: Rc::clone(&nti),
                     k,
@@ -312,7 +312,7 @@ where
                 let symbol = symbol_string_clone.0[0].clone();
                 match symbol {
                     Symbol::T(_) => {
-                        let ti = args.ti.clone();
+                        let ti = Rc::clone(&args.ti);
                         result_function =
                             Box::new(move |result_map: Rc<ResultMap>, non_terminal_results| {
                                 let mapper = |s| CompiledTerminal::create(s, Rc::clone(&ti));
@@ -322,7 +322,6 @@ where
                                     &DomainTypeBuilder::new()
                                         .k(args.k)
                                         .max_terminal_index(args.max_terminal_index)
-                                        .clone()
                                         .terminal_indices(&[&terminal_indices])
                                         .build()
                                         .unwrap(),
@@ -331,7 +330,7 @@ where
                             });
                     }
                     Symbol::N(nt, _, _) => {
-                        let first_k_of_nt = args.first_k_of_nt.clone();
+                        let first_k_of_nt = Rc::clone(&args.first_k_of_nt);
                         let nt_i = args.nti.non_terminal_index(&nt);
                         result_function =
                             Box::new(move |result_map: Rc<ResultMap>, non_terminal_results| {
@@ -352,7 +351,7 @@ where
                 (args.prod_num, *symbol_index).into(),
                 Box::new(
                     move |result_map, non_terminal_results: Rc<RefCell<FollowSet>>| {
-                        result_function(result_map, non_terminal_results.clone()).k_concat(
+                        result_function(result_map, Rc::clone(&non_terminal_results)).k_concat(
                             non_terminal_results.borrow().non_terminals.get(nt).unwrap(),
                             args.k,
                         )
