@@ -14,36 +14,45 @@ use super::follow::ResultMap;
 
 /// Cache of FirstSets
 #[derive(Debug, Default)]
-pub struct FirstCache(pub Rc<RefCell<[Option<FirstSet>; MAX_K + 1]>>);
+pub struct FirstCache(pub [Rc<RefCell<FirstSet>>; MAX_K + 1]);
 
 /// A cache entry consisting of a result map for enhanced generation of the next k set and the
 /// follow set for a given k
-#[derive(Debug, Clone)]
-pub struct CacheEntry(pub(crate) ResultMap, pub(crate) FollowSet);
+#[derive(Debug, Clone, Default)]
+pub struct CacheEntry {
+    pub(crate) last_result: ResultMap,
+    pub(crate) follow_set: FollowSet,
+}
+
+impl CacheEntry {
+    /// If this method returns true, the follow set is empty.
+    /// This is used for the follow cache to indicate that the follow set is not yet calculated.
+    pub fn is_empty(&self) -> bool {
+        self.last_result.is_empty() && self.follow_set.is_empty()
+    }
+}
 
 /// Cache of FollowSets
 #[derive(Debug, Default)]
-pub struct FollowCache(pub Rc<RefCell<[Option<CacheEntry>; MAX_K + 1]>>);
+pub struct FollowCache(pub [Rc<RefCell<CacheEntry>>; MAX_K + 1]);
 
 impl FirstCache {
     /// Creates a new item
     pub fn new() -> Self {
         Self::default()
     }
+
     /// Utilizes the cache to get a FirstSet
-    pub fn get(&self, k: usize, grammar_config: &GrammarConfig) -> FirstSet {
-        let exists = {
-            let borrowed_entry = self.0.borrow();
-            borrowed_entry[k].is_some()
-        };
+    pub fn get(&self, k: usize, grammar_config: &GrammarConfig) -> Rc<RefCell<FirstSet>> {
+        let exists = !self.0[k].borrow().is_empty();
         if exists {
             trace!("FirstCache::get: reusing first set for k={}", k);
-            self.0.borrow().get(k).unwrap().as_ref().unwrap().clone()
+            self.0[k].clone()
         } else {
             trace!("FirstCache::get: calculating first set for k={}...", k);
             let entry = first_k(grammar_config, k, self);
             trace!("finished");
-            self.0.borrow_mut()[k] = Some(entry);
+            *self.0[k].borrow_mut() = entry;
             self.get(k, grammar_config)
         }
     }
@@ -60,19 +69,19 @@ impl FollowCache {
         k: usize,
         grammar_config: &GrammarConfig,
         first_cache: &FirstCache,
-    ) -> CacheEntry {
-        let exists = {
-            let borrowed_entry = self.0.borrow();
-            borrowed_entry[k].is_some()
-        };
+    ) -> Rc<RefCell<CacheEntry>> {
+        let exists = !self.0[k].borrow().is_empty();
         if exists {
             trace!("FollowCache::get: reusing follow set for k={}", k);
-            self.0.borrow().get(k).unwrap().as_ref().unwrap().clone()
+            self.0[k].clone()
         } else {
             trace!("FollowCache::get: calculating follow set for k={}...", k);
             let (r, f) = follow_k(grammar_config, k, first_cache, self);
             trace!("finished");
-            self.0.borrow_mut()[k] = Some(CacheEntry(r, f));
+            *self.0[k].borrow_mut() = CacheEntry {
+                last_result: r,
+                follow_set: f,
+            };
             self.get(k, grammar_config, first_cache)
         }
     }
@@ -115,13 +124,22 @@ pub fn decidable(
             let k_tuples_of_productions = productions
                 .iter()
                 .map(|(pi, _)| {
-                    let k_tuples = first_cache.get(current_k, grammar_config).0[*pi].clone();
+                    let k_tuples = first_cache
+                        .get(current_k, grammar_config)
+                        .borrow()
+                        .productions[*pi]
+                        .clone();
                     (*pi, k_tuples)
                 })
                 .collect::<Vec<(ProductionIndex, KTuples)>>();
 
             let cached = follow_cache.get(current_k, grammar_config, first_cache);
-            if let Some(follow_set) = cached.1.get(nti.non_terminal_index(non_terminal)) {
+            if let Some(follow_set) = cached
+                .borrow()
+                .follow_set
+                .non_terminals
+                .get(nti.non_terminal_index(non_terminal))
+            {
                 let concatenated_k_tuples = k_tuples_of_productions
                     .iter()
                     .map(|(i, t)| (*i, t.clone().k_concat(follow_set, current_k)))
@@ -158,11 +176,6 @@ pub fn calculate_k(
         .iter()
         .map(|n| decidable(grammar_config, n, max_k, first_cache, follow_cache).unwrap_or(max_k))
         .fold(0, std::cmp::max))
-    // .fold(Ok(0), |k, r| match (&k, &r) {
-    //     (Err(_), _) => k, // The first error is retained
-    //     (Ok(max_k), Ok(current_k)) => Ok(std::cmp::max(*max_k, *current_k)),
-    //     (Ok(_), Err(_)) => r, // The first error occurred here
-    // })
 }
 
 ///
@@ -212,9 +225,14 @@ fn calculate_tuples_for_non_terminal(
     let mut k_tuples = productions
         .iter()
         .fold(BTreeMap::new(), |mut acc, (pi, _)| {
-            let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
+            let k_tuples = first_cache.get(k, grammar_config).borrow().productions[*pi].clone();
             let cached = follow_cache.get(k, grammar_config, first_cache);
-            if let Some(follow_set) = cached.1.get(nti.non_terminal_index(&nt)) {
+            if let Some(follow_set) = cached
+                .borrow()
+                .follow_set
+                .non_terminals
+                .get(nti.non_terminal_index(&nt))
+            {
                 acc.insert(*pi, k_tuples.k_concat(follow_set, k));
             }
             acc
@@ -282,13 +300,18 @@ pub fn explain_conflicts(
         let k_tuples_of_productions = productions
             .iter()
             .map(|(pi, _)| {
-                let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
+                let k_tuples = first_cache.get(k, grammar_config).borrow().productions[*pi].clone();
                 (*pi, k_tuples)
             })
             .collect::<Vec<(ProductionIndex, KTuples)>>();
 
         let cached = follow_cache.get(k, grammar_config, first_cache);
-        if let Some(follow_set) = cached.1.get(nti.non_terminal_index(non_terminal)) {
+        if let Some(follow_set) = cached
+            .borrow()
+            .follow_set
+            .non_terminals
+            .get(nti.non_terminal_index(non_terminal))
+        {
             let concatenated_k_tuples = k_tuples_of_productions
                 .iter()
                 .map(|(i, t)| (*i, t.clone().k_concat(follow_set, k)))

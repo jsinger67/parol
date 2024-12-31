@@ -1,5 +1,5 @@
 use anyhow::{bail, Result};
-use parol::analysis::{first_k, FirstCache};
+use parol::analysis::{first_k, FirstCache, FirstSet};
 use parol::generators::generate_terminal_names;
 use parol::{obtain_grammar_config, KTuples, MAX_K};
 use std::path::PathBuf;
@@ -29,7 +29,10 @@ pub fn main(args: &Args) -> Result<()> {
     let terminals = generate_terminal_names(&grammar_config);
     let first_cache = FirstCache::new();
 
-    let (first_k_per_prod, mut first_k_per_nt) = first_k(&grammar_config, max_k, &first_cache);
+    let FirstSet {
+        productions: first_k_per_prod,
+        non_terminals: mut first_k_per_nt,
+    } = first_k(&grammar_config, max_k, &first_cache);
 
     println!("Per production:");
     for (i, f) in first_k_per_prod.iter().enumerate() {

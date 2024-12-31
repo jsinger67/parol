@@ -1,7 +1,7 @@
 use anyhow::{bail, Result};
-use parol::analysis::FollowCache;
 use parol::analysis::follow_k;
 use parol::analysis::FirstCache;
+use parol::analysis::FollowCache;
 use parol::generators::generate_terminal_names;
 use parol::{obtain_grammar_config, MAX_K};
 use std::path::PathBuf;
@@ -38,7 +38,7 @@ pub fn main(args: &Args) -> Result<()> {
     let first_cache = FirstCache::new();
     let follow_cache = FollowCache::new();
     let (_, follow_k) = follow_k(&grammar_config, max_k, &first_cache, &follow_cache);
-    for (nt_i, fo) in follow_k.iter().enumerate() {
+    for (nt_i, fo) in follow_k.non_terminals.iter().enumerate() {
         println!("  {}: {}", non_terminals[nt_i], fo.to_string(&terminals));
     }
     Ok(())
