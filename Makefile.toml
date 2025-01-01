@@ -24,6 +24,7 @@ args = ["test"]
 
 [tasks.build_parol]
 workspace = false
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"
 command = "cargo"
 args = ["build", "--bin", "parol"]
 
