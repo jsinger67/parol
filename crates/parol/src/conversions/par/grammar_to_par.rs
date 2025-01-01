@@ -145,18 +145,26 @@ fn render_scanner_config_string(
         scanner_directives.push_str(&format!("{}%auto_ws_off\n", indent));
     }
 
+    let mut transitions = Vec::new();
+
     for (scanner, primary_nts) in group_by(&scanner_config.transitions, |(_, v)| *v) {
         let mut primary_nts = primary_nts
             .iter()
             .map(|(k, _)| primary_non_terminal_finder(*k).unwrap_or(format!("{}", k)))
             .collect::<Vec<_>>();
         primary_nts.sort();
-        scanner_directives.push_str(&format!(
+        transitions.push(format!(
             "{}%on {} %enter {}\n",
             indent,
             primary_nts.join(", "),
             scanner_state_resolver(&[scanner])
         ));
+    }
+
+    // Sort the transitions to get a deterministic output
+    transitions.sort();
+    for t in transitions {
+        scanner_directives.push_str(&t);
     }
 
     if index == crate::parser::parol_grammar::INITIAL_STATE {

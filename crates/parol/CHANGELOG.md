@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.1.0 - Not released yet
+
+- Performance optimization for grammar analysis, especially the calculation of FIRST(k) and
+FOLLOW(k) sets, using FxHashSet in `KTuples` type
+  * Changed some tuple structs to structs with named fields for clarity
+- Fixed `parol::conversions::par::grammar_to_par::render_scanner_config_string` to always output the
+transitions of a scanner state in a deterministic alphabetic order
+
+
 ## 2.0.0 - 2024-12-25
 
 >Please note, that changes made in version 2 are also detailed in an extra
