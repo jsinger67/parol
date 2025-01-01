@@ -51,7 +51,12 @@ impl FirstCache {
         } else {
             trace!("FirstCache::get: calculating first set for k={}...", k);
             let entry = first_k(grammar_config, k, self);
-            trace!("finished");
+            trace!(
+                "finished, k:{} prod: {}, nt: {}",
+                k,
+                entry.productions.len(),
+                entry.non_terminals.len()
+            );
             *self.0[k].borrow_mut() = entry;
             self.get(k, grammar_config)
         }
@@ -77,7 +82,12 @@ impl FollowCache {
         } else {
             trace!("FollowCache::get: calculating follow set for k={}...", k);
             let (r, f) = follow_k(grammar_config, k, first_cache, self);
-            trace!("finished");
+            trace!(
+                "finished, k:{} res vec: {}, nt: {}",
+                k,
+                r.len(),
+                f.non_terminals.len()
+            );
             *self.0[k].borrow_mut() = CacheEntry {
                 last_result: r,
                 follow_set: f,

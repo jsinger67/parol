@@ -169,7 +169,6 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let mut iterations = 0usize;
     loop {
         let new_result_vector = Rc::new(step_function(result_vector.clone()));
-        trace!("Iteration number {} completed", iterations);
         if new_result_vector == result_vector {
             break;
         }

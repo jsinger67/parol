@@ -2,14 +2,13 @@ use parol_runtime::TerminalIndex;
 
 use crate::KTuple;
 //use parol_runtime::log::trace;
-use std::{
-    collections::HashSet,
-    fmt::{Debug, Display, Error, Formatter},
-};
+use std::fmt::{Debug, Display, Error, Formatter};
+
+use rustc_hash::FxHashSet;
 
 use super::k_tuple::KTupleBuilder;
 
-type TuplesSet = HashSet<KTuple>;
+type TuplesSet = FxHashSet<KTuple>;
 
 /// Builder for KTuples
 #[derive(Clone, Debug, Default)]
@@ -102,7 +101,7 @@ impl<'a> KTuplesBuilder<'a> {
         }
 
         let mut tuples = KTuples {
-            set: TuplesSet::new(),
+            set: TuplesSet::default(),
             k: self.k.unwrap(),
             max_terminal_index: self.max_terminal_index.unwrap(),
             k_complete: false,
