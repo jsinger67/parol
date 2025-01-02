@@ -440,6 +440,7 @@ impl std::fmt::Display for RangeCalculation {
             code,
         } = self;
         f.write_fmt(ume::ume! {
+            #[allow(clippy::needless_lifetimes)]
             impl #lifetime ToSpan for #type_name #lifetime {
                 fn span(&self) -> Span {
                     #code
