@@ -1,4 +1,4 @@
-use super::{Token, EOI};
+use super::Token;
 use crate::LexerError;
 
 /// Buffer for tokens
@@ -83,10 +83,9 @@ impl<'t> TokenBuffer<'t> {
         self.tokens.insert(insert_index, to_insert);
     }
 
-    /// Remove all tokens from the buffer except the EOI token and skip tokens
+    /// Remove all tokens from the buffer
     pub fn clear(&mut self) {
-        self.tokens
-            .retain(|t| /*t.is_skip_token() ||*/ t.token_type == EOI);
+        self.tokens.clear();
     }
 
     /// Returns true if the buffer contains only skip tokens

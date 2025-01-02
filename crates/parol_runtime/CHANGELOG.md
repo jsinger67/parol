@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## 2.1.0 - Not released yet
+
+- Fixed a subtle bug related to token buffer handling after scanner mode switching near the end of
+the input
+
 ## 2.0.0 - 2024-12-25
 
 >Please note, that changes made in version 2 are also detailed in an extra

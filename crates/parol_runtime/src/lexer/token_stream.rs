@@ -495,7 +495,7 @@ impl<'t> TokenStream<'t> {
     #[inline]
     fn clear_token_buffer(&mut self) {
         trace!("Clearing token buffer.");
-        // Remove all tokens from the buffer except the EOI token
+        // Remove all tokens from the buffer
         self.tokens.clear();
     }
 
