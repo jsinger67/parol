@@ -245,6 +245,13 @@ impl std::fmt::Display for UserTraitData<'_> {
                 {ast_type_decl}
                 ")?;
 
+        write!(f, "
+                // -------------------------------------------------------------------------------------------------
+
+                {node_kind_enums}
+
+        ")?;
+
         f.write_fmt(ume::ume! {
             impl TerminalEnum for TerminalKind {
                 fn from_terminal_index(index: u16) -> Self {
@@ -255,6 +262,8 @@ impl std::fmt::Display for UserTraitData<'_> {
                 }
             }
         })?;
+
+        write!(f, "\n\n")?;
 
         f.write_fmt(ume::ume! {
             impl NonTerminalEnum for NonTerminalKind {
@@ -268,9 +277,6 @@ impl std::fmt::Display for UserTraitData<'_> {
         })?;
 
         write!(f, "
-                // -------------------------------------------------------------------------------------------------
-
-                {node_kind_enums}
 
                 // -------------------------------------------------------------------------------------------------
         ")?;

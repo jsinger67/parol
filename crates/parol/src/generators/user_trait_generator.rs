@@ -652,7 +652,7 @@ impl<'a> UserTraitGenerator<'a> {
             .generate_terminal_names()
             .map(|(_, name)| format!("{}", ume::ume!(#name,)))
             .collect::<StrVec>();
-        let node_kind_enums = format!(
+        let non_terminal_enum = format!(
             "{}",
             ume::ume! {
                 #[allow(dead_code)]
@@ -660,7 +660,12 @@ impl<'a> UserTraitGenerator<'a> {
                 pub enum NonTerminalKind {
                     #non_terminal_enum
                 }
+            }
+        );
 
+        let terminal_enums = format!(
+            "{}",
+            ume::ume! {
                 #[allow(dead_code)]
                 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
                 pub enum TerminalKind {
@@ -668,6 +673,8 @@ impl<'a> UserTraitGenerator<'a> {
                 }
             }
         );
+
+        let ast_type_enum = non_terminal_enum + "\n\n" + &terminal_enums;
 
         let num_to_terminal_match_arms = self
             .grammar_config
@@ -738,7 +745,7 @@ impl<'a> UserTraitGenerator<'a> {
             .non_terminal_types(non_terminal_types)
             .ast_type_decl(ast_type_decl)
             .ast_type_has_lifetime(ast_type_has_lifetime)
-            .node_kind_enums(node_kind_enums)
+            .node_kind_enums(ast_type_enum)
             .terminal_names(num_to_terminal_match_arms)
             .non_terminal_names(non_terminal_match_arms)
             .trait_functions(trait_functions)
