@@ -8,6 +8,7 @@ use super::template_data::{
 };
 use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
 use crate::generators::naming_helper::NamingHelper as NmHlp;
+use crate::generators::template_data::{NameToNonTerminalVariant, NumToTerminalVariant};
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::GrammarType;
@@ -634,6 +635,65 @@ impl<'a> UserTraitGenerator<'a> {
             )?;
         }
 
+        let mut non_terminal = StrVec::new(0);
+        non_terminal.push(String::default());
+        non_terminal.push("All possible non-terminal kinds".to_string());
+        non_terminal.push(String::default());
+        let mut terminal = StrVec::new(0);
+        terminal.push(String::default());
+        terminal.push("All possible terminal kinds".to_string());
+        terminal.push(String::default());
+        let non_terminal_enum = type_info
+            .generate_non_terminal_enum_type()
+            .map(|(variant, _)| format!("{}", ume::ume!(#variant,)))
+            .collect::<StrVec>();
+        let terminal_enum = self
+            .grammar_config
+            .generate_terminal_names()
+            .map(|(_, name)| format!("{}", ume::ume!(#name,)))
+            .collect::<StrVec>();
+        let node_kind_enums = format!(
+            "{}",
+            ume::ume! {
+                #[allow(dead_code)]
+                #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+                pub enum NonTerminalKind {
+                    #non_terminal_enum
+                }
+
+                #[allow(dead_code)]
+                #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+                pub enum TerminalKind {
+                    #terminal_enum
+                }
+            }
+        );
+
+        let num_to_terminal_match_arms = self
+            .grammar_config
+            .generate_terminal_names()
+            .map(|(i, t)| {
+                NumToTerminalVariant {
+                    variant: t.to_string(),
+                    prod_num: i,
+                }
+                .to_string()
+            })
+            .collect::<StrVec>();
+
+        let non_terminal_match_arms = type_info
+            .generate_non_terminal_enum_type()
+            .map(|(variant, name)| {
+                format!(
+                    "{}",
+                    NameToNonTerminalVariant {
+                        variant: variant.to_owned(),
+                        name: name.to_owned()
+                    }
+                )
+            })
+            .collect::<StrVec>();
+
         let trait_functions = type_info
             .adapter_actions
             .iter()
@@ -678,6 +738,9 @@ impl<'a> UserTraitGenerator<'a> {
             .non_terminal_types(non_terminal_types)
             .ast_type_decl(ast_type_decl)
             .ast_type_has_lifetime(ast_type_has_lifetime)
+            .node_kind_enums(node_kind_enums)
+            .terminal_names(num_to_terminal_match_arms)
+            .non_terminal_names(non_terminal_match_arms)
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
             .user_trait_functions(user_trait_functions)

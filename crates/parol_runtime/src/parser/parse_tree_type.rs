@@ -89,3 +89,136 @@ impl Display for SynTree {
         }
     }
 }
+
+/// A trait that associates kind types with the grammar.
+pub trait GrammarEnums {
+    /// The kind of the terminal.
+    type TerminalEnum: TerminalEnum;
+    /// The kind of the non-terminal.
+    type NonTerminalEnum: NonTerminalEnum;
+}
+
+/// A trait that a terminal enum must implement.
+pub trait TerminalEnum: Copy + std::fmt::Debug {
+    /// Creates a terminal from an index.
+    fn from_terminal_index(index: u16) -> Self;
+}
+
+/// A trait that a non-terminal enum must implement.
+pub trait NonTerminalEnum: Copy + std::fmt::Debug {
+    /// Creates a non-terminal from a name.
+    fn from_non_terminal_name(name: &str) -> Self;
+}
+
+#[derive(Debug)]
+/// A parse tree that is associated with a grammar.
+pub enum SynTree2<G: GrammarEnums> {
+    /// A terminal node.
+    Terminal(SynTreeTerminal<G>),
+    /// A non-terminal node.
+    NonTerminal(SynTreeNonTerminal<G>),
+}
+
+impl<G: GrammarEnums> Copy for SynTree2<G> {}
+
+impl<G: GrammarEnums> Clone for SynTree2<G> {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+#[derive(Debug)]
+/// A terminal node.
+pub struct SynTreeTerminal<G>
+where
+    G: GrammarEnums,
+    G: ?Sized,
+{
+    /// The kind of the terminal.
+    pub kind: G::TerminalEnum,
+    /// The data of the terminal.
+    pub data: TerminalData,
+}
+
+impl<G: GrammarEnums> Copy for SynTreeTerminal<G> {}
+
+impl<G: GrammarEnums> Clone for SynTreeTerminal<G> {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+/// A span that is only valid within the context of the input text.
+pub struct InputSpan {
+    /// The start of the span.
+    pub start: u32,
+    /// The end of the span.
+    pub end: u32,
+}
+
+#[derive(Debug, Clone, Copy)]
+/// A dynamic token id that provided by the user land.
+pub struct DynamicTokenId(pub u32);
+
+#[derive(Debug, Clone, Copy)]
+/// The data of the terminal.
+pub enum TerminalData {
+    /// A terminal that is associated with an input span.
+    Input(InputSpan),
+    /// A terminal that is associated with a dynamic token id.
+    Dynamic(DynamicTokenId),
+}
+
+#[derive(Debug)]
+/// A non-terminal node.
+pub struct SynTreeNonTerminal<G>
+where
+    G: GrammarEnums,
+    G: ?Sized,
+{
+    /// The kind of the non-terminal.
+    pub kind: G::NonTerminalEnum,
+}
+
+impl<G: GrammarEnums> Copy for SynTreeNonTerminal<G> {}
+
+impl<G: GrammarEnums> Clone for SynTreeNonTerminal<G> {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+/// Factory trait for creating custom syntree nodes.
+pub trait SynTreeNode<'t>: Copy {
+    /// Creates a syntree node from a non-terminal name.
+    fn from_non_terminal(name: &'static str) -> Self;
+    /// Creates a syntree node from a token.
+    fn from_token(token: &Token<'t>) -> Self;
+}
+
+impl<'t> SynTreeNode<'t> for SynTree {
+    fn from_token(token: &Token<'t>) -> Self {
+        SynTree::Terminal(token.into())
+    }
+    fn from_non_terminal(name: &'static str) -> Self {
+        SynTree::NonTerminal(name)
+    }
+}
+
+impl<'t, G: GrammarEnums> SynTreeNode<'t> for SynTree2<G> {
+    fn from_token(token: &Token<'t>) -> Self {
+        SynTree2::Terminal(SynTreeTerminal {
+            kind: G::TerminalEnum::from_terminal_index(token.token_type),
+            data: TerminalData::Input(InputSpan {
+                start: token.location.start,
+                end: token.location.end,
+            }),
+        })
+    }
+    fn from_non_terminal(name: &'static str) -> Self {
+        SynTree2::NonTerminal(SynTreeNonTerminal {
+            kind: G::NonTerminalEnum::from_non_terminal_name(name),
+        })
+    }
+}

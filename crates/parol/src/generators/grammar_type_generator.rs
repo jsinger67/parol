@@ -795,6 +795,13 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
+    pub(crate) fn generate_non_terminal_enum_type(&mut self) -> impl Iterator<Item = (&str, &str)> {
+        self.non_terminal_types
+            .keys()
+            .map(|n| (n.as_str(), n.as_str()))
+            .chain(std::iter::once(("Root", "")))
+    }
+
     // Generates an enum variant name for the given production from its right-hand side. If the
     // production has an empty RHS we simple name this enum variant "<NonTerminal>Empty".
     fn generate_production_rhs_name(&self, prod_num: usize, cfg: &Cfg) -> String {

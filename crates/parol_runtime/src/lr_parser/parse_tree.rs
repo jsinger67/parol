@@ -1,7 +1,7 @@
 use std::{convert::TryFrom, fmt::Display};
 
 use crate::{
-    parser::{parse_tree_type::SynTree, parser_types::SynTreeFlavor},
+    parser::{parse_tree_type::SynTree, parse_tree_type::SynTreeNode, parser_types::SynTreeFlavor},
     ParseTreeType, Token,
 };
 use syntree::{Builder, Tree};
@@ -51,19 +51,19 @@ impl Display for LRParseTree<'_> {
 // This can possibly result in a stack overflow if the parse tree is too deep. However, since the
 // parse tree is built during parsing, it is unlikely that the parse tree is too deep.
 // Otherwise, we need to convert this function to an iterative function.
-fn build_tree(
-    builder: &mut Builder<SynTree, SynTreeFlavor>,
-    parse_tree: LRParseTree<'_>,
+pub(crate) fn build_tree<'a, T: SynTreeNode<'a>>(
+    builder: &mut Builder<T, SynTreeFlavor>,
+    parse_tree: LRParseTree<'a>,
 ) -> Result<(), syntree::Error> {
     match parse_tree {
         LRParseTree::Terminal(token) => {
-            builder.token(SynTree::Terminal((&token).into()), token.location.len())?;
+            builder.token(T::from_token(&token), token.location.len())?;
         }
         LRParseTree::NonTerminal(name, children) => {
-            builder.open(SynTree::NonTerminal(name))?;
+            builder.open(T::from_non_terminal(name))?;
             if let Some(children) = children {
                 for child in children {
-                    build_tree(builder, child)?;
+                    build_tree::<T>(builder, child)?;
                 }
             }
             builder.close()?;
@@ -80,7 +80,7 @@ impl<'t> TryFrom<LRParseTree<'t>> for Tree<SynTree, SynTreeFlavor> {
 
     fn try_from(parse_tree: LRParseTree<'t>) -> Result<Self, Self::Error> {
         let mut builder = Builder::new_with();
-        build_tree(&mut builder, parse_tree)?;
+        build_tree::<SynTree>(&mut builder, parse_tree)?;
         builder.build()
     }
 }

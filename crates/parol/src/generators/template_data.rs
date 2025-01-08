@@ -114,6 +114,9 @@ pub(crate) struct UserTraitData<'a> {
     pub non_terminal_types: StrVec,
     pub ast_type_decl: String,
     pub ast_type_has_lifetime: bool,
+    pub node_kind_enums: String,
+    pub terminal_names: StrVec,
+    pub non_terminal_names: StrVec,
     pub trait_functions: StrVec,
     pub trait_caller: StrVec,
     pub user_trait_functions: StrVec,
@@ -129,6 +132,9 @@ impl std::fmt::Display for UserTraitData<'_> {
             non_terminal_types,
             ast_type_decl,
             ast_type_has_lifetime,
+            node_kind_enums,
+            terminal_names,
+            non_terminal_names,
             trait_functions,
             trait_caller,
             user_trait_functions,
@@ -173,6 +179,7 @@ impl std::fmt::Display for UserTraitData<'_> {
             ))?;
         }
         f.write_fmt(ume::ume! {
+            use parol_runtime::parser::parse_tree_type::{NonTerminalEnum, TerminalEnum};
             use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
             use parol_runtime::{ParserError, Result, Token};
         })?;
@@ -237,6 +244,36 @@ impl std::fmt::Display for UserTraitData<'_> {
 
                 {ast_type_decl}
                 ")?;
+
+        f.write_fmt(ume::ume! {
+            impl TerminalEnum for TerminalKind {
+                fn from_terminal_index(index: u16) -> Self {
+                    match index {
+                        #terminal_names
+                        _ => panic!("Invalid terminal index: {}", index),
+                    }
+                }
+            }
+        })?;
+
+        f.write_fmt(ume::ume! {
+            impl NonTerminalEnum for NonTerminalKind {
+                fn from_non_terminal_name(name: &str) -> Self {
+                    match name {
+                        #non_terminal_names
+                        _ => panic!("Invalid non-terminal name: {}", name),
+                    }
+                }
+            }
+        })?;
+
+        write!(f, "
+                // -------------------------------------------------------------------------------------------------
+
+                {node_kind_enums}
+
+                // -------------------------------------------------------------------------------------------------
+        ")?;
 
         let phantom_data_field = if *ast_type_has_lifetime {
             "".into()
@@ -447,5 +484,32 @@ impl std::fmt::Display for RangeCalculation {
                 }
             }
         })
+    }
+}
+
+#[derive(Builder, Debug, Default)]
+pub(crate) struct NumToTerminalVariant {
+    pub variant: String,
+    pub prod_num: usize,
+}
+
+impl std::fmt::Display for NumToTerminalVariant {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let NumToTerminalVariant { variant, prod_num } = self;
+        f.write_fmt(ume::ume!(#prod_num => Self::#variant,))
+    }
+}
+
+#[derive(Builder, Debug, Default)]
+pub(crate) struct NameToNonTerminalVariant {
+    pub variant: String,
+    pub name: String,
+}
+
+impl std::fmt::Display for NameToNonTerminalVariant {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let NameToNonTerminalVariant { variant, name } = self;
+        let name = format!("\"{}\"", name);
+        f.write_fmt(ume::ume!(#name => Self::#variant,))
     }
 }

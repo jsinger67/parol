@@ -1,7 +1,8 @@
 use parol_runtime::log::trace;
 use parol_runtime::once_cell::sync::Lazy;
+use parol_runtime::TerminalIndex;
 
-use super::ScannerConfig;
+use super::{generate_terminal_name, ScannerConfig};
 use crate::parser::parol_grammar::{GrammarType, LookaheadExpression};
 use crate::parser::try_to_convert;
 use crate::{Cfg, ParolGrammar};
@@ -152,6 +153,30 @@ impl GrammarConfig {
         );
         terminals.push(("ERROR_TOKEN".to_owned(), None));
         terminals
+    }
+
+    /// Generates a terminal names for the terminal match arms
+    pub fn generate_terminal_names(&self) -> impl Iterator<Item = (usize, String)> + '_ {
+        [
+            (1, "NewLine".to_owned()),
+            (2, "Whitespace".to_owned()),
+            (3, "LineComment".to_owned()),
+            (4, "BlockComment".to_owned()),
+        ]
+        .into_iter()
+        .chain(
+            self.cfg
+                .get_ordered_terminals()
+                .into_iter()
+                .enumerate()
+                .map(|(i, (t, _, _, _))| (i + 5, t))
+                .map(|(i, t)| {
+                    (
+                        i,
+                        generate_terminal_name(t, Some(i as TerminalIndex), &self.cfg),
+                    )
+                }),
+        )
     }
 
     /// Generates a function that can be used as scanner_state_resolver argument on Pr::format

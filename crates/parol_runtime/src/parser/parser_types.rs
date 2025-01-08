@@ -7,7 +7,7 @@ use log::trace;
 use std::{cell::RefCell, cmp::Ord, rc::Rc};
 use syntree::{Builder, Tree};
 
-use super::parse_tree_type::SynTree;
+use super::parse_tree_type::{SynTree, SynTreeNode};
 
 ///
 /// The type that contains all data to process a production within the parser.
@@ -62,10 +62,10 @@ syntree::flavor! {
 }
 
 /// The type used for the parse tree
-pub type ParseTree = Tree<SynTree, SynTreeFlavor>;
+pub type ParseTree<T = SynTree> = Tree<T, SynTreeFlavor>;
 
 /// The parse tree builder type
-pub(crate) type TreeBuilder = Builder<SynTree, SynTreeFlavor>;
+pub(crate) type TreeBuilder<T = SynTree> = Builder<T, SynTreeFlavor>;
 
 ///
 /// The actual LLK parser.
@@ -211,9 +211,9 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-    fn push_production(
+    fn push_production<T: SynTreeNode<'t>>(
         &mut self,
-        tree_builder: &mut TreeBuilder,
+        tree_builder: &mut TreeBuilder<T>,
         prod_num: ProductionIndex,
     ) -> Result<()> {
         self.parser_stack.stack.push(ParseType::E(prod_num));
@@ -224,7 +224,7 @@ impl<'t> LLKParser<'t> {
         // Open a 'production entry' node in the tree
         if !self.trim_parse_tree {
             tree_builder
-                .open(SynTree::NonTerminal(
+                .open(T::from_non_terminal(
                     self.non_terminal_names[self.productions[prod_num].lhs],
                 ))
                 .map_err(|source| ParserError::TreeError { source })?;
@@ -246,9 +246,9 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-    fn process_item_stack<'u>(
+    fn process_item_stack<'u, T: SynTreeNode<'t>>(
         &mut self,
-        tree_builder: &mut TreeBuilder,
+        tree_builder: &mut TreeBuilder<T>,
         prod_num: ProductionIndex,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()> {
@@ -311,16 +311,16 @@ impl<'t> LLKParser<'t> {
     /// The generated parser sources contain all appropriate initialization and
     /// the actual execution of this parse function.
     ///
-    pub fn parse<'u>(
+    pub fn parse<'u, T: SynTreeNode<'t>>(
         &mut self,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<Tree<SynTree, SynTreeFlavor>> {
-        let mut tree_builder = TreeBuilder::new_with();
+    ) -> Result<Tree<T, SynTreeFlavor>> {
+        let mut tree_builder = Builder::<T, SynTreeFlavor>::new_with();
         // Add a root node to the tree that can receive besides the root symbol all other symbols
         // of the parse tree, e.g. comments, whitespace, etc.
         tree_builder
-            .open(SynTree::NonTerminal(""))
+            .open(T::from_non_terminal(""))
             .map_err(|source| ParserError::TreeError { source })?;
 
         let stream = Rc::new(RefCell::new(stream));
@@ -353,7 +353,7 @@ impl<'t> LLKParser<'t> {
                             self.parser_stack.stack.pop();
                             if !self.trim_parse_tree {
                                 tree_builder
-                                    .token(SynTree::Terminal((&token).into()), token.location.len())
+                                    .token(T::from_token(&token), token.location.len())
                                     .map_err(|source| ParserError::TreeError { source })?;
                             }
                             self.parse_tree_stack.push(ParseTreeType::T(token));
@@ -662,9 +662,9 @@ impl<'t> LLKParser<'t> {
         }
     }
 
-    fn handle_additional_tokens<'u>(
+    fn handle_additional_tokens<'u, T: SynTreeNode<'t>>(
         &self,
-        tree_builder: &mut Builder<SynTree, SynTreeFlavor>,
+        tree_builder: &mut Builder<T, SynTreeFlavor>,
         stream: Rc<RefCell<TokenStream<'t>>>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()> {
@@ -675,7 +675,7 @@ impl<'t> LLKParser<'t> {
             .try_for_each(|t| {
                 if !self.trim_parse_tree {
                     let _ = tree_builder
-                        .token(SynTree::Terminal((&t).into()), t.location.len())
+                        .token(T::from_token(&t), t.location.len())
                         .map_err(|source| {
                             ParolError::ParserError(ParserError::TreeError { source })
                         })?;
