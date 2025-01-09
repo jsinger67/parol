@@ -76,9 +76,9 @@ impl<'t> TokenStream<'t> {
             .collect::<Vec<ScannerMode>>();
         debug!("Scanner modes: {}", serde_json::to_string(&modes).unwrap());
         let scanner = ScannerBuilder::new().add_scanner_modes(&modes).build()?;
-        // To enable debug output of compliled automata as dot file:
-        // $env:RUST_LOG="scnr::internal::scanner_impl=debug"
-        let _ = scanner.log_compiled_automata_as_dot(&modes);
+        // To output the compliled automata as dot files uncomment the following two lines
+        // const TARGET_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../target");
+        // let _ = scanner.generate_compiled_automata_as_dot("Parol", Path::new(TARGET_FOLDER));
         let token_iter = TokenIter::new(scanner, input, file_name.clone(), k);
 
         // issue #54 "Lookahead exceeds token buffer length" with simple grammar:
