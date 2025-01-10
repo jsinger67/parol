@@ -1176,12 +1176,12 @@ dependencies = [
 [[package]]
 name = "scnr"
 version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ece72a2c58c0f2b9f11db70a2448f430ed4ef89578f68593226189bedb1ede4"
+source = "git+https://github.com/jsinger67/scnr?branch=main#4c7009a2c54e4a9e46b7caacc3c8e5f1cf4f7dd2"
 dependencies = [
  "dot-writer",
  "log",
  "regex-syntax",
+ "rustc-hash",
  "serde",
  "serde_json",
  "seshat-unicode",
