@@ -850,7 +850,7 @@ dependencies = [
  "syntree",
  "syntree_layout",
  "tempfile",
- "thiserror 2.0.10",
+ "thiserror 2.0.11",
  "ts-rs",
  "ume",
 ]
@@ -876,7 +876,7 @@ dependencies = [
  "serde",
  "serde_json",
  "syntree",
- "thiserror 2.0.10",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
@@ -903,7 +903,7 @@ dependencies = [
  "serde_json",
  "syntree",
  "syntree_layout",
- "thiserror 2.0.10",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
@@ -1185,7 +1185,7 @@ dependencies = [
  "serde",
  "serde_json",
  "seshat-unicode",
- "thiserror 2.0.10",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
@@ -1288,7 +1288,7 @@ checksum = "24d027955f5f14d526450b6a11ef5aa962761e924dcd092298dd0d1466570565"
 dependencies = [
  "anyhow",
  "syntree",
- "thiserror 2.0.10",
+ "thiserror 2.0.11",
  "xml_writer",
 ]
 
@@ -1331,11 +1331,11 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "2.0.10"
+version = "2.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a3ac7f54ca534db81081ef1c1e7f6ea8a3ef428d2fc069097c079443d24124d3"
+checksum = "d452f284b73e6d76dd36758a0c8684b1d5be31f92b89d07fd5822175732206fc"
 dependencies = [
- "thiserror-impl 2.0.10",
+ "thiserror-impl 2.0.11",
 ]
 
 [[package]]
@@ -1351,9 +1351,9 @@ dependencies = [
 
 [[package]]
 name = "thiserror-impl"
-version = "2.0.10"
+version = "2.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e9465d30713b56a37ede7185763c3492a91be2f5fa68d958c44e41ab9248beb"
+checksum = "26afc1baea8a989337eeb52b6e72a039780ce45c3edfcc9c5b9d112feeb173c2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1377,7 +1377,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e640d9b0964e9d39df633548591090ab92f7a4567bc31d3891af23471a3365c6"
 dependencies = [
  "lazy_static",
- "thiserror 2.0.10",
+ "thiserror 2.0.11",
  "ts-rs-macros",
 ]
 
