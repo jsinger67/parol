@@ -1176,6 +1176,7 @@ dependencies = [
 [[package]]
 name = "scnr"
 version = "0.6.0"
+source = "git+https://github.com/jsinger67/scnr?branch=main#4c7009a2c54e4a9e46b7caacc3c8e5f1cf4f7dd2"
 dependencies = [
  "dot-writer",
  "log",
