@@ -13,6 +13,7 @@ use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
+use parol_runtime::parser::parse_tree_type::{NonTerminalEnum, TerminalEnum};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result, Token};
 
@@ -296,6 +297,78 @@ pub enum ASTType<'t> {
     StringDelimiter(StringDelimiter<'t>),
     StringElement(StringElement<'t>),
 }
+
+// -------------------------------------------------------------------------------------------------
+
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum NonTerminalKind {
+    Content,
+    Escaped,
+    EscapedLineEnd,
+    Identifier,
+    NoneQuote,
+    Start,
+    StartList,
+    StringContent,
+    StringContentList,
+    StringDelimiter,
+    StringElement,
+    Root,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum TerminalKind {
+    NewLine,
+    Whitespace,
+    LineComment,
+    BlockComment,
+    Identifier,
+    Escaped,
+    EscapedLineEnd,
+    NoneQuote,
+    StringDelimiter,
+}
+
+impl TerminalEnum for TerminalKind {
+    fn from_terminal_index(index: u16) -> Self {
+        match index {
+            1 => Self::NewLine,
+            2 => Self::Whitespace,
+            3 => Self::LineComment,
+            4 => Self::BlockComment,
+            5 => Self::Identifier,
+            6 => Self::Escaped,
+            7 => Self::EscapedLineEnd,
+            8 => Self::NoneQuote,
+            9 => Self::StringDelimiter,
+            _ => panic!("Invalid terminal index: {}", index),
+        }
+    }
+}
+
+impl NonTerminalEnum for NonTerminalKind {
+    fn from_non_terminal_name(name: &str) -> Self {
+        match name {
+            "Content" => Self::Content,
+            "Escaped" => Self::Escaped,
+            "EscapedLineEnd" => Self::EscapedLineEnd,
+            "Identifier" => Self::Identifier,
+            "NoneQuote" => Self::NoneQuote,
+            "Start" => Self::Start,
+            "StartList" => Self::StartList,
+            "StringContent" => Self::StringContent,
+            "StringContentList" => Self::StringContentList,
+            "StringDelimiter" => Self::StringDelimiter,
+            "StringElement" => Self::StringElement,
+            "" => Self::Root,
+            _ => panic!("Invalid non-terminal name: {}", name),
+        }
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
 
 /// Auto-implemented adapter grammar
 ///

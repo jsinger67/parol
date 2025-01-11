@@ -5,8 +5,9 @@
 // ---------------------------------------------------------
 
 use parol_runtime::once_cell::sync::Lazy;
+use parol_runtime::parser::parse_tree_type::SynTreeNode;
 #[allow(unused_imports)]
-use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
@@ -262,6 +263,28 @@ where
     // Initialize wrapper
     let mut user_actions = KeywordsGrammarAuto::new(user_actions);
     llk_parser.parse(
+        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        &mut user_actions,
+    )
+}
+#[allow(dead_code)]
+pub fn parse2<'t, T: SynTreeNode<'t>>(
+    input: &'t str,
+    file_name: impl AsRef<Path>,
+    user_actions: &mut KeywordsGrammar<'t>,
+) -> Result<ParseTree<T>, ParolError> {
+    let mut llk_parser = LLKParser::new(
+        5,
+        LOOKAHEAD_AUTOMATA,
+        PRODUCTIONS,
+        TERMINAL_NAMES,
+        NON_TERMINALS,
+    );
+    llk_parser.disable_recovery();
+
+    // Initialize wrapper
+    let mut user_actions = KeywordsGrammarAuto::new(user_actions);
+    llk_parser.parse::<T>(
         TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
         &mut user_actions,
     )

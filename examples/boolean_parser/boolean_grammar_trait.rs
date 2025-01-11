@@ -13,6 +13,7 @@ use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
+use parol_runtime::parser::parse_tree_type::{NonTerminalEnum, TerminalEnum};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result, Token};
 
@@ -533,6 +534,120 @@ pub enum ASTType<'t> {
     XnorOp(XnorOp),
     XorOp(XorOp),
 }
+
+// -------------------------------------------------------------------------------------------------
+
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum NonTerminalKind {
+    AndOp,
+    BinaryOperator,
+    Boolean,
+    Expression,
+    ExpressionList,
+    Expressions,
+    ExpressionsList,
+    Factor,
+    False,
+    LeftParenthesis,
+    NandOp,
+    NorOp,
+    Not,
+    OrOp,
+    Parenthesized,
+    RightParenthesis,
+    Semicolon,
+    Term,
+    TermOpt,
+    TrailingSemicolon,
+    TrailingSemicolonOpt,
+    True,
+    UnaryOperator,
+    XnorOp,
+    XorOp,
+    Root,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum TerminalKind {
+    NewLine,
+    Whitespace,
+    LineComment,
+    BlockComment,
+    AndOp,
+    OrOp,
+    XorOp,
+    NorOp,
+    NandOp,
+    XnorOp,
+    True,
+    False,
+    Not,
+    Semicolon,
+    LParen,
+    RParen,
+}
+
+impl TerminalEnum for TerminalKind {
+    fn from_terminal_index(index: u16) -> Self {
+        match index {
+            1 => Self::NewLine,
+            2 => Self::Whitespace,
+            3 => Self::LineComment,
+            4 => Self::BlockComment,
+            5 => Self::AndOp,
+            6 => Self::OrOp,
+            7 => Self::XorOp,
+            8 => Self::NorOp,
+            9 => Self::NandOp,
+            10 => Self::XnorOp,
+            11 => Self::True,
+            12 => Self::False,
+            13 => Self::Not,
+            14 => Self::Semicolon,
+            15 => Self::LParen,
+            16 => Self::RParen,
+            _ => panic!("Invalid terminal index: {}", index),
+        }
+    }
+}
+
+impl NonTerminalEnum for NonTerminalKind {
+    fn from_non_terminal_name(name: &str) -> Self {
+        match name {
+            "AndOp" => Self::AndOp,
+            "BinaryOperator" => Self::BinaryOperator,
+            "Boolean" => Self::Boolean,
+            "Expression" => Self::Expression,
+            "ExpressionList" => Self::ExpressionList,
+            "Expressions" => Self::Expressions,
+            "ExpressionsList" => Self::ExpressionsList,
+            "Factor" => Self::Factor,
+            "False" => Self::False,
+            "LeftParenthesis" => Self::LeftParenthesis,
+            "NandOp" => Self::NandOp,
+            "NorOp" => Self::NorOp,
+            "Not" => Self::Not,
+            "OrOp" => Self::OrOp,
+            "Parenthesized" => Self::Parenthesized,
+            "RightParenthesis" => Self::RightParenthesis,
+            "Semicolon" => Self::Semicolon,
+            "Term" => Self::Term,
+            "TermOpt" => Self::TermOpt,
+            "TrailingSemicolon" => Self::TrailingSemicolon,
+            "TrailingSemicolonOpt" => Self::TrailingSemicolonOpt,
+            "True" => Self::True,
+            "UnaryOperator" => Self::UnaryOperator,
+            "XnorOp" => Self::XnorOp,
+            "XorOp" => Self::XorOp,
+            "" => Self::Root,
+            _ => panic!("Invalid non-terminal name: {}", name),
+        }
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
 
 /// Auto-implemented adapter grammar
 ///

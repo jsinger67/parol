@@ -13,6 +13,7 @@ use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
+use parol_runtime::parser::parse_tree_type::{NonTerminalEnum, TerminalEnum};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result, Token};
 use std::marker::PhantomData;
@@ -140,6 +141,64 @@ pub enum ASTType {
     TrailingComma(TrailingComma),
     TrailingCommaOpt(Option<TrailingCommaOpt>),
 }
+
+// -------------------------------------------------------------------------------------------------
+
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum NonTerminalKind {
+    Items,
+    ItemsList,
+    List,
+    ListOpt,
+    Num,
+    TrailingComma,
+    TrailingCommaOpt,
+    Root,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum TerminalKind {
+    NewLine,
+    Whitespace,
+    LineComment,
+    BlockComment,
+    Comma,
+    Num,
+}
+
+impl TerminalEnum for TerminalKind {
+    fn from_terminal_index(index: u16) -> Self {
+        match index {
+            1 => Self::NewLine,
+            2 => Self::Whitespace,
+            3 => Self::LineComment,
+            4 => Self::BlockComment,
+            5 => Self::Comma,
+            6 => Self::Num,
+            _ => panic!("Invalid terminal index: {}", index),
+        }
+    }
+}
+
+impl NonTerminalEnum for NonTerminalKind {
+    fn from_non_terminal_name(name: &str) -> Self {
+        match name {
+            "Items" => Self::Items,
+            "ItemsList" => Self::ItemsList,
+            "List" => Self::List,
+            "ListOpt" => Self::ListOpt,
+            "Num" => Self::Num,
+            "TrailingComma" => Self::TrailingComma,
+            "TrailingCommaOpt" => Self::TrailingCommaOpt,
+            "" => Self::Root,
+            _ => panic!("Invalid non-terminal name: {}", name),
+        }
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
 
 /// Auto-implemented adapter grammar
 ///
