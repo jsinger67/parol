@@ -135,7 +135,11 @@ fn run_parol_examples() -> Result<()> {
         if entry.path().extension().unwrap().to_str().unwrap() == "par" {
             println!("Parsing {}...", entry.path().display());
             let exit_status = run_parol(&["-f", entry.path().to_str().unwrap()])?;
-            assert!(exit_status.success());
+            assert!(
+                exit_status.success(),
+                "Parsing {} failed",
+                entry.path().display()
+            );
         }
     }
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/data/invalid");
