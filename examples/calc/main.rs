@@ -32,3 +32,21 @@ fn main() -> Result<()> {
         Err(anyhow!("Please provide a file name as single parameter!"))
     }
 }
+
+use crate::calc_grammar_trait::{NonTerminalKind, TerminalKind};
+use parol_runtime::parser::parse_tree_type::GrammarEnums;
+impl GrammarEnums for CalcGrammar<'_> {
+    type TerminalEnum = TerminalKind;
+    type NonTerminalEnum = NonTerminalKind;
+}
+
+#[test]
+fn test_parse2() {
+    use crate::calc_parser::parse2;
+    use parol_runtime::parser::parse_tree_type::SynTree2;
+    let input = "1 + 2 * 3;";
+    let mut calc_grammar = CalcGrammar::new();
+    let _syntax_tree =
+        parse2::<SynTree2<CalcGrammar>>(&input, "test.parol", &mut calc_grammar).unwrap();
+    println!("{}", calc_grammar);
+}

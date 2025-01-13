@@ -13,6 +13,7 @@ use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
+use parol_runtime::parser::parse_tree_type::{NonTerminalEnum, TerminalEnum};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result, Token};
 
@@ -221,6 +222,76 @@ pub enum ASTType<'t> {
     Items(Items<'t>),
     Var(Var<'t>),
 }
+
+// -------------------------------------------------------------------------------------------------
+
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum NonTerminalKind {
+    Begin,
+    Block,
+    BlockList,
+    Declaration,
+    End,
+    Grammar,
+    GrammarList,
+    Identifier,
+    Items,
+    Var,
+    Root,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum TerminalKind {
+    NewLine,
+    Whitespace,
+    LineComment,
+    BlockComment,
+    Semicolon,
+    Identifier,
+    Begin,
+    End,
+    Var,
+}
+
+impl TerminalEnum for TerminalKind {
+    fn from_terminal_index(index: u16) -> Self {
+        match index {
+            1 => Self::NewLine,
+            2 => Self::Whitespace,
+            3 => Self::LineComment,
+            4 => Self::BlockComment,
+            5 => Self::Semicolon,
+            6 => Self::Identifier,
+            7 => Self::Begin,
+            8 => Self::End,
+            9 => Self::Var,
+            _ => panic!("Invalid terminal index: {}", index),
+        }
+    }
+}
+
+impl NonTerminalEnum for NonTerminalKind {
+    fn from_non_terminal_name(name: &str) -> Self {
+        match name {
+            "Begin" => Self::Begin,
+            "Block" => Self::Block,
+            "BlockList" => Self::BlockList,
+            "Declaration" => Self::Declaration,
+            "End" => Self::End,
+            "Grammar" => Self::Grammar,
+            "GrammarList" => Self::GrammarList,
+            "Identifier" => Self::Identifier,
+            "Items" => Self::Items,
+            "Var" => Self::Var,
+            "" => Self::Root,
+            _ => panic!("Invalid non-terminal name: {}", name),
+        }
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
 
 /// Auto-implemented adapter grammar
 ///

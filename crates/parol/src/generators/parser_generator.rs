@@ -540,7 +540,7 @@ impl std::fmt::Display for LRParserData<'_> {
             #[allow(dead_code)]
             pub fn parse2<'t, T: SynTreeNode<'t>>(
                 input: &'t str,
-                file_name: T,
+                file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
             ) -> Result<ParseTree<T>, ParolError> {
                 let mut lr_parser = LRParser::new(
