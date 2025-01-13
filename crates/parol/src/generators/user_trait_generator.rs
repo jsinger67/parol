@@ -650,6 +650,7 @@ impl<'a> UserTraitGenerator<'a> {
         let terminal_enum = self
             .grammar_config
             .generate_terminal_names()
+            .into_iter()
             .map(|(_, name)| format!("{}", ume::ume!(#name,)))
             .collect::<StrVec>();
         let non_terminal_enum = format!(
@@ -679,6 +680,7 @@ impl<'a> UserTraitGenerator<'a> {
         let num_to_terminal_match_arms = self
             .grammar_config
             .generate_terminal_names()
+            .into_iter()
             .map(|(i, t)| {
                 NumToTerminalVariant {
                     variant: t.to_string(),
