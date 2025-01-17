@@ -5,11 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Indicating incompatible changes on major version zero
-
-We defined for this project that while being on major version zero we mark incompatible changes with
-new minor version numbers. Please note that this is no version handling covered by `Semver`.
-
 ## 2.1.0 - 2025-01-17
 
 - Fixed a subtle bug related to token buffer handling after scanner mode switching near the end of
