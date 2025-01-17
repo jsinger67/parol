@@ -816,7 +816,7 @@ checksum = "fb37767f6569cd834a413442455e0f066d0d522de8630436e2a1761d9726ba56"
 
 [[package]]
 name = "parol"
-version = "2.0.0"
+version = "2.1.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -857,7 +857,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "2.0.0"
+version = "2.1.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -885,7 +885,7 @@ version = "1.0.0"
 
 [[package]]
 name = "parol_runtime"
-version = "2.0.0"
+version = "2.1.0"
 dependencies = [
  "anyhow",
  "codespan-reporting",
