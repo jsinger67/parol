@@ -31,7 +31,7 @@ of regexes created with the help of the `regex-automata` crate. Please have a lo
 - Refactor some grammar tools to enforce LL grammar type.
 
 - Error recovery on generated LL(k) parsers can now be disabled, via Builder API (`disable_recovery`)
-and via command line argument (`--disable_recovery`).
+and via command line argument (`--disable-recovery`).
 
 - `parol` creates lossless parse trees in both LL and LR parsers.
 
