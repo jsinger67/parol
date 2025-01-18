@@ -48,14 +48,24 @@ pub struct ListItem<'t> {
 }
 ```
 2. Implement the problematic traits by yourself and avoid the recursion by using a loop instead.
-I can't give a general advice here, but there are plenty examples out there that covers this topic
+I can't give a general advice here, but there are plenty examples out there that cover this topic
 thoroughly.
 
 ## Q: I get strange errors while commissioning my new grammar and can't figure out what the problem is
 A: Consider the following advices
 
-* Break down the problem with a least input as possible
-* Enable traces:
+### Break down the problem with a least input as possible
+
+This will limit the possible error location and also minimize the amount of traces to scrutinize.
+
+### Disable error recovery for LL(k) parsers
+
+The process of error recovery will surely shroud the original error location.
+Therefore it is advisable to temporarily disable it.
+
+Use Builder API (`disable_recovery()`) or command line argument (`--disable-recovery`).
+
+### Enable traces
 
 In all projects that were generated with `parol new` the env_logger is built in. First activate all
 traces. I'll show the principle in powershell because this will work on Windows as well as on Linux
