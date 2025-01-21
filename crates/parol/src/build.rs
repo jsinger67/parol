@@ -123,6 +123,7 @@ use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
+use crate::generators::syntree_node_types_generator::SyntreeNodeTypesGenerator;
 use crate::parser::GrammarType;
 use crate::{
     GrammarConfig, GrammarTypeInfo, LRParseTable, LookaheadDFA, ParolGrammar, UserTraitGenerator,
@@ -182,6 +183,8 @@ pub struct Builder {
     parser_output_file: Option<PathBuf>,
     /// Output file for the generated actions files.
     actions_output_file: Option<PathBuf>,
+    /// The output file for the generated syntree node wrappers
+    syntree_node_wrappers_output_file: Option<PathBuf>,
     pub(crate) user_type_name: String,
     pub(crate) module_name: String,
     cargo_integration: bool,
@@ -197,6 +200,8 @@ pub struct Builder {
     debug_verbose: bool,
     /// Generate range information for AST types
     range: bool,
+    /// Generate typed syntree node wrappers
+    syntree_node_wrappers: bool,
     /// Inner attributes to insert at the top of the generated trait source.
     inner_attributes: Vec<InnerAttributes>,
     /// Enables trimming of the parse tree during parsing.
@@ -235,6 +240,7 @@ impl Builder {
         builder
             .parser_output_file("parser.rs")
             .actions_output_file("grammar_trait.rs")
+            .syntree_node_wrappers_output_file("syntree_node.rs")
             .expanded_grammar_output_file("grammar-exp.par");
         // Cargo integration should already be enabled (because we are a build script)
         assert!(builder.cargo_integration);
@@ -266,6 +272,7 @@ impl Builder {
             cargo_integration: is_build_script(),
             debug_verbose: false,
             range: false,
+            syntree_node_wrappers: false,
             max_lookahead: DEFAULT_MAX_LOOKAHEAD,
             module_name: String::from(DEFAULT_MODULE_NAME),
             user_type_name: String::from(DEFAULT_USER_TYPE_NAME),
@@ -273,6 +280,7 @@ impl Builder {
             // The default is /dev/null (`None`)
             parser_output_file: None,
             actions_output_file: None,
+            syntree_node_wrappers_output_file: None,
             expanded_grammar_output_file: None,
             minimize_boxed_types: false,
             inner_attributes: Vec::new(),
@@ -319,6 +327,13 @@ impl Builder {
     /// Otherwise, this is ignored.
     pub fn expanded_grammar_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
         self.expanded_grammar_output_file = Some(self.resolve_output_path(p));
+        self
+    }
+    /// Set the output location for the generated syntree node wrappers.
+    ///
+    /// The default location is "$OUT_DIR/syntree.rs".
+    pub fn syntree_node_wrappers_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
+        self.syntree_node_wrappers_output_file = Some(self.resolve_output_path(p));
         self
     }
     /// Explicitly enable/disable cargo integration.
@@ -374,6 +389,11 @@ impl Builder {
     ///
     pub fn range(&mut self) -> &mut Self {
         self.range = true;
+        self
+    }
+    /// Generate typed syntree node wrappers
+    pub fn syntree_node_wrappers(&mut self) -> &mut Self {
+        self.syntree_node_wrappers = true;
         self
     }
     /// Inserts the given inner attributes at the top of the generated trait source.
@@ -462,6 +482,10 @@ impl CommonGeneratorConfig for Builder {
 
     fn range(&self) -> bool {
         self.range
+    }
+
+    fn syntree_node_wrappers(&self) -> bool {
+        self.syntree_node_wrappers
     }
 }
 
@@ -663,6 +687,23 @@ impl GrammarGenerator<'_> {
             crate::try_format(parser_file_out)?;
         } else if self.builder.debug_verbose {
             println!("\nParser source:\n{}", parser_source);
+        }
+
+        if let Some(ref syntree_node_wrappers_output_file) =
+            self.builder.syntree_node_wrappers_output_file
+        {
+            let mut f = fs::OpenOptions::new()
+                .write(true)
+                .create(true)
+                .truncate(true)
+                .open(syntree_node_wrappers_output_file)
+                .map_err(|e| parol!("Error opening generated syntree node wrappers!: {}", e))?;
+            let syntree_node_types_generator =
+                SyntreeNodeTypesGenerator::new(grammar_config, &type_info);
+            syntree_node_types_generator
+                .generate(&mut f)
+                .map_err(|e| parol!("Error generating syntree node wrappers!: {}", e))?;
+            crate::try_format(syntree_node_wrappers_output_file)?;
         }
 
         self.state = Some(State::Finished);

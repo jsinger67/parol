@@ -12,6 +12,7 @@ use std::hash::Hash;
 use std::path::Path;
 use syntree_layout::Layouter;
 
+pub mod str_iter;
 pub mod str_vec;
 
 /// Applies a key-generating function to each element of a vector and yields a vector of

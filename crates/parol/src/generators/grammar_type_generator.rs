@@ -795,7 +795,9 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
-    pub(crate) fn generate_non_terminal_enum_type(&mut self) -> impl Iterator<Item = (&str, &str)> {
+    pub(crate) fn generate_non_terminal_enum_type(
+        &self,
+    ) -> impl Iterator<Item = (&str, &str)> + Clone {
         self.non_terminal_types
             .keys()
             .map(|n| (n.as_str(), n.as_str()))
