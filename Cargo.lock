@@ -885,7 +885,7 @@ version = "1.0.0"
 
 [[package]]
 name = "parol_runtime"
-version = "2.1.0"
+version = "2.1.1"
 dependencies = [
  "anyhow",
  "codespan-reporting",
@@ -1175,8 +1175,9 @@ dependencies = [
 
 [[package]]
 name = "scnr"
-version = "0.7.0"
-source = "git+https://github.com/jsinger67/scnr?branch=main#c5f0782f79c8fbe8a46395e1c9e08bfbdf612ab9"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e4a344e85a3b8473a2852a03dd8f30f3b2968c3fb234c984a8405e9fb4975b7"
 dependencies = [
  "dot-writer",
  "log",

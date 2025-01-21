@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.1.1 - 2025-01-21
+
+- Fix for [#558](https://github.com/jsinger67/parol/issues/558)
+  This fix updates the `last_consumed_token_end_pos` in `TokenStream::take_skip_tokens` on skip
+  tokens, too
+
 ## 2.1.0 - 2025-01-17
 
 - Fixed a subtle bug related to token buffer handling after scanner mode switching near the end of

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.1.1 - 2025-01-17
+## 2.1.1 - 2025-01-21
 
 - Fix broken `parol new` subcommand
 
@@ -18,6 +18,10 @@ FOLLOW(k) sets, using FxHashSet in `KTuples` type
 transitions of a scanner state in a deterministic alphabetic order
 - Merged PR [#537](https://github.com/jsinger67/parol/pull/537) from [ryo33](https://github.com/ryo33)
 
+## 2.1.1 - 2025-01-21
+
+- Fix for [#558](https://github.com/jsinger67/parol/issues/558)
+  This fix is provided by `parol_runtime@2.1.1`
 
 ## 2.0.0 - 2024-12-25
 
