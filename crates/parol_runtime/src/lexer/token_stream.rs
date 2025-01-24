@@ -76,9 +76,9 @@ impl<'t> TokenStream<'t> {
             .collect::<Vec<ScannerMode>>();
         debug!("Scanner modes: {}", serde_json::to_string(&modes).unwrap());
         let scanner = ScannerBuilder::new().add_scanner_modes(&modes).build()?;
-        // To enable debug output of compliled automata as dot file:
-        // $env:RUST_LOG="scnr::internal::scanner_impl=debug"
-        let _ = scanner.log_compiled_automata_as_dot(&modes);
+        // To output the compliled automata as dot files uncomment the following two lines
+        // const TARGET_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../target");
+        // let _ = scanner.generate_compiled_automata_as_dot("Parol", Path::new(TARGET_FOLDER));
         let token_iter = TokenIter::new(scanner, input, file_name.clone(), k);
 
         // issue #54 "Lookahead exceeds token buffer length" with simple grammar:
@@ -157,9 +157,22 @@ impl<'t> TokenStream<'t> {
     }
 
     /// Returns all skip tokens at the beginning of the token buffer.
+    /// The tokens are removed from the buffer and the line and column numbers are updated.
     #[inline]
     pub fn take_skip_tokens(&mut self) -> Vec<Token<'t>> {
-        self.tokens.take_skip_tokens()
+        let tokens = self.tokens.take_skip_tokens();
+        if let Some(token) = tokens.last() {
+            self.line = token.location.end_line;
+            self.column = token.location.end_column;
+            self.last_consumed_token_end_pos = token.location.end();
+            trace!(
+                "Updated line: {}, column: {}, last consumed token end position: {} in take_skip_tokens",
+                self.line,
+                self.column,
+                self.last_consumed_token_end_pos
+            );
+        }
+        tokens
     }
 
     ///

@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "2.0.0"
+version = "2.1.2"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) and LALR(1) parser generator for Rust"
 default-run = "parol"
@@ -16,7 +16,7 @@ exclude = ["/tests", "/data", "/bindings"]
 [dependencies]
 anyhow = { workspace = true }
 assert_cmd = "2.0"
-bitflags = "2.6.0"
+bitflags = "2.8.0"
 cfg-if = "1.0.0"
 clap = { workspace = true }
 derive_builder = { version = "0.20.2" }
@@ -24,7 +24,7 @@ env_logger = { workspace = true }
 function_name = { workspace = true }
 num_cpus = "1.16.0"
 owo-colors = "4.1.0"
-parol_runtime = { path = "../parol_runtime", version = "2.0.0" }
+parol_runtime = { path = "../parol_runtime", version = "2.1.1" }
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
 petgraph = { workspace = true }
 rand = "0.8.5"
