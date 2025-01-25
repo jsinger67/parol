@@ -387,7 +387,7 @@ impl std::fmt::Display for ParserData<'_> {
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            pub fn parse2<'t, T: SynTreeNode<'t>>(
+            pub fn parse_as<'t, T: SynTreeNode<'t>>(
                 input: &'t str,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
@@ -538,7 +538,7 @@ impl std::fmt::Display for LRParserData<'_> {
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            pub fn parse2<'t, T: SynTreeNode<'t>>(
+            pub fn parse_as<'t, T: SynTreeNode<'t>>(
                 input: &'t str,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,

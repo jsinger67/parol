@@ -1466,7 +1466,7 @@ where
     )
 }
 #[allow(dead_code)]
-pub fn parse2<'t, T: SynTreeNode<'t>>(
+pub fn parse_as<'t, T: SynTreeNode<'t>>(
     input: &'t str,
     file_name: impl AsRef<Path>,
     user_actions: &mut Oberon0Grammar<'t>,

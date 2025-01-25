@@ -101,7 +101,11 @@ pub trait NodeExt<T: Copy, Nt: Copy> {
     fn find_child(&self, cursor: usize, child: NodeKind<T, Nt>) -> Option<(usize, Node<T, Nt>)>;
 }
 
-impl<'a, T: Copy + PartialEq, Nt: Copy + PartialEq> NodeExt<T, Nt> for Node<'a, T, Nt> {
+impl<'a, T, Nt> NodeExt<T, Nt> for Node<'a, T, Nt>
+where
+    T: Copy + TerminalEnum + PartialEq,
+    Nt: Copy + PartialEq,
+{
     fn find_child(
         &self,
         cursor: usize,
@@ -111,31 +115,63 @@ impl<'a, T: Copy + PartialEq, Nt: Copy + PartialEq> NodeExt<T, Nt> for Node<'a, 
             if node.value().kind() == child {
                 return Some((i + 1, node));
             }
+            match node.value().kind() {
+                NodeKind::Terminal(t) => {
+                    if t.is_builtin_whitespace() {
+                        continue;
+                    }
+                    if t.is_builtin_new_line() {
+                        continue;
+                    }
+                }
+                NodeKind::NonTerminal(_) => {}
+            }
         }
         None
     }
 }
 
 /// What kinds of children are expected for a node kind.
+#[derive(Debug, Clone, Copy)]
 pub enum ExpectedChildrenKinds<T, Nt>
 where
     T: 'static,
     Nt: 'static,
 {
     /// A node kind that expects one of the given child kinds. Corresponds to enum ast types.
-    OneOf(&'static [ChildKind<T, Nt>]),
+    OneOf(&'static [NodeKind<T, Nt>]),
     /// A node kind that expects a sequence of child kinds. Corresponds to struct ast types.
-    Sequence(&'static [ChildKind<T, Nt>]),
+    Sequence(&'static [NodeKind<T, Nt>]),
 }
 
 impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
     /// Asserts that the node is a valid with this expected children.
-    pub fn assert_node_syntax(&self, node: Node<T, Nt>)
+    pub fn assert_node_syntax(&self, node: Node<T, Nt>) -> bool
     where
-        T: Copy,
-        Nt: Copy,
+        T: Copy + PartialEq + TerminalEnum,
+        Nt: Copy + PartialEq,
     {
-        todo!()
+        match self {
+            ExpectedChildrenKinds::OneOf(children) => {
+                for child in *children {
+                    if *child == node.value().kind() {
+                        return true;
+                    }
+                }
+                false
+            }
+            ExpectedChildrenKinds::Sequence(children) => {
+                let mut cursor = 0;
+                for child in *children {
+                    if let Some((new_cursor, _)) = node.find_child(cursor, *child) {
+                        cursor = new_cursor;
+                    } else {
+                        return false;
+                    }
+                }
+                true
+            }
+        }
     }
 }
 
@@ -161,6 +197,12 @@ pub enum ChildKind<T, Nt> {
 pub trait TerminalEnum: Copy + std::fmt::Debug {
     /// Creates a terminal from an index.
     fn from_terminal_index(index: u16) -> Self;
+
+    /// Returns true if the terminal is a parol's built-in (not user defined) new line token.
+    fn is_builtin_new_line(&self) -> bool;
+
+    /// Returns true if the terminal is a parol's built-in (not user defined) whitespace token.
+    fn is_builtin_whitespace(&self) -> bool;
 }
 
 /// A trait that a non-terminal enum must implement.

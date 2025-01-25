@@ -1,4 +1,4 @@
-use crate::{utils::str_iter::IteratorExt, StrVec};
+use crate::StrVec;
 use std::fmt::Write;
 
 #[derive(Builder, Debug, Default)]
@@ -496,41 +496,18 @@ impl std::fmt::Display for DisplayArm<'_> {
 }
 
 #[derive(Debug)]
-pub(crate) enum ChildKind<'a> {
+pub(crate) enum ChildKind {
     Terminal(String),
-    NonTerminal(&'a str),
-    Vec(&'a str),
-    Optional(&'a str),
+    NonTerminal(String),
 }
 
-impl std::fmt::Display for ChildKind<'_> {
+impl std::fmt::Display for ChildKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ChildKind::Terminal(t) => write!(f, "ChildKind::Terminal(TerminalKind::{})", t),
+            ChildKind::Terminal(t) => write!(f, "NodeKind::Terminal(TerminalKind::{})", t),
             ChildKind::NonTerminal(n) => {
-                write!(f, "ChildKind::NonTerminal(NonTerminalKind::{})", n)
+                write!(f, "NodeKind::NonTerminal(NonTerminalKind::{})", n)
             }
-            ChildKind::Vec(n) => write!(f, "ChildKind::Vec(NonTerminalKind::{})", n),
-            ChildKind::Optional(n) => write!(f, "ChildKind::Optional(NonTerminalKind::{})", n),
         }
-    }
-}
-
-#[derive(Debug)]
-pub(crate) struct ExpectedChildrenArm<'a> {
-    pub children: Vec<ChildKind<'a>>,
-    pub node_kind: &'a str,
-}
-
-impl std::fmt::Display for ExpectedChildrenArm<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let ExpectedChildrenArm {
-            children,
-            node_kind,
-        } = self;
-        let children = children.iter().into_str_iter();
-        f.write_fmt(ume::ume! {
-            Self::#node_kind => ExpectedChildrenKinds::Sequence(&[#children]),
-        })
     }
 }

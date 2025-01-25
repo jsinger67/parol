@@ -170,20 +170,6 @@ pub(crate) enum TypeEntrails {
     UserDefinedType(MetaSymbolKind, UserDefinedTypeName),
 }
 
-/// Node type for the syntree
-pub enum NodeType {
-    /// No node type
-    None,
-    /// A terminal node
-    Terminal(SymbolId),
-    /// A non-terminal node
-    NonTerminal(SymbolId),
-    /// A non-terminal node with a vector type
-    NonTerminalVec(SymbolId),
-    /// A non-terminal node with an option type
-    NonTerminalOption(SymbolId),
-}
-
 impl TypeEntrails {
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> String {
         match self {
@@ -205,59 +191,6 @@ impl TypeEntrails {
 
     pub(crate) fn is_container(&self) -> bool {
         matches!(self, Self::Vec(_) | Self::Option(_) | Self::Box(_))
-    }
-
-    /// Unwraps a pointer type to get the inner type. Returns the original symbol if not a pointer type.
-    pub(crate) fn unwrap_pointer_type(&self, self_symbol: SymbolId) -> SymbolId {
-        match self {
-            TypeEntrails::Box(symbol_id)
-            | TypeEntrails::Ref(symbol_id)
-            | TypeEntrails::Surrogate(symbol_id) => *symbol_id,
-            _ => self_symbol,
-        }
-    }
-
-    pub(crate) fn node_type(
-        &self,
-        symbol_id: SymbolId,
-        symbol_table: &SymbolTable,
-    ) -> anyhow::Result<NodeType> {
-        match self {
-            TypeEntrails::None | TypeEntrails::Token => Ok(NodeType::None),
-            TypeEntrails::Box(symbol_id)
-            | TypeEntrails::Ref(symbol_id)
-            | TypeEntrails::Surrogate(symbol_id) => symbol_table
-                .symbol_as_type(*symbol_id)
-                .entrails()
-                .node_type(*symbol_id, symbol_table),
-            TypeEntrails::Struct | TypeEntrails::Enum => Ok(NodeType::NonTerminal(symbol_id)),
-            TypeEntrails::EnumVariant(_) => Ok(NodeType::None),
-            TypeEntrails::Vec(symbol_id) => Ok(NodeType::NonTerminalVec(
-                symbol_table
-                    .symbol_as_type(*symbol_id)
-                    .entrails()
-                    .unwrap_pointer_type(*symbol_id),
-            )),
-            TypeEntrails::Trait => Ok(NodeType::None),
-            TypeEntrails::Function(_) => Ok(NodeType::None),
-            TypeEntrails::Option(symbol_id) => Ok(NodeType::NonTerminalOption(
-                symbol_table
-                    .symbol_as_type(*symbol_id)
-                    .entrails()
-                    .unwrap_pointer_type(*symbol_id),
-            )),
-            TypeEntrails::Clipped(_) => Ok(NodeType::None),
-            TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(symbol_id), _) => {
-                Ok(NodeType::NonTerminal(
-                    symbol_table
-                        .symbol_as_type(*symbol_id)
-                        .entrails()
-                        .unwrap_pointer_type(*symbol_id),
-                ))
-            }
-            TypeEntrails::UserDefinedType(MetaSymbolKind::Module, _)
-            | TypeEntrails::UserDefinedType(MetaSymbolKind::Token, _) => Ok(NodeType::None),
-        }
     }
 }
 

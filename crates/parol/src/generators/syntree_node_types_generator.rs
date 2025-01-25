@@ -1,16 +1,13 @@
 use std::io::Write;
 
-use crate::generators::symbol_table::TypeEntrails;
-use crate::generators::symbol_table_facade::{InstanceFacade, SymbolFacade as _};
 use crate::generators::template_data::NameToNonTerminalVariant;
+use crate::grammar::ProductionAttribute;
 use crate::utils::str_iter::IteratorExt;
-use crate::StrVec;
+use crate::{StrVec, Terminal};
 
 use super::grammar_type_generator::GrammarTypeInfo;
-use super::symbol_table::{NodeType, SymbolId};
-use super::symbol_table_facade::TypeFacade;
-use super::template_data::{ChildKind, DisplayArm, ExpectedChildrenArm, NumToTerminalVariant};
-use super::GrammarConfig;
+use super::template_data::{ChildKind, DisplayArm, NumToTerminalVariant};
+use super::{generate_terminal_name, GrammarConfig};
 
 /// Syntree node types generator.
 pub struct SyntreeNodeTypesGenerator<'a> {
@@ -35,7 +32,7 @@ impl<'a> SyntreeNodeTypesGenerator<'a> {
 impl SyntreeNodeTypesGenerator<'_> {
     fn generate_imports(&self, f: &mut impl Write) -> anyhow::Result<()> {
         f.write_fmt(ume::ume! {
-            use parol_runtime::parser::parse_tree_type::{ChildKind, ExpectedChildren, TerminalEnum, NonTerminalEnum, ExpectedChildrenKinds};
+            use parol_runtime::parser::parse_tree_type::{NodeKind, ExpectedChildren, TerminalEnum, NonTerminalEnum, ExpectedChildrenKinds};
         })?;
         Ok(())
     }
@@ -113,6 +110,14 @@ impl SyntreeNodeTypesGenerator<'_> {
                         _ => panic!("Invalid terminal index: {}", index),
                     }
                 }
+
+                fn is_builtin_new_line(&self) -> bool {
+                    matches!(self, TerminalKind::NewLine)
+                }
+
+                fn is_builtin_whitespace(&self) -> bool {
+                    matches!(self, TerminalKind::Whitespace)
+                }
             }
         })?;
 
@@ -180,37 +185,17 @@ impl SyntreeNodeTypesGenerator<'_> {
     }
 
     fn generate_non_terminal_node_types_impl(&self, f: &mut impl Write) -> anyhow::Result<()> {
-        let SyntreeNodeTypesGenerator {
-            grammar_type_info, ..
-        } = self;
-
-        let ast_members = grammar_type_info
-            .symbol_table()
-            .members(grammar_type_info.ast_enum_type)?;
-
         write!(f, "impl ExpectedChildren<TerminalKind, NonTerminalKind> for NonTerminalKind {{ fn expected_children(&self) -> ExpectedChildrenKinds<TerminalKind, NonTerminalKind> {{ match self {{")?;
 
-        for member in ast_members {
-            let symbol_type = grammar_type_info.symbol_table().symbol_as_type(*member);
-            let TypeEntrails::EnumVariant(member) = symbol_type.entrails() else {
-                unreachable!();
-            };
-            let type_facade = grammar_type_info.symbol_table().symbol_as_type(*member);
-            let symbol_type = type_facade.entrails();
-            let member = match symbol_type {
-                TypeEntrails::Vec(member) => member,
-                TypeEntrails::Option(member) => member,
-                _ => member,
-            };
-
-            self.generate_non_terminal_node_types_impl_single(f, *member)?;
+        for pr in self.grammar_config.cfg.get_non_terminal_set() {
+            self.generate_non_terminal_node_types_impl_single(f, &pr)?;
         }
 
         let name = self.grammar_config.cfg.get_start_symbol();
 
         f.write_fmt(ume::ume! {
             Self::Root => ExpectedChildrenKinds::Sequence(&[
-                ChildKind::NonTerminal(NonTerminalKind::#name),
+                NodeKind::NonTerminal(NonTerminalKind::#name),
             ]),
         })?;
 
@@ -222,76 +207,42 @@ impl SyntreeNodeTypesGenerator<'_> {
     fn generate_non_terminal_node_types_impl_single(
         &self,
         f: &mut impl Write,
-        symbol: SymbolId,
+        pr: &str,
     ) -> anyhow::Result<()> {
-        let SyntreeNodeTypesGenerator {
-            grammar_type_info, ..
-        } = self;
-
-        println!("================");
-
-        let mut children = vec![];
-
-        let name = grammar_type_info.symbol_table().name(symbol);
-        println!("name: {}", name);
-
-        let members = grammar_type_info.symbol_table().members(symbol)?;
-        println!("members: {:?}", members);
-
-        let symbol_type = grammar_type_info.symbol_table().symbol_as_type(symbol);
-        println!("symbol_type: {:?}", symbol_type.entrails());
-
-        let is_enum = *symbol_type.entrails() == TypeEntrails::Enum;
-
-        for member in members {
-            let name = grammar_type_info.symbol_table().name(*member);
-            println!("name: {}", name);
-            let member_type = if is_enum {
-                grammar_type_info.symbol_table().symbol_as_type(*member)
-            } else {
-                let inst = grammar_type_info.symbol_table().symbol_as_instance(*member);
-                grammar_type_info
-                    .symbol_table()
-                    .symbol_as_type(inst.type_id())
-            };
-
-            println!("member_type: {:?}", member_type.entrails());
-            match member_type
-                .entrails()
-                .node_type(*member, grammar_type_info.symbol_table())?
-            {
-                NodeType::None => {
-                    children.push(ChildKind::Terminal(symbol_type.name()));
+        let alts = self.grammar_config.cfg.matching_productions(pr);
+        let is_enum;
+        let mut children: Vec<ChildKind> = Vec::new();
+        if alts.len() == 2 {
+            match (alts[0].1.get_attribute(), alts[1].1.get_attribute()) {
+                (ProductionAttribute::CollectionStart, ProductionAttribute::AddToCollection) => {
+                    children.extend(alts[1].1.get_r().iter().filter_map(|s| self.child_kind(s)));
+                    is_enum = false;
                 }
-                NodeType::Terminal(symbol_id) => {
-                    // let name = grammar_type_info.symbol_table().type_name(symbol_id)?;
-                    // children.push(ChildKind::Terminal(name));
-                    unreachable!();
+                (ProductionAttribute::AddToCollection, ProductionAttribute::CollectionStart) => {
+                    children.extend(alts[0].1.get_r().iter().filter_map(|s| self.child_kind(s)));
+                    is_enum = false;
                 }
-                NodeType::NonTerminal(symbol_id) => {
-                    let name = grammar_type_info.symbol_table().name(symbol_id);
-                    children.push(ChildKind::NonTerminal(name));
-                }
-                NodeType::NonTerminalVec(symbol_id) => {
-                    let name = grammar_type_info.symbol_table().name(symbol_id);
-                    children.push(ChildKind::Vec(name));
-                }
-                NodeType::NonTerminalOption(symbol_id) => {
-                    let name = grammar_type_info.symbol_table().name(symbol_id);
-                    if is_enum {
-                        children.push(ChildKind::NonTerminal(name));
-                        children.push(ChildKind::Optional(name));
-                    } else {
-                        children.push(ChildKind::Optional(name));
-                    }
+                _ => {
+                    is_enum = true;
                 }
             }
+        } else if alts.is_empty() {
+            panic!("Not supported!");
+        } else if alts.len() == 1 {
+            children.extend(alts[0].1.get_r().iter().filter_map(|s| self.child_kind(s)));
+            is_enum = false;
+        } else {
+            children.extend(
+                alts.iter()
+                    .filter_map(|(_, p)| p.get_r().first().and_then(|s| self.child_kind(s))),
+            );
+            is_enum = true;
         }
 
         let kind = if is_enum { "OneOf" } else { "Sequence" };
         f.write_fmt(format_args!(
             "Self::{} => ExpectedChildrenKinds::{}(&[{}]),",
-            name,
+            pr,
             kind,
             children
                 .iter()
@@ -309,5 +260,19 @@ impl SyntreeNodeTypesGenerator<'_> {
         self.generate_display_impl(f)?;
         self.generate_non_terminal_node_types_impl(f)?;
         Ok(())
+    }
+
+    fn child_kind(&self, symbol: &crate::Symbol) -> Option<ChildKind> {
+        match symbol {
+            crate::Symbol::N(_, _, _) => Some(ChildKind::NonTerminal(symbol.to_string())),
+            crate::Symbol::T(Terminal::Trm(terminal, _, _, _, _, _)) => Some(ChildKind::Terminal(
+                generate_terminal_name(terminal, None, &self.grammar_config.cfg),
+            )),
+            crate::Symbol::T(Terminal::Eps) => None,
+            crate::Symbol::T(Terminal::End) => None,
+            crate::Symbol::S(_) => None,
+            crate::Symbol::Push(_) => None,
+            crate::Symbol::Pop => None,
+        }
     }
 }
