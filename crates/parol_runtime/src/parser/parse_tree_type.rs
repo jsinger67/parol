@@ -3,6 +3,8 @@ use crate::{lexer::token::PTToken, ParserError, Token};
 use std::fmt::{Display, Formatter};
 use syntree_layout::Visualize;
 
+use super::parser_types::SynTreeFlavor;
+
 ///
 /// The type of the elements in the parse tree.
 ///
@@ -90,18 +92,117 @@ impl Display for SynTree {
     }
 }
 
-/// A trait that associates kind types with the grammar.
-pub trait GrammarEnums {
-    /// The kind of the terminal.
-    type TerminalEnum: TerminalEnum;
-    /// The kind of the non-terminal.
-    type NonTerminalEnum: NonTerminalEnum;
+/// The type of a node when the typed syntree option is enabled.
+pub type Node<'a, T, Nt> = syntree::Node<'a, SynTree2<T, Nt>, SynTreeFlavor>;
+
+/// An extension trait that provides methods for nodes.
+pub trait NodeExt<T: Copy, Nt: Copy> {
+    /// Finds a child node in the node from the cursor position (with skipping invalid children), and returns the new cursor position and the child node if found.
+    fn find_child(&self, cursor: usize, child: NodeKind<T, Nt>) -> Option<(usize, Node<T, Nt>)>;
+}
+
+impl<'a, T, Nt> NodeExt<T, Nt> for Node<'a, T, Nt>
+where
+    T: Copy + TerminalEnum + PartialEq,
+    Nt: Copy + PartialEq,
+{
+    fn find_child(
+        &self,
+        cursor: usize,
+        child: NodeKind<T, Nt>,
+    ) -> Option<(usize, Node<'a, T, Nt>)> {
+        for (i, node) in self.children().enumerate().skip(cursor) {
+            if node.value().kind() == child {
+                return Some((i + 1, node));
+            }
+            match node.value().kind() {
+                NodeKind::Terminal(t) => {
+                    if t.is_builtin_whitespace() {
+                        continue;
+                    }
+                    if t.is_builtin_new_line() {
+                        continue;
+                    }
+                }
+                NodeKind::NonTerminal(_) => {}
+            }
+        }
+        None
+    }
+}
+
+/// What kinds of children are expected for a node kind.
+#[derive(Debug, Clone, Copy)]
+pub enum ExpectedChildrenKinds<T, Nt>
+where
+    T: 'static,
+    Nt: 'static,
+{
+    /// A node kind that expects one of the given child kinds. Corresponds to enum ast types.
+    OneOf(&'static [NodeKind<T, Nt>]),
+    /// A node kind that expects a sequence of child kinds. Corresponds to struct ast types.
+    Sequence(&'static [NodeKind<T, Nt>]),
+}
+
+impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
+    /// Asserts that the node is a valid with this expected children.
+    pub fn assert_node_syntax(&self, node: Node<T, Nt>) -> bool
+    where
+        T: Copy + PartialEq + TerminalEnum,
+        Nt: Copy + PartialEq,
+    {
+        match self {
+            ExpectedChildrenKinds::OneOf(children) => {
+                for child in *children {
+                    if *child == node.value().kind() {
+                        return true;
+                    }
+                }
+                false
+            }
+            ExpectedChildrenKinds::Sequence(children) => {
+                let mut cursor = 0;
+                for child in *children {
+                    if let Some((new_cursor, _)) = node.find_child(cursor, *child) {
+                        cursor = new_cursor;
+                    } else {
+                        return false;
+                    }
+                }
+                true
+            }
+        }
+    }
+}
+
+/// A trait that a node kind must implement that returns the expected child nodes for this node kind for grammar assertions.
+pub trait ExpectedChildren<T, Nt> {
+    /// Expected child nodes for this node kind.
+    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt>;
+}
+
+/// The type of a child node.
+pub enum ChildKind<T, Nt> {
+    /// A terminal node.
+    Terminal(T),
+    /// A non-terminal node.
+    NonTerminal(Nt),
+    /// A vector of non-terminal nodes.
+    Vec(Nt),
+    /// An optional non-terminal node.
+    Optional(Nt),
 }
 
 /// A trait that a terminal enum must implement.
 pub trait TerminalEnum: Copy + std::fmt::Debug {
     /// Creates a terminal from an index.
     fn from_terminal_index(index: u16) -> Self;
+
+    /// Returns true if the terminal is a parol's built-in (not user defined) new line token.
+    fn is_builtin_new_line(&self) -> bool;
+
+    /// Returns true if the terminal is a parol's built-in (not user defined) whitespace token.
+    fn is_builtin_whitespace(&self) -> bool;
 }
 
 /// A trait that a non-terminal enum must implement.
@@ -110,41 +211,53 @@ pub trait NonTerminalEnum: Copy + std::fmt::Debug {
     fn from_non_terminal_name(name: &str) -> Self;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 /// A parse tree that is associated with a grammar.
-pub enum SynTree2<G: GrammarEnums> {
+pub enum SynTree2<T, Nt> {
     /// A terminal node.
-    Terminal(SynTreeTerminal<G>),
+    Terminal(SynTreeTerminal<T>),
     /// A non-terminal node.
-    NonTerminal(SynTreeNonTerminal<G>),
+    NonTerminal(SynTreeNonTerminal<Nt>),
 }
 
-impl<G: GrammarEnums> Copy for SynTree2<G> {}
-
-impl<G: GrammarEnums> Clone for SynTree2<G> {
-    fn clone(&self) -> Self {
-        *self
+impl<T: Copy, Nt: Copy> SynTree2<T, Nt> {
+    /// The kind of the node.
+    pub fn kind(&self) -> NodeKind<T, Nt> {
+        match self {
+            SynTree2::Terminal(data) => NodeKind::Terminal(data.kind),
+            SynTree2::NonTerminal(data) => NodeKind::NonTerminal(data.kind),
+        }
     }
 }
 
-#[derive(Debug)]
-/// A terminal node.
-pub struct SynTreeTerminal<G>
+impl<T, Nt> std::fmt::Display for SynTree2<T, Nt>
 where
-    G: GrammarEnums,
-    G: ?Sized,
+    T: std::fmt::Display,
+    Nt: std::fmt::Display,
 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SynTree2::Terminal(t) => write!(f, "{}", t),
+            SynTree2::NonTerminal(n) => write!(f, "{}", n),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+/// A terminal node.
+pub struct SynTreeTerminal<T> {
     /// The kind of the terminal.
-    pub kind: G::TerminalEnum,
+    pub kind: T,
     /// The data of the terminal.
     pub data: TerminalData,
 }
 
-impl<G: GrammarEnums> Copy for SynTreeTerminal<G> {}
-
-impl<G: GrammarEnums> Clone for SynTreeTerminal<G> {
-    fn clone(&self) -> Self {
-        *self
+impl<T> std::fmt::Display for SynTreeTerminal<T>
+where
+    T: std::fmt::Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.kind)
     }
 }
 
@@ -170,22 +283,19 @@ pub enum TerminalData {
     Dynamic(DynamicTokenId),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 /// A non-terminal node.
-pub struct SynTreeNonTerminal<G>
-where
-    G: GrammarEnums,
-    G: ?Sized,
-{
+pub struct SynTreeNonTerminal<Nt> {
     /// The kind of the non-terminal.
-    pub kind: G::NonTerminalEnum,
+    pub kind: Nt,
 }
 
-impl<G: GrammarEnums> Copy for SynTreeNonTerminal<G> {}
-
-impl<G: GrammarEnums> Clone for SynTreeNonTerminal<G> {
-    fn clone(&self) -> Self {
-        *self
+impl<Nt> std::fmt::Display for SynTreeNonTerminal<Nt>
+where
+    Nt: std::fmt::Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.kind)
     }
 }
 
@@ -206,10 +316,14 @@ impl<'t> SynTreeNode<'t> for SynTree {
     }
 }
 
-impl<'t, G: GrammarEnums> SynTreeNode<'t> for SynTree2<G> {
+impl<'t, T, Nt> SynTreeNode<'t> for SynTree2<T, Nt>
+where
+    T: TerminalEnum,
+    Nt: NonTerminalEnum,
+{
     fn from_token(token: &Token<'t>) -> Self {
         SynTree2::Terminal(SynTreeTerminal {
-            kind: G::TerminalEnum::from_terminal_index(token.token_type),
+            kind: T::from_terminal_index(token.token_type),
             data: TerminalData::Input(InputSpan {
                 start: token.location.start,
                 end: token.location.end,
@@ -218,7 +332,40 @@ impl<'t, G: GrammarEnums> SynTreeNode<'t> for SynTree2<G> {
     }
     fn from_non_terminal(name: &'static str) -> Self {
         SynTree2::NonTerminal(SynTreeNonTerminal {
-            kind: G::NonTerminalEnum::from_non_terminal_name(name),
+            kind: Nt::from_non_terminal_name(name),
         })
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+/// The kind of a node.
+pub enum NodeKind<T, Nt> {
+    /// A terminal node.
+    Terminal(T),
+    /// A non-terminal node.
+    NonTerminal(Nt),
+}
+
+impl<T, Nt> ExpectedChildren<T, Nt> for NodeKind<T, Nt>
+where
+    Nt: ExpectedChildren<T, Nt>,
+{
+    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt> {
+        match self {
+            NodeKind::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
+            NodeKind::NonTerminal(nt) => nt.expected_children(),
+        }
+    }
+}
+
+impl<T, Nt> ExpectedChildren<T, Nt> for SynTree2<T, Nt>
+where
+    Nt: ExpectedChildren<T, Nt>,
+{
+    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt> {
+        match self {
+            SynTree2::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
+            SynTree2::NonTerminal(nt) => nt.kind.expected_children(),
+        }
     }
 }

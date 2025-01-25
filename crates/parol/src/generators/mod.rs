@@ -46,3 +46,6 @@ mod symbol_table_facade;
 /// Module with the terminal name generator
 pub mod terminal_name_generator;
 pub use terminal_name_generator::generate_terminal_name;
+
+/// Module with the syntree node types generator
+pub mod syntree_node_types_generator;
