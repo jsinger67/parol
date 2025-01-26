@@ -3,7 +3,10 @@ use crate::{lexer::token::PTToken, ParserError, Token};
 use std::fmt::{Display, Formatter};
 use syntree_layout::Visualize;
 
-use super::parser_types::SynTreeFlavor;
+use super::{
+    parser_types::{SynTreeFlavor, TreeBuilder},
+    ParseTree,
+};
 
 ///
 /// The type of the elements in the parse tree.
@@ -300,14 +303,14 @@ where
 }
 
 /// Factory trait for creating custom syntree nodes.
-pub trait SynTreeNode<'t>: Copy {
+pub trait AstNode<'t>: Copy {
     /// Creates a syntree node from a non-terminal name.
     fn from_non_terminal(name: &'static str) -> Self;
     /// Creates a syntree node from a token.
     fn from_token(token: &Token<'t>) -> Self;
 }
 
-impl<'t> SynTreeNode<'t> for SynTree {
+impl<'t> AstNode<'t> for SynTree {
     fn from_token(token: &Token<'t>) -> Self {
         SynTree::Terminal(token.into())
     }
@@ -316,7 +319,7 @@ impl<'t> SynTreeNode<'t> for SynTree {
     }
 }
 
-impl<'t, T, Nt> SynTreeNode<'t> for SynTree2<T, Nt>
+impl<'t, T, Nt> AstNode<'t> for SynTree2<T, Nt>
 where
     T: TerminalEnum,
     Nt: NonTerminalEnum,
@@ -367,5 +370,57 @@ where
             SynTree2::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
             SynTree2::NonTerminal(nt) => nt.kind.expected_children(),
         }
+    }
+}
+
+/// A trait that a tree builder must implement.
+pub trait TreeConstruct<'t> {
+    /// The error type of the tree builder.
+    type Error;
+    /// The type of the tree.
+    type Tree;
+
+    /// Creates a node from a non-terminal name.
+    fn open_non_terminal(
+        &mut self,
+        name: &'static str,
+        size_hint: Option<usize>,
+    ) -> Result<(), Self::Error>;
+
+    /// Closes a non-terminal node.
+    fn close_non_terminal(&mut self) -> Result<(), Self::Error>;
+
+    /// Creates a token node.
+    fn add_token(&mut self, token: &Token<'t>) -> Result<(), Self::Error>;
+
+    /// Returns the tree.
+    fn build(self) -> Result<Self::Tree, Self::Error>;
+}
+
+impl<'t, T: AstNode<'t>> TreeConstruct<'t> for TreeBuilder<T> {
+    type Error = syntree::Error;
+    type Tree = ParseTree<T>;
+
+    fn open_non_terminal(
+        &mut self,
+        name: &'static str,
+        _size_hint: Option<usize>,
+    ) -> Result<(), Self::Error> {
+        self.open(T::from_non_terminal(name))?;
+        Ok(())
+    }
+
+    fn close_non_terminal(&mut self) -> Result<(), Self::Error> {
+        self.close()?;
+        Ok(())
+    }
+
+    fn add_token(&mut self, token: &Token<'t>) -> Result<(), Self::Error> {
+        self.token(T::from_token(token), token.location.len())?;
+        Ok(())
+    }
+
+    fn build(self) -> Result<Self::Tree, Self::Error> {
+        self.build()
     }
 }

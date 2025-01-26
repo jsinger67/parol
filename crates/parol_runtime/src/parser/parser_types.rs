@@ -7,7 +7,7 @@ use log::trace;
 use std::{cell::RefCell, cmp::Ord, rc::Rc};
 use syntree::{Builder, Tree};
 
-use super::parse_tree_type::{SynTree, SynTreeNode};
+use super::parse_tree_type::{SynTree, TreeConstruct};
 
 ///
 /// The type that contains all data to process a production within the parser.
@@ -211,11 +211,14 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-    fn push_production<T: SynTreeNode<'t>>(
+    fn push_production<T: TreeConstruct<'t>>(
         &mut self,
-        tree_builder: &mut TreeBuilder<T>,
+        tree_builder: &mut T,
         prod_num: ProductionIndex,
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        ParolError: From<T::Error>,
+    {
         self.parser_stack.stack.push(ParseType::E(prod_num));
         for s in self.productions[prod_num].production {
             self.parser_stack.stack.push(*s);
@@ -223,11 +226,10 @@ impl<'t> LLKParser<'t> {
 
         // Open a 'production entry' node in the tree
         if !self.trim_parse_tree {
-            tree_builder
-                .open(T::from_non_terminal(
-                    self.non_terminal_names[self.productions[prod_num].lhs],
-                ))
-                .map_err(|source| ParserError::TreeError { source })?;
+            tree_builder.open_non_terminal(
+                self.non_terminal_names[self.productions[prod_num].lhs],
+                None,
+            )?;
         }
 
         // Now push a 'production entry' onto the parse stack
@@ -246,12 +248,15 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-    fn process_item_stack<'u, T: SynTreeNode<'t>>(
+    fn process_item_stack<'u, T: TreeConstruct<'t>>(
         &mut self,
-        tree_builder: &mut TreeBuilder<T>,
+        tree_builder: &mut T,
         prod_num: ProductionIndex,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        ParolError: From<T::Error>,
+    {
         let l = self.productions[prod_num]
             .production
             .iter()
@@ -268,12 +273,10 @@ impl<'t> LLKParser<'t> {
 
         if !self.trim_parse_tree {
             // And we close the production subtree
-            tree_builder
-                .close()
-                .map_err(|source| ParserError::TreeError { source }.into())
-        } else {
-            Ok(())
+            tree_builder.close_non_terminal()?;
         }
+
+        Ok(())
     }
 
     fn predict_production(
@@ -306,22 +309,37 @@ impl<'t> LLKParser<'t> {
     }
 
     ///
-    /// The actual parsing function.
+    /// The actual parsing function for the default tree builder.
     /// It is normally not called directly.
     /// The generated parser sources contain all appropriate initialization and
     /// the actual execution of this parse function.
     ///
-    pub fn parse<'u, T: SynTreeNode<'t>>(
+    pub fn parse<'u>(
         &mut self,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<Tree<T, SynTreeFlavor>> {
-        let mut tree_builder = Builder::<T, SynTreeFlavor>::new_with();
+    ) -> Result<ParseTree> {
+        self.parse_into(TreeBuilder::new_with(), stream, user_actions)
+    }
+
+    ///
+    /// The actual parsing function for a custom tree builder.
+    /// It is normally not called directly.
+    /// The generated parser sources contain all appropriate initialization and
+    /// the actual execution of this parse function.
+    ///
+    pub fn parse_into<'u, T: TreeConstruct<'t>>(
+        &mut self,
+        mut tree_builder: T,
+        stream: TokenStream<'t>,
+        user_actions: &'u mut dyn UserActionsTrait<'t>,
+    ) -> Result<T::Tree>
+    where
+        ParolError: From<T::Error>,
+    {
         // Add a root node to the tree that can receive besides the root symbol all other symbols
         // of the parse tree, e.g. comments, whitespace, etc.
-        tree_builder
-            .open(T::from_non_terminal(""))
-            .map_err(|source| ParserError::TreeError { source })?;
+        tree_builder.open_non_terminal("", None)?;
 
         let stream = Rc::new(RefCell::new(stream));
         let prod_num = match self.predict_production(self.start_symbol_index, stream.clone()) {
@@ -352,9 +370,7 @@ impl<'t> LLKParser<'t> {
                             stream.borrow_mut().consume()?;
                             self.parser_stack.stack.pop();
                             if !self.trim_parse_tree {
-                                tree_builder
-                                    .token(T::from_token(&token), token.location.len())
-                                    .map_err(|source| ParserError::TreeError { source })?;
+                                tree_builder.add_token(&token)?;
                             }
                             self.parse_tree_stack.push(ParseTreeType::T(token));
                         } else if self
@@ -434,13 +450,9 @@ impl<'t> LLKParser<'t> {
             .into())
         } else {
             // We close the global root node,
-            tree_builder
-                .close()
-                .map_err(|source| ParserError::TreeError { source })?;
+            tree_builder.close_non_terminal()?;
             // build the tree and return it
-            Ok(tree_builder
-                .build()
-                .map_err(|source| ParserError::TreeError { source })?)
+            Ok(tree_builder.build()?)
         }
     }
 
@@ -662,23 +674,22 @@ impl<'t> LLKParser<'t> {
         }
     }
 
-    fn handle_additional_tokens<'u, T: SynTreeNode<'t>>(
+    fn handle_additional_tokens<'u, T: TreeConstruct<'t>>(
         &self,
-        tree_builder: &mut Builder<T, SynTreeFlavor>,
+        tree_builder: &mut T,
         stream: Rc<RefCell<TokenStream<'t>>>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        ParolError: From<T::Error>,
+    {
         stream
             .borrow_mut()
             .take_skip_tokens()
             .into_iter()
             .try_for_each(|t| {
                 if !self.trim_parse_tree {
-                    let _ = tree_builder
-                        .token(T::from_token(&t), t.location.len())
-                        .map_err(|source| {
-                            ParolError::ParserError(ParserError::TreeError { source })
-                        })?;
+                    tree_builder.add_token(&t)?;
                 }
                 if t.is_comment_token() {
                     user_actions.on_comment(t);

@@ -5,7 +5,7 @@
 // ---------------------------------------------------------
 
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::parser::parse_tree_type::SynTreeNode;
+use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
@@ -921,11 +921,15 @@ where
     )
 }
 #[allow(dead_code)]
-pub fn parse_as<'t, T: SynTreeNode<'t>>(
+pub fn parse_into<'t, T: TreeConstruct<'t>>(
     input: &'t str,
+    mut tree_builder: T,
     file_name: impl AsRef<Path>,
     user_actions: &mut CalcGrammar<'t>,
-) -> Result<ParseTree<T>, ParolError> {
+) -> Result<T::Tree, ParolError>
+where
+    ParolError: From<T::Error>,
+{
     let mut llk_parser = LLKParser::new(
         14,
         LOOKAHEAD_AUTOMATA,
@@ -937,7 +941,8 @@ pub fn parse_as<'t, T: SynTreeNode<'t>>(
 
     // Initialize wrapper
     let mut user_actions = CalcGrammarAuto::new(user_actions);
-    llk_parser.parse::<T>(
+    llk_parser.parse_into::<T>(
+        tree_builder,
         TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
         &mut user_actions,
     )

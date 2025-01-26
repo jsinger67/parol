@@ -1,7 +1,10 @@
 use std::{convert::TryFrom, fmt::Display};
 
 use crate::{
-    parser::{parse_tree_type::SynTree, parse_tree_type::SynTreeNode, parser_types::SynTreeFlavor},
+    parser::{
+        parse_tree_type::{SynTree, TreeConstruct},
+        parser_types::{SynTreeFlavor, TreeBuilder},
+    },
     ParseTreeType, Token,
 };
 use syntree::{Builder, Tree};
@@ -51,22 +54,24 @@ impl Display for LRParseTree<'_> {
 // This can possibly result in a stack overflow if the parse tree is too deep. However, since the
 // parse tree is built during parsing, it is unlikely that the parse tree is too deep.
 // Otherwise, we need to convert this function to an iterative function.
-pub(crate) fn build_tree<'a, T: SynTreeNode<'a>>(
-    builder: &mut Builder<T, SynTreeFlavor>,
+pub(crate) fn build_tree<'a, T: TreeConstruct<'a>>(
+    builder: &mut T,
     parse_tree: LRParseTree<'a>,
-) -> Result<(), syntree::Error> {
+) -> Result<(), T::Error> {
     match parse_tree {
         LRParseTree::Terminal(token) => {
-            builder.token(T::from_token(&token), token.location.len())?;
+            builder.add_token(&token)?;
         }
         LRParseTree::NonTerminal(name, children) => {
-            builder.open(T::from_non_terminal(name))?;
             if let Some(children) = children {
+                builder.open_non_terminal(name, Some(children.len()))?;
                 for child in children {
                     build_tree::<T>(builder, child)?;
                 }
+            } else {
+                builder.open_non_terminal(name, Some(0))?;
             }
-            builder.close()?;
+            builder.close_non_terminal()?;
         }
     };
     Ok(())
@@ -80,7 +85,7 @@ impl<'t> TryFrom<LRParseTree<'t>> for Tree<SynTree, SynTreeFlavor> {
 
     fn try_from(parse_tree: LRParseTree<'t>) -> Result<Self, Self::Error> {
         let mut builder = Builder::new_with();
-        build_tree::<SynTree>(&mut builder, parse_tree)?;
+        build_tree::<TreeBuilder<SynTree>>(&mut builder, parse_tree)?;
         builder.build()
     }
 }

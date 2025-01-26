@@ -173,7 +173,6 @@ impl std::fmt::Display for UserTraitData<'_> {
             ))?;
         }
         f.write_fmt(ume::ume! {
-            use parol_runtime::parser::parse_tree_type::{NonTerminalEnum, TerminalEnum};
             use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
             use parol_runtime::{ParserError, Result, Token};
         })?;
