@@ -1504,7 +1504,7 @@ where
 #[allow(dead_code)]
 pub fn parse_into<'t, T: TreeConstruct<'t>>(
     input: &'t str,
-    mut tree_builder: T,
+    tree_builder: T,
     file_name: impl AsRef<Path>,
     user_actions: &mut CalcGrammar<'t>,
 ) -> Result<T::Tree, ParolError>

@@ -389,7 +389,7 @@ impl std::fmt::Display for ParserData<'_> {
             #[allow(dead_code)]
             pub fn parse_into<'t, T: TreeConstruct<'t>>(
                 input: &'t str,
-                mut tree_builder: T,
+                tree_builder: T,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
             ) -> Result<T::Tree, ParolError> where ParolError: From<T::Error> {
@@ -541,7 +541,7 @@ impl std::fmt::Display for LRParserData<'_> {
             #[allow(dead_code)]
             pub fn parse_into<'t, T: TreeConstruct<'t>>(
                 input: &'t str,
-                mut tree_builder: T,
+                tree_builder: T,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
             ) -> Result<T::Tree, ParolError> where ParolError: From<T::Error> {

@@ -95,45 +95,6 @@ impl Display for SynTree {
     }
 }
 
-/// The type of a node when the typed syntree option is enabled.
-pub type Node<'a, T, Nt> = syntree::Node<'a, SynTree2<T, Nt>, SynTreeFlavor>;
-
-/// An extension trait that provides methods for nodes.
-pub trait NodeExt<T: Copy, Nt: Copy> {
-    /// Finds a child node in the node from the cursor position (with skipping invalid children), and returns the new cursor position and the child node if found.
-    fn find_child(&self, cursor: usize, child: NodeKind<T, Nt>) -> Option<(usize, Node<T, Nt>)>;
-}
-
-impl<'a, T, Nt> NodeExt<T, Nt> for Node<'a, T, Nt>
-where
-    T: Copy + TerminalEnum + PartialEq,
-    Nt: Copy + PartialEq,
-{
-    fn find_child(
-        &self,
-        cursor: usize,
-        child: NodeKind<T, Nt>,
-    ) -> Option<(usize, Node<'a, T, Nt>)> {
-        for (i, node) in self.children().enumerate().skip(cursor) {
-            if node.value().kind() == child {
-                return Some((i + 1, node));
-            }
-            match node.value().kind() {
-                NodeKind::Terminal(t) => {
-                    if t.is_builtin_whitespace() {
-                        continue;
-                    }
-                    if t.is_builtin_new_line() {
-                        continue;
-                    }
-                }
-                NodeKind::NonTerminal(_) => {}
-            }
-        }
-        None
-    }
-}
-
 /// What kinds of children are expected for a node kind.
 #[derive(Debug, Clone, Copy)]
 pub enum ExpectedChildrenKinds<T, Nt>
@@ -142,14 +103,14 @@ where
     Nt: 'static,
 {
     /// A node kind that expects one of the given child kinds. Corresponds to enum ast types.
-    OneOf(&'static [NodeKind<T, Nt>]),
+    OneOf(&'static [ChildKind<T, Nt>]),
     /// A node kind that expects a sequence of child kinds. Corresponds to struct ast types.
-    Sequence(&'static [NodeKind<T, Nt>]),
+    Sequence(&'static [ChildKind<T, Nt>]),
 }
 
 impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
     /// Asserts that the node is a valid with this expected children.
-    pub fn assert_node_syntax(&self, node: Node<T, Nt>) -> bool
+    pub fn assert_node_syntax<'a>(&self, node: impl Node<'a, T, Nt>) -> bool
     where
         T: Copy + PartialEq + TerminalEnum,
         Nt: Copy + PartialEq,
@@ -157,7 +118,7 @@ impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
         match self {
             ExpectedChildrenKinds::OneOf(children) => {
                 for child in *children {
-                    if *child == node.value().kind() {
+                    if child.kind == node.kind() {
                         return true;
                     }
                 }
@@ -166,7 +127,7 @@ impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
             ExpectedChildrenKinds::Sequence(children) => {
                 let mut cursor = 0;
                 for child in *children {
-                    if let Some((new_cursor, _)) = node.find_child(cursor, *child) {
+                    if let Ok(Some((new_cursor, _))) = node.find_child(cursor, child.kind) {
                         cursor = new_cursor;
                     } else {
                         return false;
@@ -176,42 +137,6 @@ impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
             }
         }
     }
-}
-
-/// A trait that a node kind must implement that returns the expected child nodes for this node kind for grammar assertions.
-pub trait ExpectedChildren<T, Nt> {
-    /// Expected child nodes for this node kind.
-    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt>;
-}
-
-/// The type of a child node.
-pub enum ChildKind<T, Nt> {
-    /// A terminal node.
-    Terminal(T),
-    /// A non-terminal node.
-    NonTerminal(Nt),
-    /// A vector of non-terminal nodes.
-    Vec(Nt),
-    /// An optional non-terminal node.
-    Optional(Nt),
-}
-
-/// A trait that a terminal enum must implement.
-pub trait TerminalEnum: Copy + std::fmt::Debug {
-    /// Creates a terminal from an index.
-    fn from_terminal_index(index: u16) -> Self;
-
-    /// Returns true if the terminal is a parol's built-in (not user defined) new line token.
-    fn is_builtin_new_line(&self) -> bool;
-
-    /// Returns true if the terminal is a parol's built-in (not user defined) whitespace token.
-    fn is_builtin_whitespace(&self) -> bool;
-}
-
-/// A trait that a non-terminal enum must implement.
-pub trait NonTerminalEnum: Copy + std::fmt::Debug {
-    /// Creates a non-terminal from a name.
-    fn from_non_terminal_name(name: &str) -> Self;
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -302,44 +227,6 @@ where
     }
 }
 
-/// Factory trait for creating custom syntree nodes.
-pub trait AstNode<'t>: Copy {
-    /// Creates a syntree node from a non-terminal name.
-    fn from_non_terminal(name: &'static str) -> Self;
-    /// Creates a syntree node from a token.
-    fn from_token(token: &Token<'t>) -> Self;
-}
-
-impl<'t> AstNode<'t> for SynTree {
-    fn from_token(token: &Token<'t>) -> Self {
-        SynTree::Terminal(token.into())
-    }
-    fn from_non_terminal(name: &'static str) -> Self {
-        SynTree::NonTerminal(name)
-    }
-}
-
-impl<'t, T, Nt> AstNode<'t> for SynTree2<T, Nt>
-where
-    T: TerminalEnum,
-    Nt: NonTerminalEnum,
-{
-    fn from_token(token: &Token<'t>) -> Self {
-        SynTree2::Terminal(SynTreeTerminal {
-            kind: T::from_terminal_index(token.token_type),
-            data: TerminalData::Input(InputSpan {
-                start: token.location.start,
-                end: token.location.end,
-            }),
-        })
-    }
-    fn from_non_terminal(name: &'static str) -> Self {
-        SynTree2::NonTerminal(SynTreeNonTerminal {
-            kind: Nt::from_non_terminal_name(name),
-        })
-    }
-}
-
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 /// The kind of a node.
 pub enum NodeKind<T, Nt> {
@@ -349,27 +236,95 @@ pub enum NodeKind<T, Nt> {
     NonTerminal(Nt),
 }
 
-impl<T, Nt> ExpectedChildren<T, Nt> for NodeKind<T, Nt>
-where
-    Nt: ExpectedChildren<T, Nt>,
-{
-    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt> {
-        match self {
-            NodeKind::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
-            NodeKind::NonTerminal(nt) => nt.expected_children(),
-        }
-    }
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+/// The kind of a node.
+pub struct ChildKind<T, Nt> {
+    /// The attribute of the child kind.
+    pub attribute: ChildAttribute,
+    /// The kind of the child.
+    pub kind: NodeKind<T, Nt>,
 }
 
-impl<T, Nt> ExpectedChildren<T, Nt> for SynTree2<T, Nt>
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+/// The attribute of a child kind.
+pub enum ChildAttribute {
+    /// A normal child kind.
+    Normal,
+    /// An optional child kind.
+    Optional,
+    /// A vector child kind.
+    Vec,
+}
+
+/// An trait that provides methods for nodes.
+pub trait Node<'a, T: Copy + 'static, Nt: Copy + 'static>: Sized {
+    /// The kind of the node.
+    fn kind(&self) -> NodeKind<T, Nt>;
+
+    /// Finds a child node in the node from the cursor position (with skipping invalid children), and returns the new cursor position and the child node if found.
+    fn find_child(
+        &self,
+        cursor: usize,
+        child: NodeKind<T, Nt>,
+    ) -> Result<Option<(usize, Self)>, Self>;
+
+    /// Finds a vector child node in the node from the cursor position (with skipping invalid children), and returns the new cursor position and the child node if found.
+    fn find_children(
+        &self,
+        cursor: usize,
+        child: NodeKind<T, Nt>,
+    ) -> impl Iterator<Item = (usize, Self)> + 'a;
+}
+
+impl<'a, T, Nt> Node<'a, T, Nt> for syntree::Node<'a, SynTree2<T, Nt>, SynTreeFlavor>
 where
-    Nt: ExpectedChildren<T, Nt>,
+    T: Copy + TerminalEnum + PartialEq + 'static,
+    Nt: Copy + PartialEq + 'static,
 {
-    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt> {
-        match self {
-            SynTree2::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
-            SynTree2::NonTerminal(nt) => nt.kind.expected_children(),
+    fn kind(&self) -> NodeKind<T, Nt> {
+        self.value().kind()
+    }
+
+    fn find_child(
+        &self,
+        cursor: usize,
+        child: NodeKind<T, Nt>,
+    ) -> Result<Option<(usize, Self)>, Self> {
+        for (i, node) in self.children().enumerate().skip(cursor) {
+            if node.value().kind() == child {
+                return Ok(Some((i + 1, node)));
+            }
+            match node.value().kind() {
+                NodeKind::Terminal(t) => {
+                    if t.is_builtin_whitespace() {
+                        continue;
+                    }
+                    if t.is_builtin_new_line() {
+                        continue;
+                    }
+                }
+                NodeKind::NonTerminal(_) => {}
+            }
+            return Err(node);
         }
+        Ok(None)
+    }
+
+    fn find_children(
+        &self,
+        cursor: usize,
+        child: NodeKind<T, Nt>,
+    ) -> impl Iterator<Item = (usize, Self)> + 'a {
+        self.children()
+            .enumerate()
+            .skip(cursor)
+            .filter_map(move |(i, node)| {
+                if node.value().kind() == child {
+                    Some((i + 1, node))
+                } else {
+                    None
+                }
+            })
     }
 }
 
@@ -422,5 +377,91 @@ impl<'t, T: AstNode<'t>> TreeConstruct<'t> for TreeBuilder<T> {
 
     fn build(self) -> Result<Self::Tree, Self::Error> {
         self.build()
+    }
+}
+
+/// A trait that a node kind must implement that returns the expected child nodes for this node kind for grammar assertions.
+pub trait ExpectedChildren<T, Nt> {
+    /// Expected child nodes for this node kind.
+    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt>;
+}
+
+/// A trait that a terminal enum must implement.
+pub trait TerminalEnum: Copy + std::fmt::Debug {
+    /// Creates a terminal from an index.
+    fn from_terminal_index(index: u16) -> Self;
+
+    /// Returns true if the terminal is a parol's built-in (not user defined) new line token.
+    fn is_builtin_new_line(&self) -> bool;
+
+    /// Returns true if the terminal is a parol's built-in (not user defined) whitespace token.
+    fn is_builtin_whitespace(&self) -> bool;
+}
+
+/// A trait that a non-terminal enum must implement.
+pub trait NonTerminalEnum: Copy + std::fmt::Debug {
+    /// Creates a non-terminal from a name.
+    fn from_non_terminal_name(name: &str) -> Self;
+}
+
+/// Factory trait for creating custom syntree nodes.
+pub trait AstNode<'t>: Copy {
+    /// Creates a syntree node from a non-terminal name.
+    fn from_non_terminal(name: &'static str) -> Self;
+    /// Creates a syntree node from a token.
+    fn from_token(token: &Token<'t>) -> Self;
+}
+
+impl<'t> AstNode<'t> for SynTree {
+    fn from_token(token: &Token<'t>) -> Self {
+        SynTree::Terminal(token.into())
+    }
+    fn from_non_terminal(name: &'static str) -> Self {
+        SynTree::NonTerminal(name)
+    }
+}
+
+impl<'t, T, Nt> AstNode<'t> for SynTree2<T, Nt>
+where
+    T: TerminalEnum,
+    Nt: NonTerminalEnum,
+{
+    fn from_token(token: &Token<'t>) -> Self {
+        SynTree2::Terminal(SynTreeTerminal {
+            kind: T::from_terminal_index(token.token_type),
+            data: TerminalData::Input(InputSpan {
+                start: token.location.start,
+                end: token.location.end,
+            }),
+        })
+    }
+    fn from_non_terminal(name: &'static str) -> Self {
+        SynTree2::NonTerminal(SynTreeNonTerminal {
+            kind: Nt::from_non_terminal_name(name),
+        })
+    }
+}
+
+impl<T, Nt> ExpectedChildren<T, Nt> for NodeKind<T, Nt>
+where
+    Nt: ExpectedChildren<T, Nt>,
+{
+    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt> {
+        match self {
+            NodeKind::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
+            NodeKind::NonTerminal(nt) => nt.expected_children(),
+        }
+    }
+}
+
+impl<T, Nt> ExpectedChildren<T, Nt> for SynTree2<T, Nt>
+where
+    Nt: ExpectedChildren<T, Nt>,
+{
+    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt> {
+        match self {
+            SynTree2::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
+            SynTree2::NonTerminal(nt) => nt.kind.expected_children(),
+        }
     }
 }

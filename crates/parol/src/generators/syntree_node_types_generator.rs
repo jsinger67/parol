@@ -1,13 +1,12 @@
 use std::io::Write;
 
 use crate::generators::template_data::NameToNonTerminalVariant;
-use crate::grammar::ProductionAttribute;
 use crate::utils::str_iter::IteratorExt;
-use crate::{StrVec, Terminal};
+use crate::{StrVec, SymbolAttribute, Terminal};
 
 use super::grammar_type_generator::GrammarTypeInfo;
 use super::template_data::{ChildKind, DisplayArm, NumToTerminalVariant};
-use super::{generate_terminal_name, GrammarConfig};
+use super::{generate_terminal_name, GrammarConfig, NamingHelper};
 
 /// Syntree node types generator.
 pub struct SyntreeNodeTypesGenerator<'a> {
@@ -32,7 +31,7 @@ impl<'a> SyntreeNodeTypesGenerator<'a> {
 impl SyntreeNodeTypesGenerator<'_> {
     fn generate_imports(&self, f: &mut impl Write) -> anyhow::Result<()> {
         f.write_fmt(ume::ume! {
-            use parol_runtime::parser::parse_tree_type::{NodeKind, ExpectedChildren, TerminalEnum, NonTerminalEnum, ExpectedChildrenKinds};
+            use parol_runtime::parser::parse_tree_type::{NodeKind, ExpectedChildren, TerminalEnum, NonTerminalEnum, ExpectedChildrenKinds, ChildAttribute, ChildKind, Node};
         })?;
         Ok(())
     }
@@ -195,7 +194,10 @@ impl SyntreeNodeTypesGenerator<'_> {
 
         f.write_fmt(ume::ume! {
             Self::Root => ExpectedChildrenKinds::Sequence(&[
-                NodeKind::NonTerminal(NonTerminalKind::#name),
+                ChildKind {
+                    kind: NodeKind::NonTerminal(NonTerminalKind::#name),
+                    attribute: ChildAttribute::Normal,
+                },
             ]),
         })?;
 
@@ -209,47 +211,119 @@ impl SyntreeNodeTypesGenerator<'_> {
         f: &mut impl Write,
         pr: &str,
     ) -> anyhow::Result<()> {
-        let alts = self.grammar_config.cfg.matching_productions(pr);
-        let is_enum;
-        let mut children: Vec<ChildKind> = Vec::new();
-        if alts.len() == 2 {
-            match (alts[0].1.get_attribute(), alts[1].1.get_attribute()) {
-                (ProductionAttribute::CollectionStart, ProductionAttribute::AddToCollection) => {
-                    children.extend(alts[1].1.get_r().iter().filter_map(|s| self.child_kind(s)));
-                    is_enum = false;
-                }
-                (ProductionAttribute::AddToCollection, ProductionAttribute::CollectionStart) => {
-                    children.extend(alts[0].1.get_r().iter().filter_map(|s| self.child_kind(s)));
-                    is_enum = false;
-                }
-                _ => {
-                    is_enum = true;
-                }
-            }
-        } else if alts.is_empty() {
-            panic!("Not supported!");
-        } else if alts.len() == 1 {
-            children.extend(alts[0].1.get_r().iter().filter_map(|s| self.child_kind(s)));
-            is_enum = false;
-        } else {
-            children.extend(
-                alts.iter()
-                    .filter_map(|(_, p)| p.get_r().first().and_then(|s| self.child_kind(s))),
-            );
-            is_enum = true;
-        }
+        let child_kinds = self.generate_child_kinds(pr);
 
-        let kind = if is_enum { "OneOf" } else { "Sequence" };
+        let kind = if child_kinds.is_enum {
+            "OneOf"
+        } else {
+            "Sequence"
+        };
         f.write_fmt(format_args!(
             "Self::{} => ExpectedChildrenKinds::{}(&[{}]),",
             pr,
             kind,
-            children
-                .iter()
+            child_kinds
+                .children
                 .map(|child| format!("{}", child))
                 .collect::<Vec<_>>()
                 .join(", ")
         ))?;
+        Ok(())
+    }
+
+    fn generate_node_wrappers(&self, f: &mut impl Write) -> anyhow::Result<()> {
+        for pr in self.grammar_config.cfg.get_non_terminal_set() {
+            self.generate_node_wrapper(f, &pr)?;
+        }
+        Ok(())
+    }
+
+    fn generate_node_wrapper(&self, f: &mut impl Write, pr: &str) -> anyhow::Result<()> {
+        let child_kinds = self.generate_child_kinds(pr);
+
+        if child_kinds.is_enum {
+            self.generate_ast_enum(f, pr, child_kinds)?;
+        } else {
+            f.write_fmt(ume::ume! {
+                #[derive(Debug, Clone, Copy, PartialEq)]
+                pub struct #pr<T>(T);
+            })?;
+        }
+
+        f.write_fmt(ume::ume! {
+            impl<'a, N> #pr<N> where N: Node<'a, TerminalKind, NonTerminalKind>
+        })?;
+
+        write!(f, "{{")?;
+
+        let child_kinds = self.generate_child_kinds(pr);
+
+        if child_kinds.is_enum {
+            self.generate_enum_new_impl(f, pr, child_kinds)?;
+        } else {
+            f.write_fmt(ume::ume! {
+                fn new(node: N) -> Self {
+                    #pr(node)
+                }
+            })?;
+
+            for child_kind in child_kinds.children {
+                self.generate_find_methods_sequence_single(f, pr, child_kind)?;
+            }
+        }
+
+        write!(f, "}}")?;
+
+        Ok(())
+    }
+
+    fn generate_ast_enum(
+        &self,
+        f: &mut impl Write,
+        pr: &str,
+        child_kinds: ChildKinds,
+    ) -> anyhow::Result<()> {
+        f.write_fmt(ume::ume! {
+            #[derive(Debug, Clone, Copy, PartialEq)]
+            pub enum #pr<T>
+        })?;
+        write!(f, "{{")?;
+        for child_kind in child_kinds.children {
+            let variant = child_kind.print_ast_enum_variant();
+            write!(f, "{}", variant)?;
+        }
+        write!(f, "Invalid(T),")?;
+        write!(f, "}}")?;
+        Ok(())
+    }
+
+    fn generate_enum_new_impl(
+        &self,
+        f: &mut impl Write,
+        pr: &str,
+        child_kinds: ChildKinds,
+    ) -> anyhow::Result<()> {
+        f.write_fmt(ume::ume! {
+            fn new(node: N) -> Self {
+                todo!()
+            }
+        })?;
+        Ok(())
+    }
+
+    fn generate_find_methods_sequence_single(
+        &self,
+        f: &mut impl Write,
+        pr: &str,
+        child_kind: ChildKind,
+    ) -> anyhow::Result<()> {
+        let method_name = child_kind.print_find_method_name();
+        let child_kind_name = child_kind.print_node_kind();
+        f.write_fmt(ume::ume! {
+            fn #method_name(&self, cursor: usize) -> Result<Option<(usize, #pr<N>)>, N> {
+                self.0.find_child(cursor, #child_kind_name).map(|option| option.map(|(i, node)| (i, #pr::new(node))))
+            }
+        })?;
         Ok(())
     }
 
@@ -259,15 +333,51 @@ impl SyntreeNodeTypesGenerator<'_> {
         self.generate_ast_enum_impl(f)?;
         self.generate_display_impl(f)?;
         self.generate_non_terminal_node_types_impl(f)?;
+        self.generate_node_wrappers(f)?;
         Ok(())
+    }
+
+    fn generate_child_kinds(&self, pr: &str) -> ChildKinds {
+        let alts = self.grammar_config.cfg.matching_productions(pr);
+        if alts.is_empty() {
+            panic!("Not supported!");
+        } else if alts.len() == 1 {
+            ChildKinds {
+                is_enum: false,
+                children: Box::new(alts[0].1.get_r().iter().filter_map(|s| self.child_kind(s)))
+                    as Box<dyn Iterator<Item = ChildKind>>,
+            }
+        } else {
+            ChildKinds {
+                is_enum: true,
+                children: Box::new(
+                    alts.into_iter()
+                        .filter_map(|(_, p)| p.get_r().first().and_then(|s| self.child_kind(s))),
+                ),
+            }
+        }
     }
 
     fn child_kind(&self, symbol: &crate::Symbol) -> Option<ChildKind> {
         match symbol {
-            crate::Symbol::N(_, _, _) => Some(ChildKind::NonTerminal(symbol.to_string())),
-            crate::Symbol::T(Terminal::Trm(terminal, _, _, _, _, _)) => Some(ChildKind::Terminal(
-                generate_terminal_name(terminal, None, &self.grammar_config.cfg),
-            )),
+            crate::Symbol::N(s, attrs, _) => match attrs {
+                SymbolAttribute::Option => Some(ChildKind::OptionalNonTerminal(s.clone())),
+                SymbolAttribute::RepetitionAnchor => Some(ChildKind::VecNonTerminal(s.clone())),
+                _ => Some(ChildKind::NonTerminal(s.clone())),
+            },
+            crate::Symbol::T(Terminal::Trm(terminal, _, _, attrs, _, _)) => match attrs {
+                SymbolAttribute::Option => Some(ChildKind::OptionalTerminal(
+                    generate_terminal_name(terminal, None, &self.grammar_config.cfg),
+                )),
+                SymbolAttribute::RepetitionAnchor => Some(ChildKind::VecTerminal(
+                    generate_terminal_name(terminal, None, &self.grammar_config.cfg),
+                )),
+                _ => Some(ChildKind::Terminal(generate_terminal_name(
+                    terminal,
+                    None,
+                    &self.grammar_config.cfg,
+                ))),
+            },
             crate::Symbol::T(Terminal::Eps) => None,
             crate::Symbol::T(Terminal::End) => None,
             crate::Symbol::S(_) => None,
@@ -275,4 +385,9 @@ impl SyntreeNodeTypesGenerator<'_> {
             crate::Symbol::Pop => None,
         }
     }
+}
+
+struct ChildKinds<'a> {
+    is_enum: bool,
+    children: Box<dyn Iterator<Item = ChildKind> + 'a>,
 }
