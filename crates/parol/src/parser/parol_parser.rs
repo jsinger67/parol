@@ -5,8 +5,9 @@
 // ---------------------------------------------------------
 
 use parol_runtime::once_cell::sync::Lazy;
+use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
-use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
@@ -1173,6 +1174,31 @@ where
     // Initialize wrapper
     let mut user_actions = ParolGrammarAuto::new(user_actions);
     llk_parser.parse(
+        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        &mut user_actions,
+    )
+}
+#[allow(dead_code)]
+pub fn parse_into<'t, T: TreeConstruct<'t>>(
+    input: &'t str,
+    tree_builder: T,
+    file_name: impl AsRef<Path>,
+    user_actions: &mut ParolGrammar<'t>,
+) -> Result<T::Tree, ParolError>
+where
+    ParolError: From<T::Error>,
+{
+    let mut llk_parser = LLKParser::new(
+        21,
+        LOOKAHEAD_AUTOMATA,
+        PRODUCTIONS,
+        TERMINAL_NAMES,
+        NON_TERMINALS,
+    );
+    // Initialize wrapper
+    let mut user_actions = ParolGrammarAuto::new(user_actions);
+    llk_parser.parse_into::<T>(
+        tree_builder,
         TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
         &mut user_actions,
     )
