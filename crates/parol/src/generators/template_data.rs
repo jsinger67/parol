@@ -545,6 +545,45 @@ impl ChildKind {
             }
         }
     }
+
+    pub fn print_enum_new_match_arms(&self) -> String {
+        match self {
+            ChildKind::Terminal(t) | ChildKind::OptionalTerminal(t) | ChildKind::VecTerminal(t) => {
+                format!("NodeKind::Terminal(TerminalKind::{t}) => Self::{t}({t}::new(node)),")
+            }
+            ChildKind::NonTerminal(n)
+            | ChildKind::OptionalNonTerminal(n)
+            | ChildKind::VecNonTerminal(n) => {
+                format!("NodeKind::NonTerminal(NonTerminalKind::{n}) => Self::{n}({n}::new(node)),")
+            }
+        }
+    }
+
+    pub fn print_enum_node_match_arms(&self) -> String {
+        match self {
+            ChildKind::Terminal(t) | ChildKind::OptionalTerminal(t) | ChildKind::VecTerminal(t) => {
+                format!("Self::{t}(node) => node.node(),")
+            }
+            ChildKind::NonTerminal(n)
+            | ChildKind::OptionalNonTerminal(n)
+            | ChildKind::VecNonTerminal(n) => {
+                format!("Self::{n}(node) => node.node(),")
+            }
+        }
+    }
+
+    pub fn print_enum_node_mut_match_arms(&self) -> String {
+        match self {
+            ChildKind::Terminal(t) | ChildKind::OptionalTerminal(t) | ChildKind::VecTerminal(t) => {
+                format!("Self::{t}(node) => node.node_mut(),")
+            }
+            ChildKind::NonTerminal(n)
+            | ChildKind::OptionalNonTerminal(n)
+            | ChildKind::VecNonTerminal(n) => {
+                format!("Self::{n}(node) => node.node_mut(),")
+            }
+        }
+    }
 }
 
 impl std::fmt::Display for ChildKind {

@@ -6,7 +6,7 @@ use crate::{StrVec, SymbolAttribute, Terminal};
 
 use super::grammar_type_generator::GrammarTypeInfo;
 use super::template_data::{ChildKind, DisplayArm, NumToTerminalVariant};
-use super::{generate_terminal_name, GrammarConfig, NamingHelper};
+use super::{generate_terminal_name, GrammarConfig};
 
 /// Syntree node types generator.
 pub struct SyntreeNodeTypesGenerator<'a> {
@@ -218,16 +218,14 @@ impl SyntreeNodeTypesGenerator<'_> {
         } else {
             "Sequence"
         };
-        f.write_fmt(format_args!(
-            "Self::{} => ExpectedChildrenKinds::{}(&[{}]),",
-            pr,
-            kind,
-            child_kinds
-                .children
-                .map(|child| format!("{}", child))
-                .collect::<Vec<_>>()
-                .join(", ")
-        ))?;
+        let children = child_kinds
+            .children
+            .iter()
+            .map(|child| format!("{},", child))
+            .into_str_iter();
+        f.write_fmt(ume::ume! {
+            Self::#pr => ExpectedChildrenKinds::#kind(&[#children]),
+        })?;
         Ok(())
     }
 
@@ -264,6 +262,14 @@ impl SyntreeNodeTypesGenerator<'_> {
             f.write_fmt(ume::ume! {
                 fn new(node: N) -> Self {
                     #pr(node)
+                }
+
+                fn node(&self) -> &N {
+                    &self.0
+                }
+
+                fn node_mut(&mut self) -> &mut N {
+                    &mut self.0
                 }
             })?;
 
@@ -303,9 +309,41 @@ impl SyntreeNodeTypesGenerator<'_> {
         pr: &str,
         child_kinds: ChildKinds,
     ) -> anyhow::Result<()> {
+        let variants = child_kinds
+            .children
+            .iter()
+            .map(|child| child.print_enum_new_match_arms())
+            .into_str_iter();
+        let node_match_arms = child_kinds
+            .children
+            .iter()
+            .map(|child| child.print_enum_node_match_arms())
+            .into_str_iter();
+        let node_match_arms_mut = child_kinds
+            .children
+            .iter()
+            .map(|child| child.print_enum_node_mut_match_arms())
+            .into_str_iter();
         f.write_fmt(ume::ume! {
             fn new(node: N) -> Self {
-                todo!()
+                match node.kind() {
+                    #variants
+                    _ => #pr::Invalid(node),
+                }
+            }
+
+            fn node(&self) -> &N {
+                match self {
+                    #node_match_arms
+                    Self::Invalid(node) => node,
+                }
+            }
+
+            fn node_mut(&mut self) -> &mut N {
+                match self {
+                    #node_match_arms_mut
+                    Self::Invalid(node) => node,
+                }
             }
         })?;
         Ok(())
@@ -344,16 +382,20 @@ impl SyntreeNodeTypesGenerator<'_> {
         } else if alts.len() == 1 {
             ChildKinds {
                 is_enum: false,
-                children: Box::new(alts[0].1.get_r().iter().filter_map(|s| self.child_kind(s)))
-                    as Box<dyn Iterator<Item = ChildKind>>,
+                children: alts[0]
+                    .1
+                    .get_r()
+                    .iter()
+                    .filter_map(|s| self.child_kind(s))
+                    .collect(),
             }
         } else {
             ChildKinds {
                 is_enum: true,
-                children: Box::new(
-                    alts.into_iter()
-                        .filter_map(|(_, p)| p.get_r().first().and_then(|s| self.child_kind(s))),
-                ),
+                children: alts
+                    .into_iter()
+                    .filter_map(|(_, p)| p.get_r().first().and_then(|s| self.child_kind(s)))
+                    .collect(),
             }
         }
     }
@@ -387,7 +429,7 @@ impl SyntreeNodeTypesGenerator<'_> {
     }
 }
 
-struct ChildKinds<'a> {
+struct ChildKinds {
     is_enum: bool,
-    children: Box<dyn Iterator<Item = ChildKind> + 'a>,
+    children: Vec<ChildKind>,
 }
