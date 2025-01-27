@@ -299,7 +299,7 @@ impl std::fmt::Display for ParserData<'_> {
             use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-            use parol_runtime::parser::parse_tree_type::SynTreeNode;
+            use parol_runtime::parser::parse_tree_type::TreeConstruct;
             #[allow(unused_imports)]
             use parol_runtime::parser::{
                 Trans, LLKParser, LookaheadDFA, ParseType, Production
@@ -387,11 +387,12 @@ impl std::fmt::Display for ParserData<'_> {
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            pub fn parse_as<'t, T: SynTreeNode<'t>>(
+            pub fn parse_into<'t, T: TreeConstruct<'t>>(
                 input: &'t str,
+                tree_builder: T,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
-            ) -> Result<ParseTree<T>, ParolError> {
+            ) -> Result<T::Tree, ParolError> where ParolError: From<T::Error> {
                 let mut llk_parser = LLKParser::new(
                     #start_symbol_index,
                     LOOKAHEAD_AUTOMATA,
@@ -402,7 +403,7 @@ impl std::fmt::Display for ParserData<'_> {
                 #enable_trimming
                 #recovery
                 #auto_wrapper
-                llk_parser.parse::<T>(TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+                llk_parser.parse_into::<T>(tree_builder, TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
                     #mut_ref_user_actions)
             }
         })
@@ -455,7 +456,7 @@ impl std::fmt::Display for LRParserData<'_> {
             use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-            use parol_runtime::parser::parse_tree_type::SynTreeNode;
+            use parol_runtime::parser::parse_tree_type::TreeConstruct;
             #[allow(unused_imports)]
             use parol_runtime::parser::{Trans, ParseType, Production};
             use parol_runtime::lr_parser::{LRParseTable, LRParser, LRProduction, LR1State, LRAction};
@@ -538,11 +539,12 @@ impl std::fmt::Display for LRParserData<'_> {
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            pub fn parse_as<'t, T: SynTreeNode<'t>>(
+            pub fn parse_into<'t, T: TreeConstruct<'t>>(
                 input: &'t str,
+                tree_builder: T,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
-            ) -> Result<ParseTree<T>, ParolError> {
+            ) -> Result<T::Tree, ParolError> where ParolError: From<T::Error> {
                 let mut lr_parser = LRParser::new(
                     #start_symbol_index,
                     &PARSE_TABLE,
@@ -552,7 +554,7 @@ impl std::fmt::Display for LRParserData<'_> {
                 );
                 #enable_trimming
                 #auto_wrapper
-                lr_parser.parse::<T>(TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
+                lr_parser.parse_into::<T>(tree_builder, TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
                     #mut_ref_user_actions)
             }
         })

@@ -8,17 +8,13 @@ use core::str;
 use std::{cell::RefCell, collections::BTreeSet, rc::Rc};
 
 use log::trace;
-use syntree::Tree;
 
 use crate::{
     lr_parser::parse_tree::build_tree,
-    parser::{
-        parse_tree_type::SynTreeNode,
-        parser_types::{SynTreeFlavor, TreeBuilder},
-    },
-    FileSource, LRParseTree, NonTerminalIndex, ParolError, ParseTreeStack, ParseTreeType,
-    ParserError, ProductionIndex, Result, SyntaxError, TerminalIndex, TokenStream, TokenVec,
-    UnexpectedToken, UserActionsTrait,
+    parser::{parse_tree_type::TreeConstruct, parser_types::TreeBuilder},
+    FileSource, LRParseTree, NonTerminalIndex, ParolError, ParseTree, ParseTreeStack,
+    ParseTreeType, ParserError, ProductionIndex, Result, SyntaxError, TerminalIndex, TokenStream,
+    TokenVec, UnexpectedToken, UserActionsTrait,
 };
 
 /// The type of the index of a LR action in the parse table's actions array.
@@ -322,14 +318,27 @@ impl<'t> LRParser<'t> {
             })
     }
 
-    ///
-    /// Parses the input text.
-    ///
-    pub fn parse<'u, T: SynTreeNode<'t>>(
+    /// Parses the input text to a parse tree using the default tree builder.
+    pub fn parse<'u>(
         &mut self,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<Tree<T, SynTreeFlavor>> {
+    ) -> Result<ParseTree> {
+        self.parse_into(TreeBuilder::new_with(), stream, user_actions)
+    }
+
+    ///
+    /// Parses the input text.
+    ///
+    pub fn parse_into<'u, T: TreeConstruct<'t>>(
+        &mut self,
+        mut tree_builder: T,
+        stream: TokenStream<'t>,
+        user_actions: &'u mut dyn UserActionsTrait<'t>,
+    ) -> Result<T::Tree>
+    where
+        ParolError: From<T::Error>,
+    {
         let stream = Rc::new(RefCell::new(stream));
 
         // Initialize the parse stack and the parse tree stack.
@@ -428,7 +437,7 @@ impl<'t> LRParser<'t> {
         }
         let parse_tree = if self.trim_parse_tree {
             // Return an empty parse tree
-            TreeBuilder::<T>::new_with().build()?
+            tree_builder.build()?
         } else {
             // The parse tree stack should contain only one element at this point
             // Handle additional tokens after the last token relevant for the grammar
@@ -437,9 +446,8 @@ impl<'t> LRParser<'t> {
             // Add a root node to the tree that can receive besides the root symbol all other symbols
             // of the parse tree, e.g. comments, whitespace, etc.
             let parse_tree = LRParseTree::NonTerminal("", Some(self.parse_tree_stack.pop_all()));
-            let mut builder = TreeBuilder::<T>::new_with();
-            build_tree::<T>(&mut builder, parse_tree)?;
-            builder.build()?
+            build_tree::<T>(&mut tree_builder, parse_tree)?;
+            tree_builder.build()?
         };
         Ok(parse_tree)
     }
