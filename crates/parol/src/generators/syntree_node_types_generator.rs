@@ -246,6 +246,7 @@ impl SyntreeNodeTypesGenerator<'_> {
             ChildKindsKind::OneOf => self.generate_ast_enum(f, pr, child_kinds)?,
             ChildKindsKind::Sequence | ChildKindsKind::Recursion | ChildKindsKind::Option => {
                 f.write_fmt(ume::ume! {
+                    #[allow(dead_code)]
                     #[derive(Debug, Clone, Copy, PartialEq)]
                     pub struct #pr<T>(T);
                 })?;
@@ -253,6 +254,7 @@ impl SyntreeNodeTypesGenerator<'_> {
         }
 
         f.write_fmt(ume::ume! {
+            #[allow(dead_code)]
             impl<'a, N> #pr<N> where N: Node<'a, TerminalKind, NonTerminalKind>
         })?;
 
@@ -299,6 +301,7 @@ impl SyntreeNodeTypesGenerator<'_> {
         child_kinds: ChildKinds,
     ) -> anyhow::Result<()> {
         f.write_fmt(ume::ume! {
+            #[allow(dead_code)]
             #[derive(Debug, Clone, Copy, PartialEq)]
             pub enum #pr<T>
         })?;
@@ -465,6 +468,8 @@ impl SyntreeNodeTypesGenerator<'_> {
 
     fn child_kind(&self, symbol: &crate::Symbol) -> Option<ChildKind> {
         match symbol {
+            crate::Symbol::N(_, SymbolAttribute::Clipped, _) => None,
+            crate::Symbol::T(Terminal::Trm(_, _, _, SymbolAttribute::Clipped, _, _)) => None,
             crate::Symbol::N(s, attrs, _) => match attrs {
                 SymbolAttribute::Option => Some(ChildKind::OptionalNonTerminal(s.clone())),
                 SymbolAttribute::RepetitionAnchor => Some(ChildKind::VecNonTerminal(s.clone())),

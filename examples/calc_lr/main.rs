@@ -4,6 +4,7 @@ mod assign_operator;
 mod binary_operator;
 mod calc_grammar;
 mod calc_grammar_trait;
+mod calc_nodes;
 mod calc_parser;
 mod errors;
 
