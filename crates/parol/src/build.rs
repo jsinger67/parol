@@ -184,7 +184,7 @@ pub struct Builder {
     /// Output file for the generated actions files.
     actions_output_file: Option<PathBuf>,
     /// The output file for the generated syntree node wrappers
-    syntree_node_wrappers_output_file: Option<PathBuf>,
+    typed_nodes_output_file: Option<PathBuf>,
     pub(crate) user_type_name: String,
     pub(crate) module_name: String,
     cargo_integration: bool,
@@ -201,7 +201,7 @@ pub struct Builder {
     /// Generate range information for AST types
     range: bool,
     /// Generate typed syntree node wrappers
-    syntree_node_wrappers: bool,
+    typed_nodes: bool,
     /// Inner attributes to insert at the top of the generated trait source.
     inner_attributes: Vec<InnerAttributes>,
     /// Enables trimming of the parse tree during parsing.
@@ -240,7 +240,7 @@ impl Builder {
         builder
             .parser_output_file("parser.rs")
             .actions_output_file("grammar_trait.rs")
-            .syntree_node_wrappers_output_file("syntree_node.rs")
+            .typed_nodes_output_file("syntree_node.rs")
             .expanded_grammar_output_file("grammar-exp.par");
         // Cargo integration should already be enabled (because we are a build script)
         assert!(builder.cargo_integration);
@@ -272,7 +272,7 @@ impl Builder {
             cargo_integration: is_build_script(),
             debug_verbose: false,
             range: false,
-            syntree_node_wrappers: false,
+            typed_nodes: false,
             max_lookahead: DEFAULT_MAX_LOOKAHEAD,
             module_name: String::from(DEFAULT_MODULE_NAME),
             user_type_name: String::from(DEFAULT_USER_TYPE_NAME),
@@ -280,7 +280,7 @@ impl Builder {
             // The default is /dev/null (`None`)
             parser_output_file: None,
             actions_output_file: None,
-            syntree_node_wrappers_output_file: None,
+            typed_nodes_output_file: None,
             expanded_grammar_output_file: None,
             minimize_boxed_types: false,
             inner_attributes: Vec::new(),
@@ -332,8 +332,8 @@ impl Builder {
     /// Set the output location for the generated syntree node wrappers.
     ///
     /// The default location is "$OUT_DIR/syntree.rs".
-    pub fn syntree_node_wrappers_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
-        self.syntree_node_wrappers_output_file = Some(self.resolve_output_path(p));
+    pub fn typed_nodes_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
+        self.typed_nodes_output_file = Some(self.resolve_output_path(p));
         self
     }
     /// Explicitly enable/disable cargo integration.
@@ -391,9 +391,9 @@ impl Builder {
         self.range = true;
         self
     }
-    /// Generate typed syntree node wrappers
-    pub fn syntree_node_wrappers(&mut self) -> &mut Self {
-        self.syntree_node_wrappers = true;
+    /// Generate typed node wrappers
+    pub fn typed_nodes(&mut self) -> &mut Self {
+        self.typed_nodes = true;
         self
     }
     /// Inserts the given inner attributes at the top of the generated trait source.
@@ -485,7 +485,7 @@ impl CommonGeneratorConfig for Builder {
     }
 
     fn syntree_node_wrappers(&self) -> bool {
-        self.syntree_node_wrappers
+        self.typed_nodes
     }
 }
 
@@ -689,9 +689,7 @@ impl GrammarGenerator<'_> {
             println!("\nParser source:\n{}", parser_source);
         }
 
-        if let Some(ref syntree_node_wrappers_output_file) =
-            self.builder.syntree_node_wrappers_output_file
-        {
+        if let Some(ref syntree_node_wrappers_output_file) = self.builder.typed_nodes_output_file {
             let mut f = fs::OpenOptions::new()
                 .write(true)
                 .create(true)

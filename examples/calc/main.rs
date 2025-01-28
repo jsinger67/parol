@@ -6,6 +6,7 @@ mod calc_grammar;
 mod calc_grammar_trait;
 mod calc_parser;
 mod errors;
+mod calc_nodes;
 
 use crate::calc_grammar::CalcGrammar;
 use crate::calc_parser::parse;

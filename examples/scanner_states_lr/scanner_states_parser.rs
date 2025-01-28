@@ -352,15 +352,11 @@ pub fn parse<'t, T>(
 where
     T: AsRef<Path>,
 {
-    let mut lr_parser = LRParser::new(5, &PARSE_TABLE, PRODUCTIONS, TERMINAL_NAMES, NON_TERMINALS);
-    lr_parser.trim_parse_tree();
-
-    // Initialize wrapper
-    let mut user_actions = ScannerStatesGrammarAuto::new(user_actions);
-    lr_parser.parse(
-        TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
-        &mut user_actions,
-    )
+    use parol_runtime::parser::parse_tree_type::SynTree;
+    use parol_runtime::parser::parser_types::SynTreeFlavor;
+    use parol_runtime::syntree::Builder;
+    let builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+    parse_into(input, builder, file_name, user_actions)
 }
 #[allow(dead_code)]
 pub fn parse_into<'t, T: TreeConstruct<'t>>(

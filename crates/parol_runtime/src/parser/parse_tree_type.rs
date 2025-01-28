@@ -3,10 +3,7 @@ use crate::{lexer::token::PTToken, ParserError, Token};
 use std::fmt::{Display, Formatter};
 use syntree_layout::Visualize;
 
-use super::{
-    parser_types::{SynTreeFlavor, TreeBuilder},
-    ParseTree,
-};
+use super::{parser_types::TreeBuilder, ParseTree};
 
 ///
 /// The type of the elements in the parse tree.
@@ -106,6 +103,10 @@ where
     OneOf(&'static [ChildKind<T, Nt>]),
     /// A node kind that expects a sequence of child kinds. Corresponds to struct ast types.
     Sequence(&'static [ChildKind<T, Nt>]),
+    /// A node kind that expects a sequence of child kinds or empty. Corresponds to vec ast types.
+    Recursion(&'static [ChildKind<T, Nt>]),
+    /// A node kind that expects a sequence of child kinds or empty. Corresponds to option ast types.
+    Option(&'static [ChildKind<T, Nt>]),
 }
 
 impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
@@ -135,95 +136,25 @@ impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
                 }
                 true
             }
+            ExpectedChildrenKinds::Recursion(children) => {
+                let mut cursor = 0;
+                for child in *children {
+                    if let Ok(Some((new_cursor, _))) = node.find_child(cursor, child.kind) {
+                        cursor = new_cursor;
+                    }
+                }
+                cursor == 0 || cursor == children.len()
+            }
+            ExpectedChildrenKinds::Option(children) => {
+                let mut cursor = 0;
+                for child in *children {
+                    if let Ok(Some((new_cursor, _))) = node.find_child(cursor, child.kind) {
+                        cursor = new_cursor;
+                    }
+                }
+                cursor == 0 || cursor == children.len()
+            }
         }
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-/// A parse tree that is associated with a grammar.
-pub enum SynTree2<T, Nt> {
-    /// A terminal node.
-    Terminal(SynTreeTerminal<T>),
-    /// A non-terminal node.
-    NonTerminal(SynTreeNonTerminal<Nt>),
-}
-
-impl<T: Copy, Nt: Copy> SynTree2<T, Nt> {
-    /// The kind of the node.
-    pub fn kind(&self) -> NodeKind<T, Nt> {
-        match self {
-            SynTree2::Terminal(data) => NodeKind::Terminal(data.kind),
-            SynTree2::NonTerminal(data) => NodeKind::NonTerminal(data.kind),
-        }
-    }
-}
-
-impl<T, Nt> std::fmt::Display for SynTree2<T, Nt>
-where
-    T: std::fmt::Display,
-    Nt: std::fmt::Display,
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            SynTree2::Terminal(t) => write!(f, "{}", t),
-            SynTree2::NonTerminal(n) => write!(f, "{}", n),
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-/// A terminal node.
-pub struct SynTreeTerminal<T> {
-    /// The kind of the terminal.
-    pub kind: T,
-    /// The data of the terminal.
-    pub data: TerminalData,
-}
-
-impl<T> std::fmt::Display for SynTreeTerminal<T>
-where
-    T: std::fmt::Display,
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.kind)
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-/// A span that is only valid within the context of the input text.
-pub struct InputSpan {
-    /// The start of the span.
-    pub start: u32,
-    /// The end of the span.
-    pub end: u32,
-}
-
-#[derive(Debug, Clone, Copy)]
-/// A dynamic token id that provided by the user land.
-pub struct DynamicTokenId(pub u32);
-
-#[derive(Debug, Clone, Copy)]
-/// The data of the terminal.
-pub enum TerminalData {
-    /// A terminal that is associated with an input span.
-    Input(InputSpan),
-    /// A terminal that is associated with a dynamic token id.
-    Dynamic(DynamicTokenId),
-}
-
-#[derive(Debug, Clone, Copy)]
-/// A non-terminal node.
-pub struct SynTreeNonTerminal<Nt> {
-    /// The kind of the non-terminal.
-    pub kind: Nt,
-}
-
-impl<Nt> std::fmt::Display for SynTreeNonTerminal<Nt>
-where
-    Nt: std::fmt::Display,
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.kind)
     }
 }
 
@@ -274,58 +205,6 @@ pub trait Node<'a, T: Copy + 'static, Nt: Copy + 'static>: Sized {
         cursor: usize,
         child: NodeKind<T, Nt>,
     ) -> impl Iterator<Item = (usize, Self)> + 'a;
-}
-
-impl<'a, T, Nt> Node<'a, T, Nt> for syntree::Node<'a, SynTree2<T, Nt>, SynTreeFlavor>
-where
-    T: Copy + TerminalEnum + PartialEq + 'static,
-    Nt: Copy + PartialEq + 'static,
-{
-    fn kind(&self) -> NodeKind<T, Nt> {
-        self.value().kind()
-    }
-
-    fn find_child(
-        &self,
-        cursor: usize,
-        child: NodeKind<T, Nt>,
-    ) -> Result<Option<(usize, Self)>, Self> {
-        for (i, node) in self.children().enumerate().skip(cursor) {
-            if node.value().kind() == child {
-                return Ok(Some((i + 1, node)));
-            }
-            match node.value().kind() {
-                NodeKind::Terminal(t) => {
-                    if t.is_builtin_whitespace() {
-                        continue;
-                    }
-                    if t.is_builtin_new_line() {
-                        continue;
-                    }
-                }
-                NodeKind::NonTerminal(_) => {}
-            }
-            return Err(node);
-        }
-        Ok(None)
-    }
-
-    fn find_children(
-        &self,
-        cursor: usize,
-        child: NodeKind<T, Nt>,
-    ) -> impl Iterator<Item = (usize, Self)> + 'a {
-        self.children()
-            .enumerate()
-            .skip(cursor)
-            .filter_map(move |(i, node)| {
-                if node.value().kind() == child {
-                    Some((i + 1, node))
-                } else {
-                    None
-                }
-            })
-    }
 }
 
 /// A trait that a tree builder must implement.
@@ -421,27 +300,6 @@ impl<'t> AstNode<'t> for SynTree {
     }
 }
 
-impl<'t, T, Nt> AstNode<'t> for SynTree2<T, Nt>
-where
-    T: TerminalEnum,
-    Nt: NonTerminalEnum,
-{
-    fn from_token(token: &Token<'t>) -> Self {
-        SynTree2::Terminal(SynTreeTerminal {
-            kind: T::from_terminal_index(token.token_type),
-            data: TerminalData::Input(InputSpan {
-                start: token.location.start,
-                end: token.location.end,
-            }),
-        })
-    }
-    fn from_non_terminal(name: &'static str) -> Self {
-        SynTree2::NonTerminal(SynTreeNonTerminal {
-            kind: Nt::from_non_terminal_name(name),
-        })
-    }
-}
-
 impl<T, Nt> ExpectedChildren<T, Nt> for NodeKind<T, Nt>
 where
     Nt: ExpectedChildren<T, Nt>,
@@ -450,18 +308,6 @@ where
         match self {
             NodeKind::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
             NodeKind::NonTerminal(nt) => nt.expected_children(),
-        }
-    }
-}
-
-impl<T, Nt> ExpectedChildren<T, Nt> for SynTree2<T, Nt>
-where
-    Nt: ExpectedChildren<T, Nt>,
-{
-    fn expected_children(&self) -> ExpectedChildrenKinds<T, Nt> {
-        match self {
-            SynTree2::Terminal(_) => ExpectedChildrenKinds::Sequence(&[]),
-            SynTree2::NonTerminal(nt) => nt.kind.expected_children(),
         }
     }
 }
