@@ -1,6 +1,8 @@
+use std::collections::BTreeSet;
 use std::io::Write;
 
 use crate::generators::template_data::NameToNonTerminalVariant;
+use crate::grammar::ProductionAttribute;
 use crate::utils::str_iter::IteratorExt;
 use crate::{StrVec, SymbolAttribute, Terminal};
 
@@ -213,10 +215,11 @@ impl SyntreeNodeTypesGenerator<'_> {
     ) -> anyhow::Result<()> {
         let child_kinds = self.generate_child_kinds(pr);
 
-        let kind = if child_kinds.is_enum {
-            "OneOf"
-        } else {
-            "Sequence"
+        let kind = match child_kinds.kind {
+            ChildKindsKind::OneOf => "OneOf",
+            ChildKindsKind::Sequence => "Sequence",
+            ChildKindsKind::Recursion => "Recursion",
+            ChildKindsKind::Option => "Option",
         };
         let children = child_kinds
             .children
@@ -239,13 +242,14 @@ impl SyntreeNodeTypesGenerator<'_> {
     fn generate_node_wrapper(&self, f: &mut impl Write, pr: &str) -> anyhow::Result<()> {
         let child_kinds = self.generate_child_kinds(pr);
 
-        if child_kinds.is_enum {
-            self.generate_ast_enum(f, pr, child_kinds)?;
-        } else {
-            f.write_fmt(ume::ume! {
-                #[derive(Debug, Clone, Copy, PartialEq)]
-                pub struct #pr<T>(T);
-            })?;
+        match child_kinds.kind {
+            ChildKindsKind::OneOf => self.generate_ast_enum(f, pr, child_kinds)?,
+            ChildKindsKind::Sequence | ChildKindsKind::Recursion | ChildKindsKind::Option => {
+                f.write_fmt(ume::ume! {
+                    #[derive(Debug, Clone, Copy, PartialEq)]
+                    pub struct #pr<T>(T);
+                })?;
+            }
         }
 
         f.write_fmt(ume::ume! {
@@ -256,25 +260,30 @@ impl SyntreeNodeTypesGenerator<'_> {
 
         let child_kinds = self.generate_child_kinds(pr);
 
-        if child_kinds.is_enum {
-            self.generate_enum_new_impl(f, pr, child_kinds)?;
-        } else {
-            f.write_fmt(ume::ume! {
-                fn new(node: N) -> Self {
-                    #pr(node)
-                }
+        match child_kinds.kind {
+            ChildKindsKind::OneOf => self.generate_enum_new_impl(f, pr, child_kinds)?,
+            ChildKindsKind::Sequence | ChildKindsKind::Recursion | ChildKindsKind::Option => {
+                f.write_fmt(ume::ume! {
+                    pub fn new(node: N) -> Self {
+                        #pr(node)
+                    }
 
-                fn node(&self) -> &N {
-                    &self.0
-                }
+                    pub fn node(&self) -> &N {
+                        &self.0
+                    }
 
-                fn node_mut(&mut self) -> &mut N {
-                    &mut self.0
-                }
-            })?;
+                    pub fn node_mut(&mut self) -> &mut N {
+                        &mut self.0
+                    }
+                })?;
 
-            for child_kind in child_kinds.children {
-                self.generate_find_methods_sequence_single(f, pr, child_kind)?;
+                // Does not need to generate multiple find methods for the same child kind.
+                let mut exists = BTreeSet::new();
+                for child_kind in child_kinds.children {
+                    if exists.insert(child_kind.print_find_method_name()) {
+                        self.generate_find_methods_sequence_single(f, pr, child_kind)?;
+                    }
+                }
             }
         }
 
@@ -325,21 +334,21 @@ impl SyntreeNodeTypesGenerator<'_> {
             .map(|child| child.print_enum_node_mut_match_arms())
             .into_str_iter();
         f.write_fmt(ume::ume! {
-            fn new(node: N) -> Self {
+            pub fn new(node: N) -> Self {
                 match node.kind() {
                     #variants
                     _ => #pr::Invalid(node),
                 }
             }
 
-            fn node(&self) -> &N {
+            pub fn node(&self) -> &N {
                 match self {
                     #node_match_arms
                     Self::Invalid(node) => node,
                 }
             }
 
-            fn node_mut(&mut self) -> &mut N {
+            pub fn node_mut(&mut self) -> &mut N {
                 match self {
                     #node_match_arms_mut
                     Self::Invalid(node) => node,
@@ -358,7 +367,7 @@ impl SyntreeNodeTypesGenerator<'_> {
         let method_name = child_kind.print_find_method_name();
         let child_kind_name = child_kind.print_node_kind();
         f.write_fmt(ume::ume! {
-            fn #method_name(&self, cursor: usize) -> Result<Option<(usize, #pr<N>)>, N> {
+            pub fn #method_name(&self, cursor: usize) -> Result<Option<(usize, #pr<N>)>, N> {
                 self.0.find_child(cursor, #child_kind_name).map(|option| option.map(|(i, node)| (i, #pr::new(node))))
             }
         })?;
@@ -379,9 +388,63 @@ impl SyntreeNodeTypesGenerator<'_> {
         let alts = self.grammar_config.cfg.matching_productions(pr);
         if alts.is_empty() {
             panic!("Not supported!");
+        } else if alts.len() == 2 {
+            match (alts[0].1.get_attribute(), alts[1].1.get_attribute()) {
+                (ProductionAttribute::CollectionStart, ProductionAttribute::AddToCollection) => {
+                    ChildKinds {
+                        kind: ChildKindsKind::Recursion,
+                        children: alts[1]
+                            .1
+                            .get_r()
+                            .iter()
+                            .filter_map(|s| self.child_kind(s))
+                            .collect(),
+                    }
+                }
+                (ProductionAttribute::AddToCollection, ProductionAttribute::CollectionStart) => {
+                    ChildKinds {
+                        kind: ChildKindsKind::Recursion,
+                        children: alts[0]
+                            .1
+                            .get_r()
+                            .iter()
+                            .filter_map(|s| self.child_kind(s))
+                            .collect(),
+                    }
+                }
+                (ProductionAttribute::OptionalNone, ProductionAttribute::OptionalSome) => {
+                    ChildKinds {
+                        kind: ChildKindsKind::Option,
+                        children: alts[1]
+                            .1
+                            .get_r()
+                            .iter()
+                            .filter_map(|s| self.child_kind(s))
+                            .collect(),
+                    }
+                }
+                (ProductionAttribute::OptionalSome, ProductionAttribute::OptionalNone) => {
+                    ChildKinds {
+                        kind: ChildKindsKind::Option,
+                        children: alts[0]
+                            .1
+                            .get_r()
+                            .iter()
+                            .filter_map(|s| self.child_kind(s))
+                            .collect(),
+                    }
+                }
+                _ => ChildKinds {
+                    kind: ChildKindsKind::OneOf,
+                    children: alts
+                        .into_iter()
+                        .filter_map(|(_, p)| p.get_r().first().and_then(|s| self.child_kind(s)))
+                        .collect(),
+                },
+            }
         } else if alts.len() == 1 {
             ChildKinds {
-                is_enum: false,
+                kind: ChildKindsKind::Sequence,
                 children: alts[0]
                     .1
                     .get_r()
@@ -391,7 +454,7 @@ impl SyntreeNodeTypesGenerator<'_> {
             }
         } else {
             ChildKinds {
-                is_enum: true,
+                kind: ChildKindsKind::OneOf,
                 children: alts
                     .into_iter()
                     .filter_map(|(_, p)| p.get_r().first().and_then(|s| self.child_kind(s)))
@@ -429,7 +492,14 @@ impl SyntreeNodeTypesGenerator<'_> {
     }
 }
 
+enum ChildKindsKind {
+    Sequence,
+    OneOf,
+    Recursion,
+    Option,
+}
+
 struct ChildKinds {
-    is_enum: bool,
+    kind: ChildKindsKind,
     children: Vec<ChildKind>,
 }

@@ -106,6 +106,10 @@ where
     OneOf(&'static [ChildKind<T, Nt>]),
     /// A node kind that expects a sequence of child kinds. Corresponds to struct ast types.
     Sequence(&'static [ChildKind<T, Nt>]),
+    /// A node kind that expects a sequence of child kinds or empty. Corresponds to vec ast types.
+    Recursion(&'static [ChildKind<T, Nt>]),
+    /// A node kind that expects a sequence of child kinds or empty. Corresponds to option ast types.
+    Option(&'static [ChildKind<T, Nt>]),
 }
 
 impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
@@ -134,6 +138,24 @@ impl<T, Nt> ExpectedChildrenKinds<T, Nt> {
                     }
                 }
                 true
+            }
+            ExpectedChildrenKinds::Recursion(children) => {
+                let mut cursor = 0;
+                for child in *children {
+                    if let Ok(Some((new_cursor, _))) = node.find_child(cursor, child.kind) {
+                        cursor = new_cursor;
+                    }
+                }
+                cursor == 0 || cursor == children.len()
+            }
+            ExpectedChildrenKinds::Option(children) => {
+                let mut cursor = 0;
+                for child in *children {
+                    if let Ok(Some((new_cursor, _))) = node.find_child(cursor, child.kind) {
+                        cursor = new_cursor;
+                    }
+                }
+                cursor == 0 || cursor == children.len()
             }
         }
     }
