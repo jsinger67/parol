@@ -71,6 +71,7 @@ impl LookaheadDFA {
     /// Retrieves the lookahead tokens from the TokenStream object without
     /// consuming any of them.
     ///
+    #[inline(always)]
     pub fn eval(
         &self,
         token_stream: &mut TokenStream<'_>,

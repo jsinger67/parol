@@ -157,9 +157,22 @@ impl<'t> TokenStream<'t> {
     }
 
     /// Returns all skip tokens at the beginning of the token buffer.
+    /// The tokens are removed from the buffer and the line and column numbers are updated.
     #[inline]
     pub fn take_skip_tokens(&mut self) -> Vec<Token<'t>> {
-        self.tokens.take_skip_tokens()
+        let tokens = self.tokens.take_skip_tokens();
+        if let Some(token) = tokens.last() {
+            self.line = token.location.end_line;
+            self.column = token.location.end_column;
+            self.last_consumed_token_end_pos = token.location.end();
+            trace!(
+                "Updated line: {}, column: {}, last consumed token end position: {} in take_skip_tokens",
+                self.line,
+                self.column,
+                self.last_consumed_token_end_pos
+            );
+        }
+        tokens
     }
 
     ///

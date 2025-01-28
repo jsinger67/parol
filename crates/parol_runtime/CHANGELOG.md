@@ -5,15 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Indicating incompatible changes on major version zero
+## 2.1.1 - 2025-01-21
 
-We defined for this project that while being on major version zero we mark incompatible changes with
-new minor version numbers. Please note that this is no version handling covered by `Semver`.
+- Fix for [#558](https://github.com/jsinger67/parol/issues/558)
+  This fix updates the `last_consumed_token_end_pos` in `TokenStream::take_skip_tokens` on skip
+  tokens, too
 
-## 2.1.0 - Not released yet
+## 2.1.0 - 2025-01-17
 
 - Fixed a subtle bug related to token buffer handling after scanner mode switching near the end of
 the input
+- Using new `scnr` version 0.7.0 due to increased performance
 
 ## 2.0.0 - 2024-12-25
 

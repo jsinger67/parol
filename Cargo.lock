@@ -114,9 +114,9 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
 name = "bitflags"
-version = "2.7.0"
+version = "2.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1be3f42a67d6d345ecd59f675f3f012d6974981560836e938c22b424b85ce1be"
+checksum = "8f68f53c83ab957f72c32642f3868eec03eb974d1fb82e453128456482613d36"
 
 [[package]]
 name = "bstr"
@@ -660,9 +660,9 @@ checksum = "78b3ae25bc7c8c38cec158d1f2757ee79e9b3740fbc7ccf0e59e4b08d793fa89"
 
 [[package]]
 name = "log"
-version = "0.4.22"
+version = "0.4.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
+checksum = "04cbf5b083de1c7e0222a7a51dbfdba1cbe1c6ab0b15e29fff3f6c077fd9cd9f"
 
 [[package]]
 name = "lsp-server"
@@ -816,11 +816,11 @@ checksum = "fb37767f6569cd834a413442455e0f066d0d522de8630436e2a1761d9726ba56"
 
 [[package]]
 name = "parol"
-version = "2.0.0"
+version = "2.1.2"
 dependencies = [
  "anyhow",
  "assert_cmd",
- "bitflags 2.7.0",
+ "bitflags 2.8.0",
  "cfg-if",
  "clap",
  "criterion",
@@ -857,7 +857,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "2.0.0"
+version = "2.1.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -885,7 +885,7 @@ version = "1.0.0"
 
 [[package]]
 name = "parol_runtime"
-version = "2.0.0"
+version = "2.1.1"
 dependencies = [
  "anyhow",
  "codespan-reporting",
@@ -1151,7 +1151,7 @@ version = "0.38.39"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "375116bee2be9ed569afe2154ea6a99dfdffd257f533f187498c2a8f5feaf4ee"
 dependencies = [
- "bitflags 2.7.0",
+ "bitflags 2.8.0",
  "errno",
  "libc",
  "linux-raw-sys 0.4.14",
@@ -1175,8 +1175,9 @@ dependencies = [
 
 [[package]]
 name = "scnr"
-version = "0.6.0"
-source = "git+https://github.com/jsinger67/scnr?branch=main#4c7009a2c54e4a9e46b7caacc3c8e5f1cf4f7dd2"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e4a344e85a3b8473a2852a03dd8f30f3b2968c3fb234c984a8405e9fb4975b7"
 dependencies = [
  "dot-writer",
  "log",
@@ -1216,9 +1217,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.135"
+version = "1.0.137"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2b0d7ba2887406110130a978386c4e1befb98c674b4fba677954e4db976630d9"
+checksum = "930cfb6e6abf99298aaad7d29abbef7a9999a9a8806a40088f55f0dcec03146b"
 dependencies = [
  "itoa",
  "memchr",
