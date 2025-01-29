@@ -10,10 +10,7 @@ pub fn augment_grammar(cfg: &Cfg) -> Cfg {
         return cfg.clone();
     }
     let mut new_cfg = cfg.clone();
-    let new_start = generate_name(
-        &cfg.get_non_terminal_set().iter().collect::<Vec<_>>(),
-        cfg.st.clone(),
-    );
+    let new_start = generate_name(cfg.get_non_terminal_set().iter(), cfg.st.clone());
     new_cfg.st.clone_from(&new_start);
     new_cfg.pr.insert(
         0,

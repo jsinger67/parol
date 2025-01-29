@@ -2,7 +2,7 @@ use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
 use crate::parser::GrammarType;
-use crate::{Pr, Symbol, Terminal};
+use crate::{generate_name, Pr, Symbol, Terminal};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
 use std::collections::{BTreeMap, HashSet};
@@ -795,13 +795,16 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
-    pub(crate) fn generate_non_terminal_enum_type(
-        &self,
-    ) -> impl Iterator<Item = (&str, &str)> + Clone {
-        self.non_terminal_types
-            .keys()
-            .map(|n| (n.as_str(), n.as_str()))
-            .chain(std::iter::once(("Root", "")))
+    pub(crate) fn generate_non_terminal_enum_type(&self) -> Vec<(String, &str)> {
+        let mut result = Vec::with_capacity(self.non_terminal_types.len() + 1);
+        for (n, _) in self.non_terminal_types.iter() {
+            result.push((n.to_string(), n.as_str()));
+        }
+        result.push((
+            generate_name(self.non_terminal_types.keys(), "Root".to_string()),
+            "",
+        ));
+        result
     }
 
     // Generates an enum variant name for the given production from its right-hand side. If the

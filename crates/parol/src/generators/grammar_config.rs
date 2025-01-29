@@ -170,7 +170,7 @@ impl GrammarConfig {
             .map(|(i, (t, _, _, _))| (i + 5, t))
             .fold(names, |mut acc, (i, t)| {
                 let name = generate_name(
-                    &acc,
+                    acc.iter(),
                     generate_terminal_name(t, Some(i as TerminalIndex), &self.cfg),
                 );
                 acc.push(name);

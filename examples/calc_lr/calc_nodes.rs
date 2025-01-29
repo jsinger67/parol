@@ -390,6 +390,10 @@ impl ExpectedChildren<TerminalKind, NonTerminalKind> for NonTerminalKind {
                     kind: NodeKind::NonTerminal(NonTerminalKind::Instruction),
                     attribute: ChildAttribute::Normal,
                 },
+                ChildKind {
+                    kind: NodeKind::Terminal(TerminalKind::Semicolon),
+                    attribute: ChildAttribute::Clipped,
+                },
             ]),
             Self::Equality => ExpectedChildrenKinds::Sequence(&[
                 ChildKind {
@@ -431,6 +435,10 @@ impl ExpectedChildren<TerminalKind, NonTerminalKind> for NonTerminalKind {
                 ChildKind {
                     kind: NodeKind::NonTerminal(NonTerminalKind::IdRef),
                     attribute: ChildAttribute::Normal,
+                },
+                ChildKind {
+                    kind: NodeKind::Terminal(TerminalKind::LParen),
+                    attribute: ChildAttribute::Clipped,
                 },
             ]),
             Self::Id => ExpectedChildrenKinds::Sequence(&[ChildKind {

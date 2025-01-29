@@ -7,7 +7,9 @@ use crate::utils::str_iter::IteratorExt;
 use crate::{StrVec, SymbolAttribute, Terminal};
 
 use super::grammar_type_generator::GrammarTypeInfo;
-use super::template_data::{ChildKind, DisplayArm, NumToTerminalVariant};
+use super::template_data::{
+    ChildAttribute, ChildKind, ChildNodeKind, DisplayArm, NumToTerminalVariant,
+};
 use super::{generate_terminal_name, GrammarConfig};
 
 /// Syntree node types generator.
@@ -54,6 +56,7 @@ impl SyntreeNodeTypesGenerator<'_> {
         terminal.push(String::default());
         let non_terminal_enum = grammar_type_info
             .generate_non_terminal_enum_type()
+            .into_iter()
             .map(|(variant, _)| format!("{}", ume::ume!(#variant,)))
             .collect::<StrVec>();
         let terminal_enum = self
@@ -97,6 +100,7 @@ impl SyntreeNodeTypesGenerator<'_> {
 
         let non_terminal_match_arms = grammar_type_info
             .generate_non_terminal_enum_type()
+            .into_iter()
             .map(|(variant, name)| NameToNonTerminalVariant {
                 variant: variant.to_owned(),
                 name: name.to_owned(),
@@ -152,8 +156,9 @@ impl SyntreeNodeTypesGenerator<'_> {
             })
             .into_str_iter();
 
-        let non_terminal_arms = grammar_type_info
-            .generate_non_terminal_enum_type()
+        let non_terminals = grammar_type_info.generate_non_terminal_enum_type();
+        let non_terminal_arms = non_terminals
+            .iter()
             .map(|(variant, name)| DisplayArm {
                 variant,
                 value: name,
@@ -282,6 +287,9 @@ impl SyntreeNodeTypesGenerator<'_> {
                 // Does not need to generate multiple find methods for the same child kind.
                 let mut exists = BTreeSet::new();
                 for child_kind in child_kinds.children {
+                    if child_kind.attribute == ChildAttribute::Clipped {
+                        continue;
+                    }
                     if exists.insert(child_kind.print_find_method_name()) {
                         self.generate_find_methods_sequence_single(f, pr, child_kind)?;
                     }
@@ -307,6 +315,9 @@ impl SyntreeNodeTypesGenerator<'_> {
         })?;
         write!(f, "{{")?;
         for child_kind in child_kinds.children {
+            if child_kind.attribute == ChildAttribute::Clipped {
+                continue;
+            }
             let variant = child_kind.print_ast_enum_variant();
             write!(f, "{}", variant)?;
         }
@@ -324,16 +335,19 @@ impl SyntreeNodeTypesGenerator<'_> {
         let variants = child_kinds
             .children
             .iter()
+            .filter(|child| child.attribute != ChildAttribute::Clipped)
             .map(|child| child.print_enum_new_match_arms())
             .into_str_iter();
         let node_match_arms = child_kinds
             .children
             .iter()
+            .filter(|child| child.attribute != ChildAttribute::Clipped)
             .map(|child| child.print_enum_node_match_arms())
             .into_str_iter();
         let node_match_arms_mut = child_kinds
             .children
             .iter()
+            .filter(|child| child.attribute != ChildAttribute::Clipped)
             .map(|child| child.print_enum_node_mut_match_arms())
             .into_str_iter();
         f.write_fmt(ume::ume! {
@@ -468,25 +482,49 @@ impl SyntreeNodeTypesGenerator<'_> {
 
     fn child_kind(&self, symbol: &crate::Symbol) -> Option<ChildKind> {
         match symbol {
-            crate::Symbol::N(_, SymbolAttribute::Clipped, _) => None,
-            crate::Symbol::T(Terminal::Trm(_, _, _, SymbolAttribute::Clipped, _, _)) => None,
             crate::Symbol::N(s, attrs, _) => match attrs {
-                SymbolAttribute::Option => Some(ChildKind::OptionalNonTerminal(s.clone())),
-                SymbolAttribute::RepetitionAnchor => Some(ChildKind::VecNonTerminal(s.clone())),
-                _ => Some(ChildKind::NonTerminal(s.clone())),
+                SymbolAttribute::Option => Some(ChildKind {
+                    kind: ChildNodeKind::NonTerminal,
+                    name: s.clone(),
+                    attribute: ChildAttribute::Optional,
+                }),
+                SymbolAttribute::RepetitionAnchor => Some(ChildKind {
+                    kind: ChildNodeKind::NonTerminal,
+                    name: s.clone(),
+                    attribute: ChildAttribute::Vec,
+                }),
+                SymbolAttribute::Clipped => Some(ChildKind {
+                    kind: ChildNodeKind::NonTerminal,
+                    name: s.clone(),
+                    attribute: ChildAttribute::Clipped,
+                }),
+                SymbolAttribute::None => Some(ChildKind {
+                    kind: ChildNodeKind::NonTerminal,
+                    name: s.clone(),
+                    attribute: ChildAttribute::Normal,
+                }),
             },
             crate::Symbol::T(Terminal::Trm(terminal, _, _, attrs, _, _)) => match attrs {
-                SymbolAttribute::Option => Some(ChildKind::OptionalTerminal(
-                    generate_terminal_name(terminal, None, &self.grammar_config.cfg),
-                )),
-                SymbolAttribute::RepetitionAnchor => Some(ChildKind::VecTerminal(
-                    generate_terminal_name(terminal, None, &self.grammar_config.cfg),
-                )),
-                _ => Some(ChildKind::Terminal(generate_terminal_name(
-                    terminal,
-                    None,
-                    &self.grammar_config.cfg,
-                ))),
+                SymbolAttribute::Option => Some(ChildKind {
+                    kind: ChildNodeKind::Terminal,
+                    name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),
+                    attribute: ChildAttribute::Optional,
+                }),
+                SymbolAttribute::RepetitionAnchor => Some(ChildKind {
+                    kind: ChildNodeKind::Terminal,
+                    name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),
+                    attribute: ChildAttribute::Vec,
+                }),
+                SymbolAttribute::Clipped => Some(ChildKind {
+                    kind: ChildNodeKind::Terminal,
+                    name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),
+                    attribute: ChildAttribute::Clipped,
+                }),
+                SymbolAttribute::None => Some(ChildKind {
+                    kind: ChildNodeKind::Terminal,
+                    name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),
+                    attribute: ChildAttribute::Normal,
+                }),
             },
             crate::Symbol::T(Terminal::Eps) => None,
             crate::Symbol::T(Terminal::End) => None,

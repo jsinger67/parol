@@ -179,6 +179,8 @@ pub struct ChildKind<T, Nt> {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 /// The attribute of a child kind.
 pub enum ChildAttribute {
+    /// A clipped child kind.
+    Clipped,
     /// A normal child kind.
     Normal,
     /// An optional child kind.
