@@ -20,7 +20,8 @@ log = { workspace = true }
 once_cell = { workspace = true }
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
 petgraph = { workspace = true }
-scnr = { path = "../../../scnr", version = "0.7.1" }
+# scnr = { path = "../../../scnr", version = "0.7.1" }
+scnr = "0.7.1"
 serde_json = "1.0"
 syntree = { workspace = true }
 syntree_layout = { workspace = true }

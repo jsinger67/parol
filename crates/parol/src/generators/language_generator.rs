@@ -67,7 +67,7 @@ impl<'a> LanguageGenerator<'a> {
         let chosen_index = if terminate {
             Self::chose_minimal_expanding_production(&productions_of_nt)
         } else {
-            rand::thread_rng().gen_range(0..productions_of_nt.len())
+            rand::rng().random_range(0..productions_of_nt.len())
         };
         trace!(
             "/* {} */ {} {}/{} {}",
@@ -92,7 +92,7 @@ impl<'a> LanguageGenerator<'a> {
         result: &mut String,
         max_result_length: Option<usize>,
     ) -> Result<()> {
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         let utf8_gen = self.get_regex(terminal)?;
         let generated = rng.sample::<String, _>(utf8_gen);
         trace!("gen: {}", generated);
