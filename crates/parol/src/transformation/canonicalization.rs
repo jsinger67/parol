@@ -165,7 +165,7 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
                     } else {
                         format!("{}Opt", non_terminal)
                     };
-                    let new_opt_production_name = generate_name(exclusions, preferred_name);
+                    let new_opt_production_name = generate_name(exclusions.iter(), preferred_name);
                     *factor = Factor::NonTerminal(
                         new_opt_production_name.clone(),
                         SymbolAttribute::Option,
@@ -361,7 +361,7 @@ fn eliminate_single_rep(
         .iter()
         .position(|f| matches!(f, Factor::Repeat(_)))
     {
-        let r_tick_name = generate_name(exclusions, production_name + "List");
+        let r_tick_name = generate_name(exclusions.iter(), production_name + "List");
         if let Factor::Repeat(repeat) = production.rhs.0[alt_index].0[rpt_index_in_alt].clone() {
             let mut production1 = production.clone();
             production1.rhs.0[alt_index].0[rpt_index_in_alt] =
@@ -503,7 +503,7 @@ fn eliminate_single_opt(
                 vec![production1, production1a]
             } else {
                 // Case 2
-                let r_tick_name = generate_name(exclusions, production_name + "Opt");
+                let r_tick_name = generate_name(exclusions.iter(), production_name + "Opt");
                 let mut production1 = production.clone();
                 production1.rhs.0[alt_index].0[opt_index_in_alt] =
                     Factor::default_non_terminal(r_tick_name.clone());
@@ -602,7 +602,7 @@ fn eliminate_single_grp(
                 vec![production1]
             } else {
                 // Case 2
-                let g_name = generate_name(exclusions, production_name + "Group");
+                let g_name = generate_name(exclusions.iter(), production_name + "Group");
                 if let Factor::Group(group) =
                     production.rhs.0[alt_index].0[grp_index_in_alt].clone()
                 {

@@ -56,6 +56,7 @@ impl SyntreeNodeTypesGenerator<'_> {
         terminal.push(String::default());
         let non_terminal_enum = grammar_type_info
             .generate_non_terminal_enum_type()
+            .into_iter()
             .map(|(variant, _)| format!("{}", ume::ume!(#variant,)))
             .collect::<StrVec>();
         let terminal_enum = self
@@ -99,6 +100,7 @@ impl SyntreeNodeTypesGenerator<'_> {
 
         let non_terminal_match_arms = grammar_type_info
             .generate_non_terminal_enum_type()
+            .into_iter()
             .map(|(variant, name)| NameToNonTerminalVariant {
                 variant: variant.to_owned(),
                 name: name.to_owned(),
@@ -154,8 +156,9 @@ impl SyntreeNodeTypesGenerator<'_> {
             })
             .into_str_iter();
 
-        let non_terminal_arms = grammar_type_info
-            .generate_non_terminal_enum_type()
+        let non_terminals = grammar_type_info.generate_non_terminal_enum_type();
+        let non_terminal_arms = non_terminals
+            .iter()
             .map(|(variant, name)| DisplayArm {
                 variant,
                 value: name,
@@ -479,18 +482,6 @@ impl SyntreeNodeTypesGenerator<'_> {
 
     fn child_kind(&self, symbol: &crate::Symbol) -> Option<ChildKind> {
         match symbol {
-            crate::Symbol::N(s, SymbolAttribute::Clipped, _) => Some(ChildKind {
-                kind: ChildNodeKind::NonTerminal,
-                name: s.clone(),
-                attribute: ChildAttribute::Clipped,
-            }),
-            crate::Symbol::T(Terminal::Trm(terminal, _, _, SymbolAttribute::Clipped, _, _)) => {
-                Some(ChildKind {
-                    kind: ChildNodeKind::Terminal,
-                    name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),
-                    attribute: ChildAttribute::Clipped,
-                })
-            }
             crate::Symbol::N(s, attrs, _) => match attrs {
                 SymbolAttribute::Option => Some(ChildKind {
                     kind: ChildNodeKind::NonTerminal,
@@ -502,7 +493,12 @@ impl SyntreeNodeTypesGenerator<'_> {
                     name: s.clone(),
                     attribute: ChildAttribute::Vec,
                 }),
-                _ => Some(ChildKind {
+                SymbolAttribute::Clipped => Some(ChildKind {
+                    kind: ChildNodeKind::NonTerminal,
+                    name: s.clone(),
+                    attribute: ChildAttribute::Clipped,
+                }),
+                SymbolAttribute::None => Some(ChildKind {
                     kind: ChildNodeKind::NonTerminal,
                     name: s.clone(),
                     attribute: ChildAttribute::Normal,
@@ -519,7 +515,12 @@ impl SyntreeNodeTypesGenerator<'_> {
                     name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),
                     attribute: ChildAttribute::Vec,
                 }),
-                _ => Some(ChildKind {
+                SymbolAttribute::Clipped => Some(ChildKind {
+                    kind: ChildNodeKind::Terminal,
+                    name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),
+                    attribute: ChildAttribute::Clipped,
+                }),
+                SymbolAttribute::None => Some(ChildKind {
                     kind: ChildNodeKind::Terminal,
                     name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),
                     attribute: ChildAttribute::Normal,
