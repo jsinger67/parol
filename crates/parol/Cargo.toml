@@ -46,7 +46,7 @@ rayon = "1.10.0"
 tempfile = "3"
 graph-cycles = "0.1.0"
 lalry = "0.1.0"
-rustc-hash = "2.1.0"
+rustc-hash = "2.1.1"
 
 [features]
 default = ["build"]
