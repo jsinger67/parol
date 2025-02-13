@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.2.0 - 2025-02-13
+
+- Introduced new crate feature `regex_automata` to configure `scnr` crate to use an alternative
+regex engine.
+
 ## 2.1.1 - 2025-01-21
 
 - Fix for [#558](https://github.com/jsinger67/parol/issues/558)
