@@ -20,8 +20,7 @@ log = { workspace = true }
 once_cell = { workspace = true }
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
 petgraph = { workspace = true }
-# scnr = { path = "../../../scnr", version = "0.7.1" }
-scnr = "0.7.1"
+scnr = { version = "0.8.0", default-features = false }
 serde_json = "1.0"
 syntree = { workspace = true }
 syntree_layout = { workspace = true }
@@ -38,7 +37,8 @@ name = "lexer_benchmark"
 harness = false
 
 [features]
-default = []
+default = ["scnr/default"]
+regex_automata = ["scnr/regex_automata"]
 
 # Features to statically disable log levels in binary crates during compile time.
 # Avoid using them in libraries.
