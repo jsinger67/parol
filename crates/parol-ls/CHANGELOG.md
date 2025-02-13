@@ -5,6 +5,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 2.2.0 - 2025-01-17
+
+* Switched to versions `parol_runtime@2.2.0` and `parol@2.2.0`
+* No functional changes.
+
 ## 2.1.0 - 2025-01-17
 
 * Switched to versions `parol_runtime@2.1.0` and `parol@2.1.0`
