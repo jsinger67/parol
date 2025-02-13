@@ -319,7 +319,7 @@ mod test {
                 "NEW_LINE_TOKEN",
                 "WHITESPACE_TOKEN",
                 r"//.*(\r\n|\r|\n)?",
-                r"/\*([.\r\n--*]|\*[^/])*\*/"
+                r"/\*([^*]|\*[^/])*\*/"
             ]
             .iter()
             .map(|t| (*t).to_owned())
