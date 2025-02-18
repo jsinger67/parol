@@ -71,7 +71,7 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
             pr_copy.iter().find_map(|p| {
                 if p.0.get_n_ref().unwrap() == name && p.1.len() == 1 {
                     match &p.1[0] {
-                        Symbol::T(Terminal::Trm(t, k, _, _, _, l)) => {
+                        Symbol::T(Terminal::Trm(t, k, _, _, _, _, l)) => {
                             Some((t.to_owned(), *k, l.clone()))
                         }
                         _ => None,
@@ -149,8 +149,14 @@ fn try_from_scanner_config(
 
 pub(crate) fn try_from_factor(factor: Factor) -> Result<Symbol> {
     match factor {
-        Factor::NonTerminal(n, a, u) => Ok(Symbol::N(n, a, u)),
-        Factor::Terminal(t, k, s, a, u, l) => Ok(Symbol::T(Terminal::Trm(t, k, s, a, u, l))),
+        Factor::NonTerminal(n, a, u, m) => {
+            // We use the member name here if given
+            Ok(Symbol::N(n, a, u, m))
+        }
+        Factor::Terminal(t, k, s, a, u, m, l) => {
+            // We use the member name here if given
+            Ok(Symbol::T(Terminal::Trm(t, k, s, a, u, m, l)))
+        }
         Factor::ScannerSwitch(s, _) => Ok(Symbol::s(s)),
         Factor::ScannerSwitchPush(s, _) => Ok(Symbol::Push(s)),
         Factor::ScannerSwitchPop(_) => Ok(Symbol::Pop),

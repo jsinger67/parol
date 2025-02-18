@@ -80,7 +80,7 @@
       "patterns": [
         {
           "name": "keyword.control.parol",
-          "match": "%%|\\?[!=]|\\||:|;|\\^|="
+          "match": "%%|\\?[!=]|\\||:|;|\\^|=|@"
         }
       ]
     },

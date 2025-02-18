@@ -83,7 +83,7 @@ pub trait ScannerStatesGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ContentIdentifier<'t> {
-    pub identifier: Box<Identifier<'t>>,
+    pub identifier: Box<Identifier<'t>>, /* Identifier */
 }
 
 ///
@@ -95,9 +95,9 @@ pub struct ContentIdentifier<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ContentStringDelimiterStringContentStringDelimiter<'t> {
-    pub string_delimiter: Box<StringDelimiter<'t>>,
-    pub string_content: Box<StringContent<'t>>,
-    pub string_delimiter0: Box<StringDelimiter<'t>>,
+    pub string_delimiter: Box<StringDelimiter<'t>>, /* StringDelimiter */
+    pub string_content: Box<StringContent<'t>>,     /* StringContent */
+    pub string_delimiter0: Box<StringDelimiter<'t>>, /* StringDelimiter */
 }
 
 ///
@@ -109,7 +109,7 @@ pub struct ContentStringDelimiterStringContentStringDelimiter<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringElementEscaped<'t> {
-    pub escaped: Box<Escaped<'t>>,
+    pub escaped: Box<Escaped<'t>>, /* Escaped */
 }
 
 ///
@@ -121,7 +121,7 @@ pub struct StringElementEscaped<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringElementEscapedLineEnd<'t> {
-    pub escaped_line_end: Box<EscapedLineEnd<'t>>,
+    pub escaped_line_end: Box<EscapedLineEnd<'t>>, /* EscapedLineEnd */
 }
 
 ///
@@ -133,7 +133,7 @@ pub struct StringElementEscapedLineEnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringElementNoneQuote<'t> {
-    pub none_quote: Box<NoneQuote<'t>>,
+    pub none_quote: Box<NoneQuote<'t>>, /* NoneQuote */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ pub struct NoneQuote<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Start<'t> {
-    pub start_list: Vec<StartList<'t>>,
+    pub start_list: Vec<StartList<'t>>, /* StartList */
 }
 
 ///
@@ -210,7 +210,7 @@ pub struct Start<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StartList<'t> {
-    pub content: Box<Content<'t>>,
+    pub content: Box<Content<'t>>, /* Content */
 }
 
 ///
@@ -220,7 +220,7 @@ pub struct StartList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringContent<'t> {
-    pub string_content_list: Vec<StringContentList<'t>>,
+    pub string_content_list: Vec<StringContentList<'t>>, /* StringContentList */
 }
 
 ///
@@ -230,7 +230,7 @@ pub struct StringContent<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringContentList<'t> {
-    pub string_element: Box<StringElement<'t>>,
+    pub string_element: Box<StringElement<'t>>, /* StringElement */
 }
 
 ///

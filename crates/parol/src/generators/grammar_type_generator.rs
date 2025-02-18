@@ -547,13 +547,24 @@ impl GrammarTypeInfo {
     }
 
     /// Generates a member name from a symbol that stems from a production's right-hand side
-    /// The second string in the returned tuple is used as description, here the terminal's content.
+    /// The second string in the returned tuple is used
+    ///  * on terminals
+    ///     as the terminal's content.
+    ///  * on non-terminals
+    ///     as the non-terminal's original name (it could have a user-defined member name).
     pub fn generate_member_name(&self, s: &Symbol) -> (String, String) {
         match s {
-            Symbol::N(n, ..) => (NmHlp::to_lower_snake_case(n), String::default()),
-            Symbol::T(Terminal::Trm(t, k, ..)) => {
+            Symbol::N(n, _, _, m) => (
+                m.clone().unwrap_or(NmHlp::to_lower_snake_case(n)),
+                n.to_string(),
+            ),
+            Symbol::T(Terminal::Trm(t, k, _, _, _, m, _)) => {
                 let terminal_name = &self.terminal_names[self.get_terminal_index(&k.expand(t))];
-                (NmHlp::to_lower_snake_case(terminal_name), t.to_string())
+                (
+                    m.clone()
+                        .unwrap_or(NmHlp::to_lower_snake_case(terminal_name)),
+                    t.to_string(),
+                )
             }
             _ => panic!("Invalid symbol type {}", s),
         }
@@ -631,7 +642,7 @@ impl GrammarTypeInfo {
                         {
                             "Token".to_owned()
                         } else {
-                            NmHlp::to_upper_camel_case(n)
+                            NmHlp::to_upper_camel_case(r)
                         };
                         self.symbol_table.get_or_create_type(
                             &type_name,
@@ -664,7 +675,7 @@ impl GrammarTypeInfo {
 
     fn deduce_type_of_symbol(&self, symbol: &Symbol) -> Result<TypeEntrails> {
         match symbol {
-            Symbol::T(Terminal::Trm(_, _, _, a, u, _)) => {
+            Symbol::T(Terminal::Trm(_, _, _, a, u, _, _)) => {
                 if *a == SymbolAttribute::Clipped {
                     Ok(TypeEntrails::Clipped(MetaSymbolKind::Token))
                 } else if let Some(ref user_defined_type) = u {
@@ -676,7 +687,7 @@ impl GrammarTypeInfo {
                     Ok(TypeEntrails::Token)
                 }
             }
-            Symbol::N(n, a, u) => {
+            Symbol::N(n, a, u, _) => {
                 let inner_type = self.non_terminal_types.get(n).unwrap();
                 if let Some(ref user_defined_type) = u {
                     Ok(TypeEntrails::UserDefinedType(
@@ -805,11 +816,13 @@ impl GrammarTypeInfo {
         } else {
             lhs.iter().fold(String::new(), |mut acc, s| {
                 match s {
-                    Symbol::N(n, _, _) => acc.push_str(&NmHlp::to_upper_camel_case(n)),
-                    Symbol::T(Terminal::Trm(t, k, ..)) => {
-                        acc.push_str(&NmHlp::to_upper_camel_case(
+                    Symbol::N(n, _, _, m) => {
+                        acc.push_str(&NmHlp::to_upper_camel_case(m.as_ref().unwrap_or(n)))
+                    }
+                    Symbol::T(Terminal::Trm(t, k, _, _, _, m, _)) => {
+                        acc.push_str(m.as_ref().unwrap_or(&NmHlp::to_upper_camel_case(
                             &self.terminal_names[self.get_terminal_index(&k.expand(t))],
-                        ))
+                        )))
                     }
                     _ => (),
                 }

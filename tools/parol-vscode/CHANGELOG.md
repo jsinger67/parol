@@ -4,6 +4,10 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.4.0 - Not released yet
+
+* Support for syntax extension 'named members'
+
 ## v0.3.2 - 2024-12-27
 
 * Included lookahead operators into the syntax highlighting

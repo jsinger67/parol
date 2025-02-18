@@ -194,6 +194,7 @@ mod test {
                 SymbolAttribute::None,
                 None,
                 None,
+                None,
             ))
         };
     }

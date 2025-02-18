@@ -57,8 +57,8 @@ pub trait ListGrammarTrait {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Items {
-    pub num: Num,
-    pub items_list: Vec<ItemsList>,
+    pub num: Num,                   /* Num */
+    pub items_list: Vec<ItemsList>, /* ItemsList */
 }
 
 ///
@@ -68,7 +68,7 @@ pub struct Items {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ItemsList {
-    pub num: Num,
+    pub num: Num, /* Num */
 }
 
 ///
@@ -78,7 +78,7 @@ pub struct ItemsList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct List {
-    pub list_opt: Option<ListOpt>,
+    pub list_opt: Option<ListOpt>, /* ListOpt */
 }
 
 ///
@@ -88,7 +88,7 @@ pub struct List {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ListOpt {
-    pub items: crate::list_grammar::Numbers,
+    pub items: crate::list_grammar::Numbers, /* Items */
 }
 
 ///

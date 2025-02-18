@@ -33,7 +33,7 @@ impl Display for Pr {
     ///
     /// macro_rules! terminal {
     ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-    ///         vec![0], SymbolAttribute::None, None, None))};
+    ///         vec![0], SymbolAttribute::None, None, None, None))};
     /// }
     ///
     /// let pr = Pr::new("S", vec![]);
@@ -112,7 +112,7 @@ impl Pr {
 
     /// Sets the non-terminal
     pub fn set_n(&mut self, n: String) {
-        self.0 = Symbol::N(n, SymbolAttribute::default(), None);
+        self.0 = Symbol::N(n, SymbolAttribute::default(), None, None);
     }
 
     /// Checks if [Rhs] is empty

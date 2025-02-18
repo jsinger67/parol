@@ -73,8 +73,8 @@ pub trait JsonGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ObjectSuffixPairObjectListRBrace<'t> {
-    pub pair: Box<Pair<'t>>,
-    pub object_list: Vec<ObjectList<'t>>,
+    pub pair: Box<Pair<'t>>,              /* Pair */
+    pub object_list: Vec<ObjectList<'t>>, /* ObjectList */
 }
 
 ///
@@ -96,8 +96,8 @@ pub struct ObjectSuffixRBrace {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArraySuffixValueArrayListRBracket<'t> {
-    pub value: Box<Value<'t>>,
-    pub array_list: Vec<ArrayList<'t>>,
+    pub value: Box<Value<'t>>,          /* Value */
+    pub array_list: Vec<ArrayList<'t>>, /* ArrayList */
 }
 
 ///
@@ -119,7 +119,7 @@ pub struct ArraySuffixRBracket {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueString<'t> {
-    pub string: String<'t>,
+    pub string: String<'t>, /* String */
 }
 
 ///
@@ -131,7 +131,7 @@ pub struct ValueString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueNumber<'t> {
-    pub number: Number<'t>,
+    pub number: Number<'t>, /* Number */
 }
 
 ///
@@ -143,7 +143,7 @@ pub struct ValueNumber<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueObject<'t> {
-    pub object: Object<'t>,
+    pub object: Object<'t>, /* Object */
 }
 
 ///
@@ -155,7 +155,7 @@ pub struct ValueObject<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueArray<'t> {
-    pub array: Array<'t>,
+    pub array: Array<'t>, /* Array */
 }
 
 ///
@@ -200,7 +200,7 @@ pub struct ValueNull {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Array<'t> {
-    pub array_suffix: ArraySuffix<'t>,
+    pub array_suffix: ArraySuffix<'t>, /* ArraySuffix */
 }
 
 ///
@@ -210,7 +210,7 @@ pub struct Array<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArrayList<'t> {
-    pub value: Value<'t>,
+    pub value: Value<'t>, /* Value */
 }
 
 ///
@@ -230,7 +230,7 @@ pub enum ArraySuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Json<'t> {
-    pub value: Value<'t>,
+    pub value: Value<'t>, /* Value */
 }
 
 ///
@@ -250,7 +250,7 @@ pub struct Number<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Object<'t> {
-    pub object_suffix: ObjectSuffix<'t>,
+    pub object_suffix: ObjectSuffix<'t>, /* ObjectSuffix */
 }
 
 ///
@@ -260,7 +260,7 @@ pub struct Object<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ObjectList<'t> {
-    pub pair: Pair<'t>,
+    pub pair: Pair<'t>, /* Pair */
 }
 
 ///
@@ -280,8 +280,8 @@ pub enum ObjectSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Pair<'t> {
-    pub string: String<'t>,
-    pub value: Value<'t>,
+    pub string: String<'t>, /* String */
+    pub value: Value<'t>,   /* Value */
 }
 
 ///

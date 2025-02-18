@@ -110,7 +110,14 @@ ScannerSwitch
 
 ASTControl
     : CutOperator
-    | UserTypeDeclaration;
+    | MemberName [ UserTypeDeclaration ]
+    | UserTypeDeclaration
+    ;
+
+// The name of the member in the AST as it will appear in the generated code
+MemberName
+    : '@'^ Identifier
+    ;
 
 CutOperator
     : '^': OwnedToken;

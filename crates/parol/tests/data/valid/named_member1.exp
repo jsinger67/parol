@@ -1,0 +1,6 @@
+%start Start
+
+%%
+
+/* 0 */ Start: "a"@member1 : i32 "b"@member2 C member3;
+/* 1 */ C: "c";

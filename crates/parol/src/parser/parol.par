@@ -128,7 +128,7 @@ Identifier
 
 // A complete scanner definition
 ScannerState
-    : '%scanner'^ Identifier '{'^ { ScannerDirectives } '}'^
+    : '%scanner'^ Identifier@state_name '{'^ { ScannerDirectives } '}'^
     ;
 
 // The list of scanner states a terminal symbol is associated with
@@ -144,7 +144,13 @@ ScannerSwitch
 
 ASTControl
     : CutOperator
+    | MemberName [ UserTypeDeclaration ]
     | UserTypeDeclaration
+    ;
+
+// The name of the member in the AST as it will appear in the generated code
+MemberName
+    : '@'^ Identifier
     ;
 
 // Prevents the symbol from being propagated to the AST in auto-gen

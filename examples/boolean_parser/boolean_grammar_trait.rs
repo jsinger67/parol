@@ -143,7 +143,7 @@ pub trait BooleanGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BooleanTrue {
-    pub r#true: True,
+    pub r#true: True, /* True */
 }
 
 ///
@@ -155,7 +155,7 @@ pub struct BooleanTrue {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BooleanFalse {
-    pub r#false: False,
+    pub r#false: False, /* False */
 }
 
 ///
@@ -167,7 +167,7 @@ pub struct BooleanFalse {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BinaryOperatorAndOp {
-    pub and_op: AndOp,
+    pub and_op: AndOp, /* AndOp */
 }
 
 ///
@@ -179,7 +179,7 @@ pub struct BinaryOperatorAndOp {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BinaryOperatorOrOp {
-    pub or_op: OrOp,
+    pub or_op: OrOp, /* OrOp */
 }
 
 ///
@@ -191,7 +191,7 @@ pub struct BinaryOperatorOrOp {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BinaryOperatorXorOp {
-    pub xor_op: XorOp,
+    pub xor_op: XorOp, /* XorOp */
 }
 
 ///
@@ -203,7 +203,7 @@ pub struct BinaryOperatorXorOp {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BinaryOperatorNorOp {
-    pub nor_op: NorOp,
+    pub nor_op: NorOp, /* NorOp */
 }
 
 ///
@@ -215,7 +215,7 @@ pub struct BinaryOperatorNorOp {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BinaryOperatorNandOp {
-    pub nand_op: NandOp,
+    pub nand_op: NandOp, /* NandOp */
 }
 
 ///
@@ -227,7 +227,7 @@ pub struct BinaryOperatorNandOp {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BinaryOperatorXnorOp {
-    pub xnor_op: XnorOp,
+    pub xnor_op: XnorOp, /* XnorOp */
 }
 
 ///
@@ -239,7 +239,7 @@ pub struct BinaryOperatorXnorOp {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorBoolean {
-    pub boolean: Boolean,
+    pub boolean: Boolean, /* Boolean */
 }
 
 ///
@@ -251,7 +251,7 @@ pub struct FactorBoolean {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorParenthesized {
-    pub parenthesized: Box<Parenthesized>,
+    pub parenthesized: Box<Parenthesized>, /* Parenthesized */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -298,8 +298,8 @@ pub enum Boolean {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Expression {
-    pub term: Term,
-    pub expression_list: Vec<ExpressionList>,
+    pub term: Term,                           /* Term */
+    pub expression_list: Vec<ExpressionList>, /* ExpressionList */
 }
 
 ///
@@ -309,8 +309,8 @@ pub struct Expression {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExpressionList {
-    pub binary_operator: BinaryOperator,
-    pub term: Term,
+    pub binary_operator: BinaryOperator, /* BinaryOperator */
+    pub term: Term,                      /* Term */
 }
 
 ///
@@ -320,8 +320,8 @@ pub struct ExpressionList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Expressions {
-    pub expression: Expression,
-    pub expressions_list: Vec<ExpressionsList>,
+    pub expression: Expression,                 /* Expression */
+    pub expressions_list: Vec<ExpressionsList>, /* ExpressionsList */
 }
 
 ///
@@ -331,7 +331,7 @@ pub struct Expressions {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExpressionsList {
-    pub expression: Expression,
+    pub expression: Expression, /* Expression */
 }
 
 ///
@@ -401,7 +401,7 @@ pub struct OrOp {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Parenthesized {
-    pub expression: Expression,
+    pub expression: Expression, /* Expression */
 }
 
 ///
@@ -431,8 +431,8 @@ pub struct Semicolon<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Term {
-    pub term_opt: Option<TermOpt>,
-    pub factor: Factor,
+    pub term_opt: Option<TermOpt>, /* TermOpt */
+    pub factor: Factor,            /* Factor */
 }
 
 ///
@@ -442,7 +442,7 @@ pub struct Term {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TermOpt {
-    pub unary_operator: UnaryOperator,
+    pub unary_operator: UnaryOperator, /* UnaryOperator */
 }
 
 ///
@@ -452,7 +452,7 @@ pub struct TermOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TrailingSemicolon<'t> {
-    pub trailing_semicolon_opt: Option<TrailingSemicolonOpt<'t>>,
+    pub trailing_semicolon_opt: Option<TrailingSemicolonOpt<'t>>, /* TrailingSemicolonOpt */
 }
 
 ///
@@ -462,7 +462,7 @@ pub struct TrailingSemicolon<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TrailingSemicolonOpt<'t> {
-    pub semicolon: Semicolon<'t>,
+    pub semicolon: Semicolon<'t>, /* Semicolon */
 }
 
 ///
@@ -480,7 +480,7 @@ pub struct True {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UnaryOperator {
-    pub not: Not,
+    pub not: Not, /* Not */
 }
 
 ///

@@ -155,7 +155,12 @@ pub trait ParolGrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'ASTControl'
-    fn a_s_t_control(&mut self, _arg: &ASTControl) -> Result<()> {
+    fn a_s_t_control(&mut self, _arg: &ASTControl<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'MemberName'
+    fn member_name(&mut self, _arg: &MemberName<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -208,7 +213,7 @@ pub trait ParolGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentTitleString<'t> {
-    pub string: String<'t>,
+    pub string: String<'t>, /* String */
 }
 
 ///
@@ -220,7 +225,7 @@ pub struct DeclarationPercentTitleString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentCommentString<'t> {
-    pub string: String<'t>,
+    pub string: String<'t>, /* String */
 }
 
 ///
@@ -232,8 +237,8 @@ pub struct DeclarationPercentCommentString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName<'t> {
-    pub identifier: Identifier<'t>,
-    pub user_type_name: crate::parser::parol_grammar::UserDefinedTypeName,
+    pub identifier: Identifier<'t>, /* Identifier */
+    pub user_type_name: crate::parser::parol_grammar::UserDefinedTypeName, /* UserTypeName */
 }
 
 ///
@@ -245,7 +250,7 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentGrammarUnderscoreTypeRawString<'t> {
-    pub raw_string: RawString<'t>,
+    pub raw_string: RawString<'t>, /* RawString */
 }
 
 ///
@@ -257,7 +262,7 @@ pub struct DeclarationPercentGrammarUnderscoreTypeRawString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationScannerDirectives<'t> {
-    pub scanner_directives: ScannerDirectives<'t>,
+    pub scanner_directives: ScannerDirectives<'t>, /* ScannerDirectives */
 }
 
 ///
@@ -269,7 +274,7 @@ pub struct DeclarationScannerDirectives<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral<'t> {
-    pub token_literal: TokenLiteral<'t>,
+    pub token_literal: TokenLiteral<'t>, /* TokenLiteral */
 }
 
 ///
@@ -281,8 +286,8 @@ pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteral<'t> {
-    pub token_literal: TokenLiteral<'t>,
-    pub token_literal0: TokenLiteral<'t>,
+    pub token_literal: TokenLiteral<'t>,  /* TokenLiteral */
+    pub token_literal0: TokenLiteral<'t>, /* TokenLiteral */
 }
 
 ///
@@ -314,8 +319,8 @@ pub struct ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier<'t> {
-    pub identifier_list: IdentifierList<'t>,
-    pub identifier: Identifier<'t>,
+    pub identifier_list: IdentifierList<'t>, /* IdentifierList */
+    pub identifier: Identifier<'t>,          /* Identifier */
 }
 
 ///
@@ -327,7 +332,7 @@ pub struct ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorGroup<'t> {
-    pub group: Group<'t>,
+    pub group: Group<'t>, /* Group */
 }
 
 ///
@@ -339,7 +344,7 @@ pub struct FactorGroup<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorRepeat<'t> {
-    pub repeat: Repeat<'t>,
+    pub repeat: Repeat<'t>, /* Repeat */
 }
 
 ///
@@ -351,7 +356,7 @@ pub struct FactorRepeat<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorOptional<'t> {
-    pub optional: Optional<'t>,
+    pub optional: Optional<'t>, /* Optional */
 }
 
 ///
@@ -363,7 +368,7 @@ pub struct FactorOptional<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorSymbol<'t> {
-    pub symbol: Symbol<'t>,
+    pub symbol: Symbol<'t>, /* Symbol */
 }
 
 ///
@@ -375,7 +380,7 @@ pub struct FactorSymbol<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolNonTerminal<'t> {
-    pub non_terminal: NonTerminal<'t>,
+    pub non_terminal: NonTerminal<'t>, /* NonTerminal */
 }
 
 ///
@@ -387,7 +392,7 @@ pub struct SymbolNonTerminal<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolSimpleToken<'t> {
-    pub simple_token: SimpleToken<'t>,
+    pub simple_token: SimpleToken<'t>, /* SimpleToken */
 }
 
 ///
@@ -399,7 +404,7 @@ pub struct SymbolSimpleToken<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolTokenWithStates<'t> {
-    pub token_with_states: TokenWithStates<'t>,
+    pub token_with_states: TokenWithStates<'t>, /* TokenWithStates */
 }
 
 ///
@@ -411,7 +416,7 @@ pub struct SymbolTokenWithStates<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolScannerSwitch<'t> {
-    pub scanner_switch: ScannerSwitch<'t>,
+    pub scanner_switch: ScannerSwitch<'t>, /* ScannerSwitch */
 }
 
 ///
@@ -423,7 +428,7 @@ pub struct SymbolScannerSwitch<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralString<'t> {
-    pub string: String<'t>,
+    pub string: String<'t>, /* String */
 }
 
 ///
@@ -435,7 +440,7 @@ pub struct TokenLiteralString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralRawString<'t> {
-    pub raw_string: RawString<'t>,
+    pub raw_string: RawString<'t>, /* RawString */
 }
 
 ///
@@ -447,7 +452,7 @@ pub struct TokenLiteralRawString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralRegex<'t> {
-    pub regex: Regex<'t>,
+    pub regex: Regex<'t>, /* Regex */
 }
 
 ///
@@ -459,8 +464,8 @@ pub struct TokenLiteralRegex<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen<'t> {
-    pub percent_sc: Token<'t>, /* %sc */
-    pub scanner_switch_opt: Option<ScannerSwitchOpt<'t>>,
+    pub percent_sc: Token<'t>,                            /* %sc */
+    pub scanner_switch_opt: Option<ScannerSwitchOpt<'t>>, /* ScannerSwitchOpt */
 }
 
 ///
@@ -472,8 +477,8 @@ pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchPercentPushLParenIdentifierRParen<'t> {
-    pub percent_push: Token<'t>, /* %push */
-    pub identifier: Identifier<'t>,
+    pub percent_push: Token<'t>,    /* %push */
+    pub identifier: Identifier<'t>, /* Identifier */
 }
 
 ///
@@ -497,11 +502,24 @@ pub struct ScannerSwitchPercentPopLParenRParen<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ASTControlCutOperator {
-    pub cut_operator: CutOperator,
+    pub cut_operator: CutOperator, /* CutOperator */
 }
 
 ///
 /// Type derived for production 70
+///
+/// `ASTControl: MemberName ASTControlOpt /* Option */;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ASTControlMemberNameASTControlOpt<'t> {
+    pub member_name: MemberName<'t>,              /* MemberName */
+    pub a_s_t_control_opt: Option<ASTControlOpt>, /* ASTControlOpt */
+}
+
+///
+/// Type derived for production 71
 ///
 /// `ASTControl: UserTypeDeclaration;`
 ///
@@ -509,11 +527,11 @@ pub struct ASTControlCutOperator {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ASTControlUserTypeDeclaration {
-    pub user_type_declaration: UserTypeDeclaration,
+    pub user_type_declaration: UserTypeDeclaration, /* UserTypeDeclaration */
 }
 
 ///
-/// Type derived for production 77
+/// Type derived for production 81
 ///
 /// `LookAheadGroup: PositiveLookahead;`
 ///
@@ -521,11 +539,11 @@ pub struct ASTControlUserTypeDeclaration {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LookAheadGroupPositiveLookahead {
-    pub positive_lookahead: PositiveLookahead,
+    pub positive_lookahead: PositiveLookahead, /* PositiveLookahead */
 }
 
 ///
-/// Type derived for production 78
+/// Type derived for production 82
 ///
 /// `LookAheadGroup: NegativeLookahead;`
 ///
@@ -533,7 +551,7 @@ pub struct LookAheadGroupPositiveLookahead {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LookAheadGroupNegativeLookahead {
-    pub negative_lookahead: NegativeLookahead,
+    pub negative_lookahead: NegativeLookahead, /* NegativeLookahead */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -546,9 +564,20 @@ pub struct LookAheadGroupNegativeLookahead {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ASTControl {
+pub enum ASTControl<'t> {
     CutOperator(ASTControlCutOperator),
+    MemberNameASTControlOpt(ASTControlMemberNameASTControlOpt<'t>),
     UserTypeDeclaration(ASTControlUserTypeDeclaration),
+}
+
+///
+/// Type derived for non-terminal ASTControlOpt
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct ASTControlOpt {
+    pub user_type_declaration: UserTypeDeclaration, /* UserTypeDeclaration */
 }
 
 ///
@@ -558,7 +587,7 @@ pub enum ASTControl {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Alternation<'t> {
-    pub alternation_list: Vec<AlternationList<'t>>,
+    pub alternation_list: Vec<AlternationList<'t>>, /* AlternationList */
 }
 
 ///
@@ -568,7 +597,7 @@ pub struct Alternation<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AlternationList<'t> {
-    pub factor: Factor<'t>,
+    pub factor: Factor<'t>, /* Factor */
 }
 
 ///
@@ -578,8 +607,8 @@ pub struct AlternationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Alternations<'t> {
-    pub alternation: Alternation<'t>,
-    pub alternations_list: Vec<AlternationsList<'t>>,
+    pub alternation: Alternation<'t>,                 /* Alternation */
+    pub alternations_list: Vec<AlternationsList<'t>>, /* AlternationsList */
 }
 
 ///
@@ -589,7 +618,7 @@ pub struct Alternations<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AlternationsList<'t> {
-    pub alternation: Alternation<'t>,
+    pub alternation: Alternation<'t>, /* Alternation */
 }
 
 ///
@@ -644,8 +673,8 @@ pub enum Factor<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GrammarDefinition<'t> {
-    pub production: Production<'t>,
-    pub grammar_definition_list: Vec<GrammarDefinitionList<'t>>,
+    pub production: Production<'t>, /* Production */
+    pub grammar_definition_list: Vec<GrammarDefinitionList<'t>>, /* GrammarDefinitionList */
 }
 
 ///
@@ -655,7 +684,7 @@ pub struct GrammarDefinition<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GrammarDefinitionList<'t> {
-    pub production: Production<'t>,
+    pub production: Production<'t>, /* Production */
 }
 
 ///
@@ -665,9 +694,9 @@ pub struct GrammarDefinitionList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Group<'t> {
-    pub l_paren: Token<'t>, /* ( */
-    pub alternations: Alternations<'t>,
-    pub r_paren: Token<'t>, /* ) */
+    pub l_paren: Token<'t>,             /* ( */
+    pub alternations: Alternations<'t>, /* Alternations */
+    pub r_paren: Token<'t>,             /* ) */
 }
 
 ///
@@ -687,8 +716,8 @@ pub struct Identifier<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentifierList<'t> {
-    pub identifier: Identifier<'t>,
-    pub identifier_list_list: Vec<IdentifierListList<'t>>,
+    pub identifier: Identifier<'t>,                        /* Identifier */
+    pub identifier_list_list: Vec<IdentifierListList<'t>>, /* IdentifierListList */
 }
 
 ///
@@ -698,7 +727,7 @@ pub struct IdentifierList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentifierListList<'t> {
-    pub identifier: Identifier<'t>,
+    pub identifier: Identifier<'t>, /* Identifier */
 }
 
 ///
@@ -708,8 +737,8 @@ pub struct IdentifierListList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LookAhead<'t> {
-    pub look_ahead_group: LookAheadGroup,
-    pub token_literal: TokenLiteral<'t>,
+    pub look_ahead_group: LookAheadGroup, /* LookAheadGroup */
+    pub token_literal: TokenLiteral<'t>,  /* TokenLiteral */
 }
 
 ///
@@ -720,6 +749,16 @@ pub struct LookAhead<'t> {
 pub enum LookAheadGroup {
     PositiveLookahead(LookAheadGroupPositiveLookahead),
     NegativeLookahead(LookAheadGroupNegativeLookahead),
+}
+
+///
+/// Type derived for non-terminal MemberName
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct MemberName<'t> {
+    pub identifier: Identifier<'t>, /* Identifier */
 }
 
 ///
@@ -737,8 +776,8 @@ pub struct NegativeLookahead {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NonTerminal<'t> {
-    pub identifier: Identifier<'t>,
-    pub non_terminal_opt: Option<NonTerminalOpt>,
+    pub identifier: Identifier<'t>,                   /* Identifier */
+    pub non_terminal_opt: Option<NonTerminalOpt<'t>>, /* NonTerminalOpt */
 }
 
 ///
@@ -747,8 +786,8 @@ pub struct NonTerminal<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct NonTerminalOpt {
-    pub a_s_t_control: ASTControl,
+pub struct NonTerminalOpt<'t> {
+    pub a_s_t_control: ASTControl<'t>, /* ASTControl */
 }
 
 ///
@@ -758,9 +797,9 @@ pub struct NonTerminalOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Optional<'t> {
-    pub l_bracket: Token<'t>, /* [ */
-    pub alternations: Alternations<'t>,
-    pub r_bracket: Token<'t>, /* ] */
+    pub l_bracket: Token<'t>,           /* [ */
+    pub alternations: Alternations<'t>, /* Alternations */
+    pub r_bracket: Token<'t>,           /* ] */
 }
 
 ///
@@ -770,8 +809,8 @@ pub struct Optional<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Parol<'t> {
-    pub prolog: Prolog<'t>,
-    pub grammar_definition: GrammarDefinition<'t>,
+    pub prolog: Prolog<'t>,                        /* Prolog */
+    pub grammar_definition: GrammarDefinition<'t>, /* GrammarDefinition */
 }
 
 ///
@@ -789,8 +828,8 @@ pub struct PositiveLookahead {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Production<'t> {
-    pub identifier: Identifier<'t>,
-    pub alternations: Alternations<'t>,
+    pub identifier: Identifier<'t>,     /* Identifier */
+    pub alternations: Alternations<'t>, /* Alternations */
 }
 
 ///
@@ -800,9 +839,9 @@ pub struct Production<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Prolog<'t> {
-    pub start_declaration: StartDeclaration<'t>,
-    pub prolog_list: Vec<PrologList<'t>>,
-    pub prolog_list0: Vec<PrologList0>,
+    pub start_declaration: StartDeclaration<'t>, /* StartDeclaration */
+    pub prolog_list: Vec<PrologList<'t>>,        /* PrologList */
+    pub prolog_list0: Vec<PrologList0>,          /* PrologList0 */
 }
 
 ///
@@ -812,7 +851,7 @@ pub struct Prolog<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PrologList<'t> {
-    pub declaration: Declaration<'t>,
+    pub declaration: Declaration<'t>, /* Declaration */
 }
 
 ///
@@ -822,7 +861,7 @@ pub struct PrologList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PrologList0 {
-    pub scanner_state: crate::parser::parol_grammar::ScannerConfig,
+    pub scanner_state: crate::parser::parol_grammar::ScannerConfig, /* ScannerState */
 }
 
 ///
@@ -852,9 +891,9 @@ pub struct Regex<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Repeat<'t> {
-    pub l_brace: Token<'t>, /* { */
-    pub alternations: Alternations<'t>,
-    pub r_brace: Token<'t>, /* } */
+    pub l_brace: Token<'t>,             /* { */
+    pub alternations: Alternations<'t>, /* Alternations */
+    pub r_brace: Token<'t>,             /* } */
 }
 
 ///
@@ -885,8 +924,8 @@ pub enum ScannerDirectives<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerState<'t> {
-    pub identifier: Identifier<'t>,
-    pub scanner_state_list: Vec<ScannerStateList<'t>>,
+    pub state_name: Identifier<'t>,                    /* Identifier */
+    pub scanner_state_list: Vec<ScannerStateList<'t>>, /* ScannerStateList */
 }
 
 ///
@@ -896,7 +935,7 @@ pub struct ScannerState<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerStateList<'t> {
-    pub scanner_directives: ScannerDirectives<'t>,
+    pub scanner_directives: ScannerDirectives<'t>, /* ScannerDirectives */
 }
 
 ///
@@ -917,7 +956,7 @@ pub enum ScannerSwitch<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchOpt<'t> {
-    pub identifier: Identifier<'t>,
+    pub identifier: Identifier<'t>, /* Identifier */
 }
 
 ///
@@ -927,8 +966,8 @@ pub struct ScannerSwitchOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleToken<'t> {
-    pub token_expression: TokenExpression<'t>,
-    pub simple_token_opt: Option<SimpleTokenOpt>,
+    pub token_expression: TokenExpression<'t>, /* TokenExpression */
+    pub simple_token_opt: Option<SimpleTokenOpt<'t>>, /* SimpleTokenOpt */
 }
 
 ///
@@ -937,8 +976,8 @@ pub struct SimpleToken<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct SimpleTokenOpt {
-    pub a_s_t_control: ASTControl,
+pub struct SimpleTokenOpt<'t> {
+    pub a_s_t_control: ASTControl<'t>, /* ASTControl */
 }
 
 ///
@@ -948,7 +987,7 @@ pub struct SimpleTokenOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StartDeclaration<'t> {
-    pub identifier: Identifier<'t>,
+    pub identifier: Identifier<'t>, /* Identifier */
 }
 
 ///
@@ -980,8 +1019,8 @@ pub enum Symbol<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenExpression<'t> {
-    pub token_literal: TokenLiteral<'t>,
-    pub token_expression_opt: Option<TokenExpressionOpt<'t>>,
+    pub token_literal: TokenLiteral<'t>, /* TokenLiteral */
+    pub token_expression_opt: Option<TokenExpressionOpt<'t>>, /* TokenExpressionOpt */
 }
 
 ///
@@ -991,7 +1030,7 @@ pub struct TokenExpression<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenExpressionOpt<'t> {
-    pub look_ahead: LookAhead<'t>,
+    pub look_ahead: LookAhead<'t>, /* LookAhead */
 }
 
 ///
@@ -1012,9 +1051,9 @@ pub enum TokenLiteral<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenWithStates<'t> {
-    pub identifier_list: IdentifierList<'t>,
-    pub token_expression: TokenExpression<'t>,
-    pub token_with_states_opt: Option<TokenWithStatesOpt>,
+    pub identifier_list: IdentifierList<'t>, /* IdentifierList */
+    pub token_expression: TokenExpression<'t>, /* TokenExpression */
+    pub token_with_states_opt: Option<TokenWithStatesOpt<'t>>, /* TokenWithStatesOpt */
 }
 
 ///
@@ -1023,8 +1062,8 @@ pub struct TokenWithStates<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct TokenWithStatesOpt {
-    pub a_s_t_control: ASTControl,
+pub struct TokenWithStatesOpt<'t> {
+    pub a_s_t_control: ASTControl<'t>, /* ASTControl */
 }
 
 ///
@@ -1034,7 +1073,7 @@ pub struct TokenWithStatesOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeDeclaration {
-    pub user_type_name: crate::parser::parol_grammar::UserDefinedTypeName,
+    pub user_type_name: crate::parser::parol_grammar::UserDefinedTypeName, /* UserTypeName */
 }
 
 ///
@@ -1044,8 +1083,8 @@ pub struct UserTypeDeclaration {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeName<'t> {
-    pub identifier: Identifier<'t>,
-    pub user_type_name_list: Vec<UserTypeNameList<'t>>,
+    pub identifier: Identifier<'t>,                     /* Identifier */
+    pub user_type_name_list: Vec<UserTypeNameList<'t>>, /* UserTypeNameList */
 }
 
 ///
@@ -1055,7 +1094,7 @@ pub struct UserTypeName<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeNameList<'t> {
-    pub identifier: Identifier<'t>,
+    pub identifier: Identifier<'t>, /* Identifier */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -1066,7 +1105,8 @@ pub struct UserTypeNameList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ASTType<'t> {
-    ASTControl(ASTControl),
+    ASTControl(ASTControl<'t>),
+    ASTControlOpt(Option<ASTControlOpt>),
     Alternation(Alternation<'t>),
     AlternationList(Vec<AlternationList<'t>>),
     Alternations(Alternations<'t>),
@@ -1083,9 +1123,10 @@ pub enum ASTType<'t> {
     IdentifierListList(Vec<IdentifierListList<'t>>),
     LookAhead(LookAhead<'t>),
     LookAheadGroup(LookAheadGroup),
+    MemberName(MemberName<'t>),
     NegativeLookahead(NegativeLookahead),
     NonTerminal(NonTerminal<'t>),
-    NonTerminalOpt(Option<NonTerminalOpt>),
+    NonTerminalOpt(Option<NonTerminalOpt<'t>>),
     Optional(Optional<'t>),
     Parol(Parol<'t>),
     PositiveLookahead(PositiveLookahead),
@@ -1102,7 +1143,7 @@ pub enum ASTType<'t> {
     ScannerSwitch(ScannerSwitch<'t>),
     ScannerSwitchOpt(Option<ScannerSwitchOpt<'t>>),
     SimpleToken(SimpleToken<'t>),
-    SimpleTokenOpt(Option<SimpleTokenOpt>),
+    SimpleTokenOpt(Option<SimpleTokenOpt<'t>>),
     StartDeclaration(StartDeclaration<'t>),
     String(String<'t>),
     Symbol(Symbol<'t>),
@@ -1110,7 +1151,7 @@ pub enum ASTType<'t> {
     TokenExpressionOpt(Option<TokenExpressionOpt<'t>>),
     TokenLiteral(TokenLiteral<'t>),
     TokenWithStates(TokenWithStates<'t>),
-    TokenWithStatesOpt(Option<TokenWithStatesOpt>),
+    TokenWithStatesOpt(Option<TokenWithStatesOpt<'t>>),
     UserTypeDeclaration(UserTypeDeclaration),
     UserTypeName(UserTypeName<'t>),
     UserTypeNameList(Vec<UserTypeNameList<'t>>),
@@ -2367,13 +2408,13 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// `ScannerState: '%scanner'^ /* Clipped */ Identifier '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;`
+    /// `ScannerState: '%scanner'^ /* Clipped */ Identifier@state_name '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_state(
         &mut self,
         _percent_scanner: &ParseTreeType<'t>,
-        _identifier: &ParseTreeType<'t>,
+        _state_name: &ParseTreeType<'t>,
         _l_brace: &ParseTreeType<'t>,
         _scanner_state_list: &ParseTreeType<'t>,
         _r_brace: &ParseTreeType<'t>,
@@ -2382,9 +2423,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let scanner_state_list =
             pop_and_reverse_item!(self, scanner_state_list, ScannerStateList, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let state_name = pop_item!(self, state_name, Identifier, context);
         let scanner_state_built = ScannerState {
-            identifier,
+            state_name,
             scanner_state_list,
         };
         // Calling user action here
@@ -2620,18 +2661,23 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// `ASTControl: UserTypeDeclaration;`
+    /// `ASTControl: MemberName ASTControlOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
-    fn a_s_t_control_1(&mut self, _user_type_declaration: &ParseTreeType<'t>) -> Result<()> {
+    fn a_s_t_control_1(
+        &mut self,
+        _member_name: &ParseTreeType<'t>,
+        _a_s_t_control_opt: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let user_type_declaration =
-            pop_item!(self, user_type_declaration, UserTypeDeclaration, context);
-        let a_s_t_control_1_built = ASTControlUserTypeDeclaration {
-            user_type_declaration,
+        let a_s_t_control_opt = pop_item!(self, a_s_t_control_opt, ASTControlOpt, context);
+        let member_name = pop_item!(self, member_name, MemberName, context);
+        let a_s_t_control_1_built = ASTControlMemberNameASTControlOpt {
+            member_name,
+            a_s_t_control_opt,
         };
-        let a_s_t_control_1_built = ASTControl::UserTypeDeclaration(a_s_t_control_1_built);
+        let a_s_t_control_1_built = ASTControl::MemberNameASTControlOpt(a_s_t_control_1_built);
         // Calling user action here
         self.user_grammar.a_s_t_control(&a_s_t_control_1_built)?;
         self.push(ASTType::ASTControl(a_s_t_control_1_built), context);
@@ -2639,6 +2685,78 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     }
 
     /// Semantic action for production 71:
+    ///
+    /// `ASTControl: UserTypeDeclaration;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn a_s_t_control_2(&mut self, _user_type_declaration: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let user_type_declaration =
+            pop_item!(self, user_type_declaration, UserTypeDeclaration, context);
+        let a_s_t_control_2_built = ASTControlUserTypeDeclaration {
+            user_type_declaration,
+        };
+        let a_s_t_control_2_built = ASTControl::UserTypeDeclaration(a_s_t_control_2_built);
+        // Calling user action here
+        self.user_grammar.a_s_t_control(&a_s_t_control_2_built)?;
+        self.push(ASTType::ASTControl(a_s_t_control_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 72:
+    ///
+    /// `ASTControlOpt /* Option<T>::Some */: UserTypeDeclaration;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn a_s_t_control_opt_0(&mut self, _user_type_declaration: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let user_type_declaration =
+            pop_item!(self, user_type_declaration, UserTypeDeclaration, context);
+        let a_s_t_control_opt_0_built = ASTControlOpt {
+            user_type_declaration,
+        };
+        self.push(
+            ASTType::ASTControlOpt(Some(a_s_t_control_opt_0_built)),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 73:
+    ///
+    /// `ASTControlOpt /* Option<T>::None */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn a_s_t_control_opt_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::ASTControlOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 74:
+    ///
+    /// `MemberName: '@'^ /* Clipped */ Identifier;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn member_name(
+        &mut self,
+        _at: &ParseTreeType<'t>,
+        _identifier: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let identifier = pop_item!(self, identifier, Identifier, context);
+        let member_name_built = MemberName { identifier };
+        // Calling user action here
+        self.user_grammar.member_name(&member_name_built)?;
+        self.push(ASTType::MemberName(member_name_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 75:
     ///
     /// `CutOperator: '^'^ /* Clipped */;`
     ///
@@ -2653,7 +2771,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 72:
+    /// Semantic action for production 76:
     ///
     /// `UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : UserType;`
     ///
@@ -2681,7 +2799,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 73:
+    /// Semantic action for production 77:
     ///
     /// `UserTypeName: Identifier UserTypeNameList /* Vec */;`
     ///
@@ -2706,7 +2824,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 74:
+    /// Semantic action for production 78:
     ///
     /// `UserTypeNameList /* Vec<T>::Push */: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;`
     ///
@@ -2730,7 +2848,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 75:
+    /// Semantic action for production 79:
     ///
     /// `UserTypeNameList /* Vec<T>::New */: ;`
     ///
@@ -2746,7 +2864,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 76:
+    /// Semantic action for production 80:
     ///
     /// `LookAhead: LookAheadGroup TokenLiteral;`
     ///
@@ -2770,7 +2888,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 77:
+    /// Semantic action for production 81:
     ///
     /// `LookAheadGroup: PositiveLookahead;`
     ///
@@ -2785,7 +2903,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 78:
+    /// Semantic action for production 82:
     ///
     /// `LookAheadGroup: NegativeLookahead;`
     ///
@@ -2800,7 +2918,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 79:
+    /// Semantic action for production 83:
     ///
     /// `PositiveLookahead: '?='^ /* Clipped */;`
     ///
@@ -2819,7 +2937,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 80:
+    /// Semantic action for production 84:
     ///
     /// `NegativeLookahead: '?!'^ /* Clipped */;`
     ///
@@ -2931,17 +3049,21 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             67 => self.scanner_switch_opt_0(&children[0]),
             68 => self.scanner_switch_opt_1(),
             69 => self.a_s_t_control_0(&children[0]),
-            70 => self.a_s_t_control_1(&children[0]),
-            71 => self.cut_operator(&children[0]),
-            72 => self.user_type_declaration(&children[0], &children[1]),
-            73 => self.user_type_name(&children[0], &children[1]),
-            74 => self.user_type_name_list_0(&children[0], &children[1], &children[2]),
-            75 => self.user_type_name_list_1(),
-            76 => self.look_ahead(&children[0], &children[1]),
-            77 => self.look_ahead_group_0(&children[0]),
-            78 => self.look_ahead_group_1(&children[0]),
-            79 => self.positive_lookahead(&children[0]),
-            80 => self.negative_lookahead(&children[0]),
+            70 => self.a_s_t_control_1(&children[0], &children[1]),
+            71 => self.a_s_t_control_2(&children[0]),
+            72 => self.a_s_t_control_opt_0(&children[0]),
+            73 => self.a_s_t_control_opt_1(),
+            74 => self.member_name(&children[0], &children[1]),
+            75 => self.cut_operator(&children[0]),
+            76 => self.user_type_declaration(&children[0], &children[1]),
+            77 => self.user_type_name(&children[0], &children[1]),
+            78 => self.user_type_name_list_0(&children[0], &children[1], &children[2]),
+            79 => self.user_type_name_list_1(),
+            80 => self.look_ahead(&children[0], &children[1]),
+            81 => self.look_ahead_group_0(&children[0]),
+            82 => self.look_ahead_group_1(&children[0]),
+            83 => self.positive_lookahead(&children[0]),
+            84 => self.negative_lookahead(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

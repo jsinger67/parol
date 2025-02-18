@@ -6,6 +6,16 @@ impl From<&ASTControl> for Rng {
         match val {
             ASTControl::CutOperator(cut) => Self::from(&cut.cut_operator),
             ASTControl::UserTypeDeclaration(ut) => Self::from(&ut.user_type_declaration),
+            ASTControl::MemberNameASTControlOpt(member_with_user_type_opt) => {
+                let member =
+                    Self::from(&member_with_user_type_opt.member_name.identifier.identifier);
+                member_with_user_type_opt.a_s_t_control_opt.as_ref().map_or(
+                    member,
+                    |ast_control_opt| {
+                        member.extend(Self::from(&ast_control_opt.user_type_declaration))
+                    },
+                )
+            }
         }
     }
 }

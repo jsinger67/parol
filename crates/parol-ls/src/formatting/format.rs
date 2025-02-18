@@ -77,6 +77,20 @@ impl Fmt for ASTControl {
         match self {
             ASTControl::CutOperator(_) => ("^".to_string(), comments),
             ASTControl::UserTypeDeclaration(ut) => ut.user_type_declaration.txt(options, comments),
+            ASTControl::MemberNameASTControlOpt(member_with_user_type_opt) => {
+                let (member_name, comments) = member_with_user_type_opt
+                    .member_name
+                    .identifier
+                    .txt(options, comments);
+                let (ast_control_opt, comments) = if let Some(ast_control_opt) =
+                    member_with_user_type_opt.a_s_t_control_opt.as_ref()
+                {
+                    ast_control_opt.user_type_declaration.txt(options, comments)
+                } else {
+                    (String::default(), comments)
+                };
+                (format!("{}{}", member_name, ast_control_opt), comments)
+            }
         }
     }
 }
