@@ -220,7 +220,7 @@ pub trait ParolLsGrammarTrait {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentTitleString {
     pub percent_title: crate::parol_ls_grammar::OwnedToken, /* %title */
-    pub string: String,                                     /* String */
+    pub string: String,
 }
 
 ///
@@ -233,7 +233,7 @@ pub struct DeclarationPercentTitleString {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentCommentString {
     pub percent_comment: crate::parol_ls_grammar::OwnedToken, /* %comment */
-    pub string: String,                                       /* String */
+    pub string: String,
 }
 
 ///
@@ -246,9 +246,9 @@ pub struct DeclarationPercentCommentString {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName {
     pub percent_user_underscore_type: crate::parol_ls_grammar::OwnedToken, /* %user_type */
-    pub identifier: Identifier,                                            /* Identifier */
-    pub equ: crate::parol_ls_grammar::OwnedToken,                          /* = */
-    pub user_type_name: UserTypeName,                                      /* UserTypeName */
+    pub identifier: Identifier,
+    pub equ: crate::parol_ls_grammar::OwnedToken, /* = */
+    pub user_type_name: UserTypeName,
 }
 
 ///
@@ -261,7 +261,7 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentGrammarUnderscoreTypeLiteralString {
     pub percent_grammar_underscore_type: crate::parol_ls_grammar::OwnedToken, /* %grammar_type */
-    pub literal_string: LiteralString,                                        /* LiteralString */
+    pub literal_string: LiteralString,
 }
 
 ///
@@ -273,7 +273,7 @@ pub struct DeclarationPercentGrammarUnderscoreTypeLiteralString {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationScannerDirectives {
-    pub scanner_directives: ScannerDirectives, /* ScannerDirectives */
+    pub scanner_directives: ScannerDirectives,
 }
 
 ///
@@ -286,7 +286,7 @@ pub struct DeclarationScannerDirectives {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral {
     pub percent_line_underscore_comment: crate::parol_ls_grammar::OwnedToken, /* %line_comment */
-    pub token_literal: TokenLiteral,                                          /* TokenLiteral */
+    pub token_literal: TokenLiteral,
 }
 
 ///
@@ -299,8 +299,8 @@ pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteral {
     pub percent_block_underscore_comment: crate::parol_ls_grammar::OwnedToken, /* %block_comment */
-    pub token_literal: TokenLiteral,                                           /* TokenLiteral */
-    pub token_literal0: TokenLiteral,                                          /* TokenLiteral */
+    pub token_literal: TokenLiteral,
+    pub token_literal0: TokenLiteral,
 }
 
 ///
@@ -337,9 +337,9 @@ pub struct ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier {
     pub percent_on: crate::parol_ls_grammar::OwnedToken, /* %on */
-    pub identifier_list: IdentifierList,                 /* IdentifierList */
+    pub identifier_list: IdentifierList,
     pub percent_enter: crate::parol_ls_grammar::OwnedToken, /* %enter */
-    pub identifier: Identifier,                          /* Identifier */
+    pub identifier: Identifier,
 }
 
 ///
@@ -351,7 +351,7 @@ pub struct ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorGroup {
-    pub group: Group, /* Group */
+    pub group: Group,
 }
 
 ///
@@ -363,7 +363,7 @@ pub struct FactorGroup {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorRepeat {
-    pub repeat: Repeat, /* Repeat */
+    pub repeat: Repeat,
 }
 
 ///
@@ -375,7 +375,7 @@ pub struct FactorRepeat {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorOptional {
-    pub optional: Optional, /* Optional */
+    pub optional: Optional,
 }
 
 ///
@@ -387,7 +387,7 @@ pub struct FactorOptional {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorSymbol {
-    pub symbol: Symbol, /* Symbol */
+    pub symbol: Symbol,
 }
 
 ///
@@ -399,7 +399,7 @@ pub struct FactorSymbol {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolNonTerminal {
-    pub non_terminal: NonTerminal, /* NonTerminal */
+    pub non_terminal: NonTerminal,
 }
 
 ///
@@ -411,7 +411,7 @@ pub struct SymbolNonTerminal {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolSimpleToken {
-    pub simple_token: SimpleToken, /* SimpleToken */
+    pub simple_token: SimpleToken,
 }
 
 ///
@@ -423,7 +423,7 @@ pub struct SymbolSimpleToken {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolTokenWithStates {
-    pub token_with_states: TokenWithStates, /* TokenWithStates */
+    pub token_with_states: TokenWithStates,
 }
 
 ///
@@ -435,7 +435,7 @@ pub struct SymbolTokenWithStates {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolScannerSwitch {
-    pub scanner_switch: ScannerSwitch, /* ScannerSwitch */
+    pub scanner_switch: ScannerSwitch,
 }
 
 ///
@@ -447,7 +447,7 @@ pub struct SymbolScannerSwitch {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralString {
-    pub string: String, /* String */
+    pub string: String,
 }
 
 ///
@@ -459,7 +459,7 @@ pub struct TokenLiteralString {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralLiteralString {
-    pub literal_string: LiteralString, /* LiteralString */
+    pub literal_string: LiteralString,
 }
 
 ///
@@ -471,7 +471,7 @@ pub struct TokenLiteralLiteralString {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralRegex {
-    pub regex: Regex, /* Regex */
+    pub regex: Regex,
 }
 
 ///
@@ -485,8 +485,8 @@ pub struct TokenLiteralRegex {
 pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen {
     pub percent_sc: crate::parol_ls_grammar::OwnedToken, /* %sc */
     pub l_paren: crate::parol_ls_grammar::OwnedToken,    /* ( */
-    pub scanner_switch_opt: Option<ScannerSwitchOpt>,    /* ScannerSwitchOpt */
-    pub r_paren: crate::parol_ls_grammar::OwnedToken,    /* ) */
+    pub scanner_switch_opt: Option<ScannerSwitchOpt>,
+    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* ) */
 }
 
 ///
@@ -500,8 +500,8 @@ pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen {
 pub struct ScannerSwitchPercentPushLParenIdentifierRParen {
     pub percent_push: crate::parol_ls_grammar::OwnedToken, /* %push */
     pub l_paren: crate::parol_ls_grammar::OwnedToken,      /* ( */
-    pub identifier: Identifier,                            /* Identifier */
-    pub r_paren: crate::parol_ls_grammar::OwnedToken,      /* ) */
+    pub identifier: Identifier,
+    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* ) */
 }
 
 ///
@@ -527,7 +527,7 @@ pub struct ScannerSwitchPercentPopLParenRParen {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ASTControlCutOperator {
-    pub cut_operator: CutOperator, /* CutOperator */
+    pub cut_operator: CutOperator,
 }
 
 ///
@@ -539,8 +539,8 @@ pub struct ASTControlCutOperator {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ASTControlMemberNameASTControlOpt {
-    pub member_name: MemberName,                  /* MemberName */
-    pub a_s_t_control_opt: Option<ASTControlOpt>, /* ASTControlOpt */
+    pub member_name: MemberName,
+    pub a_s_t_control_opt: Option<ASTControlOpt>,
 }
 
 ///
@@ -552,7 +552,7 @@ pub struct ASTControlMemberNameASTControlOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ASTControlUserTypeDeclaration {
-    pub user_type_declaration: UserTypeDeclaration, /* UserTypeDeclaration */
+    pub user_type_declaration: UserTypeDeclaration,
 }
 
 ///
@@ -564,7 +564,7 @@ pub struct ASTControlUserTypeDeclaration {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LookAheadGroupPositiveLookahead {
-    pub positive_lookahead: PositiveLookahead, /* PositiveLookahead */
+    pub positive_lookahead: PositiveLookahead,
 }
 
 ///
@@ -576,7 +576,7 @@ pub struct LookAheadGroupPositiveLookahead {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LookAheadGroupNegativeLookahead {
-    pub negative_lookahead: NegativeLookahead, /* NegativeLookahead */
+    pub negative_lookahead: NegativeLookahead,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -602,7 +602,7 @@ pub enum ASTControl {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ASTControlOpt {
-    pub user_type_declaration: UserTypeDeclaration, /* UserTypeDeclaration */
+    pub user_type_declaration: UserTypeDeclaration,
 }
 
 ///
@@ -612,7 +612,7 @@ pub struct ASTControlOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Alternation {
-    pub alternation_list: Vec<AlternationList>, /* AlternationList */
+    pub alternation_list: Vec<AlternationList>,
 }
 
 ///
@@ -622,7 +622,7 @@ pub struct Alternation {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AlternationList {
-    pub factor: Factor, /* Factor */
+    pub factor: Factor,
 }
 
 ///
@@ -632,8 +632,8 @@ pub struct AlternationList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Alternations {
-    pub alternation: Alternation,                 /* Alternation */
-    pub alternations_list: Vec<AlternationsList>, /* AlternationsList */
+    pub alternation: Alternation,
+    pub alternations_list: Vec<AlternationsList>,
 }
 
 ///
@@ -644,7 +644,7 @@ pub struct Alternations {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AlternationsList {
     pub or: crate::parol_ls_grammar::OwnedToken, /* | */
-    pub alternation: Alternation,                /* Alternation */
+    pub alternation: Alternation,
 }
 
 ///
@@ -702,8 +702,8 @@ pub enum Factor {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GrammarDefinition {
     pub percent_percent: crate::parol_ls_grammar::OwnedToken, /* %% */
-    pub production: Production,                               /* Production */
-    pub grammar_definition_list: Vec<GrammarDefinitionList>,  /* GrammarDefinitionList */
+    pub production: Production,
+    pub grammar_definition_list: Vec<GrammarDefinitionList>,
 }
 
 ///
@@ -713,7 +713,7 @@ pub struct GrammarDefinition {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GrammarDefinitionList {
-    pub production: Production, /* Production */
+    pub production: Production,
 }
 
 ///
@@ -724,7 +724,7 @@ pub struct GrammarDefinitionList {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Group {
     pub l_paren: crate::parol_ls_grammar::OwnedToken, /* ( */
-    pub alternations: Alternations,                   /* Alternations */
+    pub alternations: Alternations,
     pub r_paren: crate::parol_ls_grammar::OwnedToken, /* ) */
 }
 
@@ -745,8 +745,8 @@ pub struct Identifier {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentifierList {
-    pub identifier: Identifier,                        /* Identifier */
-    pub identifier_list_list: Vec<IdentifierListList>, /* IdentifierListList */
+    pub identifier: Identifier,
+    pub identifier_list_list: Vec<IdentifierListList>,
 }
 
 ///
@@ -757,7 +757,7 @@ pub struct IdentifierList {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentifierListList {
     pub comma: crate::parol_ls_grammar::OwnedToken, /* , */
-    pub identifier: Identifier,                     /* Identifier */
+    pub identifier: Identifier,
 }
 
 ///
@@ -777,8 +777,8 @@ pub struct LiteralString {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LookAhead {
-    pub look_ahead_group: LookAheadGroup, /* LookAheadGroup */
-    pub token_literal: TokenLiteral,      /* TokenLiteral */
+    pub look_ahead_group: LookAheadGroup,
+    pub token_literal: TokenLiteral,
 }
 
 ///
@@ -798,7 +798,7 @@ pub enum LookAheadGroup {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MemberName {
-    pub identifier: Identifier, /* Identifier */
+    pub identifier: Identifier,
 }
 
 ///
@@ -818,8 +818,8 @@ pub struct NegativeLookahead {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NonTerminal {
-    pub identifier: Identifier,                   /* Identifier */
-    pub non_terminal_opt: Option<NonTerminalOpt>, /* NonTerminalOpt */
+    pub identifier: Identifier,
+    pub non_terminal_opt: Option<NonTerminalOpt>,
 }
 
 ///
@@ -829,7 +829,7 @@ pub struct NonTerminal {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NonTerminalOpt {
-    pub a_s_t_control: ASTControl, /* ASTControl */
+    pub a_s_t_control: ASTControl,
 }
 
 ///
@@ -840,7 +840,7 @@ pub struct NonTerminalOpt {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Optional {
     pub l_bracket: crate::parol_ls_grammar::OwnedToken, /* [ */
-    pub alternations: Alternations,                     /* Alternations */
+    pub alternations: Alternations,
     pub r_bracket: crate::parol_ls_grammar::OwnedToken, /* ] */
 }
 
@@ -851,8 +851,8 @@ pub struct Optional {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ParolLs {
-    pub prolog: Prolog,                        /* Prolog */
-    pub grammar_definition: GrammarDefinition, /* GrammarDefinition */
+    pub prolog: Prolog,
+    pub grammar_definition: GrammarDefinition,
 }
 
 ///
@@ -872,8 +872,8 @@ pub struct PositiveLookahead {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Production {
-    pub production_l_h_s: ProductionLHS, /* ProductionLHS */
-    pub alternations: Alternations,      /* Alternations */
+    pub production_l_h_s: ProductionLHS,
+    pub alternations: Alternations,
     pub semicolon: crate::parol_ls_grammar::OwnedToken, /* ; */
 }
 
@@ -884,7 +884,7 @@ pub struct Production {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProductionLHS {
-    pub identifier: Identifier,                     /* Identifier */
+    pub identifier: Identifier,
     pub colon: crate::parol_ls_grammar::OwnedToken, /* : */
 }
 
@@ -895,9 +895,9 @@ pub struct ProductionLHS {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Prolog {
-    pub start_declaration: StartDeclaration, /* StartDeclaration */
-    pub prolog_list: Vec<PrologList>,        /* PrologList */
-    pub prolog_list0: Vec<PrologList0>,      /* PrologList0 */
+    pub start_declaration: StartDeclaration,
+    pub prolog_list: Vec<PrologList>,
+    pub prolog_list0: Vec<PrologList0>,
 }
 
 ///
@@ -907,7 +907,7 @@ pub struct Prolog {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PrologList {
-    pub declaration: Declaration, /* Declaration */
+    pub declaration: Declaration,
 }
 
 ///
@@ -917,7 +917,7 @@ pub struct PrologList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PrologList0 {
-    pub scanner_state: ScannerState, /* ScannerState */
+    pub scanner_state: ScannerState,
 }
 
 ///
@@ -938,7 +938,7 @@ pub struct Regex {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Repeat {
     pub l_brace: crate::parol_ls_grammar::OwnedToken, /* { */
-    pub alternations: Alternations,                   /* Alternations */
+    pub alternations: Alternations,
     pub r_brace: crate::parol_ls_grammar::OwnedToken, /* } */
 }
 
@@ -971,10 +971,10 @@ pub enum ScannerDirectives {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerState {
     pub percent_scanner: crate::parol_ls_grammar::OwnedToken, /* %scanner */
-    pub identifier: Identifier,                               /* Identifier */
-    pub l_brace: crate::parol_ls_grammar::OwnedToken,         /* { */
-    pub scanner_state_list: Vec<ScannerStateList>,            /* ScannerStateList */
-    pub r_brace: crate::parol_ls_grammar::OwnedToken,         /* } */
+    pub identifier: Identifier,
+    pub l_brace: crate::parol_ls_grammar::OwnedToken, /* { */
+    pub scanner_state_list: Vec<ScannerStateList>,
+    pub r_brace: crate::parol_ls_grammar::OwnedToken, /* } */
 }
 
 ///
@@ -984,7 +984,7 @@ pub struct ScannerState {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerStateList {
-    pub scanner_directives: ScannerDirectives, /* ScannerDirectives */
+    pub scanner_directives: ScannerDirectives,
 }
 
 ///
@@ -1005,7 +1005,7 @@ pub enum ScannerSwitch {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchOpt {
-    pub identifier: Identifier, /* Identifier */
+    pub identifier: Identifier,
 }
 
 ///
@@ -1015,8 +1015,8 @@ pub struct ScannerSwitchOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleToken {
-    pub token_expression: TokenExpression, /* TokenExpression */
-    pub simple_token_opt: Option<SimpleTokenOpt>, /* SimpleTokenOpt */
+    pub token_expression: TokenExpression,
+    pub simple_token_opt: Option<SimpleTokenOpt>,
 }
 
 ///
@@ -1026,7 +1026,7 @@ pub struct SimpleToken {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleTokenOpt {
-    pub a_s_t_control: ASTControl, /* ASTControl */
+    pub a_s_t_control: ASTControl,
 }
 
 ///
@@ -1037,7 +1037,7 @@ pub struct SimpleTokenOpt {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StartDeclaration {
     pub percent_start: crate::parol_ls_grammar::OwnedToken, /* %start */
-    pub identifier: Identifier,                             /* Identifier */
+    pub identifier: Identifier,
 }
 
 ///
@@ -1069,8 +1069,8 @@ pub enum Symbol {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenExpression {
-    pub token_literal: TokenLiteral, /* TokenLiteral */
-    pub token_expression_opt: Option<TokenExpressionOpt>, /* TokenExpressionOpt */
+    pub token_literal: TokenLiteral,
+    pub token_expression_opt: Option<TokenExpressionOpt>,
 }
 
 ///
@@ -1080,7 +1080,7 @@ pub struct TokenExpression {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenExpressionOpt {
-    pub look_ahead: LookAhead, /* LookAhead */
+    pub look_ahead: LookAhead,
 }
 
 ///
@@ -1102,10 +1102,10 @@ pub enum TokenLiteral {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenWithStates {
     pub l_t: crate::parol_ls_grammar::OwnedToken, /* < */
-    pub identifier_list: IdentifierList,          /* IdentifierList */
+    pub identifier_list: IdentifierList,
     pub g_t: crate::parol_ls_grammar::OwnedToken, /* > */
-    pub token_expression: TokenExpression,        /* TokenExpression */
-    pub token_with_states_opt: Option<TokenWithStatesOpt>, /* TokenWithStatesOpt */
+    pub token_expression: TokenExpression,
+    pub token_with_states_opt: Option<TokenWithStatesOpt>,
 }
 
 ///
@@ -1115,7 +1115,7 @@ pub struct TokenWithStates {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenWithStatesOpt {
-    pub a_s_t_control: ASTControl, /* ASTControl */
+    pub a_s_t_control: ASTControl,
 }
 
 ///
@@ -1126,7 +1126,7 @@ pub struct TokenWithStatesOpt {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeDeclaration {
     pub colon: crate::parol_ls_grammar::OwnedToken, /* : */
-    pub user_type_name: UserTypeName,               /* UserTypeName */
+    pub user_type_name: UserTypeName,
 }
 
 ///
@@ -1136,8 +1136,8 @@ pub struct UserTypeDeclaration {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeName {
-    pub identifier: Identifier,                     /* Identifier */
-    pub user_type_name_list: Vec<UserTypeNameList>, /* UserTypeNameList */
+    pub identifier: Identifier,
+    pub user_type_name_list: Vec<UserTypeNameList>,
 }
 
 ///
@@ -1147,8 +1147,8 @@ pub struct UserTypeName {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeNameList {
-    pub double_colon: DoubleColon, /* DoubleColon */
-    pub identifier: Identifier,    /* Identifier */
+    pub double_colon: DoubleColon,
+    pub identifier: Identifier,
 }
 
 // -------------------------------------------------------------------------------------------------

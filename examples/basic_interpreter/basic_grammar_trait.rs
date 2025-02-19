@@ -263,7 +263,7 @@ pub trait BasicGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementRemark<'t> {
-    pub remark: Remark<'t>, /* Remark */
+    pub remark: Remark<'t>,
 }
 
 ///
@@ -275,7 +275,7 @@ pub struct StatementRemark<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementGotoStatement {
-    pub goto_statement: GotoStatement, /* GotoStatement */
+    pub goto_statement: GotoStatement,
 }
 
 ///
@@ -287,7 +287,7 @@ pub struct StatementGotoStatement {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementIfStatement<'t> {
-    pub if_statement: Box<IfStatement<'t>>, /* IfStatement */
+    pub if_statement: Box<IfStatement<'t>>,
 }
 
 ///
@@ -299,7 +299,7 @@ pub struct StatementIfStatement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementAssignment<'t> {
-    pub assignment: Assignment<'t>, /* Assignment */
+    pub assignment: Assignment<'t>,
 }
 
 ///
@@ -311,7 +311,7 @@ pub struct StatementAssignment<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementPrintStatement<'t> {
-    pub print_statement: PrintStatement<'t>, /* PrintStatement */
+    pub print_statement: PrintStatement<'t>,
 }
 
 ///
@@ -323,7 +323,7 @@ pub struct StatementPrintStatement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementEndStatement {
-    pub end_statement: EndStatement, /* EndStatement */
+    pub end_statement: EndStatement,
 }
 
 ///
@@ -335,8 +335,8 @@ pub struct StatementEndStatement {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IfBodyThenStatement<'t> {
-    pub then: Then,               /* Then */
-    pub statement: Statement<'t>, /* Statement */
+    pub then: Then,
+    pub statement: Statement<'t>,
 }
 
 ///
@@ -348,8 +348,8 @@ pub struct IfBodyThenStatement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IfBodyGotoLineNumber {
-    pub goto: Goto,              /* Goto */
-    pub line_number: LineNumber, /* LineNumber */
+    pub goto: Goto,
+    pub line_number: LineNumber,
 }
 
 ///
@@ -361,7 +361,7 @@ pub struct IfBodyGotoLineNumber {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NumberFloat {
-    pub float: Float, /* Float */
+    pub float: Float,
 }
 
 ///
@@ -373,7 +373,7 @@ pub struct NumberFloat {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NumberInteger {
-    pub integer: Integer, /* Integer */
+    pub integer: Integer,
 }
 
 ///
@@ -385,7 +385,7 @@ pub struct NumberInteger {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FloatFloat1 {
-    pub float1: Float1, /* Float1 */
+    pub float1: Float1,
 }
 
 ///
@@ -397,7 +397,7 @@ pub struct FloatFloat1 {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FloatFloat2 {
-    pub float2: Float2, /* Float2 */
+    pub float2: Float2,
 }
 
 ///
@@ -409,7 +409,7 @@ pub struct FloatFloat2 {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SummationListGroupPlus<'t> {
-    pub plus: Plus<'t>, /* Plus */
+    pub plus: Plus<'t>,
 }
 
 ///
@@ -421,7 +421,7 @@ pub struct SummationListGroupPlus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SummationListGroupMinus<'t> {
-    pub minus: Minus<'t>, /* Minus */
+    pub minus: Minus<'t>,
 }
 
 ///
@@ -433,7 +433,7 @@ pub struct SummationListGroupMinus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorLiteral {
-    pub literal: Literal, /* Literal */
+    pub literal: Literal,
 }
 
 ///
@@ -445,7 +445,7 @@ pub struct FactorLiteral {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorVariable<'t> {
-    pub variable: Variable<'t>, /* Variable */
+    pub variable: Variable<'t>,
 }
 
 ///
@@ -457,8 +457,8 @@ pub struct FactorVariable<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorMinusFactor<'t> {
-    pub minus: Minus<'t>,        /* Minus */
-    pub factor: Box<Factor<'t>>, /* Factor */
+    pub minus: Minus<'t>,
+    pub factor: Box<Factor<'t>>,
 }
 
 ///
@@ -470,9 +470,9 @@ pub struct FactorMinusFactor<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorLParenExpressionRParen<'t> {
-    pub l_paren: LParen<'t>,             /* LParen */
-    pub expression: Box<Expression<'t>>, /* Expression */
-    pub r_paren: RParen<'t>,             /* RParen */
+    pub l_paren: LParen<'t>,
+    pub expression: Box<Expression<'t>>,
+    pub r_paren: RParen<'t>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -495,10 +495,10 @@ pub struct AssignOp {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Assignment<'t> {
-    pub assignment_opt: Option<AssignmentOpt>, /* AssignmentOpt */
-    pub variable: Variable<'t>,                /* Variable */
-    pub assign_op: AssignOp,                   /* AssignOp */
-    pub expression: Expression<'t>,            /* Expression */
+    pub assignment_opt: Option<AssignmentOpt>,
+    pub variable: Variable<'t>,
+    pub assign_op: AssignOp,
+    pub expression: Expression<'t>,
 }
 
 ///
@@ -508,7 +508,7 @@ pub struct Assignment<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AssignmentOpt {
-    pub r#let: Let, /* Let */
+    pub r#let: Let,
 }
 
 ///
@@ -518,10 +518,10 @@ pub struct AssignmentOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Basic<'t> {
-    pub basic_opt: Option<BasicOpt>,    /* BasicOpt */
-    pub line: Line<'t>,                 /* Line */
-    pub basic_list: Vec<BasicList<'t>>, /* BasicList */
-    pub basic_opt0: Option<BasicOpt0>,  /* BasicOpt0 */
+    pub basic_opt: Option<BasicOpt>,
+    pub line: Line<'t>,
+    pub basic_list: Vec<BasicList<'t>>,
+    pub basic_opt0: Option<BasicOpt0>,
 }
 
 ///
@@ -531,8 +531,8 @@ pub struct Basic<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicList<'t> {
-    pub end_of_line: EndOfLine, /* EndOfLine */
-    pub line: Line<'t>,         /* Line */
+    pub end_of_line: EndOfLine,
+    pub line: Line<'t>,
 }
 
 ///
@@ -542,7 +542,7 @@ pub struct BasicList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicOpt {
-    pub end_of_line: EndOfLine, /* EndOfLine */
+    pub end_of_line: EndOfLine,
 }
 
 ///
@@ -552,7 +552,7 @@ pub struct BasicOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicOpt0 {
-    pub end_of_line: EndOfLine, /* EndOfLine */
+    pub end_of_line: EndOfLine,
 }
 
 ///
@@ -588,7 +588,7 @@ pub struct EndOfLine {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EndStatement {
-    pub end: End, /* End */
+    pub end: End,
 }
 
 ///
@@ -598,7 +598,7 @@ pub struct EndStatement {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Expression<'t> {
-    pub logical_or: LogicalOr<'t>, /* LogicalOr */
+    pub logical_or: LogicalOr<'t>,
 }
 
 ///
@@ -658,8 +658,8 @@ pub struct Goto {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GotoStatement {
-    pub goto: Goto,              /* Goto */
-    pub line_number: LineNumber, /* LineNumber */
+    pub goto: Goto,
+    pub line_number: LineNumber,
 }
 
 ///
@@ -687,9 +687,9 @@ pub enum IfBody<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IfStatement<'t> {
-    pub r#if: If,                   /* If */
-    pub expression: Expression<'t>, /* Expression */
-    pub if_body: IfBody<'t>,        /* IfBody */
+    pub r#if: If,
+    pub expression: Expression<'t>,
+    pub if_body: IfBody<'t>,
 }
 
 ///
@@ -727,9 +727,9 @@ pub struct Let {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Line<'t> {
-    pub line_number: LineNumber,      /* LineNumber */
-    pub statement: Statement<'t>,     /* Statement */
-    pub line_list: Vec<LineList<'t>>, /* LineList */
+    pub line_number: LineNumber,
+    pub statement: Statement<'t>,
+    pub line_list: Vec<LineList<'t>>,
 }
 
 ///
@@ -739,7 +739,7 @@ pub struct Line<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LineList<'t> {
-    pub statement: Statement<'t>, /* Statement */
+    pub statement: Statement<'t>,
 }
 
 ///
@@ -759,7 +759,7 @@ pub struct LineNumber {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Literal {
-    pub number: Number, /* Number */
+    pub number: Number,
 }
 
 ///
@@ -769,8 +769,8 @@ pub struct Literal {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalAnd<'t> {
-    pub logical_not: LogicalNot<'t>,               /* LogicalNot */
-    pub logical_and_list: Vec<LogicalAndList<'t>>, /* LogicalAndList */
+    pub logical_not: LogicalNot<'t>,
+    pub logical_and_list: Vec<LogicalAndList<'t>>,
 }
 
 ///
@@ -780,8 +780,8 @@ pub struct LogicalAnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalAndList<'t> {
-    pub logical_and_op: LogicalAndOp<'t>, /* LogicalAndOp */
-    pub logical_not: LogicalNot<'t>,      /* LogicalNot */
+    pub logical_and_op: LogicalAndOp<'t>,
+    pub logical_not: LogicalNot<'t>,
 }
 
 ///
@@ -801,8 +801,8 @@ pub struct LogicalAndOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalNot<'t> {
-    pub logical_not_opt: Option<LogicalNotOpt<'t>>, /* LogicalNotOpt */
-    pub relational: Relational<'t>,                 /* Relational */
+    pub logical_not_opt: Option<LogicalNotOpt<'t>>,
+    pub relational: Relational<'t>,
 }
 
 ///
@@ -822,7 +822,7 @@ pub struct LogicalNotOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalNotOpt<'t> {
-    pub logical_not_op: LogicalNotOp<'t>, /* LogicalNotOp */
+    pub logical_not_op: LogicalNotOp<'t>,
 }
 
 ///
@@ -832,8 +832,8 @@ pub struct LogicalNotOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalOr<'t> {
-    pub logical_and: LogicalAnd<'t>,             /* LogicalAnd */
-    pub logical_or_list: Vec<LogicalOrList<'t>>, /* LogicalOrList */
+    pub logical_and: LogicalAnd<'t>,
+    pub logical_or_list: Vec<LogicalOrList<'t>>,
 }
 
 ///
@@ -843,8 +843,8 @@ pub struct LogicalOr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalOrList<'t> {
-    pub logical_or_op: LogicalOrOp<'t>, /* LogicalOrOp */
-    pub logical_and: LogicalAnd<'t>,    /* LogicalAnd */
+    pub logical_or_op: LogicalOrOp<'t>,
+    pub logical_and: LogicalAnd<'t>,
 }
 
 ///
@@ -884,8 +884,8 @@ pub struct MulOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Multiplication<'t> {
-    pub factor: Factor<'t>,                               /* Factor */
-    pub multiplication_list: Vec<MultiplicationList<'t>>, /* MultiplicationList */
+    pub factor: Factor<'t>,
+    pub multiplication_list: Vec<MultiplicationList<'t>>,
 }
 
 ///
@@ -895,8 +895,8 @@ pub struct Multiplication<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MultiplicationList<'t> {
-    pub mul_op: MulOp<'t>,  /* MulOp */
-    pub factor: Factor<'t>, /* Factor */
+    pub mul_op: MulOp<'t>,
+    pub factor: Factor<'t>,
 }
 
 ///
@@ -934,9 +934,9 @@ pub struct Print {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PrintStatement<'t> {
-    pub print: Print,                                      /* Print */
-    pub expression: Expression<'t>,                        /* Expression */
-    pub print_statement_list: Vec<PrintStatementList<'t>>, /* PrintStatementList */
+    pub print: Print,
+    pub expression: Expression<'t>,
+    pub print_statement_list: Vec<PrintStatementList<'t>>,
 }
 
 ///
@@ -946,7 +946,7 @@ pub struct PrintStatement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PrintStatementList<'t> {
-    pub expression: Expression<'t>, /* Expression */
+    pub expression: Expression<'t>,
 }
 
 ///
@@ -966,8 +966,8 @@ pub struct RParen<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relational<'t> {
-    pub summation: Summation<'t>,                 /* Summation */
-    pub relational_list: Vec<RelationalList<'t>>, /* RelationalList */
+    pub summation: Summation<'t>,
+    pub relational_list: Vec<RelationalList<'t>>,
 }
 
 ///
@@ -977,8 +977,8 @@ pub struct Relational<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RelationalList<'t> {
-    pub relational_op: RelationalOp<'t>, /* RelationalOp */
-    pub summation: Summation<'t>,        /* Summation */
+    pub relational_op: RelationalOp<'t>,
+    pub summation: Summation<'t>,
 }
 
 ///
@@ -1006,8 +1006,8 @@ pub struct Rem {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Remark<'t> {
-    pub rem: Rem,                          /* Rem */
-    pub remark_opt: Option<RemarkOpt<'t>>, /* RemarkOpt */
+    pub rem: Rem,
+    pub remark_opt: Option<RemarkOpt<'t>>,
 }
 
 ///
@@ -1017,7 +1017,7 @@ pub struct Remark<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RemarkOpt<'t> {
-    pub comment: Comment<'t>, /* Comment */
+    pub comment: Comment<'t>,
 }
 
 ///
@@ -1041,8 +1041,8 @@ pub enum Statement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Summation<'t> {
-    pub multiplication: Multiplication<'t>, /* Multiplication */
-    pub summation_list: Vec<SummationList<'t>>, /* SummationList */
+    pub multiplication: Multiplication<'t>,
+    pub summation_list: Vec<SummationList<'t>>,
 }
 
 ///
@@ -1052,8 +1052,8 @@ pub struct Summation<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SummationList<'t> {
-    pub summation_list_group: SummationListGroup<'t>, /* SummationListGroup */
-    pub multiplication: Multiplication<'t>,           /* Multiplication */
+    pub summation_list_group: SummationListGroup<'t>,
+    pub multiplication: Multiplication<'t>,
 }
 
 ///

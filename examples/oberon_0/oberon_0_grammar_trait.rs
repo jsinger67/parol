@@ -273,9 +273,9 @@ pub trait Oberon0GrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SelectorListDotIdentSelectorList<'t> {
-    pub dot: Token<'t>,                       /* \. */
-    pub ident: Ident<'t>,                     /* Ident */
-    pub selector_list: Box<SelectorList<'t>>, /* SelectorList */
+    pub dot: Token<'t>, /* \. */
+    pub ident: Ident<'t>,
+    pub selector_list: Box<SelectorList<'t>>,
 }
 
 ///
@@ -287,10 +287,10 @@ pub struct SelectorListDotIdentSelectorList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SelectorListLBracketExpressionRBracketSelectorList<'t> {
-    pub l_bracket: Token<'t>,                 /* \[ */
-    pub expression: Box<Expression<'t>>,      /* Expression */
-    pub r_bracket: Token<'t>,                 /* ] */
-    pub selector_list: Box<SelectorList<'t>>, /* SelectorList */
+    pub l_bracket: Token<'t>, /* \[ */
+    pub expression: Box<Expression<'t>>,
+    pub r_bracket: Token<'t>, /* ] */
+    pub selector_list: Box<SelectorList<'t>>,
 }
 
 ///
@@ -312,8 +312,8 @@ pub struct SelectorListSelectorListEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorIdentSelector<'t> {
-    pub ident: Ident<'t>,            /* Ident */
-    pub selector: Box<Selector<'t>>, /* Selector */
+    pub ident: Ident<'t>,
+    pub selector: Box<Selector<'t>>,
 }
 
 ///
@@ -325,7 +325,7 @@ pub struct FactorIdentSelector<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorInteger<'t> {
-    pub integer: Integer<'t>, /* Integer */
+    pub integer: Integer<'t>,
 }
 
 ///
@@ -337,9 +337,9 @@ pub struct FactorInteger<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorLParenExpressionRParen<'t> {
-    pub l_paren: Token<'t>,              /* \( */
-    pub expression: Box<Expression<'t>>, /* Expression */
-    pub r_paren: Token<'t>,              /* \) */
+    pub l_paren: Token<'t>, /* \( */
+    pub expression: Box<Expression<'t>>,
+    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -351,8 +351,8 @@ pub struct FactorLParenExpressionRParen<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorTildeFactor<'t> {
-    pub tilde: Token<'t>,        /* ~ */
-    pub factor: Box<Factor<'t>>, /* Factor */
+    pub tilde: Token<'t>, /* ~ */
+    pub factor: Box<Factor<'t>>,
 }
 
 ///
@@ -364,8 +364,8 @@ pub struct FactorTildeFactor<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorUnaryOpFactor<'t> {
-    pub unary_op: UnaryOp<'t>,   /* UnaryOp */
-    pub factor: Box<Factor<'t>>, /* Factor */
+    pub unary_op: UnaryOp<'t>,
+    pub factor: Box<Factor<'t>>,
 }
 
 ///
@@ -377,9 +377,9 @@ pub struct FactorUnaryOpFactor<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MulExpressionMulOperatorFactorMulExpression<'t> {
-    pub mul_operator: MulOperator<'t>,          /* MulOperator */
-    pub factor: Box<Factor<'t>>,                /* Factor */
-    pub mul_expression: Box<MulExpression<'t>>, /* MulExpression */
+    pub mul_operator: MulOperator<'t>,
+    pub factor: Box<Factor<'t>>,
+    pub mul_expression: Box<MulExpression<'t>>,
 }
 
 ///
@@ -401,9 +401,9 @@ pub struct MulExpressionMulExpressionEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AddExpressionAddOperatorTermAddExpression<'t> {
-    pub add_operator: AddOperator<'t>,          /* AddOperator */
-    pub term: Box<Term<'t>>,                    /* Term */
-    pub add_expression: Box<AddExpression<'t>>, /* AddExpression */
+    pub add_operator: AddOperator<'t>,
+    pub term: Box<Term<'t>>,
+    pub add_expression: Box<AddExpression<'t>>,
 }
 
 ///
@@ -437,7 +437,7 @@ pub struct AssignOpColonEqu<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RelationOpAssignOp<'t> {
-    pub assign_op: AssignOp<'t>, /* AssignOp */
+    pub assign_op: AssignOp<'t>,
 }
 
 ///
@@ -449,7 +449,7 @@ pub struct RelationOpAssignOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RelationOpRelationalOps<'t> {
-    pub relational_ops: RelationalOps<'t>, /* RelationalOps */
+    pub relational_ops: RelationalOps<'t>,
 }
 
 ///
@@ -473,8 +473,8 @@ pub struct AssignOpEqu<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExpressionSuffixRelationOpSimpleExpression<'t> {
-    pub relation_op: RelationOp<'t>,                  /* RelationOp */
-    pub simple_expression: Box<SimpleExpression<'t>>, /* SimpleExpression */
+    pub relation_op: RelationOp<'t>,
+    pub simple_expression: Box<SimpleExpression<'t>>,
 }
 
 ///
@@ -508,9 +508,9 @@ pub struct ActualParametersSuffixRParen<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ActualParametersSuffixExpressionExpressionListRestRParen<'t> {
-    pub expression: Expression<'t>,                   /* Expression */
-    pub expression_list_rest: ExpressionListRest<'t>, /* ExpressionListRest */
-    pub r_paren: Token<'t>,                           /* \) */
+    pub expression: Expression<'t>,
+    pub expression_list_rest: ExpressionListRest<'t>,
+    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -522,9 +522,9 @@ pub struct ActualParametersSuffixExpressionExpressionListRestRParen<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExpressionListRestCommaExpressionExpressionListRest<'t> {
-    pub comma: Token<'t>,                                  /* , */
-    pub expression: Expression<'t>,                        /* Expression */
-    pub expression_list_rest: Box<ExpressionListRest<'t>>, /* ExpressionListRest */
+    pub comma: Token<'t>, /* , */
+    pub expression: Expression<'t>,
+    pub expression_list_rest: Box<ExpressionListRest<'t>>,
 }
 
 ///
@@ -546,7 +546,7 @@ pub struct ExpressionListRestExpressionListRestEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureCallSuffixActualParameters<'t> {
-    pub actual_parameters: ActualParameters<'t>, /* ActualParameters */
+    pub actual_parameters: ActualParameters<'t>,
 }
 
 ///
@@ -568,9 +568,9 @@ pub struct ProcedureCallSuffixProcedureCallSuffixEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IfStatementSuffixELSEStatementSequenceEND<'t> {
-    pub e_l_s_e: Token<'t>,                             /* ELSE */
-    pub statement_sequence: Box<StatementSequence<'t>>, /* StatementSequence */
-    pub e_n_d: Token<'t>,                               /* END */
+    pub e_l_s_e: Token<'t>, /* ELSE */
+    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub e_n_d: Token<'t>, /* END */
 }
 
 ///
@@ -594,11 +594,11 @@ pub struct IfStatementSuffixEND<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t> {
-    pub e_l_s_i_f: Token<'t>,                           /* ELSIF */
-    pub expression: Expression<'t>,                     /* Expression */
-    pub t_h_e_n: Token<'t>,                             /* THEN */
-    pub statement_sequence: Box<StatementSequence<'t>>, /* StatementSequence */
-    pub else_if_list: Box<ElseIfList<'t>>,              /* ElseIfList */
+    pub e_l_s_i_f: Token<'t>, /* ELSIF */
+    pub expression: Expression<'t>,
+    pub t_h_e_n: Token<'t>, /* THEN */
+    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub else_if_list: Box<ElseIfList<'t>>,
 }
 
 ///
@@ -620,7 +620,7 @@ pub struct ElseIfListElseIfListEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementAssignment<'t> {
-    pub assignment: Assignment<'t>, /* Assignment */
+    pub assignment: Assignment<'t>,
 }
 
 ///
@@ -632,7 +632,7 @@ pub struct StatementAssignment<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementProcedureCall<'t> {
-    pub procedure_call: ProcedureCall<'t>, /* ProcedureCall */
+    pub procedure_call: ProcedureCall<'t>,
 }
 
 ///
@@ -644,7 +644,7 @@ pub struct StatementProcedureCall<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementIfStatement<'t> {
-    pub if_statement: Box<IfStatement<'t>>, /* IfStatement */
+    pub if_statement: Box<IfStatement<'t>>,
 }
 
 ///
@@ -656,7 +656,7 @@ pub struct StatementIfStatement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementWhileStatement<'t> {
-    pub while_statement: Box<WhileStatement<'t>>, /* WhileStatement */
+    pub while_statement: Box<WhileStatement<'t>>,
 }
 
 ///
@@ -668,7 +668,7 @@ pub struct StatementWhileStatement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementRepeatStatement<'t> {
-    pub repeat_statement: Box<RepeatStatement<'t>>, /* RepeatStatement */
+    pub repeat_statement: Box<RepeatStatement<'t>>,
 }
 
 ///
@@ -690,9 +690,9 @@ pub struct StatementStatementEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementSequenceRestSemicolonStatementStatementSequenceRest<'t> {
-    pub semicolon: Token<'t>,                                    /* ; */
-    pub statement: Box<Statement<'t>>,                           /* Statement */
-    pub statement_sequence_rest: Box<StatementSequenceRest<'t>>, /* StatementSequenceRest */
+    pub semicolon: Token<'t>, /* ; */
+    pub statement: Box<Statement<'t>>,
+    pub statement_sequence_rest: Box<StatementSequenceRest<'t>>,
 }
 
 ///
@@ -714,9 +714,9 @@ pub struct StatementSequenceRestStatementSequenceRestEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentListRestCommaIdentIdentListRest<'t> {
-    pub comma: Token<'t>,                        /* , */
-    pub ident: Ident<'t>,                        /* Ident */
-    pub ident_list_rest: Box<IdentListRest<'t>>, /* IdentListRest */
+    pub comma: Token<'t>, /* , */
+    pub ident: Ident<'t>,
+    pub ident_list_rest: Box<IdentListRest<'t>>,
 }
 
 ///
@@ -738,9 +738,9 @@ pub struct IdentListRestIdentListRestEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FieldListIdentListColonType<'t> {
-    pub ident_list: IdentList<'t>, /* IdentList */
-    pub colon: Token<'t>,          /* : */
-    pub r#type: Box<Type<'t>>,     /* Type */
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Box<Type<'t>>,
 }
 
 ///
@@ -762,9 +762,9 @@ pub struct FieldListFieldListEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FieldListRestSemicolonFieldListFieldListRest<'t> {
-    pub semicolon: Token<'t>,                    /* ; */
-    pub field_list: FieldList<'t>,               /* FieldList */
-    pub field_list_rest: Box<FieldListRest<'t>>, /* FieldListRest */
+    pub semicolon: Token<'t>, /* ; */
+    pub field_list: FieldList<'t>,
+    pub field_list_rest: Box<FieldListRest<'t>>,
 }
 
 ///
@@ -786,7 +786,7 @@ pub struct FieldListRestFieldListRestEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeIdent<'t> {
-    pub ident: Ident<'t>, /* Ident */
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -798,7 +798,7 @@ pub struct TypeIdent<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeArrayType<'t> {
-    pub array_type: Box<ArrayType<'t>>, /* ArrayType */
+    pub array_type: Box<ArrayType<'t>>,
 }
 
 ///
@@ -810,7 +810,7 @@ pub struct TypeArrayType<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeRecordType<'t> {
-    pub record_type: Box<RecordType<'t>>, /* RecordType */
+    pub record_type: Box<RecordType<'t>>,
 }
 
 ///
@@ -822,10 +822,10 @@ pub struct TypeRecordType<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FPSectionVARIdentListColonType<'t> {
-    pub v_a_r: Token<'t>,          /* VAR */
-    pub ident_list: IdentList<'t>, /* IdentList */
-    pub colon: Token<'t>,          /* : */
-    pub r#type: Type<'t>,          /* Type */
+    pub v_a_r: Token<'t>, /* VAR */
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Type<'t>,
 }
 
 ///
@@ -837,9 +837,9 @@ pub struct FPSectionVARIdentListColonType<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FPSectionIdentListColonType<'t> {
-    pub ident_list: IdentList<'t>, /* IdentList */
-    pub colon: Token<'t>,          /* : */
-    pub r#type: Type<'t>,          /* Type */
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Type<'t>,
 }
 
 ///
@@ -863,9 +863,9 @@ pub struct FormalParametersSuffixRParen<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalParametersSuffixFPSectionFPSectionRestRParen<'t> {
-    pub f_p_section: FPSection<'t>,          /* FPSection */
-    pub f_p_section_rest: FPSectionRest<'t>, /* FPSectionRest */
-    pub r_paren: Token<'t>,                  /* \) */
+    pub f_p_section: FPSection<'t>,
+    pub f_p_section_rest: FPSectionRest<'t>,
+    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -877,9 +877,9 @@ pub struct FormalParametersSuffixFPSectionFPSectionRestRParen<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FPSectionRestSemicolonFPSectionFPSectionRest<'t> {
-    pub semicolon: Token<'t>,                     /* ; */
-    pub f_p_section: FPSection<'t>,               /* FPSection */
-    pub f_p_section_rest: Box<FPSectionRest<'t>>, /* FPSectionRest */
+    pub semicolon: Token<'t>, /* ; */
+    pub f_p_section: FPSection<'t>,
+    pub f_p_section_rest: Box<FPSectionRest<'t>>,
 }
 
 ///
@@ -901,7 +901,7 @@ pub struct FPSectionRestFPSectionRestEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureHeadingSuffixFormalParameters<'t> {
-    pub formal_parameters: FormalParameters<'t>, /* FormalParameters */
+    pub formal_parameters: FormalParameters<'t>,
 }
 
 ///
@@ -923,9 +923,9 @@ pub struct ProcedureHeadingSuffixProcedureHeadingSuffixEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix<'t> {
-    pub b_e_g_i_n: Token<'t>,                           /* BEGIN */
-    pub statement_sequence: StatementSequence<'t>,      /* StatementSequence */
-    pub procedure_body_suffix: ProcedureBodySuffix<'t>, /* ProcedureBodySuffix */
+    pub b_e_g_i_n: Token<'t>, /* BEGIN */
+    pub statement_sequence: StatementSequence<'t>,
+    pub procedure_body_suffix: ProcedureBodySuffix<'t>,
 }
 
 ///
@@ -937,10 +937,10 @@ pub struct ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureBodySuffix0RETURNExpressionENDIdent<'t> {
-    pub r_e_t_u_r_n: Token<'t>,     /* RETURN */
-    pub expression: Expression<'t>, /* Expression */
-    pub e_n_d: Token<'t>,           /* END */
-    pub ident: Ident<'t>,           /* Ident */
+    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
+    pub expression: Expression<'t>,
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -953,7 +953,7 @@ pub struct ProcedureBodySuffix0RETURNExpressionENDIdent<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureBodySuffix0ENDIdent<'t> {
     pub e_n_d: Token<'t>, /* END */
-    pub ident: Ident<'t>, /* Ident */
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -965,10 +965,10 @@ pub struct ProcedureBodySuffix0ENDIdent<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureBodySuffixRETURNExpressionENDIdent<'t> {
-    pub r_e_t_u_r_n: Token<'t>,     /* RETURN */
-    pub expression: Expression<'t>, /* Expression */
-    pub e_n_d: Token<'t>,           /* END */
-    pub ident: Ident<'t>,           /* Ident */
+    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
+    pub expression: Expression<'t>,
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -981,7 +981,7 @@ pub struct ProcedureBodySuffixRETURNExpressionENDIdent<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureBodySuffixENDIdent<'t> {
     pub e_n_d: Token<'t>, /* END */
-    pub ident: Ident<'t>, /* Ident */
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -993,9 +993,9 @@ pub struct ProcedureBodySuffixENDIdent<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsTYPETypeDeclsDeclarationsSuffix1<'t> {
-    pub t_y_p_e: Token<'t>,                                 /* TYPE */
-    pub type_decls: TypeDecls<'t>,                          /* TypeDecls */
-    pub declarations_suffix1: Box<DeclarationsSuffix1<'t>>, /* DeclarationsSuffix1 */
+    pub t_y_p_e: Token<'t>, /* TYPE */
+    pub type_decls: TypeDecls<'t>,
+    pub declarations_suffix1: Box<DeclarationsSuffix1<'t>>,
 }
 
 ///
@@ -1007,9 +1007,9 @@ pub struct DeclarationsTYPETypeDeclsDeclarationsSuffix1<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsCONSTConstDeclsDeclarationsSuffix0<'t> {
-    pub c_o_n_s_t: Token<'t>,                               /* CONST */
-    pub const_decls: ConstDecls<'t>,                        /* ConstDecls */
-    pub declarations_suffix0: Box<DeclarationsSuffix0<'t>>, /* DeclarationsSuffix0 */
+    pub c_o_n_s_t: Token<'t>, /* CONST */
+    pub const_decls: ConstDecls<'t>,
+    pub declarations_suffix0: Box<DeclarationsSuffix0<'t>>,
 }
 
 ///
@@ -1021,9 +1021,9 @@ pub struct DeclarationsCONSTConstDeclsDeclarationsSuffix0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsSuffix1VARVarDeclsProcedureDeclarationList<'t> {
-    pub v_a_r: Token<'t>,                                              /* VAR */
-    pub var_decls: VarDecls<'t>,                                       /* VarDecls */
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>, /* ProcedureDeclarationList */
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
 }
 
 ///
@@ -1035,7 +1035,7 @@ pub struct DeclarationsSuffix1VARVarDeclsProcedureDeclarationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsSuffix1ProcedureDeclarationList<'t> {
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>, /* ProcedureDeclarationList */
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
 }
 
 ///
@@ -1047,9 +1047,9 @@ pub struct DeclarationsSuffix1ProcedureDeclarationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsVARVarDeclsProcedureDeclarationList<'t> {
-    pub v_a_r: Token<'t>,                                              /* VAR */
-    pub var_decls: VarDecls<'t>,                                       /* VarDecls */
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>, /* ProcedureDeclarationList */
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
 }
 
 ///
@@ -1061,7 +1061,7 @@ pub struct DeclarationsVARVarDeclsProcedureDeclarationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsProcedureDeclarationList<'t> {
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>, /* ProcedureDeclarationList */
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
 }
 
 ///
@@ -1073,9 +1073,9 @@ pub struct DeclarationsProcedureDeclarationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t> {
-    pub t_y_p_e: Token<'t>,                               /* TYPE */
-    pub type_decls: TypeDecls<'t>,                        /* TypeDecls */
-    pub declarations_suffix: Box<DeclarationsSuffix<'t>>, /* DeclarationsSuffix */
+    pub t_y_p_e: Token<'t>, /* TYPE */
+    pub type_decls: TypeDecls<'t>,
+    pub declarations_suffix: Box<DeclarationsSuffix<'t>>,
 }
 
 ///
@@ -1087,9 +1087,9 @@ pub struct DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsSuffix0VARVarDeclsProcedureDeclarationList<'t> {
-    pub v_a_r: Token<'t>,                                              /* VAR */
-    pub var_decls: VarDecls<'t>,                                       /* VarDecls */
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>, /* ProcedureDeclarationList */
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
 }
 
 ///
@@ -1101,7 +1101,7 @@ pub struct DeclarationsSuffix0VARVarDeclsProcedureDeclarationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsSuffix0ProcedureDeclarationList<'t> {
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>, /* ProcedureDeclarationList */
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
 }
 
 ///
@@ -1113,9 +1113,9 @@ pub struct DeclarationsSuffix0ProcedureDeclarationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsSuffixVARVarDeclsProcedureDeclarationList<'t> {
-    pub v_a_r: Token<'t>,                                              /* VAR */
-    pub var_decls: VarDecls<'t>,                                       /* VarDecls */
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>, /* ProcedureDeclarationList */
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
 }
 
 ///
@@ -1127,7 +1127,7 @@ pub struct DeclarationsSuffixVARVarDeclsProcedureDeclarationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationsSuffixProcedureDeclarationList<'t> {
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>, /* ProcedureDeclarationList */
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
 }
 
 ///
@@ -1139,9 +1139,9 @@ pub struct DeclarationsSuffixProcedureDeclarationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclarationList<'t> {
-    pub procedure_declaration: ProcedureDeclaration<'t>, /* ProcedureDeclaration */
-    pub semicolon: Token<'t>,                            /* ; */
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>, /* ProcedureDeclarationList */
+    pub procedure_declaration: ProcedureDeclaration<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
 }
 
 ///
@@ -1163,11 +1163,11 @@ pub struct ProcedureDeclarationListProcedureDeclarationListEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ConstDeclsIdentAssignOpExpressionSemicolonConstDecls<'t> {
-    pub ident: Ident<'t>,                 /* Ident */
-    pub assign_op: AssignOp<'t>,          /* AssignOp */
-    pub expression: Expression<'t>,       /* Expression */
-    pub semicolon: Token<'t>,             /* ; */
-    pub const_decls: Box<ConstDecls<'t>>, /* ConstDecls */
+    pub ident: Ident<'t>,
+    pub assign_op: AssignOp<'t>,
+    pub expression: Expression<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub const_decls: Box<ConstDecls<'t>>,
 }
 
 ///
@@ -1189,11 +1189,11 @@ pub struct ConstDeclsConstDeclsEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDeclsIdentAssignOpTypeSemicolonTypeDecls<'t> {
-    pub ident: Ident<'t>,               /* Ident */
-    pub assign_op: AssignOp<'t>,        /* AssignOp */
-    pub r#type: Type<'t>,               /* Type */
-    pub semicolon: Token<'t>,           /* ; */
-    pub type_decls: Box<TypeDecls<'t>>, /* TypeDecls */
+    pub ident: Ident<'t>,
+    pub assign_op: AssignOp<'t>,
+    pub r#type: Type<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub type_decls: Box<TypeDecls<'t>>,
 }
 
 ///
@@ -1215,11 +1215,11 @@ pub struct TypeDeclsTypeDeclsEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct VarDeclsIdentListColonTypeSemicolonVarDecls<'t> {
-    pub ident_list: IdentList<'t>,    /* IdentList */
-    pub colon: Token<'t>,             /* : */
-    pub r#type: Type<'t>,             /* Type */
-    pub semicolon: Token<'t>,         /* ; */
-    pub var_decls: Box<VarDecls<'t>>, /* VarDecls */
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Type<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub var_decls: Box<VarDecls<'t>>,
 }
 
 ///
@@ -1241,11 +1241,11 @@ pub struct VarDeclsVarDeclsEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ModuleSuffixBEGINStatementSequenceENDIdentDot<'t> {
-    pub b_e_g_i_n: Token<'t>,                      /* BEGIN */
-    pub statement_sequence: StatementSequence<'t>, /* StatementSequence */
-    pub e_n_d: Token<'t>,                          /* END */
-    pub ident: Ident<'t>,                          /* Ident */
-    pub dot: Token<'t>,                            /* \. */
+    pub b_e_g_i_n: Token<'t>, /* BEGIN */
+    pub statement_sequence: StatementSequence<'t>,
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
+    pub dot: Token<'t>, /* \. */
 }
 
 ///
@@ -1258,8 +1258,8 @@ pub struct ModuleSuffixBEGINStatementSequenceENDIdentDot<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ModuleSuffixENDIdentDot<'t> {
     pub e_n_d: Token<'t>, /* END */
-    pub ident: Ident<'t>, /* Ident */
-    pub dot: Token<'t>,   /* \. */
+    pub ident: Ident<'t>,
+    pub dot: Token<'t>, /* \. */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -1274,8 +1274,8 @@ pub struct ModuleSuffixENDIdentDot<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ActualParameters<'t> {
-    pub l_paren: Token<'t>,                                   /* \( */
-    pub actual_parameters_suffix: ActualParametersSuffix<'t>, /* ActualParametersSuffix */
+    pub l_paren: Token<'t>, /* \( */
+    pub actual_parameters_suffix: ActualParametersSuffix<'t>,
 }
 
 ///
@@ -1317,10 +1317,10 @@ pub struct AddOperator<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArrayType<'t> {
-    pub a_r_r_a_y: Token<'t>,       /* ARRAY */
-    pub expression: Expression<'t>, /* Expression */
-    pub o_f: Token<'t>,             /* OF */
-    pub r#type: Type<'t>,           /* Type */
+    pub a_r_r_a_y: Token<'t>, /* ARRAY */
+    pub expression: Expression<'t>,
+    pub o_f: Token<'t>, /* OF */
+    pub r#type: Type<'t>,
 }
 
 ///
@@ -1340,10 +1340,10 @@ pub enum AssignOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Assignment<'t> {
-    pub ident: Ident<'t>,           /* Ident */
-    pub selector: Selector<'t>,     /* Selector */
-    pub assign_op: AssignOp<'t>,    /* AssignOp */
-    pub expression: Expression<'t>, /* Expression */
+    pub ident: Ident<'t>,
+    pub selector: Selector<'t>,
+    pub assign_op: AssignOp<'t>,
+    pub expression: Expression<'t>,
 }
 
 ///
@@ -1420,8 +1420,8 @@ pub enum ElseIfList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Expression<'t> {
-    pub simple_expression: Box<SimpleExpression<'t>>, /* SimpleExpression */
-    pub expression_suffix: Box<ExpressionSuffix<'t>>, /* ExpressionSuffix */
+    pub simple_expression: Box<SimpleExpression<'t>>,
+    pub expression_suffix: Box<ExpressionSuffix<'t>>,
 }
 
 ///
@@ -1504,8 +1504,8 @@ pub enum FieldListRest<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalParameters<'t> {
-    pub l_paren: Token<'t>,                                   /* \( */
-    pub formal_parameters_suffix: FormalParametersSuffix<'t>, /* FormalParametersSuffix */
+    pub l_paren: Token<'t>, /* \( */
+    pub formal_parameters_suffix: FormalParametersSuffix<'t>,
 }
 
 ///
@@ -1535,8 +1535,8 @@ pub struct Ident<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentList<'t> {
-    pub ident: Ident<'t>,                   /* Ident */
-    pub ident_list_rest: IdentListRest<'t>, /* IdentListRest */
+    pub ident: Ident<'t>,
+    pub ident_list_rest: IdentListRest<'t>,
 }
 
 ///
@@ -1556,11 +1556,11 @@ pub enum IdentListRest<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IfPrefix<'t> {
-    pub i_f: Token<'t>,                                 /* IF */
-    pub expression: Expression<'t>,                     /* Expression */
-    pub t_h_e_n: Token<'t>,                             /* THEN */
-    pub statement_sequence: Box<StatementSequence<'t>>, /* StatementSequence */
-    pub else_if_list: ElseIfList<'t>,                   /* ElseIfList */
+    pub i_f: Token<'t>, /* IF */
+    pub expression: Expression<'t>,
+    pub t_h_e_n: Token<'t>, /* THEN */
+    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub else_if_list: ElseIfList<'t>,
 }
 
 ///
@@ -1570,8 +1570,8 @@ pub struct IfPrefix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IfStatement<'t> {
-    pub if_prefix: IfPrefix<'t>,                    /* IfPrefix */
-    pub if_statement_suffix: IfStatementSuffix<'t>, /* IfStatementSuffix */
+    pub if_prefix: IfPrefix<'t>,
+    pub if_statement_suffix: IfStatementSuffix<'t>,
 }
 
 ///
@@ -1601,11 +1601,11 @@ pub struct Integer<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Module<'t> {
-    pub m_o_d_u_l_e: Token<'t>,          /* MODULE */
-    pub ident: Ident<'t>,                /* Ident */
-    pub semicolon: Token<'t>,            /* ; */
-    pub declarations: Declarations<'t>,  /* Declarations */
-    pub module_suffix: ModuleSuffix<'t>, /* ModuleSuffix */
+    pub m_o_d_u_l_e: Token<'t>, /* MODULE */
+    pub ident: Ident<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub declarations: Declarations<'t>,
+    pub module_suffix: ModuleSuffix<'t>,
 }
 
 ///
@@ -1645,8 +1645,8 @@ pub struct MulOperator<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureBody<'t> {
-    pub declarations: Declarations<'t>, /* Declarations */
-    pub procedure_body_suffix0: ProcedureBodySuffix0<'t>, /* ProcedureBodySuffix0 */
+    pub declarations: Declarations<'t>,
+    pub procedure_body_suffix0: ProcedureBodySuffix0<'t>,
 }
 
 ///
@@ -1679,8 +1679,8 @@ pub enum ProcedureBodySuffix0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureCall<'t> {
-    pub ident: Ident<'t>,                               /* Ident */
-    pub procedure_call_suffix: ProcedureCallSuffix<'t>, /* ProcedureCallSuffix */
+    pub ident: Ident<'t>,
+    pub procedure_call_suffix: ProcedureCallSuffix<'t>,
 }
 
 ///
@@ -1700,9 +1700,9 @@ pub enum ProcedureCallSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureDeclaration<'t> {
-    pub procedure_heading: ProcedureHeading<'t>, /* ProcedureHeading */
-    pub semicolon: Token<'t>,                    /* ; */
-    pub procedure_body: ProcedureBody<'t>,       /* ProcedureBody */
+    pub procedure_heading: ProcedureHeading<'t>,
+    pub semicolon: Token<'t>, /* ; */
+    pub procedure_body: ProcedureBody<'t>,
 }
 
 ///
@@ -1725,8 +1725,8 @@ pub enum ProcedureDeclarationList<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureHeading<'t> {
     pub p_r_o_c_e_d_u_r_e: Token<'t>, /* PROCEDURE */
-    pub ident: Ident<'t>,             /* Ident */
-    pub procedure_heading_suffix: ProcedureHeadingSuffix<'t>, /* ProcedureHeadingSuffix */
+    pub ident: Ident<'t>,
+    pub procedure_heading_suffix: ProcedureHeadingSuffix<'t>,
 }
 
 ///
@@ -1746,10 +1746,10 @@ pub enum ProcedureHeadingSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RecordType<'t> {
-    pub r_e_c_o_r_d: Token<'t>,             /* RECORD */
-    pub field_list: FieldList<'t>,          /* FieldList */
-    pub field_list_rest: FieldListRest<'t>, /* FieldListRest */
-    pub e_n_d: Token<'t>,                   /* END */
+    pub r_e_c_o_r_d: Token<'t>, /* RECORD */
+    pub field_list: FieldList<'t>,
+    pub field_list_rest: FieldListRest<'t>,
+    pub e_n_d: Token<'t>, /* END */
 }
 
 ///
@@ -1779,10 +1779,10 @@ pub struct RelationalOps<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RepeatStatement<'t> {
-    pub r_e_p_e_a_t: Token<'t>,                         /* REPEAT */
-    pub statement_sequence: Box<StatementSequence<'t>>, /* StatementSequence */
-    pub u_n_t_i_l: Token<'t>,                           /* UNTIL */
-    pub expression: Expression<'t>,                     /* Expression */
+    pub r_e_p_e_a_t: Token<'t>, /* REPEAT */
+    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub u_n_t_i_l: Token<'t>, /* UNTIL */
+    pub expression: Expression<'t>,
 }
 
 ///
@@ -1792,7 +1792,7 @@ pub struct RepeatStatement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Selector<'t> {
-    pub selector_list: Box<SelectorList<'t>>, /* SelectorList */
+    pub selector_list: Box<SelectorList<'t>>,
 }
 
 ///
@@ -1815,8 +1815,8 @@ pub enum SelectorList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExpression<'t> {
-    pub term: Box<Term<'t>>,               /* Term */
-    pub add_expression: AddExpression<'t>, /* AddExpression */
+    pub term: Box<Term<'t>>,
+    pub add_expression: AddExpression<'t>,
 }
 
 ///
@@ -1840,8 +1840,8 @@ pub enum Statement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementSequence<'t> {
-    pub statement: Statement<'t>,                           /* Statement */
-    pub statement_sequence_rest: StatementSequenceRest<'t>, /* StatementSequenceRest */
+    pub statement: Statement<'t>,
+    pub statement_sequence_rest: StatementSequenceRest<'t>,
 }
 
 ///
@@ -1863,8 +1863,8 @@ pub enum StatementSequenceRest<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Term<'t> {
-    pub factor: Factor<'t>,                /* Factor */
-    pub mul_expression: MulExpression<'t>, /* MulExpression */
+    pub factor: Factor<'t>,
+    pub mul_expression: MulExpression<'t>,
 }
 
 ///
@@ -1915,11 +1915,11 @@ pub enum VarDecls<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct WhileStatement<'t> {
-    pub w_h_i_l_e: Token<'t>,                      /* WHILE */
-    pub expression: Expression<'t>,                /* Expression */
-    pub d_o: Token<'t>,                            /* DO */
-    pub statement_sequence: StatementSequence<'t>, /* StatementSequence */
-    pub e_n_d: Token<'t>,                          /* END */
+    pub w_h_i_l_e: Token<'t>, /* WHILE */
+    pub expression: Expression<'t>,
+    pub d_o: Token<'t>, /* DO */
+    pub statement_sequence: StatementSequence<'t>,
+    pub e_n_d: Token<'t>, /* END */
 }
 
 // -------------------------------------------------------------------------------------------------

@@ -198,7 +198,7 @@ pub trait CalcGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct InstructionAssignment<'t> {
-    pub assignment: Assignment<'t>, /* Assignment */
+    pub assignment: Assignment<'t>,
 }
 
 ///
@@ -210,7 +210,7 @@ pub struct InstructionAssignment<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct InstructionLogicalOr<'t> {
-    pub logical_or: LogicalOr<'t>, /* LogicalOr */
+    pub logical_or: LogicalOr<'t>,
 }
 
 ///
@@ -222,7 +222,7 @@ pub struct InstructionLogicalOr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AddOpPlus<'t> {
-    pub plus: Plus<'t>, /* Plus */
+    pub plus: Plus<'t>,
 }
 
 ///
@@ -234,7 +234,7 @@ pub struct AddOpPlus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AddOpMinus<'t> {
-    pub minus: Minus<'t>, /* Minus */
+    pub minus: Minus<'t>,
 }
 
 ///
@@ -246,7 +246,7 @@ pub struct AddOpMinus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorNumber {
-    pub number: Number, /* Number */
+    pub number: Number,
 }
 
 ///
@@ -258,7 +258,7 @@ pub struct FactorNumber {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorIdRef<'t> {
-    pub id_ref: IdRef<'t>, /* IdRef */
+    pub id_ref: IdRef<'t>,
 }
 
 ///
@@ -270,8 +270,8 @@ pub struct FactorIdRef<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorNegateFactor<'t> {
-    pub negate: Negate<'t>,      /* Negate */
-    pub factor: Box<Factor<'t>>, /* Factor */
+    pub negate: Negate<'t>,
+    pub factor: Box<Factor<'t>>,
 }
 
 ///
@@ -283,7 +283,7 @@ pub struct FactorNegateFactor<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorLParenLogicalOrRParen<'t> {
-    pub logical_or: Box<LogicalOr<'t>>, /* LogicalOr */
+    pub logical_or: Box<LogicalOr<'t>>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -308,8 +308,8 @@ pub enum AddOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AssignItem<'t> {
-    pub id: Id<'t>,              /* Id */
-    pub assign_op: AssignOp<'t>, /* AssignOp */
+    pub id: Id<'t>,
+    pub assign_op: AssignOp<'t>,
 }
 
 ///
@@ -329,9 +329,9 @@ pub struct AssignOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Assignment<'t> {
-    pub assign_item: AssignItem<'t>,              /* AssignItem */
-    pub assignment_list: Vec<AssignmentList<'t>>, /* AssignmentList */
-    pub logical_or: LogicalOr<'t>,                /* LogicalOr */
+    pub assign_item: AssignItem<'t>,
+    pub assignment_list: Vec<AssignmentList<'t>>,
+    pub logical_or: LogicalOr<'t>,
 }
 
 ///
@@ -341,7 +341,7 @@ pub struct Assignment<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AssignmentList<'t> {
-    pub assign_item: AssignItem<'t>, /* AssignItem */
+    pub assign_item: AssignItem<'t>,
 }
 
 ///
@@ -351,8 +351,8 @@ pub struct AssignmentList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseAnd<'t> {
-    pub equality: Equality<'t>,                    /* Equality */
-    pub bitwise_and_list: Vec<BitwiseAndList<'t>>, /* BitwiseAndList */
+    pub equality: Equality<'t>,
+    pub bitwise_and_list: Vec<BitwiseAndList<'t>>,
 }
 
 ///
@@ -362,8 +362,8 @@ pub struct BitwiseAnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseAndList<'t> {
-    pub bitwise_and_op: BitwiseAndOp<'t>, /* BitwiseAndOp */
-    pub equality: Equality<'t>,           /* Equality */
+    pub bitwise_and_op: BitwiseAndOp<'t>,
+    pub equality: Equality<'t>,
 }
 
 ///
@@ -383,8 +383,8 @@ pub struct BitwiseAndOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseOr<'t> {
-    pub bitwise_and: BitwiseAnd<'t>,             /* BitwiseAnd */
-    pub bitwise_or_list: Vec<BitwiseOrList<'t>>, /* BitwiseOrList */
+    pub bitwise_and: BitwiseAnd<'t>,
+    pub bitwise_or_list: Vec<BitwiseOrList<'t>>,
 }
 
 ///
@@ -394,8 +394,8 @@ pub struct BitwiseOr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseOrList<'t> {
-    pub bitwise_or_op: BitwiseOrOp<'t>, /* BitwiseOrOp */
-    pub bitwise_and: BitwiseAnd<'t>,    /* BitwiseAnd */
+    pub bitwise_or_op: BitwiseOrOp<'t>,
+    pub bitwise_and: BitwiseAnd<'t>,
 }
 
 ///
@@ -415,8 +415,8 @@ pub struct BitwiseOrOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseShift<'t> {
-    pub summ: Summ<'t>,                                /* Summ */
-    pub bitwise_shift_list: Vec<BitwiseShiftList<'t>>, /* BitwiseShiftList */
+    pub summ: Summ<'t>,
+    pub bitwise_shift_list: Vec<BitwiseShiftList<'t>>,
 }
 
 ///
@@ -426,8 +426,8 @@ pub struct BitwiseShift<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseShiftList<'t> {
-    pub bitwise_shift_op: BitwiseShiftOp<'t>, /* BitwiseShiftOp */
-    pub summ: Summ<'t>,                       /* Summ */
+    pub bitwise_shift_op: BitwiseShiftOp<'t>,
+    pub summ: Summ<'t>,
 }
 
 ///
@@ -447,7 +447,7 @@ pub struct BitwiseShiftOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Calc<'t> {
-    pub calc_list: Vec<CalcList<'t>>, /* CalcList */
+    pub calc_list: Vec<CalcList<'t>>,
 }
 
 ///
@@ -457,7 +457,7 @@ pub struct Calc<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct CalcList<'t> {
-    pub instruction: Instruction<'t>, /* Instruction */
+    pub instruction: Instruction<'t>,
 }
 
 ///
@@ -467,8 +467,8 @@ pub struct CalcList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Equality<'t> {
-    pub relational: Relational<'t>,           /* Relational */
-    pub equality_list: Vec<EqualityList<'t>>, /* EqualityList */
+    pub relational: Relational<'t>,
+    pub equality_list: Vec<EqualityList<'t>>,
 }
 
 ///
@@ -478,8 +478,8 @@ pub struct Equality<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EqualityList<'t> {
-    pub equality_op: EqualityOp<'t>, /* EqualityOp */
-    pub relational: Relational<'t>,  /* Relational */
+    pub equality_op: EqualityOp<'t>,
+    pub relational: Relational<'t>,
 }
 
 ///
@@ -521,7 +521,7 @@ pub struct Id<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdRef<'t> {
-    pub id: Id<'t>, /* Id */
+    pub id: Id<'t>,
 }
 
 ///
@@ -541,8 +541,8 @@ pub enum Instruction<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalAnd<'t> {
-    pub bitwise_or: BitwiseOr<'t>,                 /* BitwiseOr */
-    pub logical_and_list: Vec<LogicalAndList<'t>>, /* LogicalAndList */
+    pub bitwise_or: BitwiseOr<'t>,
+    pub logical_and_list: Vec<LogicalAndList<'t>>,
 }
 
 ///
@@ -552,8 +552,8 @@ pub struct LogicalAnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalAndList<'t> {
-    pub logical_and_op: LogicalAndOp<'t>, /* LogicalAndOp */
-    pub bitwise_or: BitwiseOr<'t>,        /* BitwiseOr */
+    pub logical_and_op: LogicalAndOp<'t>,
+    pub bitwise_or: BitwiseOr<'t>,
 }
 
 ///
@@ -573,8 +573,8 @@ pub struct LogicalAndOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalOr<'t> {
-    pub logical_and: LogicalAnd<'t>,             /* LogicalAnd */
-    pub logical_or_list: Vec<LogicalOrList<'t>>, /* LogicalOrList */
+    pub logical_and: LogicalAnd<'t>,
+    pub logical_or_list: Vec<LogicalOrList<'t>>,
 }
 
 ///
@@ -584,8 +584,8 @@ pub struct LogicalOr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalOrList<'t> {
-    pub logical_or_op: LogicalOrOp<'t>, /* LogicalOrOp */
-    pub logical_and: LogicalAnd<'t>,    /* LogicalAnd */
+    pub logical_or_op: LogicalOrOp<'t>,
+    pub logical_and: LogicalAnd<'t>,
 }
 
 ///
@@ -615,8 +615,8 @@ pub struct Minus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Mult<'t> {
-    pub power: Power<'t>,             /* Power */
-    pub mult_list: Vec<MultList<'t>>, /* MultList */
+    pub power: Power<'t>,
+    pub mult_list: Vec<MultList<'t>>,
 }
 
 ///
@@ -626,8 +626,8 @@ pub struct Mult<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MultList<'t> {
-    pub mult_op: MultOp<'t>, /* MultOp */
-    pub power: Power<'t>,    /* Power */
+    pub mult_op: MultOp<'t>,
+    pub power: Power<'t>,
 }
 
 ///
@@ -647,7 +647,7 @@ pub struct MultOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Negate<'t> {
-    pub minus: Minus<'t>, /* Minus */
+    pub minus: Minus<'t>,
 }
 
 ///
@@ -687,8 +687,8 @@ pub struct PowOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Power<'t> {
-    pub factor: Factor<'t>,             /* Factor */
-    pub power_list: Vec<PowerList<'t>>, /* PowerList */
+    pub factor: Factor<'t>,
+    pub power_list: Vec<PowerList<'t>>,
 }
 
 ///
@@ -698,8 +698,8 @@ pub struct Power<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PowerList<'t> {
-    pub pow_op: PowOp<'t>,  /* PowOp */
-    pub factor: Factor<'t>, /* Factor */
+    pub pow_op: PowOp<'t>,
+    pub factor: Factor<'t>,
 }
 
 ///
@@ -709,8 +709,8 @@ pub struct PowerList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relational<'t> {
-    pub bitwise_shift: BitwiseShift<'t>,          /* BitwiseShift */
-    pub relational_list: Vec<RelationalList<'t>>, /* RelationalList */
+    pub bitwise_shift: BitwiseShift<'t>,
+    pub relational_list: Vec<RelationalList<'t>>,
 }
 
 ///
@@ -720,8 +720,8 @@ pub struct Relational<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RelationalList<'t> {
-    pub relational_op: RelationalOp<'t>, /* RelationalOp */
-    pub bitwise_shift: BitwiseShift<'t>, /* BitwiseShift */
+    pub relational_op: RelationalOp<'t>,
+    pub bitwise_shift: BitwiseShift<'t>,
 }
 
 ///
@@ -741,8 +741,8 @@ pub struct RelationalOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Summ<'t> {
-    pub mult: Mult<'t>,               /* Mult */
-    pub summ_list: Vec<SummList<'t>>, /* SummList */
+    pub mult: Mult<'t>,
+    pub summ_list: Vec<SummList<'t>>,
 }
 
 ///
@@ -752,8 +752,8 @@ pub struct Summ<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SummList<'t> {
-    pub add_op: AddOp<'t>, /* AddOp */
-    pub mult: Mult<'t>,    /* Mult */
+    pub add_op: AddOp<'t>,
+    pub mult: Mult<'t>,
 }
 
 // -------------------------------------------------------------------------------------------------

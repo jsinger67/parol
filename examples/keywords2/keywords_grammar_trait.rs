@@ -78,7 +78,7 @@ pub trait KeywordsGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ItemsDeclaration<'t> {
-    pub declaration: Box<Declaration<'t>>, /* Declaration */
+    pub declaration: Box<Declaration<'t>>,
 }
 
 ///
@@ -90,7 +90,7 @@ pub struct ItemsDeclaration<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ItemsBlock<'t> {
-    pub block: Box<Block<'t>>, /* Block */
+    pub block: Box<Block<'t>>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -115,9 +115,9 @@ pub struct Begin<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Block<'t> {
-    pub begin: Box<Begin<'t>>,          /* Begin */
-    pub block_list: Vec<BlockList<'t>>, /* BlockList */
-    pub end: Box<End<'t>>,              /* End */
+    pub begin: Box<Begin<'t>>,
+    pub block_list: Vec<BlockList<'t>>,
+    pub end: Box<End<'t>>,
 }
 
 ///
@@ -127,7 +127,7 @@ pub struct Block<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BlockList<'t> {
-    pub items: Box<Items<'t>>, /* Items */
+    pub items: Box<Items<'t>>,
 }
 
 ///
@@ -137,9 +137,9 @@ pub struct BlockList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Declaration<'t> {
-    pub var: Box<Var<'t>>,               /* Var */
-    pub identifier: Box<Identifier<'t>>, /* Identifier */
-    pub semicolon: Token<'t>,            /* ; */
+    pub var: Box<Var<'t>>,
+    pub identifier: Box<Identifier<'t>>,
+    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -159,7 +159,7 @@ pub struct End<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Grammar<'t> {
-    pub grammar_list: Vec<GrammarList<'t>>, /* GrammarList */
+    pub grammar_list: Vec<GrammarList<'t>>,
 }
 
 ///
@@ -169,7 +169,7 @@ pub struct Grammar<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GrammarList<'t> {
-    pub items: Box<Items<'t>>, /* Items */
+    pub items: Box<Items<'t>>,
 }
 
 ///

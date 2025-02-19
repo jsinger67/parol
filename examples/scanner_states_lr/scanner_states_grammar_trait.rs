@@ -83,7 +83,7 @@ pub trait ScannerStatesGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ContentIdentifier<'t> {
-    pub identifier: Identifier<'t>, /* Identifier */
+    pub identifier: Identifier<'t>,
 }
 
 ///
@@ -95,9 +95,9 @@ pub struct ContentIdentifier<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ContentStringDelimiterStringContentStringDelimiter<'t> {
-    pub string_delimiter: StringDelimiter<'t>, /* StringDelimiter */
-    pub string_content: StringContent<'t>,     /* StringContent */
-    pub string_delimiter0: StringDelimiter<'t>, /* StringDelimiter */
+    pub string_delimiter: StringDelimiter<'t>,
+    pub string_content: StringContent<'t>,
+    pub string_delimiter0: StringDelimiter<'t>,
 }
 
 ///
@@ -109,7 +109,7 @@ pub struct ContentStringDelimiterStringContentStringDelimiter<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringContentStringContentList<'t> {
-    pub string_content_list: Vec<StringContentList<'t>>, /* StringContentList */
+    pub string_content_list: Vec<StringContentList<'t>>,
 }
 
 ///
@@ -131,7 +131,7 @@ pub struct StringContentStringContentEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringElementEscaped<'t> {
-    pub escaped: Escaped<'t>, /* Escaped */
+    pub escaped: Escaped<'t>,
 }
 
 ///
@@ -143,7 +143,7 @@ pub struct StringElementEscaped<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringElementEscapedLineEnd<'t> {
-    pub escaped_line_end: EscapedLineEnd<'t>, /* EscapedLineEnd */
+    pub escaped_line_end: EscapedLineEnd<'t>,
 }
 
 ///
@@ -155,7 +155,7 @@ pub struct StringElementEscapedLineEnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringElementNoneQuote<'t> {
-    pub none_quote: NoneQuote<'t>, /* NoneQuote */
+    pub none_quote: NoneQuote<'t>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -222,7 +222,7 @@ pub struct NoneQuote<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Start<'t> {
-    pub start_list: Vec<StartList<'t>>, /* StartList */
+    pub start_list: Vec<StartList<'t>>,
 }
 
 ///
@@ -232,7 +232,7 @@ pub struct Start<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StartList<'t> {
-    pub content: Content<'t>, /* Content */
+    pub content: Content<'t>,
 }
 
 ///
@@ -252,7 +252,7 @@ pub enum StringContent<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StringContentList<'t> {
-    pub string_element: StringElement<'t>, /* StringElement */
+    pub string_element: StringElement<'t>,
 }
 
 ///
