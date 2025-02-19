@@ -7,6 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## v0.4.0 - Not released yet
 
 * Support for syntax extension 'named members'
+* Support for directive `%production_type`
 
 ## v0.3.2 - 2024-12-27
 
