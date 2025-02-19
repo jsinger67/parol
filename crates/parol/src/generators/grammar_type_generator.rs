@@ -547,35 +547,39 @@ impl GrammarTypeInfo {
     }
 
     /// Generates a member name from a symbol that stems from a production's right-hand side
-    /// The second string in the returned tuple is used
-    ///  * on terminals
-    ///     as the terminal's content.
-    ///  * on non-terminals
-    ///     as the non-terminal's original name (it could have a user-defined member name).
-    pub fn generate_member_name(&self, s: &Symbol) -> (String, String) {
+    ///
+    /// The returned 3-tuple is used *on non-terminals* as follows:
+    ///   (member_name, empty, original_name)
+    ///     for nothing, an empty string.
+    /// And *on terminals* it is used as follows:
+    ///   (member_name, terminal_content, empty)
+    ///
+    /// member_name: The name of the member in the struct if a user defined name is given, otherwise
+    ///              the name of the symbol in lower snake case.
+    pub fn generate_member_name(&self, s: &Symbol) -> (String, String, String) {
         match s {
             Symbol::N(n, _, _, m) => (
                 m.clone().unwrap_or(NmHlp::to_lower_snake_case(n)),
+                String::default(),
                 n.to_string(),
             ),
-            Symbol::T(Terminal::Trm(t, k, _, _, _, m, _)) => {
-                let terminal_name = &self.terminal_names[self.get_terminal_index(&k.expand(t))];
-                (
-                    m.clone()
-                        .unwrap_or(NmHlp::to_lower_snake_case(terminal_name)),
-                    t.to_string(),
-                )
-            }
+            Symbol::T(Terminal::Trm(t, k, _, _, _, m, _)) => (
+                m.clone().unwrap_or(NmHlp::to_lower_snake_case(
+                    &self.terminal_names[self.get_terminal_index(&k.expand(t))],
+                )),
+                t.to_string(),
+                String::default(),
+            ),
             _ => panic!("Invalid symbol type {}", s),
         }
     }
 
     /// Convenience function
-    pub fn generate_member_names(&self, rhs: &[Symbol]) -> Vec<(String, String)> {
+    pub fn generate_member_names(&self, rhs: &[Symbol]) -> Vec<(String, String, String)> {
         rhs.iter()
             .filter(|s| s.is_n() || s.is_t())
             .map(|s| self.generate_member_name(s))
-            .collect::<Vec<(String, String)>>()
+            .collect::<Vec<(String, String, String)>>()
     }
 
     /// Build the arguments of the given function.
@@ -624,7 +628,7 @@ impl GrammarTypeInfo {
                 .generate_member_names(prod.get_r())
                 .iter()
                 .zip(types.drain(..))
-                .try_for_each(|((n, r), (t, a))| {
+                .try_for_each(|((n, r, o), (t, a))| {
                     // Tokens are taken from the parameter list per definition.
                     let mut used =
                         matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
@@ -642,7 +646,7 @@ impl GrammarTypeInfo {
                         {
                             "Token".to_owned()
                         } else {
-                            NmHlp::to_upper_camel_case(r)
+                            NmHlp::to_upper_camel_case(o)
                         };
                         self.symbol_table.get_or_create_type(
                             &type_name,
