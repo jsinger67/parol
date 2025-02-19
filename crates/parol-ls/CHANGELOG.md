@@ -5,6 +5,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 3.0.0 - Not released yet
+
+* New feature "User defined member names / Grammar labeling"
+* Switched to version `parol@3.0.0`
+
 ## 2.2.0 - 2025-01-17
 
 * Switched to versions `parol_runtime@2.2.0` and `parol@2.2.0`

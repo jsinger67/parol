@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0 - Not released yet
+
+* New feature "User defined member names / Grammar labeling"
+
+  This feature introduces breaking changes in the public API. Therefore we need to bump the major
+  version to 3.
+
+  Detailed list of changes in the public API
+  * The number of elements of the tuple struct used in the enum arm `Trm` of the enum
+  `parol::grammar::symbol::Terminal` has changed.
+  * The number of elements of the tuple struct used in the enum arm `N` of the enum
+  `parol::grammar::symbol::Symbol` has changed.
+  * In the module `parol::parser::parol_grammar` some public enums have similar changes in some arms.
+
+  I expect that most applications that use `parol` v2 can upgrade to v3 without problems. The
+  changes listed above only affect applications that use the `parol` library for very specific tasks.
+
 ## 2.2.0 - 2025-02-13
 
 Use version 2.2.0 of `parol_runtime` which provides a new crate feature.
