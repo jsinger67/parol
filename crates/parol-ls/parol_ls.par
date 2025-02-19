@@ -9,20 +9,25 @@
 %%
 
 ParolLs
-    : Prolog GrammarDefinition;
+    : Prolog GrammarDefinition
+    ;
 
 Prolog
-    : StartDeclaration { Declaration } { ScannerState };
+    : StartDeclaration { Declaration } { ScannerState }
+    ;
 
 StartDeclaration
-    : "%start": OwnedToken Identifier;
+    : "%start": OwnedToken Identifier
+    ;
 
 Declaration
     : "%title": OwnedToken String
     | "%comment": OwnedToken String
     | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName
+    | "%production_type": OwnedToken Identifier@prod_name "=": OwnedToken UserTypeName@prod_type
     | '%grammar_type': OwnedToken LiteralString // The type of the grammar, e.g. LL(k), LALR(1)
-    | ScannerDirectives;
+    | ScannerDirectives
+    ;
 
 ScannerDirectives
     : "%line_comment": OwnedToken TokenLiteral
@@ -33,80 +38,102 @@ ScannerDirectives
     ;
 
 GrammarDefinition
-    : "%%": OwnedToken Production { Production };
+    : "%%": OwnedToken Production { Production }
+    ;
 
 DoubleColon
-    : "::": OwnedToken;
+    : "::": OwnedToken
+    ;
 
 ProductionLHS
-    : Identifier ":": OwnedToken;
+    : Identifier ":": OwnedToken
+    ;
 
 Production
-    : ProductionLHS Alternations ";": OwnedToken;
+    : ProductionLHS Alternations ";": OwnedToken
+    ;
 
 Alternations
-    : Alternation { '|': OwnedToken Alternation };
+    : Alternation { '|': OwnedToken Alternation }
+    ;
 
 Alternation
-    : { Factor };
+    : { Factor }
+    ;
 
 Factor
     : Group
     | Repeat
     | Optional
-    | Symbol;
+    | Symbol
+    ;
 
 Symbol
     : NonTerminal
     | SimpleToken
     | TokenWithStates
-    | ScannerSwitch;
+    | ScannerSwitch
+    ;
 
 TokenLiteral
     : String
     | LiteralString
-    | Regex;
+    | Regex
+    ;
 
 TokenExpression
-    : TokenLiteral [ LookAhead ];
+    : TokenLiteral [ LookAhead ]
+    ;
 
 SimpleToken
-    : TokenExpression [ ASTControl ];
+    : TokenExpression [ ASTControl ]
+    ;
 
 TokenWithStates
-    : "<": OwnedToken IdentifierList ">": OwnedToken TokenExpression [ ASTControl ];
+    : "<": OwnedToken IdentifierList ">": OwnedToken TokenExpression [ ASTControl ]
+    ;
 
 Group
-    : '(': OwnedToken Alternations ')': OwnedToken;
+    : '(': OwnedToken Alternations ')': OwnedToken
+    ;
 
 Optional
-    : '[': OwnedToken Alternations ']': OwnedToken;
+    : '[': OwnedToken Alternations ']': OwnedToken
+    ;
 
 Repeat
-    : '{': OwnedToken Alternations '}': OwnedToken;
+    : '{': OwnedToken Alternations '}': OwnedToken
+    ;
 
 NonTerminal
-    : Identifier [ ASTControl ];
+    : Identifier [ ASTControl ]
+    ;
 
 Identifier
-    : /[a-zA-Z_][a-zA-Z0-9_]*/: OwnedToken;
+    : /[a-zA-Z_][a-zA-Z0-9_]*/: OwnedToken
+    ;
 
 String
-    : /"(\\.|[^"])*"/: OwnedToken;
+    : /"(\\.|[^"])*"/: OwnedToken
+    ;
 
 LiteralString
-    : /'(\\.|[^'])*'/: OwnedToken;
+    : /'(\\.|[^'])*'/: OwnedToken
+    ;
 
 ScannerState
-    : "%scanner": OwnedToken Identifier '{': OwnedToken { ScannerDirectives } '}': OwnedToken;
+    : "%scanner": OwnedToken Identifier '{': OwnedToken { ScannerDirectives } '}': OwnedToken
+    ;
 
 IdentifierList
-    : Identifier { ",": OwnedToken Identifier };
+    : Identifier { ",": OwnedToken Identifier }
+    ;
 
 ScannerSwitch
     : "%sc": OwnedToken '(': OwnedToken [ Identifier ] ')': OwnedToken
     | "%push": OwnedToken '(': OwnedToken Identifier ')': OwnedToken
-    | "%pop": OwnedToken '(': OwnedToken ')': OwnedToken;
+    | "%pop": OwnedToken '(': OwnedToken ')': OwnedToken
+    ;
 
 ASTControl
     : CutOperator
@@ -120,13 +147,16 @@ MemberName
     ;
 
 CutOperator
-    : '^': OwnedToken;
+    : '^': OwnedToken
+    ;
 
 UserTypeDeclaration
-    : ":": OwnedToken UserTypeName;
+    : ":": OwnedToken UserTypeName
+    ;
 
 UserTypeName
-    : Identifier { DoubleColon Identifier };
+    : Identifier { DoubleColon Identifier }
+    ;
 
 Regex
     : "/(\\.|[^\/])*/": OwnedToken
@@ -134,12 +164,15 @@ Regex
 
 // The lookahead
 LookAhead
-    : ( PositiveLookahead | NegativeLookahead ) TokenLiteral;
+    : ( PositiveLookahead | NegativeLookahead ) TokenLiteral
+    ;
 
 // The positive lookahead operator
 PositiveLookahead
-    : '?=': OwnedToken;
+    : '?=': OwnedToken
+    ;
 
 // The negative lookahead operator
 NegativeLookahead
-    : '?!': OwnedToken;
+    : '?!': OwnedToken
+    ;

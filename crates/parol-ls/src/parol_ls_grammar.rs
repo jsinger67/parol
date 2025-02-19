@@ -620,6 +620,34 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     }]),
                 });
             }
+            Declaration::PercentProductionUnderscoreTypeProdNameEquProdType(prod_type) => {
+                #[allow(deprecated)]
+                self.symbols.push(DocumentSymbol {
+                    name: prod_type
+                        .percent_production_underscore_type
+                        .text()
+                        .to_string(),
+                    detail: Some("Production type".to_string()),
+                    kind: SymbolKind::TYPE_PARAMETER,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(
+                        &prod_type.percent_production_underscore_type,
+                    )
+                    .0,
+                    children: Some(vec![DocumentSymbol {
+                        name: prod_type.prod_name.identifier.text().to_string(),
+                        detail: Some("Text".to_string()),
+                        kind: SymbolKind::STRING,
+                        tags: None,
+                        deprecated: None,
+                        range: Into::<Rng>::into(arg).0,
+                        selection_range: Into::<Rng>::into(&prod_type.prod_type).0,
+                        children: None,
+                    }]),
+                });
+            }
         }
         Ok(())
     }

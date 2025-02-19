@@ -8,6 +8,7 @@ file.
 ## 3.0.0 - Not released yet
 
 * New feature "User defined member names / Grammar labeling"
+* New feature "Production types"
 * Switched to version `parol@3.0.0`
 
 ## 2.2.0 - 2025-01-17

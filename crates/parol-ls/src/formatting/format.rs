@@ -89,7 +89,7 @@ impl Fmt for ASTControl {
                 } else {
                     (String::default(), comments)
                 };
-                (format!("{}{}", member_name, ast_control_opt), comments)
+                (format!("@{}{}", member_name, ast_control_opt), comments)
             }
         }
     }
@@ -285,6 +285,44 @@ impl Fmt for Declaration {
                         delim,
                         grammar_type.percent_grammar_underscore_type,
                         str
+                    ),
+                    comments,
+                )
+            }
+            Declaration::PercentProductionUnderscoreTypeProdNameEquProdType(prod_type) => {
+                // "%production_type" Identifier "=" UserTypeName // comment
+                let (comments_before_token, comments) = Comments::format_comments_before(
+                    comments,
+                    &prod_type.percent_production_underscore_type,
+                    &options
+                        .clone()
+                        .with_padding(Padding::Left)
+                        .with_line_end(LineEnd::ForceRemove),
+                );
+                let (prod_name, comments) = prod_type.prod_name.txt(options, comments);
+                let (orig_type_name, comments) = prod_type.prod_type.txt(options, comments);
+                let (following_comment, comments) =
+                    Comments::formatted_immediately_following_comment(
+                        comments,
+                        prod_type.prod_type.get_last_token(),
+                        &options
+                            .clone()
+                            .with_padding(Padding::Left)
+                            .with_line_end(LineEnd::ForceRemove),
+                    );
+                if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                    delim = "\n";
+                };
+                (
+                    format!(
+                        "{}{}{} {} {} {}{}",
+                        comments_before_token,
+                        delim,
+                        prod_type.percent_production_underscore_type,
+                        prod_name,
+                        prod_type.equ,
+                        orig_type_name,
+                        following_comment,
                     ),
                     comments,
                 )
