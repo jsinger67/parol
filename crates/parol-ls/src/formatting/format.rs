@@ -289,22 +289,22 @@ impl Fmt for Declaration {
                     comments,
                 )
             }
-            Declaration::PercentProductionUnderscoreTypeProdNameEquProdType(prod_type) => {
-                // "%production_type" Identifier "=" UserTypeName // comment
+            Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
+                // "%nt_type" Identifier "=" UserTypeName // comment
                 let (comments_before_token, comments) = Comments::format_comments_before(
                     comments,
-                    &prod_type.percent_production_underscore_type,
+                    &nt_type.percent_nt_underscore_type,
                     &options
                         .clone()
                         .with_padding(Padding::Left)
                         .with_line_end(LineEnd::ForceRemove),
                 );
-                let (prod_name, comments) = prod_type.prod_name.txt(options, comments);
-                let (orig_type_name, comments) = prod_type.prod_type.txt(options, comments);
+                let (prod_name, comments) = nt_type.nt_name.txt(options, comments);
+                let (orig_type_name, comments) = nt_type.nt_type.txt(options, comments);
                 let (following_comment, comments) =
                     Comments::formatted_immediately_following_comment(
                         comments,
-                        prod_type.prod_type.get_last_token(),
+                        nt_type.nt_type.get_last_token(),
                         &options
                             .clone()
                             .with_padding(Padding::Left)
@@ -318,9 +318,9 @@ impl Fmt for Declaration {
                         "{}{}{} {} {} {}{}",
                         comments_before_token,
                         delim,
-                        prod_type.percent_production_underscore_type,
+                        nt_type.percent_nt_underscore_type,
                         prod_name,
-                        prod_type.equ,
+                        nt_type.equ,
                         orig_type_name,
                         following_comment,
                     ),

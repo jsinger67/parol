@@ -29,7 +29,7 @@ pub const TERMINALS: &[(&str, Option<(bool, &str)>); 45] = &[
     /*  7 */ (r"%comment", None),
     /*  8 */ (r"%user_type", None),
     /*  9 */ (r"=", None),
-    /* 10 */ (r"%production_type", None),
+    /* 10 */ (r"%nt_type", None),
     /* 11 */ (r"%grammar_type", None),
     /* 12 */ (r"%line_comment", None),
     /* 13 */ (r"%block_comment", None),
@@ -77,7 +77,7 @@ pub const TERMINAL_NAMES: &[&str; 45] = &[
     /*  7 */ "PercentComment",
     /*  8 */ "PercentUserUnderscoreType",
     /*  9 */ "Equ",
-    /* 10 */ "PercentProductionUnderscoreType",
+    /* 10 */ "PercentNtUnderscoreType",
     /* 11 */ "PercentGrammarUnderscoreType",
     /* 12 */ "PercentLineUnderscoreComment",
     /* 13 */ "PercentBlockUnderscoreComment",
@@ -129,7 +129,7 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 39]) = (
         7,  /* PercentComment */
         8,  /* PercentUserUnderscoreType */
         9,  /* Equ */
-        10, /* PercentProductionUnderscoreType */
+        10, /* PercentNtUnderscoreType */
         11, /* PercentGrammarUnderscoreType */
         12, /* PercentLineUnderscoreComment */
         13, /* PercentBlockUnderscoreComment */
@@ -814,7 +814,7 @@ pub const PRODUCTIONS: &[Production; 87] = &[
             ParseType::T(8),
         ],
     },
-    // 10 - Declaration: "%production_type" Identifier@prod_name "=" UserTypeName@prod_type;
+    // 10 - Declaration: "%nt_type" Identifier@nt_name "=" UserTypeName@nt_type;
     Production {
         lhs: 7,
         production: &[

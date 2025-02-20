@@ -17,7 +17,7 @@
 /*  7 */ Declaration: "%title" : OwnedToken String;
 /*  8 */ Declaration: "%comment" : OwnedToken String;
 /*  9 */ Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName;
-/* 10 */ Declaration: "%production_type" : OwnedToken Identifier@prod_name "=" : OwnedToken UserTypeName@prod_type;
+/* 10 */ Declaration: "%nt_type" : OwnedToken Identifier@nt_name "=" : OwnedToken UserTypeName@nt_type;
 /* 11 */ Declaration: '%grammar_type' : OwnedToken LiteralString;
 /* 12 */ Declaration: ScannerDirectives;
 /* 13 */ ScannerDirectives: "%line_comment" : OwnedToken TokenLiteral;

@@ -11,16 +11,13 @@ use anyhow::anyhow;
 use parol_macros::{bail, parol};
 
 use parol_runtime::Location;
-use parol_runtime::{lexer::Token, once_cell::sync::Lazy, Result};
+use parol_runtime::{lexer::Token, Result};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use std::collections::BTreeMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
 use std::marker::PhantomData;
-
-/// Used for implementation of trait `Default` for `&ParolGrammar`.
-static DEFAULT_PAROL_GRAMMAR: Lazy<ParolGrammar<'static>> = Lazy::new(ParolGrammar::default);
 
 pub(crate) const INITIAL_STATE: usize = 0;
 
@@ -677,7 +674,7 @@ pub enum GrammarType {
 ///
 /// Data structure used to build up a parol::GrammarConfig during parsing.
 ///
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct ParolGrammar<'t> {
     /// The parsed productions
     pub productions: Vec<Production>,
@@ -691,6 +688,8 @@ pub struct ParolGrammar<'t> {
     pub scanner_configurations: Vec<ScannerConfig>,
     /// User type definitions (aliases)
     pub user_type_definitions: BTreeMap<String, UserDefinedTypeName>,
+    /// Production type definitions, i.e., user defined types for productions
+    pub production_type_definitions: BTreeMap<String, UserDefinedTypeName>,
     /// The grammar type
     pub grammar_type: GrammarType,
     /// Contains information about token aliases:
@@ -705,10 +704,7 @@ impl ParolGrammar<'_> {
     /// Constructs a new item
     ///
     pub fn new() -> Self {
-        ParolGrammar::<'_> {
-            scanner_configurations: vec![ScannerConfig::default()],
-            ..Default::default()
-        }
+        Self::default()
     }
 
     fn process_parol(&mut self, parol: &Parol<'_>) -> Result<()> {
@@ -751,6 +747,9 @@ impl ParolGrammar<'_> {
             }
             Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(user_type_def) => {
                 self.process_user_type_definition(user_type_def)
+            }
+            Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
+                self.process_production_type_definition(nt_type)
             }
             Declaration::ScannerDirectives(scanner_decl) => {
                 self.process_scanner_directive(&scanner_decl.scanner_directives)?
@@ -975,13 +974,21 @@ impl ParolGrammar<'_> {
                         &mut member_name,
                     );
                 }
+                let non_terminal_name = non_terminal
+                    .non_terminal
+                    .identifier
+                    .identifier
+                    .text()
+                    .to_string();
+                if user_type_name.is_none() {
+                    // If no local user type is defined, check if a global user type is defined
+                    // for this non-terminal and use it.
+                    if let Some(defined_type) = self.user_type_definitions.get(&non_terminal_name) {
+                        user_type_name = Some(defined_type.clone());
+                    }
+                }
                 Ok(Factor::NonTerminal(
-                    non_terminal
-                        .non_terminal
-                        .identifier
-                        .identifier
-                        .text()
-                        .to_string(),
+                    non_terminal_name,
                     attr,
                     user_type_name,
                     member_name,
@@ -1164,6 +1171,16 @@ impl ParolGrammar<'_> {
         self.user_type_definitions.insert(
             user_type_def.identifier.identifier.text().to_string(),
             user_type_def.user_type_name.clone(),
+        );
+    }
+
+    fn process_production_type_definition(
+        &mut self,
+        user_type_def: &parol_grammar_trait::DeclarationPercentNtUnderscoreTypeNtNameEquNtType,
+    ) {
+        self.user_type_definitions.insert(
+            user_type_def.nt_name.identifier.text().to_string(),
+            user_type_def.nt_type.clone(),
         );
     }
 
@@ -1357,9 +1374,20 @@ impl Display for ParolGrammar<'_> {
     }
 }
 
-impl Default for &ParolGrammar<'_> {
+impl Default for ParolGrammar<'_> {
     fn default() -> Self {
-        &DEFAULT_PAROL_GRAMMAR
+        Self {
+            productions: Vec::new(),
+            title: None,
+            comment: None,
+            start_symbol: "".to_string(),
+            scanner_configurations: vec![ScannerConfig::default()],
+            user_type_definitions: BTreeMap::new(),
+            production_type_definitions: BTreeMap::new(),
+            grammar_type: GrammarType::LLK,
+            token_aliases: Vec::new(),
+            phantom: PhantomData,
+        }
     }
 }
 
@@ -1408,5 +1436,24 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
     /// Semantic action for non-terminal 'Parol'
     fn parol(&mut self, parol: &Parol<'t>) -> Result<()> {
         self.process_parol(parol)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // A test the checks the correct implementation of the `Default` for the `ParolGrammar`
+    #[test]
+    fn test_default() {
+        let pg = ParolGrammar::default();
+        assert_eq!(pg.title, None);
+        assert_eq!(pg.comment, None);
+        assert_eq!(pg.start_symbol, "");
+        assert_eq!(pg.scanner_configurations.len(), 1);
+        assert_eq!(pg.user_type_definitions.len(), 0);
+        assert_eq!(pg.production_type_definitions.len(), 0);
+        assert_eq!(pg.grammar_type, GrammarType::LLK);
+        assert_eq!(pg.productions.len(), 0);
     }
 }

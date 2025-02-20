@@ -24,7 +24,7 @@ Declaration
     : "%title": OwnedToken String
     | "%comment": OwnedToken String
     | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName
-    | "%production_type": OwnedToken Identifier@prod_name "=": OwnedToken UserTypeName@prod_type
+    | "%nt_type": OwnedToken Identifier@nt_name "=": OwnedToken UserTypeName@nt_type
     | '%grammar_type': OwnedToken LiteralString // The type of the grammar, e.g. LL(k), LALR(1)
     | ScannerDirectives
     ;

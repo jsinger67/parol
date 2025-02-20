@@ -620,30 +620,24 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     }]),
                 });
             }
-            Declaration::PercentProductionUnderscoreTypeProdNameEquProdType(prod_type) => {
+            Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
-                    name: prod_type
-                        .percent_production_underscore_type
-                        .text()
-                        .to_string(),
+                    name: nt_type.percent_nt_underscore_type.text().to_string(),
                     detail: Some("Production type".to_string()),
                     kind: SymbolKind::TYPE_PARAMETER,
                     tags: None,
                     deprecated: None,
                     range: Into::<Rng>::into(arg).0,
-                    selection_range: Into::<Rng>::into(
-                        &prod_type.percent_production_underscore_type,
-                    )
-                    .0,
+                    selection_range: Into::<Rng>::into(&nt_type.percent_nt_underscore_type).0,
                     children: Some(vec![DocumentSymbol {
-                        name: prod_type.prod_name.identifier.text().to_string(),
+                        name: nt_type.nt_name.identifier.text().to_string(),
                         detail: Some("Text".to_string()),
                         kind: SymbolKind::STRING,
                         tags: None,
                         deprecated: None,
                         range: Into::<Rng>::into(arg).0,
-                        selection_range: Into::<Rng>::into(&prod_type.prod_type).0,
+                        selection_range: Into::<Rng>::into(&nt_type.nt_type).0,
                         children: None,
                     }]),
                 });

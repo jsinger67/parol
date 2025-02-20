@@ -254,16 +254,16 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName {
 ///
 /// Type derived for production 10
 ///
-/// `Declaration: "%production_type" : OwnedToken Identifier@prod_name "=" : OwnedToken UserTypeName@prod_type;`
+/// `Declaration: "%nt_type" : OwnedToken Identifier@nt_name "=" : OwnedToken UserTypeName@nt_type;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct DeclarationPercentProductionUnderscoreTypeProdNameEquProdType {
-    pub percent_production_underscore_type: crate::parol_ls_grammar::OwnedToken, /* %production_type */
-    pub prod_name: Identifier,
+pub struct DeclarationPercentNtUnderscoreTypeNtNameEquNtType {
+    pub percent_nt_underscore_type: crate::parol_ls_grammar::OwnedToken, /* %nt_type */
+    pub nt_name: Identifier,
     pub equ: crate::parol_ls_grammar::OwnedToken, /* = */
-    pub prod_type: UserTypeName,
+    pub nt_type: UserTypeName,
 }
 
 ///
@@ -683,9 +683,7 @@ pub enum Declaration {
     PercentUserUnderscoreTypeIdentifierEquUserTypeName(
         DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName,
     ),
-    PercentProductionUnderscoreTypeProdNameEquProdType(
-        DeclarationPercentProductionUnderscoreTypeProdNameEquProdType,
-    ),
+    PercentNtUnderscoreTypeNtNameEquNtType(DeclarationPercentNtUnderscoreTypeNtNameEquNtType),
     PercentGrammarUnderscoreTypeLiteralString(DeclarationPercentGrammarUnderscoreTypeLiteralString),
     ScannerDirectives(DeclarationScannerDirectives),
 }
@@ -1535,19 +1533,19 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// `Declaration: "%production_type" : OwnedToken Identifier@prod_name "=" : OwnedToken UserTypeName@prod_type;`
+    /// `Declaration: "%nt_type" : OwnedToken Identifier@nt_name "=" : OwnedToken UserTypeName@nt_type;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_3(
         &mut self,
-        percent_production_underscore_type: &ParseTreeType<'t>,
-        _prod_name: &ParseTreeType<'t>,
+        percent_nt_underscore_type: &ParseTreeType<'t>,
+        _nt_name: &ParseTreeType<'t>,
         equ: &ParseTreeType<'t>,
-        _prod_type: &ParseTreeType<'t>,
+        _nt_type: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_production_underscore_type = percent_production_underscore_type
+        let percent_nt_underscore_type = percent_nt_underscore_type
             .token()?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
@@ -1555,16 +1553,16 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token()?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let prod_type = pop_item!(self, prod_type, UserTypeName, context);
-        let prod_name = pop_item!(self, prod_name, Identifier, context);
-        let declaration_3_built = DeclarationPercentProductionUnderscoreTypeProdNameEquProdType {
-            percent_production_underscore_type,
-            prod_name,
+        let nt_type = pop_item!(self, nt_type, UserTypeName, context);
+        let nt_name = pop_item!(self, nt_name, Identifier, context);
+        let declaration_3_built = DeclarationPercentNtUnderscoreTypeNtNameEquNtType {
+            percent_nt_underscore_type,
+            nt_name,
             equ,
-            prod_type,
+            nt_type,
         };
         let declaration_3_built =
-            Declaration::PercentProductionUnderscoreTypeProdNameEquProdType(declaration_3_built);
+            Declaration::PercentNtUnderscoreTypeNtNameEquNtType(declaration_3_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_3_built)?;
         self.push(ASTType::Declaration(declaration_3_built), context);

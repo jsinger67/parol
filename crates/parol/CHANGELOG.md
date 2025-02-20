@@ -22,6 +22,45 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   I expect that most applications that use `parol` v2 can upgrade to v3 without problems. The
   changes listed above only affect applications that use the `parol` library for very specific tasks.
 
+* New feature "Non-terminal types"
+
+  You can now easily define a user type to which each occurrence of a certain non-terminal should
+  be automatically converted to.
+  This is done like in the following example:
+
+  ```ebnf
+  %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+  ```
+
+  It is similar to the already available `%user_type` with what you could define an alias for a
+  user defined type which in turn you could apply to single symbols on the right-hand side of
+  grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
+  non-terminals much easier.
+  Here is the old version used in parol itself before (only partial)
+  ```ebnf
+  %user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
+  // ...
+  %%
+  // ...
+  Prolog
+    : StartDeclaration { Declaration } { ScannerState: ScannerConfig }
+    ;
+  ```
+  And here is the new variant in which `%nt_type` is used.
+  ```ebnf
+  %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+  // ...
+  %%
+  // ...
+  Prolog
+    : StartDeclaration { Declaration } { ScannerState }
+    ;
+  ```
+  The non-terminal `ScannerState` was automatically defined the be converted to `ScannerConfig`.
+  
+  It is semantically completely identical to use `%user_type` and the application of it to each
+  occurrence of the non-terminal in the grammar explicitly.
+
 ## 2.2.0 - 2025-02-13
 
 Use version 2.2.0 of `parol_runtime` which provides a new crate feature.
