@@ -54,6 +54,13 @@ pub fn render_par_string(
             acc.push_str(&format!("%user_type {} = {}\n", a, u));
             acc
         });
+    let user_types = grammar_config
+        .nt_type_defs
+        .iter()
+        .fold(user_types, |mut acc, (a, u)| {
+            acc.push_str(&format!("%nt_type {} = {}\n", a, u));
+            acc
+        });
 
     let user_type_resolver = grammar_config.get_user_type_resolver();
 

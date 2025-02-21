@@ -688,8 +688,8 @@ pub struct ParolGrammar<'t> {
     pub scanner_configurations: Vec<ScannerConfig>,
     /// User type definitions (aliases)
     pub user_type_definitions: BTreeMap<String, UserDefinedTypeName>,
-    /// Production type definitions, i.e., user defined types for productions
-    pub production_type_definitions: BTreeMap<String, UserDefinedTypeName>,
+    /// Non-terminal type definitions, i.e., user defined types for non-terminals
+    pub nt_type_definitions: BTreeMap<String, UserDefinedTypeName>,
     /// The grammar type
     pub grammar_type: GrammarType,
     /// Contains information about token aliases:
@@ -749,7 +749,7 @@ impl ParolGrammar<'_> {
                 self.process_user_type_definition(user_type_def)
             }
             Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
-                self.process_production_type_definition(nt_type)
+                self.process_nt_type_definition(nt_type)
             }
             Declaration::ScannerDirectives(scanner_decl) => {
                 self.process_scanner_directive(&scanner_decl.scanner_directives)?
@@ -983,7 +983,7 @@ impl ParolGrammar<'_> {
                 if user_type_name.is_none() {
                     // If no local user type is defined, check if a global user type is defined
                     // for this non-terminal and use it.
-                    if let Some(defined_type) = self.user_type_definitions.get(&non_terminal_name) {
+                    if let Some(defined_type) = self.nt_type_definitions.get(&non_terminal_name) {
                         user_type_name = Some(defined_type.clone());
                     }
                 }
@@ -1174,11 +1174,11 @@ impl ParolGrammar<'_> {
         );
     }
 
-    fn process_production_type_definition(
+    fn process_nt_type_definition(
         &mut self,
         user_type_def: &parol_grammar_trait::DeclarationPercentNtUnderscoreTypeNtNameEquNtType,
     ) {
-        self.user_type_definitions.insert(
+        self.nt_type_definitions.insert(
             user_type_def.nt_name.identifier.text().to_string(),
             user_type_def.nt_type.clone(),
         );
@@ -1383,7 +1383,7 @@ impl Default for ParolGrammar<'_> {
             start_symbol: "".to_string(),
             scanner_configurations: vec![ScannerConfig::default()],
             user_type_definitions: BTreeMap::new(),
-            production_type_definitions: BTreeMap::new(),
+            nt_type_definitions: BTreeMap::new(),
             grammar_type: GrammarType::LLK,
             token_aliases: Vec::new(),
             phantom: PhantomData,
@@ -1452,7 +1452,7 @@ mod tests {
         assert_eq!(pg.start_symbol, "");
         assert_eq!(pg.scanner_configurations.len(), 1);
         assert_eq!(pg.user_type_definitions.len(), 0);
-        assert_eq!(pg.production_type_definitions.len(), 0);
+        assert_eq!(pg.nt_type_definitions.len(), 0);
         assert_eq!(pg.grammar_type, GrammarType::LLK);
         assert_eq!(pg.productions.len(), 0);
     }

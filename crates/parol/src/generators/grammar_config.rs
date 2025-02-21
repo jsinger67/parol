@@ -56,6 +56,11 @@ pub struct GrammarConfig {
     pub user_type_defs: Vec<(String, String)>,
 
     ///
+    /// Non-terminal type definitions, i.e., user defined types for non-terminals
+    ///
+    pub nt_type_defs: Vec<(String, String)>,
+
+    ///
     /// At least one scanner configurations
     ///
     pub scanner_configurations: Vec<ScannerConfig>,
@@ -118,6 +123,12 @@ impl GrammarConfig {
     /// Adds a user type definition
     pub fn add_user_type_def(mut self, alias: String, type_name: String) -> Self {
         self.user_type_defs.push((alias, type_name));
+        self
+    }
+
+    /// Adds a nt type definition
+    pub fn add_nt_type_def(mut self, alias: String, type_name: String) -> Self {
+        self.nt_type_defs.push((alias, type_name));
         self
     }
 
