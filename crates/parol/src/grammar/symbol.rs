@@ -217,7 +217,10 @@ impl Terminal {
                         } else {
                             user_type.to_string()
                         };
-                    write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
+                    if user_type != "%t_type" {
+                        // Don't print user type if it is the default type
+                        write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
+                    }
                 }
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)

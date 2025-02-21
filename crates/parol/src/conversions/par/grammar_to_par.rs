@@ -54,13 +54,17 @@ pub fn render_par_string(
             acc.push_str(&format!("%user_type {} = {}\n", a, u));
             acc
         });
-    let user_types = grammar_config
+    let mut user_types = grammar_config
         .nt_type_defs
         .iter()
         .fold(user_types, |mut acc, (a, u)| {
             acc.push_str(&format!("%nt_type {} = {}\n", a, u));
             acc
         });
+
+    if let Some(t) = &grammar_config.t_type_def {
+        user_types.push_str(&format!("%t_type = {}\n", t));
+    }
 
     let user_type_resolver = grammar_config.get_user_type_resolver();
 

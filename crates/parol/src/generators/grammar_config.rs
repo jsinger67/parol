@@ -61,6 +61,11 @@ pub struct GrammarConfig {
     pub nt_type_defs: Vec<(String, String)>,
 
     ///
+    /// Terminal type definitions, i.e., user defined types for terminals
+    ///
+    pub t_type_def: Option<String>,
+
+    ///
     /// At least one scanner configurations
     ///
     pub scanner_configurations: Vec<ScannerConfig>,
@@ -192,13 +197,17 @@ impl GrammarConfig {
 
     /// Generates a function that can be used as user_type_resolver argument on Pr::format
     pub fn get_user_type_resolver(&self) -> FnUserTypeResolver {
-        let user_type_map = self
-            .user_type_defs
-            .iter()
-            .fold(HashMap::new(), |mut acc, (a, u)| {
-                acc.insert(u.to_string(), a.to_string());
-                acc
-            });
+        let mut user_type_map =
+            self.user_type_defs
+                .iter()
+                .fold(HashMap::new(), |mut acc, (a, u)| {
+                    acc.insert(u.to_string(), a.to_string());
+                    acc
+                });
+        if let Some(t) = &self.t_type_def {
+            // The allows to skip the user type resolver for terminals
+            user_type_map.insert(t.to_string(), "%t_type".to_string());
+        }
         Box::new(move |u: &str| user_type_map.get(u).cloned())
     }
 

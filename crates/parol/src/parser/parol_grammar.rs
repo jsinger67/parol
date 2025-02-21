@@ -690,6 +690,8 @@ pub struct ParolGrammar<'t> {
     pub user_type_definitions: BTreeMap<String, UserDefinedTypeName>,
     /// Non-terminal type definitions, i.e., user defined types for non-terminals
     pub nt_type_definitions: BTreeMap<String, UserDefinedTypeName>,
+    /// Terminal type definitions, i.e., user defined types for terminals
+    pub t_type_def: Option<UserDefinedTypeName>,
     /// The grammar type
     pub grammar_type: GrammarType,
     /// Contains information about token aliases:
@@ -750,6 +752,10 @@ impl ParolGrammar<'_> {
             }
             Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
                 self.process_nt_type_definition(nt_type)
+            }
+            Declaration::PercentTUnderscoreTypeTType(t_type) => {
+                // The last TType definition is used
+                self.t_type_def = Some(t_type.t_type.clone());
             }
             Declaration::ScannerDirectives(scanner_decl) => {
                 self.process_scanner_directive(&scanner_decl.scanner_directives)?
@@ -1005,6 +1011,13 @@ impl ParolGrammar<'_> {
                         &mut user_type_name,
                         &mut member_name,
                     );
+                }
+                if user_type_name.is_none() {
+                    // If no local user type is defined, check if a global user type is defined
+                    // for all terminals and use it.
+                    if let Some(defined_type) = self.t_type_def.as_ref() {
+                        user_type_name = Some(defined_type.clone());
+                    }
                 }
                 let (content, kind) = Self::measure_token_literal(
                     &simple_token.simple_token.token_expression.token_literal,
@@ -1384,6 +1397,7 @@ impl Default for ParolGrammar<'_> {
             scanner_configurations: vec![ScannerConfig::default()],
             user_type_definitions: BTreeMap::new(),
             nt_type_definitions: BTreeMap::new(),
+            t_type_def: None,
             grammar_type: GrammarType::LLK,
             token_aliases: Vec::new(),
             phantom: PhantomData,

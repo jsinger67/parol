@@ -3,7 +3,7 @@ use crate::{
     parol_ls_grammar_trait::{
         self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
         Prolog, ScannerDirectives, ScannerState, StartDeclaration, TokenLiteral, TokenWithStates,
-        UserTypeDeclaration,
+        UserTypeDeclaration, UserTypeName,
     },
     rng::Rng,
     symbol_def::SymbolDefs,
@@ -339,7 +339,7 @@ impl ParolLsGrammar {
                 .scanner_state_definitions
                 .find_reference_range(ident, params.position)
             {
-                // The INITAL scanner state is a special case. We don't want to rename it.
+                // The INITIAL scanner state is a special case. We don't want to rename it.
                 if ident != "INITIAL" {
                     return Some(PrepareRenameResponse::Range(*range));
                 }
@@ -383,7 +383,7 @@ impl ParolLsGrammar {
                 }
                 SymbolDefsType::UserType => (),
                 SymbolDefsType::ScannerState => {
-                    // The INITAL scanner state is a special case. We don't want to rename it.
+                    // The INITIAL scanner state is a special case. We don't want to rename it.
                     if ident != "INITIAL" {
                         let text_document_edits = TextDocumentEdit {
                             text_document: OptionalVersionedTextDocumentIdentifier {
@@ -624,8 +624,8 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
                     name: nt_type.percent_nt_underscore_type.text().to_string(),
-                    detail: Some("Production type".to_string()),
-                    kind: SymbolKind::TYPE_PARAMETER,
+                    detail: Some("Non-terminal type".to_string()),
+                    kind: SymbolKind::PROPERTY,
                     tags: None,
                     deprecated: None,
                     range: Into::<Rng>::into(arg).0,
@@ -636,8 +636,30 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                         kind: SymbolKind::STRING,
                         tags: None,
                         deprecated: None,
-                        range: Into::<Rng>::into(arg).0,
+                        range: Into::<Rng>::into(&nt_type.nt_type).0,
                         selection_range: Into::<Rng>::into(&nt_type.nt_type).0,
+                        children: None,
+                    }]),
+                });
+            }
+            Declaration::PercentTUnderscoreTypeTType(t_type) => {
+                #[allow(deprecated)]
+                self.symbols.push(DocumentSymbol {
+                    name: t_type.percent_t_underscore_type.text().to_string(),
+                    detail: Some("Terminal type".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(&t_type.percent_t_underscore_type).0,
+                    children: Some(vec![DocumentSymbol {
+                        name: t_type.t_type.to_string(),
+                        detail: Some("Text".to_string()),
+                        kind: SymbolKind::STRING,
+                        tags: None,
+                        deprecated: None,
+                        range: Into::<Rng>::into(&t_type.t_type).0,
+                        selection_range: Into::<Rng>::into(&t_type.t_type).0,
                         children: None,
                     }]),
                 });
@@ -777,5 +799,15 @@ impl std::ops::Deref for OwnedToken {
 impl Display for OwnedToken {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "{}", self.0.text())
+    }
+}
+
+impl Display for UserTypeName {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(f, "{}", self.identifier.identifier)?;
+        for id in &self.user_type_name_list {
+            write!(f, "::{}", id.identifier.identifier)?;
+        }
+        Ok(())
     }
 }

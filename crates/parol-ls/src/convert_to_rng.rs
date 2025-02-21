@@ -63,6 +63,10 @@ impl From<&Declaration> for Rng {
                 Self::from(&user_type.percent_user_underscore_type)
                     .extend(Self::from(&user_type.user_type_name))
             }
+            Declaration::PercentTUnderscoreTypeTType(t_type) => {
+                Self::from(&t_type.percent_t_underscore_type)
+                    .extend(Self::from(&t_type.t_type.identifier))
+            }
             Declaration::ScannerDirectives(scanner) => Self::from(&scanner.scanner_directives),
             Declaration::PercentGrammarUnderscoreTypeLiteralString(grammar_type) => {
                 Self::from(&grammar_type.percent_grammar_underscore_type)

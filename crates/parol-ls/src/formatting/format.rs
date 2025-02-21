@@ -327,6 +327,39 @@ impl Fmt for Declaration {
                     comments,
                 )
             }
+            Declaration::PercentTUnderscoreTypeTType(t_type) => {
+                // "%t_type" UserTypeName // comment
+                let (comments_before_token, comments) = Comments::format_comments_before(
+                    comments,
+                    &t_type.percent_t_underscore_type,
+                    &options
+                        .clone()
+                        .with_padding(Padding::Left)
+                        .with_line_end(LineEnd::ForceRemove),
+                );
+                let (following_comment, comments) =
+                    Comments::formatted_immediately_following_comment(
+                        comments,
+                        t_type.t_type.get_last_token(),
+                        &options
+                            .clone()
+                            .with_padding(Padding::Left)
+                            .with_line_end(LineEnd::ForceRemove),
+                    );
+                if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                    delim = "\n";
+                };
+                (
+                    format!(
+                        "{}{}{} {}",
+                        comments_before_token,
+                        delim,
+                        t_type.percent_t_underscore_type,
+                        following_comment,
+                    ),
+                    comments,
+                )
+            }
         }
     }
 }

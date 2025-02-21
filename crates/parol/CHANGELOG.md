@@ -61,6 +61,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   It is semantically completely identical to use `%user_type` and the application of it to each
   occurrence of the non-terminal in the grammar explicitly.
 
+* New feature "Terminal type"
+
+  You can now easily define a user type to which each occurrence of a terminal should be
+  automatically converted to.
+  This is done like in the following example:
+
+  ```ebnf
+  %t_type crate::parol_ls_grammar::OwnedToken
+  ```
+
+  There can be only one type defined to which all terminals are converted to.
+
+  More precisely, if there are more such directives given the last one will win.
+
+  Here is the old version used in parol-l itself before (only partial)
+  ```ebnf
+  %user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
+  // ...
+  %%
+  // ...
+  ScannerSwitch
+      : "%sc": OwnedToken '(': OwnedToken [ Identifier ] ')': OwnedToken
+      | "%push": OwnedToken '(': OwnedToken Identifier ')': OwnedToken
+      | "%pop": OwnedToken '(': OwnedToken ')': OwnedToken
+      ;
+  ```
+  And here is the new variant in which `%t_type` is used.
+  ```ebnf
+  %t_type crate::parol_ls_grammar::OwnedToken
+  // ...
+  %%
+  // ...
+  ScannerSwitch
+      : "%sc" '(' [ Identifier ] ')'
+      | "%push" '(' Identifier ')'
+      | "%pop" '(' ')'
+      ;
+  ```
+  All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
+
+
 ## 2.2.0 - 2025-02-13
 
 Use version 2.2.0 of `parol_runtime` which provides a new crate feature.
