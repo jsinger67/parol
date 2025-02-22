@@ -13,44 +13,22 @@ variants.
 I expect that most applications that use `parol` v2 can upgrade to v3 without problems. The
 changes listed above only affect applications that use the `parol` library for very specific tasks.
 
-## New feature "User defined member names / Grammar labeling"
+## New feature "User defined member names"
 
-You can now easily define a user type to which each occurrence of a certain non-terminal should
-be automatically converted to.
-This is done like in the following example:
+You can now specify for each symbol on the right-hand side of a production how its corresponding
+member in the generated struct should be named.
+
+To achieve this you can use the newly introduced `@` operator.
 
 ```parol
-%nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+Declaration :
+    ...
+    | "%nt_type" Identifier@nt_name "="^ UserTypeName@nt_type
+    ...
 ```
 
-It is similar to the already available `%user_type` with what you could define an alias for a
-user defined type which in turn you could apply to single symbols on the right-hand side of
-grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
-non-terminals much easier.
-Here is the old version used in `parol` itself before (only partial)
-```parol
-%user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
-// ...
-%%
-// ...
-Prolog
-: StartDeclaration { Declaration } { ScannerState: ScannerConfig }
-;
-```
-And here is the new variant in which `%nt_type` is used.
-```parol
-%nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
-// ...
-%%
-// ...
-Prolog
-: StartDeclaration { Declaration } { ScannerState }
-;
-```
-The non-terminal `ScannerState` was automatically defined the be converted to `ScannerConfig`.
-
-It is semantically completely identical to use `%user_type` and the application of it to each
-occurrence of the non-terminal in the grammar explicitly.
+In this example the Identifier in the production will be named `nt_name` and the UserTypeName will
+receive the name `nt_type` in the generated struct data type for this production.
 
 ## New feature "Non-terminal types"
 
@@ -86,10 +64,11 @@ Prolog
 : StartDeclaration { Declaration } { ScannerState }
 ;
 ```
-The non-terminal `ScannerState` was automatically defined the be converted to `ScannerConfig`.
+The non-terminal `ScannerState` was defined to be automatically converted to `ScannerConfig`.
 
-It is semantically completely identical to use `%user_type` and the application of it to each
-occurrence of the non-terminal in the grammar explicitly.
+It is semantically completely identical to use `%user_type` for a certain non-terminal and then
+apply the defined `%user_type` alias to each occurrence of the concerned non-terminal in the grammar
+definition explicitly.
 
 ## New feature "Terminal type"
 
@@ -129,7 +108,7 @@ ScannerSwitch
     | "%pop" '(' ')'
     ;
 ```
-All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
+All terminals are automatically defined to be converted to `crate::parol_ls_grammar::OwnedToken`.
 
 ## parol re-exports parol_runtime
 
