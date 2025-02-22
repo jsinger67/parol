@@ -337,6 +337,7 @@ impl Fmt for Declaration {
                         .with_padding(Padding::Left)
                         .with_line_end(LineEnd::ForceRemove),
                 );
+                let (user_type_name, comments) = t_type.t_type.txt(options, comments);
                 let (following_comment, comments) =
                     Comments::formatted_immediately_following_comment(
                         comments,
@@ -351,10 +352,11 @@ impl Fmt for Declaration {
                 };
                 (
                     format!(
-                        "{}{}{} {}",
+                        "{}{}{} {}{}",
                         comments_before_token,
                         delim,
                         t_type.percent_t_underscore_type,
+                        user_type_name,
                         following_comment,
                     ),
                     comments,
