@@ -103,7 +103,6 @@ const DEPENDENCIES: &[&[&str]] = &[
         concat!("parol@", env!("CARGO_PKG_VERSION")),
         "--build",
     ],
-    &["add", "parol_runtime@2.2", "--build"],
 ];
 
 const TREE_GEN_DEPENDENCY: &str = "add syntree_layout@0.4.0";
@@ -159,22 +158,6 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
             .status()
             .map(|_| ())?
     }
-
-    let mut cargo_toml = fs::OpenOptions::new()
-        .append(true)
-        .open(creation_data.path.join("Cargo.toml"))
-        .context("Error opening Cargo.toml file")?;
-    write!(
-        cargo_toml,
-        "
-# For faster builds.
-[profile.dev.build-override]
-opt-level = 3
-[profile.release.build-override]
-opt-level = 3
-"
-    )
-    .context("Error writing to Cargo.toml file")?;
 
     Ok(())
 }

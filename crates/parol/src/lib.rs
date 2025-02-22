@@ -99,3 +99,6 @@ pub use utils::{generate_tree_layout, obtain_grammar_config, obtain_grammar_conf
 /// Grammar with a higher value will be rejected.
 ///
 pub const MAX_K: usize = 10;
+
+// re-export
+pub use parol_runtime;

@@ -13,7 +13,7 @@ variants.
 I expect that most applications that use `parol` v2 can upgrade to v3 without problems. The
 changes listed above only affect applications that use the `parol` library for very specific tasks.
 
-### New feature "User defined member names / Grammar labeling"
+## New feature "User defined member names / Grammar labeling"
 
 You can now easily define a user type to which each occurrence of a certain non-terminal should
 be automatically converted to.
@@ -130,3 +130,37 @@ ScannerSwitch
     ;
 ```
 All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
+
+## parol re-exports parol_runtime
+
+This simplifies the use and avoids version conflicts between both libraries.
+
+The initial `Cargo.toml` will then simple be similar like this:
+
+```toml
+[package]
+name = "re_export"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+env_logger = "0.11"
+parol_runtime = "2.2"
+thiserror = "2.0"
+
+[build-dependencies]
+parol = "3.0.0"
+```
+
+This makes a lot more sense, since you would expect to reference `parol_runtime` in your parser
+crate and have `parol` as build dependency.
+
+Anyway, as before, it is advisable to use `parol_runtime` in the version that `parol` in the build
+dependencies. These two crates are precisely coordinated.
+
+To check this you can use the following command:
+
+```shell
+cargo tree -i parol_runtime
+```
