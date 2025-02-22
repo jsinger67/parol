@@ -157,7 +157,7 @@ This makes a lot more sense, since you would expect to reference `parol_runtime`
 crate and have `parol` as build dependency.
 
 Anyway, as before, it is advisable to use `parol_runtime` in the version that `parol` in the build
-dependencies. These two crates are precisely coordinated.
+dependencies uses. These two crates are precisely coordinated.
 
 To check this you can use the following command:
 
