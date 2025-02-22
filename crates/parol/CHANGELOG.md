@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   user defined type which in turn you could apply to single symbols on the right-hand side of
   grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
   non-terminals much easier.
-  Here is the old version used in parol itself before (only partial)
+  Here is the old version used in `parol` itself before (only partial)
   ```ebnf
   %user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
   // ...
@@ -75,7 +75,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
   More precisely, if there are more such directives given the last one will win.
 
-  Here is the old version used in parol-l itself before (only partial)
+  Here is the old version used in `parol-ls` itself before (only partial)
   ```ebnf
   %user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
   // ...
