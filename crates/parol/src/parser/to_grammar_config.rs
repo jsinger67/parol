@@ -50,6 +50,12 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
         grammar_config = grammar_config.add_user_type_def(u.0, u.1.to_string());
     }
 
+    for n in parol_grammar.nt_type_definitions {
+        grammar_config = grammar_config.add_nt_type_def(n.0, n.1.to_string());
+    }
+
+    grammar_config.t_type_def = parol_grammar.t_type_def.map(|t| t.to_string());
+
     for s in 1..parol_grammar.scanner_configurations.len() {
         grammar_config = grammar_config.add_scanner(try_from_scanner_config(
             &parol_grammar.scanner_configurations[s],
@@ -71,7 +77,7 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
             pr_copy.iter().find_map(|p| {
                 if p.0.get_n_ref().unwrap() == name && p.1.len() == 1 {
                     match &p.1[0] {
-                        Symbol::T(Terminal::Trm(t, k, _, _, _, l)) => {
+                        Symbol::T(Terminal::Trm(t, k, _, _, _, _, l)) => {
                             Some((t.to_owned(), *k, l.clone()))
                         }
                         _ => None,
@@ -149,8 +155,14 @@ fn try_from_scanner_config(
 
 pub(crate) fn try_from_factor(factor: Factor) -> Result<Symbol> {
     match factor {
-        Factor::NonTerminal(n, a, u) => Ok(Symbol::N(n, a, u)),
-        Factor::Terminal(t, k, s, a, u, l) => Ok(Symbol::T(Terminal::Trm(t, k, s, a, u, l))),
+        Factor::NonTerminal(n, a, u, m) => {
+            // We use the member name here if given
+            Ok(Symbol::N(n, a, u, m))
+        }
+        Factor::Terminal(t, k, s, a, u, m, l) => {
+            // We use the member name here if given
+            Ok(Symbol::T(Terminal::Trm(t, k, s, a, u, m, l)))
+        }
         Factor::ScannerSwitch(s, _) => Ok(Symbol::s(s)),
         Factor::ScannerSwitchPush(s, _) => Ok(Symbol::Push(s)),
         Factor::ScannerSwitchPop(_) => Ok(Symbol::Pop),

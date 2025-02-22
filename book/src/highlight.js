@@ -24,7 +24,7 @@ hljs.registerLanguage(
           },
           {
             className: "keyword",
-            begin: /%(start|title|comment|line_comment|block_comment|auto_newline_of|auto_ws_off|user_type|grammar_type |scanner|on|enter)/,
+            begin: /%(start|title|comment|line_comment|block_comment|auto_newline_of|auto_ws_off|user_type|grammar_type|scanner|on|enter|nt_type|t_type)/,
           },
           {
             className: "keyword",

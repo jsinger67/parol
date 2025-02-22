@@ -72,7 +72,13 @@
       "patterns": [
         {
           "name": "keyword.other.parol",
-          "match": "%(start|title|grammar_type|comment|line_comment|block_comment|scanner|sc|push|pop|auto_newline_off|auto_ws_off|user_type|on|enter)\\b"
+          "match":
+            "%(start|title|(line_|block_)?comment|scanner|sc|push|pop|(auto_newline|auto_ws)_off|on|enter|(user|nt|grammar)_type)\\b"
+        },
+        {
+          "name": "keyword.other.parol",
+          "match":
+            "%t_type\\b"
         }
       ]
     },
@@ -80,7 +86,7 @@
       "patterns": [
         {
           "name": "keyword.control.parol",
-          "match": "%%|\\?[!=]|\\||:|;|\\^|="
+          "match": "%%|\\?[!=]|\\||:|;|\\^|=|@"
         }
       ]
     },

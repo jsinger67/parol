@@ -4,8 +4,8 @@
 %grammar_type 'll(k)'
 %line_comment '//'
 %block_comment '/*' '*/'
-%user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName
-%user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
+%nt_type UserTypeName = crate::parser::parol_grammar::UserDefinedTypeName
+%nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
 
 %%
 
@@ -15,7 +15,7 @@ Parol
     ;
 
 Prolog
-    : StartDeclaration { Declaration } { ScannerState: ScannerConfig }
+    : StartDeclaration { Declaration } { ScannerState }
     ;
 
 StartDeclaration
@@ -25,7 +25,9 @@ StartDeclaration
 Declaration
     : '%title'^ String
     | '%comment'^ String
-    | '%user_type'^ Identifier '='^ UserTypeName: UserType // User type alias definition
+    | '%user_type'^ Identifier '='^ UserTypeName // User type alias definition
+    | "%nt_type" Identifier@nt_name "="^ UserTypeName@nt_type // User type for a non-terminal
+    | "%t_type" UserTypeName@t_type // User type for all terminals, the last will win
     | '%grammar_type'^ RawString // The type of the grammar, e.g. LL(k), LALR(1)
     | ScannerDirectives
     ;
@@ -128,7 +130,7 @@ Identifier
 
 // A complete scanner definition
 ScannerState
-    : '%scanner'^ Identifier '{'^ { ScannerDirectives } '}'^
+    : '%scanner'^ Identifier@state_name '{'^ { ScannerDirectives } '}'^
     ;
 
 // The list of scanner states a terminal symbol is associated with
@@ -144,7 +146,13 @@ ScannerSwitch
 
 ASTControl
     : CutOperator
+    | MemberName [ UserTypeDeclaration ]
     | UserTypeDeclaration
+    ;
+
+// The name of the member in the AST as it will appear in the generated code
+MemberName
+    : '@'^ Identifier
     ;
 
 // Prevents the symbol from being propagated to the AST in auto-gen
@@ -154,7 +162,7 @@ CutOperator
 
 // Assigns the user type to a symbol
 UserTypeDeclaration
-    : ':'^ UserTypeName: UserType
+    : ':'^ UserTypeName
     ;
 
 // A valid Rust qualified name

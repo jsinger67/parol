@@ -33,7 +33,7 @@ impl CompiledTerminal {
         F: TerminalIndexFn,
     {
         match s {
-            Symbol::T(Terminal::Trm(t, k, _, _, _, l)) => {
+            Symbol::T(Terminal::Trm(t, k, _, _, _, _, l)) => {
                 Self(terminal_index_resolver.as_ref().terminal_index(t, *k, l))
             }
             Symbol::T(Terminal::End) => Self(EOI),

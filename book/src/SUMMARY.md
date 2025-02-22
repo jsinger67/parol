@@ -15,3 +15,6 @@
 
 # Version 2
 - [Changes in version 2](./ParolVersion2.md)
+
+# Version 3
+- [Changes in version 3](./ParolVersion3.md)

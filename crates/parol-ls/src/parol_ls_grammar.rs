@@ -1,9 +1,9 @@
 use crate::{
     formatting::Comments,
     parol_ls_grammar_trait::{
-        self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
-        Prolog, ScannerDirectives, ScannerState, StartDeclaration, TokenLiteral, TokenWithStates,
-        UserTypeDeclaration,
+        self, ASTControl, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production,
+        ProductionLHS, Prolog, ScannerDirectives, ScannerState, SimpleToken, StartDeclaration,
+        TokenLiteral, TokenWithStates, UserTypeDeclaration, UserTypeName,
     },
     rng::Rng,
     symbol_def::SymbolDefs,
@@ -25,6 +25,7 @@ use std::fmt::{Debug, Display, Error, Formatter, Write as _};
 
 #[derive(Debug, Clone)]
 pub(crate) enum SymbolDefsType {
+    Terminal,
     NonTerminal,
     UserType,
     ScannerState,
@@ -46,6 +47,9 @@ pub struct ParolLsGrammar {
 
     // Non-terminal definitions and references
     pub(crate) non_terminal_definitions: SymbolDefs,
+
+    // Terminal type definition and references
+    pub(crate) terminal_type: SymbolDefs,
 
     // A hash that maps non-terminals to their productions
     pub productions: HashMap<String, Vec<Production>>,
@@ -79,6 +83,11 @@ impl ParolLsGrammar {
                     .find_reference(position)
                     .map(|name| (name, SymbolDefsType::ScannerState))
             })
+            .or_else(|| {
+                self.terminal_type
+                    .find_reference(position)
+                    .map(|name| (name, SymbolDefsType::Terminal))
+            })
     }
 
     pub(crate) fn find_non_terminal_definitions(&self, non_terminal: &str) -> Option<Vec<Range>> {
@@ -91,10 +100,10 @@ impl ParolLsGrammar {
     }
 
     fn add_non_terminal_ref(&mut self, token: &OwnedToken) {
-        // eprintln!("add_non_terminal_ref: {range:?}, {}", token);
         let range = location_to_range(&token.location);
+        eprintln!("add_non_terminal_ref: {range:?}, {}", token);
         self.non_terminal_definitions
-            .add_reference(range, token.text().to_string());
+            .add_reference(range, token.text());
     }
 
     fn add_non_terminal_definition(&mut self, token: &OwnedToken) {
@@ -117,13 +126,25 @@ impl ParolLsGrammar {
 
     fn add_user_type_ref(&mut self, range: Range, token: &OwnedToken) {
         self.user_type_definitions
-            .add_reference(range, token.text().to_string());
+            .add_reference(range, token.text());
     }
 
     fn add_user_type_definition(&mut self, range: Range, token: &OwnedToken) -> Range {
         self.user_type_definitions
             .add_definition(token.text().to_string(), range);
         range
+    }
+
+    fn add_terminal_type_def(&mut self, t_type: &UserTypeName) {
+        self.terminal_type
+            .add_definition("%t_type".to_owned(), Into::<Rng>::into(t_type).0);
+    }
+
+    fn add_terminal_ref(&mut self, range: Range) {
+        if self.terminal_type.find_definitions("%t_type").is_some() {
+            eprintln!("add_terminal_ref: {range:?}");
+            self.terminal_type.add_reference(range, "%t_type");
+        }
     }
 
     fn add_scanner_symbols(&mut self, symbols: &mut Vec<DocumentSymbol>, arg: &ScannerDirectives) {
@@ -283,25 +304,37 @@ impl ParolLsGrammar {
     pub(crate) fn hover(&self, params: HoverParams, input: &str) -> Hover {
         let mut value = String::new();
         let ident = self.ident_at_position(params.text_document_position_params.position);
-        if let Some((item, _kind)) = ident {
-            value = format!("## {}", item);
-            if let Some(productions) = self.productions.get(item) {
-                for p in productions {
-                    let rng: Rng = p.into();
-                    let _ = write!(value, "\n{}", to_markdown(extract_text_range(input, rng)));
+        if let Some((item, kind)) = ident {
+            if let SymbolDefsType::Terminal = kind {
+                // Terminals show their %t_type definition if available
+                if let Some(ranges) = self.terminal_type.find_definitions(item) {
+                    debug_assert!(ranges.len() == 1);
+                    let _ = write!(
+                        value,
+                        "{}",
+                        to_markdown(extract_text_range(input, Rng(ranges[0])))
+                    );
                 }
-            } else if let Some(ranges) = self.user_type_definitions.find_definitions(item) {
-                let _ = write!(
-                    value,
-                    "\n{}",
-                    to_markdown(extract_text_range(input, Rng(ranges[0])))
-                );
-            } else if let Some(ranges) = self.scanner_state_definitions.find_definitions(item) {
-                let _ = write!(
-                    value,
-                    "\n{}",
-                    to_markdown(extract_text_range(input, Rng(ranges[0])))
-                );
+            } else {
+                value = format!("## {}", item);
+                if let Some(productions) = self.productions.get(item) {
+                    for p in productions {
+                        let rng: Rng = p.into();
+                        let _ = write!(value, "\n{}", to_markdown(extract_text_range(input, rng)));
+                    }
+                } else if let Some(ranges) = self.user_type_definitions.find_definitions(item) {
+                    let _ = write!(
+                        value,
+                        "\n{}",
+                        to_markdown(extract_text_range(input, Rng(ranges[0])))
+                    );
+                } else if let Some(ranges) = self.scanner_state_definitions.find_definitions(item) {
+                    let _ = write!(
+                        value,
+                        "\n{}",
+                        to_markdown(extract_text_range(input, Rng(ranges[0])))
+                    );
+                }
             }
         }
         let markup_content = MarkupContent {
@@ -339,7 +372,7 @@ impl ParolLsGrammar {
                 .scanner_state_definitions
                 .find_reference_range(ident, params.position)
             {
-                // The INITAL scanner state is a special case. We don't want to rename it.
+                // The INITIAL scanner state is a special case. We don't want to rename it.
                 if ident != "INITIAL" {
                     return Some(PrepareRenameResponse::Range(*range));
                 }
@@ -383,7 +416,7 @@ impl ParolLsGrammar {
                 }
                 SymbolDefsType::UserType => (),
                 SymbolDefsType::ScannerState => {
-                    // The INITAL scanner state is a special case. We don't want to rename it.
+                    // The INITIAL scanner state is a special case. We don't want to rename it.
                     if ident != "INITIAL" {
                         let text_document_edits = TextDocumentEdit {
                             text_document: OptionalVersionedTextDocumentIdentifier {
@@ -410,6 +443,7 @@ impl ParolLsGrammar {
                         });
                     }
                 }
+                SymbolDefsType::Terminal => (),
             }
         }
         // eprintln!("prepare rename request rejected");
@@ -620,6 +654,55 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     }]),
                 });
             }
+            Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
+                self.add_non_terminal_ref(&nt_type.nt_name.identifier);
+
+                let range = Into::<Rng>::into(&nt_type.nt_type).0;
+
+                #[allow(deprecated)]
+                self.symbols.push(DocumentSymbol {
+                    name: nt_type.percent_nt_underscore_type.text().to_string(),
+                    detail: Some("Non-terminal type".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(&nt_type.percent_nt_underscore_type).0,
+                    children: Some(vec![DocumentSymbol {
+                        name: nt_type.nt_name.identifier.text().to_string(),
+                        detail: Some("Text".to_string()),
+                        kind: SymbolKind::STRING,
+                        tags: None,
+                        deprecated: None,
+                        range,
+                        selection_range: range,
+                        children: None,
+                    }]),
+                });
+            }
+            Declaration::PercentTUnderscoreTypeTType(t_type) => {
+                self.add_terminal_type_def(&t_type.t_type);
+                #[allow(deprecated)]
+                self.symbols.push(DocumentSymbol {
+                    name: t_type.percent_t_underscore_type.text().to_string(),
+                    detail: Some("Terminal type".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(&t_type.percent_t_underscore_type).0,
+                    children: Some(vec![DocumentSymbol {
+                        name: t_type.t_type.to_string(),
+                        detail: Some("Text".to_string()),
+                        kind: SymbolKind::STRING,
+                        tags: None,
+                        deprecated: None,
+                        range: Into::<Rng>::into(&t_type.t_type).0,
+                        selection_range: Into::<Rng>::into(&t_type.t_type).0,
+                        children: None,
+                    }]),
+                });
+            }
         }
         Ok(())
     }
@@ -632,8 +715,30 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         Ok(())
     }
 
+    /// Semantic action for non-terminal 'SimpleToken'
+    fn simple_token(&mut self, arg: &SimpleToken) -> Result<()> {
+        if let Some(a) = arg.simple_token_opt.as_ref() {
+            if !matches!(a.a_s_t_control, ASTControl::CutOperator(_)) {
+                // Add terminal reference only if the terminal is not omitted by a cut operator
+                self.add_terminal_ref(Into::<Rng>::into(arg).0);
+            }
+        } else {
+            self.add_terminal_ref(Into::<Rng>::into(arg).0);
+        }
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'TokenWithStates'
     fn token_with_states(&mut self, arg: &TokenWithStates) -> Result<()> {
+        if let Some(a) = arg.token_with_states_opt.as_ref() {
+            if !matches!(a.a_s_t_control, ASTControl::CutOperator(_)) {
+                // Add terminal reference only if the terminal is not omitted by a cut operator
+                self.add_terminal_ref(Into::<Rng>::into(arg).0);
+            }
+        } else {
+            self.add_terminal_ref(Into::<Rng>::into(arg).0);
+        }
+
         [arg.identifier_list.identifier.identifier.clone()]
             .iter()
             .chain(
@@ -755,5 +860,15 @@ impl std::ops::Deref for OwnedToken {
 impl Display for OwnedToken {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "{}", self.0.text())
+    }
+}
+
+impl Display for UserTypeName {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(f, "{}", self.identifier.identifier)?;
+        for id in &self.user_type_name_list {
+            write!(f, "::{}", id.identifier.identifier)?;
+        }
+        Ok(())
     }
 }

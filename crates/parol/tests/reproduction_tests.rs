@@ -11,8 +11,8 @@ use std::path;
 ///
 #[test]
 fn reproduction_test() -> Result<()> {
+    let rx_newline: Regex = Regex::new(r"\r?\n|\r").unwrap();
     for file_result in path::PathBuf::from("./tests/data/valid").read_dir()? {
-        let rx_newline: Regex = Regex::new(r"\r?\n|\r").unwrap();
         let dir_entry = file_result?;
         let mut file_path = dir_entry.path();
         if file_path.extension().unwrap() == "par" {

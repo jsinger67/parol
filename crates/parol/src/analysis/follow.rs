@@ -328,7 +328,7 @@ where
                                 )
                             });
                     }
-                    Symbol::N(nt, _, _) => {
+                    Symbol::N(nt, _, _, _) => {
                         let first_k_of_nt = Rc::clone(&args.first_k_of_nt);
                         let nt_i = args.nti.non_terminal_index(&nt);
                         result_function =
