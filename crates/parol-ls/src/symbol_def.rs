@@ -45,9 +45,9 @@ impl SymbolDefs {
     }
 
     // Add a reference to the symbol
-    pub(crate) fn add_reference(&mut self, range: Range, name: String) {
+    pub(crate) fn add_reference(&mut self, range: Range, name: &str) {
         self.symbols
-            .entry(name)
+            .entry(name.to_string())
             .or_default()
             .references
             .insert(range);

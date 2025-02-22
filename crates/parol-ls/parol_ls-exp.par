@@ -3,7 +3,7 @@
 %comment "Parol's own grammar enhanced with comment processing"
 %line_comment "//"
 %block_comment "/\*" "\*/"
-%t_type = crate::parol_ls_grammar::OwnedToken
+%t_type crate::parol_ls_grammar::OwnedToken
 
 %%
 

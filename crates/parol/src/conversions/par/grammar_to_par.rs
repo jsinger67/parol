@@ -63,7 +63,7 @@ pub fn render_par_string(
         });
 
     if let Some(t) = &grammar_config.t_type_def {
-        user_types.push_str(&format!("%t_type = {}\n", t));
+        user_types.push_str(&format!("%t_type {}\n", t));
     }
 
     let user_type_resolver = grammar_config.get_user_type_resolver();
