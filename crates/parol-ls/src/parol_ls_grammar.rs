@@ -101,7 +101,7 @@ impl ParolLsGrammar {
 
     fn add_non_terminal_ref(&mut self, token: &OwnedToken) {
         let range = location_to_range(&token.location);
-        eprintln!("add_non_terminal_ref: {range:?}, {}", token);
+        // eprintln!("add_non_terminal_ref: {range:?}, {}", token);
         self.non_terminal_definitions
             .add_reference(range, token.text());
     }
@@ -130,6 +130,7 @@ impl ParolLsGrammar {
     }
 
     fn add_user_type_definition(&mut self, range: Range, token: &OwnedToken) -> Range {
+        // eprint!("add_user_type_definition: {range:?}, {}", token);
         self.user_type_definitions
             .add_definition(token.text().to_string(), range);
         range
@@ -142,7 +143,7 @@ impl ParolLsGrammar {
 
     fn add_terminal_ref(&mut self, range: Range) {
         if self.terminal_type.find_definitions("%t_type").is_some() {
-            eprintln!("add_terminal_ref: {range:?}");
+            // eprintln!("add_terminal_ref: {range:?}");
             self.terminal_type.add_reference(range, "%t_type");
         }
     }
@@ -655,30 +656,64 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                 });
             }
             Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
+                // Allow the non-terminal to be renamed
                 self.add_non_terminal_ref(&nt_type.nt_name.identifier);
 
-                let range = Into::<Rng>::into(&nt_type.nt_type).0;
+                let range = Into::<Rng>::into(&nt_type.percent_nt_underscore_type).0;
 
-                #[allow(deprecated)]
-                self.symbols.push(DocumentSymbol {
-                    name: nt_type.percent_nt_underscore_type.text().to_string(),
-                    detail: Some("Non-terminal type".to_string()),
-                    kind: SymbolKind::PROPERTY,
-                    tags: None,
-                    deprecated: None,
-                    range: Into::<Rng>::into(arg).0,
-                    selection_range: Into::<Rng>::into(&nt_type.percent_nt_underscore_type).0,
-                    children: Some(vec![DocumentSymbol {
-                        name: nt_type.nt_name.identifier.text().to_string(),
-                        detail: Some("Text".to_string()),
-                        kind: SymbolKind::STRING,
+                let nt_types_node = if let Some(nt_types_node) = self
+                    .symbols
+                    .iter()
+                    .position(|s| s.name == "%nt_type Definitions")
+                {
+                    self.symbols.get_mut(nt_types_node).unwrap()
+                } else {
+                    #[allow(deprecated)]
+                    self.symbols.push(DocumentSymbol {
+                        name: "%nt_type Definitions".to_string(),
+                        detail: Some("Non-terminal type definitions".to_string()),
+                        kind: SymbolKind::OBJECT,
                         tags: None,
                         deprecated: None,
                         range,
                         selection_range: range,
-                        children: None,
-                    }]),
-                });
+                        children: Some(Vec::new()),
+                    });
+                    self.symbols.last_mut().unwrap()
+                };
+
+                let range = Into::<Rng>::into(&nt_type.nt_type).0;
+
+                #[allow(deprecated)]
+                nt_types_node
+                    .children
+                    .as_mut()
+                    .unwrap()
+                    .push(DocumentSymbol {
+                        name: format!(
+                            "{} {}",
+                            nt_type.percent_nt_underscore_type.text(),
+                            nt_type.nt_name.identifier.text()
+                        ),
+                        detail: Some("Non-terminal type".to_string()),
+                        kind: SymbolKind::PROPERTY,
+                        tags: None,
+                        deprecated: None,
+                        range: Into::<Rng>::into(&nt_type.percent_nt_underscore_type)
+                            .extend(Into::<Rng>::into(&nt_type.nt_name))
+                            .0,
+                        selection_range: Into::<Rng>::into(&nt_type.percent_nt_underscore_type).0,
+                        children: Some(vec![DocumentSymbol {
+                            name: nt_type.nt_name.identifier.text().to_string(),
+                            detail: Some("Text".to_string()),
+                            kind: SymbolKind::STRING,
+                            tags: None,
+                            deprecated: None,
+                            range,
+                            selection_range: range,
+                            children: None,
+                        }]),
+                    });
             }
             Declaration::PercentTUnderscoreTypeTType(t_type) => {
                 self.add_terminal_type_def(&t_type.t_type);

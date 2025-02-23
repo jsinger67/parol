@@ -73,8 +73,7 @@ impl From<&Declaration> for Rng {
                     .extend(Self::from(&grammar_type.literal_string))
             }
             Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
-                Self::from(&nt_type.percent_nt_underscore_type)
-                    .extend(Self::from(&nt_type.nt_type.identifier))
+                Self::from(&nt_type.percent_nt_underscore_type).extend(Self::from(&nt_type.nt_type))
             }
         }
     }
