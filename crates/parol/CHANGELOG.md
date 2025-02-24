@@ -7,12 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 3.0.0 - Not released yet
 
-* New feature "User defined member names / Grammar labeling"
+The [book](https://jsinger67.github.io) has been updated and received a new chapter on `parol`'s
+[version 3](https://jsinger67.github.io/ParolVersion3.html).
 
-  This feature introduces breaking changes in the public API. Therefore we need to bump the major
-  version to 3.
+### New feature "User defined member names / Grammar labeling"
 
-  Detailed list of changes in the public API
+  You can now specify for each symbol on the right-hand side of a production how its corresponding
+  member in the generated struct should be named.
+
+  To achieve this you can use the newly introduced `@` operator.
+
+  ```parol
+  Declaration :
+      ...
+      | "%nt_type" Identifier@nt_name "="^ UserTypeName@nt_type
+      ...
+  ```
+
+  In this example the Identifier in the production will be named `nt_name` and the UserTypeName will
+  receive the name `nt_type` in the generated struct data type for this production.
+
+
+  This feature introduces **breaking changes** in the public API. Therefore we need to bump the
+  major version to 3.
+
+####  Detailed list of changes in the public API
   * The number of elements of the tuple struct used in the enum arm `Trm` of the enum
   `parol::grammar::symbol::Terminal` has changed.
   * The number of elements of the tuple struct used in the enum arm `N` of the enum
@@ -22,7 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   I expect that most applications that use `parol` v2 can upgrade to v3 without problems. The
   changes listed above only affect applications that use the `parol` library for very specific tasks.
 
-* New feature "Non-terminal types"
+### New feature "Non-terminal types"
 
   You can now easily define a user type to which each occurrence of a certain non-terminal should
   be automatically converted to.
@@ -61,7 +80,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   It is semantically completely identical to use `%user_type` and the application of it to each
   occurrence of the non-terminal in the grammar explicitly.
 
-* New feature "Terminal type"
+### New feature "Terminal type"
 
   You can now easily define a user type to which each occurrence of a terminal should be
   automatically converted to.
