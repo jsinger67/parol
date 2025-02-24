@@ -52,16 +52,18 @@ pub struct GrammarConfig {
 
     ///
     /// User type definitions
+    /// The first element of the tuple is the alias, the second the type name.
     ///
     pub user_type_defs: Vec<(String, String)>,
 
     ///
-    /// Non-terminal type definitions, i.e., user defined types for non-terminals
+    /// Non-terminal type definitions, i.e., user defined types for non-terminals.
+    /// The first element of the tuple is the non-terminal, the second the type name.
     ///
     pub nt_type_defs: Vec<(String, String)>,
 
     ///
-    /// Terminal type definitions, i.e., user defined types for terminals
+    /// Terminal type definitions, i.e., a single optional user defined type for terminals
     ///
     pub t_type_def: Option<String>,
 
@@ -82,6 +84,10 @@ pub(crate) type FnScannerStateResolver = Box<dyn Fn(&[usize]) -> String>;
 
 /// The type of a user type resolver function.
 /// A user type resolver function translates a decorated user type name into its shorter alias
+/// Also it resolves a user type for a non-terminal to the non-terminal's name.
+/// For terminals it resolves a user type to the fixed string "%t_type".
+/// The latter two are used to skip the user type on non-terminal and terminal occurrences because
+/// they are globally defined and need not be repeated.
 pub(crate) type FnUserTypeResolver = Box<dyn Fn(&str) -> Option<String>>;
 
 impl GrammarConfig {
@@ -204,8 +210,16 @@ impl GrammarConfig {
                     acc.insert(u.to_string(), a.to_string());
                     acc
                 });
+        user_type_map = self
+            .nt_type_defs
+            .iter()
+            .fold(user_type_map, |mut acc, (nt, u)| {
+                // This allows to skip the user type on non-terminal occurrences
+                acc.insert(u.to_string(), nt.to_string());
+                acc
+            });
         if let Some(t) = &self.t_type_def {
-            // The allows to skip the user type resolver for terminals
+            // This allows to skip the user type on terminal occurrences
             user_type_map.insert(t.to_string(), "%t_type".to_string());
         }
         Box::new(move |u: &str| user_type_map.get(u).cloned())

@@ -218,7 +218,7 @@ impl Terminal {
                             user_type.to_string()
                         };
                     if user_type != "%t_type" {
-                        // Don't print user type if it is the default type
+                        // Don't print user type if it is the globally defined type
                         write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
                     }
                 }
@@ -403,13 +403,16 @@ impl Symbol {
                     write!(s, "@{}", member).map_err(|e| anyhow!("IO error!: {}", e))?;
                 }
                 if let Some(ref user_type) = u {
-                    let user_type =
+                    let alias =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
                             alias
                         } else {
                             user_type.to_string()
                         };
-                    write!(s, " : {}", user_type).map_err(|e| anyhow!("IO error!: {}", e))?;
+                    if alias != *n {
+                        // Don't print user type if it is the globally defined type
+                        write!(s, " : {}", alias).map_err(|e| anyhow!("IO error!: {}", e))?;
+                    }
                 }
                 Ok(s)
             }
