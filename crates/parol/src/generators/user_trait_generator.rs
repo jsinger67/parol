@@ -549,7 +549,7 @@ impl<'a> UserTraitGenerator<'a> {
     fn generate_range_calculation(t: SymbolId, symbol_table: &SymbolTable) -> Result<String> {
         let type_symbol = symbol_table.symbol_as_type(t);
         let type_name = type_symbol.name();
-        let lifetime = symbol_table.lifetime(t);
+        let lifetime = symbol_table.elided_lifetime(t);
         let mut range_calc = RangeCalculationBuilder::default()
             .type_name(type_name)
             .lifetime(lifetime)

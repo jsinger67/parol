@@ -677,6 +677,15 @@ impl SymbolTable {
         }
     }
 
+    /// Returns the string representation of the elided lifetime of the symbol
+    pub(crate) fn elided_lifetime(&self, symbol_id: SymbolId) -> String {
+        if self[symbol_id].has_lifetime {
+            "<'_>".to_string()
+        } else {
+            "".to_string()
+        }
+    }
+
     /// Returns the name of the symbol
     pub(crate) fn name(&self, symbol_id: SymbolId) -> &str {
         let name_id = &self[symbol_id].name_id;

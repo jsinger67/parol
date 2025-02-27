@@ -120,6 +120,9 @@ The [book](https://jsinger67.github.io) has been updated and received a new chap
   ```
   All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
 
+### Fix issue "Find a way to elide lifetimes if possible in generated ToSpan implementations #581"
+
+  We can simply always generate elided lifetimes.
 
 ## 2.2.0 - 2025-02-13
 
