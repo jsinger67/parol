@@ -538,13 +538,12 @@ dependencies = [
 
 [[package]]
 name = "graph-cycles"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a6ad932c6dd3cfaf16b66754a42f87bbeefd591530c4b6a8334270a7df3e853"
+checksum = "3092eb8c0a52f9146161afd672f10fbb970daec4fa79d17b26f79f10139cba9e"
 dependencies = [
  "ahash",
- "petgraph",
- "thiserror 1.0.68",
+ "petgraph 0.7.1",
 ]
 
 [[package]]
@@ -845,7 +844,7 @@ dependencies = [
  "owo-colors",
  "parol-macros",
  "parol_runtime",
- "petgraph",
+ "petgraph 0.6.6",
  "predicates",
  "pretty_assertions",
  "quickcheck",
@@ -862,7 +861,7 @@ dependencies = [
  "syntree",
  "syntree_layout",
  "tempfile",
- "thiserror 2.0.11",
+ "thiserror",
  "ts-rs",
  "ume",
 ]
@@ -888,7 +887,7 @@ dependencies = [
  "serde",
  "serde_json",
  "syntree",
- "thiserror 2.0.11",
+ "thiserror",
 ]
 
 [[package]]
@@ -908,14 +907,14 @@ dependencies = [
  "log",
  "once_cell",
  "parol-macros",
- "petgraph",
+ "petgraph 0.6.6",
  "quickcheck",
  "quickcheck_macros",
  "scnr",
  "serde_json",
  "syntree",
  "syntree_layout",
- "thiserror 2.0.11",
+ "thiserror",
 ]
 
 [[package]]
@@ -923,6 +922,16 @@ name = "petgraph"
 version = "0.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c94eb96835f05ec51384814c9b2daef83f68486f67a0e2e9680e0f698dca808e"
+dependencies = [
+ "fixedbitset",
+ "indexmap",
+]
+
+[[package]]
+name = "petgraph"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3672b37090dbd86368a4145bc067582552b29c27377cad4e0a306c97f9bd7772"
 dependencies = [
  "fixedbitset",
  "indexmap",
@@ -1218,7 +1227,7 @@ dependencies = [
  "serde",
  "serde_json",
  "seshat-unicode",
- "thiserror 2.0.11",
+ "thiserror",
 ]
 
 [[package]]
@@ -1321,7 +1330,7 @@ checksum = "24d027955f5f14d526450b6a11ef5aa962761e924dcd092298dd0d1466570565"
 dependencies = [
  "anyhow",
  "syntree",
- "thiserror 2.0.11",
+ "thiserror",
  "xml_writer",
 ]
 
@@ -1356,31 +1365,11 @@ checksum = "3369f5ac52d5eb6ab48c6b4ffdc8efbcad6b89c765749064ba298f2c68a16a76"
 
 [[package]]
 name = "thiserror"
-version = "1.0.68"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02dd99dc800bbb97186339685293e1cc5d9df1f8fae2d0aecd9ff1c77efea892"
-dependencies = [
- "thiserror-impl 1.0.68",
-]
-
-[[package]]
-name = "thiserror"
 version = "2.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d452f284b73e6d76dd36758a0c8684b1d5be31f92b89d07fd5822175732206fc"
 dependencies = [
- "thiserror-impl 2.0.11",
-]
-
-[[package]]
-name = "thiserror-impl"
-version = "1.0.68"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7c61ec9a6f64d2793d8a45faba21efbe3ced62a886d44c36a009b2b519b4c7e"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.98",
+ "thiserror-impl",
 ]
 
 [[package]]
@@ -1411,7 +1400,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e640d9b0964e9d39df633548591090ab92f7a4567bc31d3891af23471a3365c6"
 dependencies = [
  "lazy_static",
- "thiserror 2.0.11",
+ "thiserror",
  "ts-rs-macros",
 ]
 
