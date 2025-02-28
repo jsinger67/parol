@@ -3,12 +3,12 @@ use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
 use crate::parser::GrammarType;
 use crate::{Pr, Symbol, Terminal};
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use parol_runtime::log::trace;
 use std::collections::{BTreeMap, HashSet};
 use std::fmt::{Debug, Display, Error, Formatter};
 
-use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
+use crate::{Cfg, GrammarConfig, grammar::SymbolAttribute};
 
 use super::generate_terminal_name;
 use super::symbol_table::{
@@ -682,7 +682,7 @@ impl GrammarTypeInfo {
             Symbol::T(Terminal::Trm(_, _, _, a, u, _, _)) => {
                 if *a == SymbolAttribute::Clipped {
                     Ok(TypeEntrails::Clipped(MetaSymbolKind::Token))
-                } else if let Some(ref user_defined_type) = u {
+                } else if let Some(user_defined_type) = u {
                     Ok(TypeEntrails::UserDefinedType(
                         MetaSymbolKind::Token,
                         user_defined_type.clone(),
@@ -693,7 +693,7 @@ impl GrammarTypeInfo {
             }
             Symbol::N(n, a, u, _) => {
                 let inner_type = self.non_terminal_types.get(n).unwrap();
-                if let Some(ref user_defined_type) = u {
+                if let Some(user_defined_type) = u {
                     Ok(TypeEntrails::UserDefinedType(
                         MetaSymbolKind::NonTerminal(*inner_type),
                         user_defined_type.clone(),

@@ -5,7 +5,7 @@ use crate::generators::symbol_table_facade::InstanceItem;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::parol_grammar::UserDefinedTypeName;
 use crate::{generators::NamingHelper as NmHlp, utils::generate_name};
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use graph_cycles::Cycles;
 use parol_runtime::log::trace;
 use petgraph::visit::NodeRef;
@@ -512,10 +512,7 @@ impl Scope {
         };
         trace!(
             "Scope {}: Inserting type {}({}) {:?}",
-            self.my_id,
-            type_name,
-            symbol_id,
-            entrails
+            self.my_id, type_name, symbol_id, entrails
         );
         let name_id = self.add_name(type_name);
         self.symbols.push(symbol_id);
@@ -544,11 +541,7 @@ impl Scope {
         self.symbols.push(symbol_id);
         trace!(
             "Scope {}: Inserting instance {}({}) (type: {}) {:?}",
-            self.my_id,
-            name,
-            symbol_id,
-            type_id,
-            entrails
+            self.my_id, name, symbol_id, type_id, entrails
         );
         Symbol::new(
             symbol_id,
@@ -747,7 +740,7 @@ impl SymbolTable {
     pub(crate) fn set_instance_used(&mut self, symbol_id: SymbolId, used: bool) -> Result<()> {
         match &mut self[symbol_id].kind {
             SymbolKind::Type(_) => bail!("Ain't no instance!"),
-            SymbolKind::Instance(ref mut i) => i.entrails.used &= used,
+            SymbolKind::Instance(i) => i.entrails.used &= used,
         }
         Ok(())
     }
@@ -1032,8 +1025,7 @@ impl SymbolTable {
             SymbolKind::Instance(i) => {
                 trace!(
                     "Replacing type of instance {} with type {}",
-                    inst_symbol_id,
-                    new_type_id
+                    inst_symbol_id, new_type_id
                 );
                 i.type_id = new_type_id
             }

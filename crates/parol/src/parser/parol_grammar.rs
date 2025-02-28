@@ -4,14 +4,14 @@ use super::parol_grammar_trait::{
     ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier, ScannerSwitch,
     StartDeclaration, TokenLiteral,
 };
-use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use crate::ParolParserError;
+use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use anyhow::anyhow;
 
 use parol_macros::{bail, parol};
 
 use parol_runtime::Location;
-use parol_runtime::{lexer::Token, Result};
+use parol_runtime::{Result, lexer::Token};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -230,7 +230,7 @@ impl Factor {
                 let mut d = String::new();
                 a.decorate(&mut d, &format!("T({})", m.as_ref().unwrap_or(t)))
                     .expect("Failed to decorate terminal!");
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     let _ = write!(d, " /* : {} */", user_type);
                 }
                 let delimiter = k.delimiter();
@@ -243,7 +243,7 @@ impl Factor {
                     delimiter,
                     d,
                     delimiter,
-                    if let Some(ref lookahead) = l {
+                    if let Some(lookahead) = l {
                         format!(" {}", lookahead.to_par())
                     } else {
                         "".to_string()
@@ -254,7 +254,7 @@ impl Factor {
                 let mut buf = String::new();
                 a.decorate(&mut buf, &m.as_ref().unwrap_or(n))
                     .expect("Failed to decorate non-terminal!");
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     let _ = write!(buf, " /* : {} */", user_type);
                 }
                 buf
@@ -287,10 +287,10 @@ impl Display for Factor {
                 let mut d = String::new();
                 let delimiter = k.delimiter();
                 a.decorate(&mut d, &format!("T({}{}{})", delimiter, t, delimiter))?;
-                if let Some(ref member_name) = m {
+                if let Some(member_name) = m {
                     write!(d, "@{}", member_name)?;
                 }
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     write!(d, " : {}", user_type)?;
                 }
                 write!(
@@ -301,7 +301,7 @@ impl Display for Factor {
                         .collect::<Vec<String>>()
                         .join(", "),
                     d,
-                    if let Some(ref lookahead) = l {
+                    if let Some(lookahead) = l {
                         format!(" {}", lookahead.to_par())
                     } else {
                         "".to_string()
@@ -311,10 +311,10 @@ impl Display for Factor {
             Self::NonTerminal(n, a, u, m) => {
                 let mut s = String::new();
                 a.decorate(&mut s, &format!("N({})", n))?;
-                if let Some(ref member_name) = m {
+                if let Some(member_name) = m {
                     write!(s, "@{}", member_name)?;
                 }
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     write!(s, " : {}", user_type)?;
                 }
                 write!(f, "{}", s)
@@ -972,7 +972,7 @@ impl ParolGrammar<'_> {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
                 let mut member_name = None;
-                if let Some(ref non_terminal_opt) = &non_terminal.non_terminal.non_terminal_opt {
+                if let Some(non_terminal_opt) = &non_terminal.non_terminal.non_terminal_opt {
                     self.extract_attributes_from_ast_control(
                         &non_terminal_opt.a_s_t_control,
                         &mut attr,
@@ -1004,7 +1004,7 @@ impl ParolGrammar<'_> {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
                 let mut member_name = None;
-                if let Some(ref terminal_opt) = &simple_token.simple_token.simple_token_opt {
+                if let Some(terminal_opt) = &simple_token.simple_token.simple_token_opt {
                     self.extract_attributes_from_ast_control(
                         &terminal_opt.a_s_t_control,
                         &mut attr,
@@ -1047,7 +1047,7 @@ impl ParolGrammar<'_> {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
                 let mut member_name = None;
-                if let Some(ref terminal_opt) =
+                if let Some(terminal_opt) =
                     &token_with_states.token_with_states.token_with_states_opt
                 {
                     self.extract_attributes_from_ast_control(

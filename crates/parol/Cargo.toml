@@ -10,7 +10,7 @@ readme = "README.md"
 keywords = ["parser", "parsing", "parser-generator", "LLk"]
 categories = ["algorithms", "parsing"]
 license = "MIT/Apache-2.0"
-edition = "2021"
+edition = "2024"
 exclude = ["/tests", "/data", "/bindings"]
 
 [dependencies]
