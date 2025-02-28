@@ -122,7 +122,7 @@ fn combine_production_equation<'a, 'c>(
             matching_productions
                 .iter()
                 .fold(Vec::new(), |mut acc, (_, pr)| {
-                    acc.push(SymbolString::from_production(pr));
+                    acc.push((*pr).into());
                     acc
                 });
         let mut prod_functions = symbol_strings
