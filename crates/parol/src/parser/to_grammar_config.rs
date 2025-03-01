@@ -110,9 +110,9 @@ fn insert_transitions(
     scanner_resolver: impl Fn(&str) -> Option<usize>,
     terminal_finder: impl Fn(&str) -> Option<(String, TerminalKind, Option<LookaheadExpression>)>,
 ) -> Result<()> {
-    if let Some(source_configuartion) = scanner_resolver(&sc.scanner_name) {
+    if let Some(source_configuration) = scanner_resolver(&sc.scanner_name) {
         let mut transitions = Vec::new();
-        scanner_configurations[source_configuartion]
+        scanner_configurations[source_configuration]
             .transitions
             .iter()
             .try_for_each(|(token, target_state_name)| {

@@ -159,7 +159,7 @@ impl Cfg {
     /// Generates a function that returns the terminal index (in ordered of occurrence) for given
     /// terminal string and terminal kind
     ///
-    pub fn get_terminal_index_function(&self) -> impl TerminalIndexFn {
+    pub fn get_terminal_index_function(&self) -> impl TerminalIndexFn + use<> {
         let vec = self
             .get_ordered_terminals_owned()
             .into_iter()

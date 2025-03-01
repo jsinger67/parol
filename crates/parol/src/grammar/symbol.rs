@@ -2,7 +2,7 @@ use super::{Decorate, SymbolAttribute};
 use crate::analysis::k_tuple::TerminalMappings;
 use crate::parser::parol_grammar::{Factor, LookaheadExpression, UserDefinedTypeName};
 use crate::parser::to_grammar_config::try_from_factor;
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use parol_runtime::parser::ScannerIndex;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
@@ -203,14 +203,14 @@ impl Terminal {
                 if let Some(la) = l {
                     write!(d, " {}", la.to_par()).map_err(|e| anyhow!(e))?;
                 }
-                if let Some(ref member) = m {
+                if let Some(member) = m {
                     if l.is_some() {
                         // Add space between lookahead expression and member
                         write!(d, " ").map_err(|e| anyhow!(e))?;
                     }
                     write!(d, "@{}", member).map_err(|e| anyhow!(e))?;
                 }
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     let user_type =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
                             alias
@@ -402,7 +402,7 @@ impl Symbol {
                 if let Some(member) = m {
                     write!(s, "@{}", member).map_err(|e| anyhow!("IO error!: {}", e))?;
                 }
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     let alias =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
                             alias
@@ -439,7 +439,7 @@ impl Display for Symbol {
                 if let Some(member) = m {
                     write!(s, "@{}", member)?;
                 }
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     write!(s, " : {} ", user_type)?;
                 }
                 write!(f, "{}", s)
