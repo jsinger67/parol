@@ -114,9 +114,10 @@ impl<'t> TokenStream<'t> {
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
                 if self.tokens.is_empty() && self.recovering {
-                    trace!("LA({}): EOI for recovery", n);
+                    trace!("lookahead LA({}): EOI for recovery", n);
                     Ok(Token::eoi(TokenNumber::MAX))
                 } else {
+                    trace!("{} in {}", n, self.tokens);
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
             } else {
@@ -140,9 +141,10 @@ impl<'t> TokenStream<'t> {
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
                 if self.tokens.is_empty() && self.recovering {
-                    trace!("Type(LA({})): EOI for recovery", n);
+                    trace!("lookahead_token_type LA({}): EOI for recovery", n);
                     Ok(EOI)
                 } else {
+                    trace!("{} in {}", n, self.tokens);
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
             } else {
@@ -382,6 +384,11 @@ impl<'t> TokenStream<'t> {
             if tokens_read >= n {
                 break;
             }
+        }
+        while tokens_read < n {
+            trace!("read_tokens: Filling with EOI at end of input");
+            self.tokens.add(Token::eoi(TokenNumber::MAX));
+            tokens_read += 1;
         }
         Ok(tokens_read)
     }
