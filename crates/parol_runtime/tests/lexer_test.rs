@@ -161,8 +161,7 @@ fn lookahead_must_fail() {
 }
 
 #[test]
-#[should_panic(expected = "LookaheadExceedsTokenBufferLength")]
-fn lookahead_beyond_buffer_must_fail() {
+fn lookahead_beyond_buffer_must_not_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
         RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap());
@@ -176,6 +175,6 @@ fn lookahead_beyond_buffer_must_fail() {
     print_skip_tokens(&token_stream);
     // Consume the EOI token
     println!("{:?}", token_stream.borrow_mut().consume().unwrap());
-    // This must fail
+    // This must not fail because EOI tokens are generated on the fly
     println!("{:?}", token_stream.borrow_mut().lookahead(0).unwrap());
 }
