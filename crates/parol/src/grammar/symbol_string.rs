@@ -11,10 +11,13 @@ use std::fmt::{Display, Error, Formatter};
 pub(crate) struct SymbolString(pub Vec<Symbol>);
 
 impl SymbolString {
-    ///
-    /// Construction from a given production
-    ///
-    pub fn from_production(pr: &Pr) -> Self {
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+
+impl From<&Pr> for SymbolString {
+    fn from(pr: &Pr) -> Self {
         Self(
             pr.get_r()
                 .iter()
@@ -26,10 +29,6 @@ impl SymbolString {
                     acc
                 }),
         )
-    }
-
-    pub fn len(&self) -> usize {
-        self.0.len()
     }
 }
 
