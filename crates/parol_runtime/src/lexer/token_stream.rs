@@ -383,6 +383,11 @@ impl<'t> TokenStream<'t> {
                 break;
             }
         }
+        while tokens_read < n {
+            trace!("read_tokens: Filling with EOI at end of input");
+            self.tokens.add(Token::eoi(TokenNumber::MAX));
+            tokens_read += 1;
+        }
         Ok(tokens_read)
     }
 

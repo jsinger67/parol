@@ -897,7 +897,7 @@ version = "1.0.0"
 
 [[package]]
 name = "parol_runtime"
-version = "2.2.0"
+version = "2.2.1"
 dependencies = [
  "anyhow",
  "codespan-reporting",
