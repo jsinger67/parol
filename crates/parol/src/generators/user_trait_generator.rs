@@ -7,12 +7,12 @@ use super::template_data::{
     UserTraitFunctionStackPopDataBuilder,
 };
 use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
-use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
+use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::GrammarType;
 use crate::{Pr, StrVec};
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use parol_runtime::log::trace;
 
 /// Generator for user trait code
@@ -194,7 +194,21 @@ impl<'a> UserTraitGenerator<'a> {
                 // If the production is AddToCollection then instance semantic must not be RepetitionAnchor
                 (sem != ProductionAttribute::AddToCollection || arg_inst.sem() != SymbolAttribute::RepetitionAnchor)
             {
-                format!("Box::new({})", arg_name)
+                let mut result = format!("Box::new({})", arg_name);
+                if let TypeEntrails::Box(inner_type) = arg_type.entrails() {
+                    let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
+                    if matches!(
+                        inner_type_symbol.entrails(),
+                        TypeEntrails::UserDefinedType(_, _)
+                    ) {
+                        // The inner type is a user-defined type, so we need to convert it
+                        result = format!(
+                            r#"Box::new((&{}).try_into().map_err(parol_runtime::ParolError::UserError)?)"#,
+                            arg_name
+                        );
+                    }
+                }
+                result
             } else if matches!(
                 *arg_type.entrails(),
                 TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _)
