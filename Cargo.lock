@@ -523,12 +523,13 @@ dependencies = [
 
 [[package]]
 name = "graph-cycles"
-version = "0.2.0"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3092eb8c0a52f9146161afd672f10fbb970daec4fa79d17b26f79f10139cba9e"
+checksum = "3a6ad932c6dd3cfaf16b66754a42f87bbeefd591530c4b6a8334270a7df3e853"
 dependencies = [
  "ahash",
- "petgraph 0.7.1",
+ "petgraph",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -757,7 +758,7 @@ dependencies = [
  "owo-colors",
  "parol-macros",
  "parol_runtime",
- "petgraph 0.6.6",
+ "petgraph",
  "pretty_assertions",
  "quickcheck",
  "quickcheck_macros",
@@ -818,7 +819,7 @@ dependencies = [
  "log",
  "once_cell",
  "parol-macros",
- "petgraph 0.6.6",
+ "petgraph",
  "quickcheck",
  "quickcheck_macros",
  "regex-automata 0.4.9",
@@ -832,16 +833,6 @@ name = "petgraph"
 version = "0.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c94eb96835f05ec51384814c9b2daef83f68486f67a0e2e9680e0f698dca808e"
-dependencies = [
- "fixedbitset",
- "indexmap",
-]
-
-[[package]]
-name = "petgraph"
-version = "0.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3672b37090dbd86368a4145bc067582552b29c27377cad4e0a306c97f9bd7772"
 dependencies = [
  "fixedbitset",
  "indexmap",
