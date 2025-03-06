@@ -231,7 +231,7 @@ pub struct DeclarationPercentCommentString<'t> {
 ///
 /// Type derived for production 9
 ///
-/// `Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName;`
+/// `Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -244,7 +244,7 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName<'t> {
 ///
 /// Type derived for production 10
 ///
-/// `Declaration: "%nt_type" Identifier@nt_name "="^ /* Clipped */ UserTypeName@nt_type;`
+/// `Declaration: "%nt_type" Identifier@nt_name "="^ /* Clipped */ UserTypeName@nt_type : crate::parser::parol_grammar::UserDefinedTypeName;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -258,7 +258,7 @@ pub struct DeclarationPercentNtUnderscoreTypeNtNameEquNtType<'t> {
 ///
 /// Type derived for production 11
 ///
-/// `Declaration: "%t_type" UserTypeName@t_type;`
+/// `Declaration: "%t_type" UserTypeName@t_type : crate::parser::parol_grammar::UserDefinedTypeName;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1298,7 +1298,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// `PrologList0 /* Vec<T>::Push */: ScannerState PrologList0;`
+    /// `PrologList0 /* Vec<T>::Push */: ScannerState : crate::parser::parol_grammar::ScannerConfig PrologList0;`
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list0_0(
@@ -1433,7 +1433,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// `Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName;`
+    /// `Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_2(
@@ -1463,7 +1463,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// `Declaration: "%nt_type" Identifier@nt_name "="^ /* Clipped */ UserTypeName@nt_type;`
+    /// `Declaration: "%nt_type" Identifier@nt_name "="^ /* Clipped */ UserTypeName@nt_type : crate::parser::parol_grammar::UserDefinedTypeName;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_3(
@@ -1495,7 +1495,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// `Declaration: "%t_type" UserTypeName@t_type;`
+    /// `Declaration: "%t_type" UserTypeName@t_type : crate::parser::parol_grammar::UserDefinedTypeName;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_4(
@@ -2861,7 +2861,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 78:
     ///
-    /// `UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName;`
+    /// `UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName;`
     ///
     #[parol_runtime::function_name::named]
     fn user_type_declaration(

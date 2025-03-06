@@ -213,9 +213,9 @@ impl GrammarConfig {
         user_type_map = self
             .nt_type_defs
             .iter()
-            .fold(user_type_map, |mut acc, (nt, u)| {
+            .fold(user_type_map, |mut acc, (nt, _u)| {
                 // This allows to skip the user type on non-terminal occurrences
-                acc.insert(u.to_string(), nt.to_string());
+                acc.insert(nt.to_string(), "%nt_type".to_string());
                 acc
             });
         if let Some(t) = &self.t_type_def {
@@ -260,7 +260,7 @@ mod test {
     use crate::generators::{GrammarConfig, ScannerConfig};
     use crate::parser::parol_grammar::LookaheadExpression;
     use crate::{
-        obtain_grammar_config_from_string, Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind,
+        Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind, obtain_grammar_config_from_string,
     };
 
     macro_rules! terminal {

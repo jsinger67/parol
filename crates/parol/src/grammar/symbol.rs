@@ -409,7 +409,7 @@ impl Symbol {
                         } else {
                             user_type.to_string()
                         };
-                    if alias != *n && alias != "%t_type" {
+                    if alias != "%nt_type" && alias != "%t_type" {
                         // Don't print user type if it is the globally defined type
                         write!(s, " : {}", alias).map_err(|e| anyhow!("IO error!: {}", e))?;
                     }

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fix [#595](https://github.com/jsinger67/parol/issues/595)
 * Fix [#596](https://github.com/jsinger67/parol/issues/596)
 * Fix parol (par) file generation when `%t_type` is used.
+* Fix parol (par) file generation when `%nt_type` is used.
 
 ## 3.0.0 - 2025-03-01
 
