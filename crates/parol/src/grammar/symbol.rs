@@ -406,8 +406,11 @@ impl Symbol {
                     let alias =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
                             alias
+                        } else if let Some(nt_type) = user_type_resolver(n) {
+                            nt_type
                         } else {
-                            user_type.to_string()
+                            // No alias found, use the %nt_type to skip the type later
+                            "%nt_type".to_string()
                         };
                     if alias != "%nt_type" && alias != "%t_type" {
                         // Don't print user type if it is the globally defined type
