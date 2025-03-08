@@ -8,7 +8,7 @@ use grammar_rs::GrammarRsDataBuilder;
 use lib_rs::LibRsDataBuilder;
 use main_rs::MainRsDataBuilder;
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use clap::ArgGroup;
 use derive_builder::Builder;
 use owo_colors::OwoColorize;
@@ -95,7 +95,7 @@ pub fn main(args: &Args) -> Result<()> {
 
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "env_logger@0.11"],
-    &["add", "parol_runtime@2.2"],
+    &["add", "parol_runtime@3.0"],
     &["add", "thiserror@2.0"],
     &["add", "anyhow@1.0"],
     &[
