@@ -24,8 +24,8 @@ env_logger = { workspace = true }
 function_name = { workspace = true }
 num_cpus = "1.16.0"
 owo-colors = "4.2.0"
-parol_runtime = { path = "../parol_runtime" }
-parol-macros = { path = "../parol-macros" }
+parol_runtime = { path = "../parol_runtime", version = "3.0.0" }
+parol-macros = { path = "../parol-macros", version = "1.0.0" }
 petgraph = { workspace = true }
 rand = "0.9.0"
 rand_regex = "0.18.0"
