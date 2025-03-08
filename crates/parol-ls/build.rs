@@ -1,5 +1,4 @@
-use parol::build::Builder;
-use parol_runtime::Result;
+use parol::{build::Builder, parol_runtime::Result};
 
 fn main() -> Result<()> {
     // CLI equivalent is:

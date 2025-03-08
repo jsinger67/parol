@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 3.0.1 - Not released yet
+## 3.0.1 - 2025-03-08
 
 * Fix [#595](https://github.com/jsinger67/parol/issues/595)
 * Fix [#596](https://github.com/jsinger67/parol/issues/596)
@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fix parol (par) file generation when `%nt_type` is used.
 * Fix Token alias handling in ParolGrammar
 
-## 3.0.0 - 2025-03-01
+## 3.0.0 - 2025-03-02
 
 The [book](https://jsinger67.github.io) has been updated and received a new chapter on `parol`'s
 [version 3](https://jsinger67.github.io/ParolVersion3.html).
