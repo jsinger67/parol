@@ -76,7 +76,7 @@ impl<'t> TokenStream<'t> {
             .collect::<Vec<ScannerMode>>();
         debug!("Scanner modes: {}", serde_json::to_string(&modes).unwrap());
         let scanner = ScannerBuilder::new().add_scanner_modes(&modes).build()?;
-        // To output the compliled automata as dot files uncomment the following two lines
+        // To output the compiled automata as dot files uncomment the following two lines
         // const TARGET_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../target");
         // let _ = scanner.generate_compiled_automata_as_dot("Parol", Path::new(TARGET_FOLDER));
         let token_iter = TokenIter::new(scanner, input, file_name.clone(), k);
@@ -169,9 +169,7 @@ impl<'t> TokenStream<'t> {
             self.last_consumed_token_end_pos = token.location.end();
             trace!(
                 "Updated line: {}, column: {}, last consumed token end position: {} in take_skip_tokens",
-                self.line,
-                self.column,
-                self.last_consumed_token_end_pos
+                self.line, self.column, self.last_consumed_token_end_pos
             );
         }
         tokens
@@ -209,9 +207,7 @@ impl<'t> TokenStream<'t> {
             self.last_consumed_token_end_pos = token.location.end();
             trace!(
                 "Updated line: {}, column: {}, last consumed token end position: {}",
-                self.line,
-                self.column,
-                self.last_consumed_token_end_pos
+                self.line, self.column, self.last_consumed_token_end_pos
             );
         }
     }
