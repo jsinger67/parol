@@ -823,6 +823,11 @@ impl ParolGrammar<'_> {
         for prod in productions {
             self.process_production(prod)?;
         }
+        for prod in productions {
+            if self.is_single_production(prod.identifier.identifier.text()) {
+                self.handle_token_alias(prod)?;
+            }
+        }
         Ok(())
     }
 
@@ -841,7 +846,6 @@ impl ParolGrammar<'_> {
         let lhs = prod.identifier.identifier.text().to_string();
         let alternations = Self::to_alternation_vec(&prod.alternations);
         let rhs = self.process_alternations(&alternations)?;
-        self.handle_token_alias(prod)?;
         self.productions.push(Production { lhs, rhs });
         Ok(())
     }
@@ -1199,7 +1203,7 @@ impl ParolGrammar<'_> {
     }
 
     fn handle_token_alias(&mut self, prod: &parol_grammar_trait::Production) -> Result<()> {
-        if prod.alternations.alternations_list.len() != 0
+        if !prod.alternations.alternations_list.is_empty()
             || prod.alternations.alternation.alternation_list.len() != 1
         {
             return Ok(());
@@ -1338,10 +1342,16 @@ impl ParolGrammar<'_> {
         Ok(())
     }
 
+    fn is_single_production(&self, lhs: &str) -> bool {
+        self.productions.iter().filter(|p| p.lhs == lhs).count() == 1
+    }
+
     fn is_primary_non_terminal(&self, k: &Token<'_>) -> bool {
-        self.productions
-            .iter()
-            .any(|p| p.lhs == k.text() && p.rhs.0.len() == 1 && p.rhs.0[0].is_terminal())
+        self.is_single_production(k.text())
+            && self
+                .productions
+                .iter()
+                .any(|p| p.lhs == k.text() && p.rhs.0.len() == 1 && p.rhs.0[0].is_terminal())
     }
 
     // Check if a terminal is used in the given scanner state
