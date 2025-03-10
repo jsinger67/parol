@@ -151,8 +151,14 @@ example project.
 
 ## State of the project
 
-Version 1 of `parol` is stable and production ready with all the usual disclaimers. You should use the latest releases available on crates.io with version >=1.
-Version 2 is still in its Beta phase.
+* Version 1 of `parol` is stable and production ready with all the usual disclaimers.
+It receives fixes on branch `release1.0`
+You should use the latest releases available on crates.io with version >=1.
+
+* Version 2 is still in its Beta phase.
+It receives fixes on branch `release2.2`
+
+* Version 3 is still in its Beta phase.
 
 ## Dependencies
 
