@@ -2091,7 +2091,7 @@ pub struct MLLiteralStringStart<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Minus<'t> {
-    pub minus: Token<'t>, /* \u{2D} */
+    pub minus: Token<'t>, /* - */
 }
 
 ///
@@ -2201,7 +2201,7 @@ pub struct ParolTomlList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Plus<'t> {
-    pub plus: Token<'t>, /* \u{2B} */
+    pub plus: Token<'t>, /* + */
 }
 
 ///
@@ -5414,7 +5414,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 156:
     ///
-    /// `Minus: <Val>"\u{2D}";`
+    /// `Minus: <Val>'-';`
     ///
     #[parol_runtime::function_name::named]
     fn minus(&mut self, minus: &ParseTreeType<'t>) -> Result<()> {
@@ -5430,7 +5430,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 157:
     ///
-    /// `Plus: <Val>"\u{2B}";`
+    /// `Plus: <Val>'+';`
     ///
     #[parol_runtime::function_name::named]
     fn plus(&mut self, plus: &ParseTreeType<'t>) -> Result<()> {

@@ -87,8 +87,8 @@ pub const TERMINALS: &[(&str, Option<(bool, &str)>); 55] = &[
     /* 49 */ (r"\u{27}{1,2}", None),
     /* 50 */ (r"\u{27}", None),
     /* 51 */ (r"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+", None),
-    /* 52 */ (r"\u{2D}", None),
-    /* 53 */ (r"\u{2B}", None),
+    /* 52 */ (r"\-", None),
+    /* 53 */ (r"\+", None),
     /* 54 */ (ERROR_TOKEN, None),
 ];
 
@@ -2082,12 +2082,12 @@ pub const PRODUCTIONS: &[Production; 158] = &[
         lhs: 12,
         production: &[ParseType::T(51)],
     },
-    // 156 - Minus: "\u{2D}";
+    // 156 - Minus: '-';
     Production {
         lhs: 76,
         production: &[ParseType::T(52)],
     },
-    // 157 - Plus: "\u{2B}";
+    // 157 - Plus: '+';
     Production {
         lhs: 87,
         production: &[ParseType::T(53)],
