@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.2 - Not released yet
+
+* Generate untransformed grammar with production index comments
+  (i.e. when calling `parol -u  <WRITE_UNTRANSFORMED>` resp.
+  `parol --write-untransformed <WRITE_UNTRANSFORMED>`)
+
 ## 3.0.1 - 2025-03-08
 
 * Fix [#595](https://github.com/jsinger67/parol/issues/595)

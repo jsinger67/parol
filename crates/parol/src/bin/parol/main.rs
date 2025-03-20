@@ -13,11 +13,12 @@ use arguments::CliArgs;
 use clap::Parser;
 use owo_colors::OwoColorize;
 use parol_runtime::ParseTree;
-use parol_runtime::{log::trace, Report, Result};
+use parol_runtime::{Report, Result, log::trace};
 
 use parol::{
+    GrammarConfig, ParolErrorReporter, ParolGrammar,
     build::{BuildListener, IntermediateGrammar},
-    render_par_string, GrammarConfig, ParolErrorReporter, ParolGrammar,
+    render_par_string,
 };
 use parol_macros::parol;
 
@@ -146,7 +147,7 @@ impl BuildListener for CLIListener<'_> {
             // no passes yet
             IntermediateGrammar::Untransformed => {
                 if let Some(file_name) = self.config.write_untransformed.as_ref() {
-                    let serialized = render_par_string(grammar_config, false)?;
+                    let serialized = render_par_string(grammar_config, true)?;
                     fs::write(file_name, serialized)
                         .context("Error writing untransformed grammar!")
                         .map_err(|e| parol!(e))?;
