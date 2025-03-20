@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Generate untransformed grammar with production index comments
   (i.e. when calling `parol -u  <WRITE_UNTRANSFORMED>` resp.
   `parol --write-untransformed <WRITE_UNTRANSFORMED>`)
+* Change handling of token aliases when lookahead expressions are used
 
 ## 3.0.1 - 2025-03-08
 

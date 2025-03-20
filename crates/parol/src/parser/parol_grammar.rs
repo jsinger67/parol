@@ -1215,15 +1215,11 @@ impl ParolGrammar<'_> {
                 // Only applicable for SimpleToken ...
                 parol_grammar_trait::Symbol::SimpleToken(
                     parol_grammar_trait::SymbolSimpleToken { simple_token },
-                ) => ParolGrammar::expanded_token_literal(
-                    &simple_token.token_expression.token_literal,
-                ),
+                ) => ParolGrammar::expanded_token_expression(&simple_token.token_expression),
                 // .. and TokenWithStates!
                 parol_grammar_trait::Symbol::TokenWithStates(
                     parol_grammar_trait::SymbolTokenWithStates { token_with_states },
-                ) => ParolGrammar::expanded_token_literal(
-                    &token_with_states.token_expression.token_literal,
-                ),
+                ) => ParolGrammar::expanded_token_expression(&token_with_states.token_expression),
                 _ => return Ok(()),
             };
 
@@ -1243,6 +1239,19 @@ impl ParolGrammar<'_> {
                 .push((prod.identifier.identifier.to_owned(), expanded));
         }
         Ok(())
+    }
+
+    fn expanded_token_expression(
+        token_expression: &parol_grammar_trait::TokenExpression,
+    ) -> String {
+        let mut expanded = Self::expanded_token_literal(&token_expression.token_literal);
+        if let Some(lookahead) = token_expression.token_expression_opt.as_ref() {
+            expanded.push_str(&format!(
+                " {}",
+                LookaheadExpression::try_from(&lookahead.look_ahead).unwrap()
+            ))
+        }
+        expanded
     }
 
     fn expanded_token_literal(token_literal: &parol_grammar_trait::TokenLiteral) -> String {
