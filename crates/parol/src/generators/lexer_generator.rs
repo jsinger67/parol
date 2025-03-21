@@ -1,5 +1,5 @@
 use crate::generate_name;
-use crate::generators::{generate_terminal_name, GrammarConfig};
+use crate::generators::{GrammarConfig, generate_terminal_name};
 use anyhow::Result;
 use parol_runtime::TerminalIndex;
 
@@ -95,7 +95,9 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
                 }
                 _ => {
                     let hashes = determine_hashes_for_raw_string(e);
-                    let lookahead_expression = l.as_ref().map(|l| (l.is_positive, &l.pattern));
+                    let lookahead_expression = l
+                        .as_ref()
+                        .map(|l| (l.is_positive, l.kind.expand(&l.pattern)));
                     format!(
                         r#"(r{}"{}"{}, {:#?})"#,
                         hashes, e, hashes, lookahead_expression
