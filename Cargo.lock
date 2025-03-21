@@ -885,7 +885,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "3.0.1"
+version = "3.0.2"
 dependencies = [
  "anyhow",
  "clap",
