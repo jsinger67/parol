@@ -98,7 +98,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
                         let pattern = l.kind.expand(&l.pattern);
                         let hashes = determine_hashes_for_raw_string(&pattern);
                         format!(
-                            r#"Some(({}, r"{}{}{}"))"#,
+                            r#"Some(({}, r{}"{}"{}))"#,
                             l.is_positive, hashes, pattern, hashes
                         )
                     });
