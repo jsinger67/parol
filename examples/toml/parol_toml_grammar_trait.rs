@@ -9,7 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
@@ -470,8 +469,7 @@ pub trait ParolTomlGrammarTrait<'t> {
 /// `Expression: KeyVal;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ExpressionKeyVal<'t> {
     pub key_val: KeyVal<'t>,
 }
@@ -482,8 +480,7 @@ pub struct ExpressionKeyVal<'t> {
 /// `Expression: Table;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ExpressionTable<'t> {
     pub table: Table<'t>,
 }
@@ -494,8 +491,7 @@ pub struct ExpressionTable<'t> {
 /// `KeySuffix: ;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KeySuffixKeySuffixEmpty {}
 
 ///
@@ -504,8 +500,7 @@ pub struct KeySuffixKeySuffixEmpty {}
 /// `KeySuffix: DotSep SimpleKey KeyList /* Vec */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KeySuffixDotSepSimpleKeyKeyList<'t> {
     pub dot_sep: DotSep<'t>,
     pub simple_key: SimpleKey<'t>,
@@ -518,8 +513,7 @@ pub struct KeySuffixDotSepSimpleKeyKeyList<'t> {
 /// `SimpleKey: QuotedKey;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SimpleKeyQuotedKey<'t> {
     pub quoted_key: QuotedKey<'t>,
 }
@@ -530,8 +524,7 @@ pub struct SimpleKeyQuotedKey<'t> {
 /// `SimpleKey: UnquotedKey;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SimpleKeyUnquotedKey<'t> {
     pub unquoted_key: UnquotedKey<'t>,
 }
@@ -542,8 +535,7 @@ pub struct SimpleKeyUnquotedKey<'t> {
 /// `QuotedKey: BasicString;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct QuotedKeyBasicString<'t> {
     pub basic_string: BasicString<'t>,
 }
@@ -554,8 +546,7 @@ pub struct QuotedKeyBasicString<'t> {
 /// `QuotedKey: LiteralString;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct QuotedKeyLiteralString<'t> {
     pub literal_string: LiteralString<'t>,
 }
@@ -566,8 +557,7 @@ pub struct QuotedKeyLiteralString<'t> {
 /// `Val: Boolean;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValBoolean<'t> {
     pub boolean: Boolean<'t>,
 }
@@ -578,8 +568,7 @@ pub struct ValBoolean<'t> {
 /// `Val: Array;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValArray<'t> {
     pub array: Box<Array<'t>>,
 }
@@ -590,8 +579,7 @@ pub struct ValArray<'t> {
 /// `Val: InlineTable;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValInlineTable<'t> {
     pub inline_table: Box<InlineTable<'t>>,
 }
@@ -602,8 +590,7 @@ pub struct ValInlineTable<'t> {
 /// `Val: DateTime;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValDateTime<'t> {
     pub date_time: DateTime<'t>,
 }
@@ -614,8 +601,7 @@ pub struct ValDateTime<'t> {
 /// `Val: Numeric;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValNumeric<'t> {
     pub numeric: Numeric<'t>,
 }
@@ -626,8 +612,7 @@ pub struct ValNumeric<'t> {
 /// `Val: BasicString;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValBasicString<'t> {
     pub basic_string: BasicString<'t>,
 }
@@ -638,8 +623,7 @@ pub struct ValBasicString<'t> {
 /// `Val: MLBasicString;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValMLBasicString<'t> {
     pub m_l_basic_string: MLBasicString<'t>,
 }
@@ -650,8 +634,7 @@ pub struct ValMLBasicString<'t> {
 /// `Val: LiteralString;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValLiteralString<'t> {
     pub literal_string: LiteralString<'t>,
 }
@@ -662,8 +645,7 @@ pub struct ValLiteralString<'t> {
 /// `Val: MLLiteralString;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValMLLiteralString<'t> {
     pub m_l_literal_string: MLLiteralString<'t>,
 }
@@ -674,8 +656,7 @@ pub struct ValMLLiteralString<'t> {
 /// `Numeric: Float;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NumericFloat<'t> {
     pub float: Float<'t>,
 }
@@ -686,8 +667,7 @@ pub struct NumericFloat<'t> {
 /// `Numeric: Integer;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NumericInteger<'t> {
     pub integer: Integer<'t>,
 }
@@ -698,8 +678,7 @@ pub struct NumericInteger<'t> {
 /// `BasicChar: BasicUnescaped;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BasicCharBasicUnescaped<'t> {
     pub basic_unescaped: BasicUnescaped<'t>,
 }
@@ -710,8 +689,7 @@ pub struct BasicCharBasicUnescaped<'t> {
 /// `BasicChar: %push(Esc) Escaped %pop();`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BasicCharEscaped<'t> {
     pub escaped: Escaped<'t>,
 }
@@ -722,8 +700,7 @@ pub struct BasicCharEscaped<'t> {
 /// `BasicUnescaped: AsciiNoEscape;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BasicUnescapedAsciiNoEscape<'t> {
     pub ascii_no_escape: AsciiNoEscape<'t>,
 }
@@ -734,8 +711,7 @@ pub struct BasicUnescapedAsciiNoEscape<'t> {
 /// `BasicUnescaped: NonAscii;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BasicUnescapedNonAscii<'t> {
     pub non_ascii: NonAscii<'t>,
 }
@@ -746,8 +722,7 @@ pub struct BasicUnescapedNonAscii<'t> {
 /// `EscapeSeqChar: QuotationMark;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharQuotationMark<'t> {
     pub quotation_mark: QuotationMark<'t>,
 }
@@ -758,8 +733,7 @@ pub struct EscapeSeqCharQuotationMark<'t> {
 /// `EscapeSeqChar: Escape;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharEscape<'t> {
     pub escape: Escape<'t>,
 }
@@ -770,8 +744,7 @@ pub struct EscapeSeqCharEscape<'t> {
 /// `EscapeSeqChar: <Esc>"b";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharB<'t> {
     pub b: Token<'t>, /* b */
 }
@@ -782,8 +755,7 @@ pub struct EscapeSeqCharB<'t> {
 /// `EscapeSeqChar: <Esc>"f";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharF<'t> {
     pub f: Token<'t>, /* f */
 }
@@ -794,8 +766,7 @@ pub struct EscapeSeqCharF<'t> {
 /// `EscapeSeqChar: <Esc>"n";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharN<'t> {
     pub n: Token<'t>, /* n */
 }
@@ -806,8 +777,7 @@ pub struct EscapeSeqCharN<'t> {
 /// `EscapeSeqChar: <Esc>"r";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharR<'t> {
     pub r: Token<'t>, /* r */
 }
@@ -818,8 +788,7 @@ pub struct EscapeSeqCharR<'t> {
 /// `EscapeSeqChar: <Esc>"t";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharT<'t> {
     pub t: Token<'t>, /* t */
 }
@@ -830,8 +799,7 @@ pub struct EscapeSeqCharT<'t> {
 /// `EscapeSeqChar: Unicode4;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharUnicode4<'t> {
     pub unicode4: Unicode4<'t>,
 }
@@ -842,8 +810,7 @@ pub struct EscapeSeqCharUnicode4<'t> {
 /// `EscapeSeqChar: Unicode8;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharUnicode8<'t> {
     pub unicode8: Unicode8<'t>,
 }
@@ -854,8 +821,7 @@ pub struct EscapeSeqCharUnicode8<'t> {
 /// `EscapeSeqChar: WsNewline;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharWsNewline<'t> {
     pub ws_newline: WsNewline<'t>,
 }
@@ -866,8 +832,7 @@ pub struct EscapeSeqCharWsNewline<'t> {
 /// `EscapeSeqChar: AsciiNoEscape;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapeSeqCharAsciiNoEscape<'t> {
     pub ascii_no_escape: AsciiNoEscape<'t>,
 }
@@ -878,8 +843,7 @@ pub struct EscapeSeqCharAsciiNoEscape<'t> {
 /// `MLBContentList: MLBContent MLBContentList;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBContentListMLBContentMLBContentList<'t> {
     pub m_l_b_content: MLBContent<'t>,
     pub m_l_b_content_list: Box<MLBContentList<'t>>,
@@ -891,8 +855,7 @@ pub struct MLBContentListMLBContentMLBContentList<'t> {
 /// `MLBContentList: ;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBContentListMLBContentListEmpty {}
 
 ///
@@ -901,8 +864,7 @@ pub struct MLBContentListMLBContentListEmpty {}
 /// `MLBContent: MLBChar;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBContentMLBChar<'t> {
     pub m_l_b_char: MLBChar<'t>,
 }
@@ -913,8 +875,7 @@ pub struct MLBContentMLBChar<'t> {
 /// `MLBContent: Newline;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBContentNewline<'t> {
     pub newline: Newline<'t>,
 }
@@ -925,8 +886,7 @@ pub struct MLBContentNewline<'t> {
 /// `MLBContent: MLBEscapedNL;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBContentMLBEscapedNL<'t> {
     pub m_l_b_escaped_n_l: MLBEscapedNL<'t>,
 }
@@ -937,8 +897,7 @@ pub struct MLBContentMLBEscapedNL<'t> {
 /// `MLBChar: MLBUnescaped;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBCharMLBUnescaped<'t> {
     pub m_l_b_unescaped: MLBUnescaped<'t>,
 }
@@ -949,8 +908,7 @@ pub struct MLBCharMLBUnescaped<'t> {
 /// `MLBChar: %push(Esc) Escaped %pop();`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBCharEscaped<'t> {
     pub escaped: Escaped<'t>,
 }
@@ -961,8 +919,7 @@ pub struct MLBCharEscaped<'t> {
 /// `MLBUnescaped: AsciiNoEscape;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBUnescapedAsciiNoEscape<'t> {
     pub ascii_no_escape: AsciiNoEscape<'t>,
 }
@@ -973,8 +930,7 @@ pub struct MLBUnescapedAsciiNoEscape<'t> {
 /// `MLBUnescaped: NonAscii;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBUnescapedNonAscii<'t> {
     pub non_ascii: NonAscii<'t>,
 }
@@ -985,8 +941,7 @@ pub struct MLBUnescapedNonAscii<'t> {
 /// `LiteralChar: LiteralCharNoApostrophe;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LiteralCharLiteralCharNoApostrophe<'t> {
     pub literal_char_no_apostrophe: LiteralCharNoApostrophe<'t>,
 }
@@ -997,8 +952,7 @@ pub struct LiteralCharLiteralCharNoApostrophe<'t> {
 /// `LiteralChar: NonAscii;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LiteralCharNonAscii<'t> {
     pub non_ascii: NonAscii<'t>,
 }
@@ -1009,8 +963,7 @@ pub struct LiteralCharNonAscii<'t> {
 /// `MLLContentList: MLLContent MLLContentList;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLContentListMLLContentMLLContentList<'t> {
     pub m_l_l_content: MLLContent<'t>,
     pub m_l_l_content_list: Box<MLLContentList<'t>>,
@@ -1022,8 +975,7 @@ pub struct MLLContentListMLLContentMLLContentList<'t> {
 /// `MLLContentList: ;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLContentListMLLContentListEmpty {}
 
 ///
@@ -1032,8 +984,7 @@ pub struct MLLContentListMLLContentListEmpty {}
 /// `MLLContent: LiteralChar;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLContentLiteralChar<'t> {
     pub literal_char: LiteralChar<'t>,
 }
@@ -1044,8 +995,7 @@ pub struct MLLContentLiteralChar<'t> {
 /// `MLLContent: Newline;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLContentNewline<'t> {
     pub newline: Newline<'t>,
 }
@@ -1056,8 +1006,7 @@ pub struct MLLContentNewline<'t> {
 /// `Integer: DecInt;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IntegerDecInt<'t> {
     pub dec_int: DecInt<'t>,
 }
@@ -1068,8 +1017,7 @@ pub struct IntegerDecInt<'t> {
 /// `Integer: HexInt;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IntegerHexInt<'t> {
     pub hex_int: HexInt<'t>,
 }
@@ -1080,8 +1028,7 @@ pub struct IntegerHexInt<'t> {
 /// `Integer: OctInt;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IntegerOctInt<'t> {
     pub oct_int: OctInt<'t>,
 }
@@ -1092,8 +1039,7 @@ pub struct IntegerOctInt<'t> {
 /// `Integer: BinInt;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IntegerBinInt<'t> {
     pub bin_int: BinInt<'t>,
 }
@@ -1104,8 +1050,7 @@ pub struct IntegerBinInt<'t> {
 /// `DecIntOptGroup: Plus;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DecIntOptGroupPlus<'t> {
     pub plus: Plus<'t>,
 }
@@ -1116,8 +1061,7 @@ pub struct DecIntOptGroupPlus<'t> {
 /// `DecIntOptGroup: Minus;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DecIntOptGroupMinus<'t> {
     pub minus: Minus<'t>,
 }
@@ -1128,8 +1072,7 @@ pub struct DecIntOptGroupMinus<'t> {
 /// `Boolean: <Val>"true";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BooleanTrue<'t> {
     pub r#true: Token<'t>, /* true */
 }
@@ -1140,8 +1083,7 @@ pub struct BooleanTrue<'t> {
 /// `Boolean: <Val>"false";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BooleanFalse<'t> {
     pub r#false: Token<'t>, /* false */
 }
@@ -1152,8 +1094,7 @@ pub struct BooleanFalse<'t> {
 /// `Float: NormalFloat;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FloatNormalFloat<'t> {
     pub normal_float: NormalFloat<'t>,
 }
@@ -1164,8 +1105,7 @@ pub struct FloatNormalFloat<'t> {
 /// `Float: SpecialFloat;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FloatSpecialFloat<'t> {
     pub special_float: SpecialFloat<'t>,
 }
@@ -1176,8 +1116,7 @@ pub struct FloatSpecialFloat<'t> {
 /// `DateTime: OffsetDateTime;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DateTimeOffsetDateTime<'t> {
     pub offset_date_time: OffsetDateTime<'t>,
 }
@@ -1188,8 +1127,7 @@ pub struct DateTimeOffsetDateTime<'t> {
 /// `DateTime: LocalDateTime;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DateTimeLocalDateTime<'t> {
     pub local_date_time: LocalDateTime<'t>,
 }
@@ -1200,8 +1138,7 @@ pub struct DateTimeLocalDateTime<'t> {
 /// `DateTime: LocalDate;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DateTimeLocalDate<'t> {
     pub local_date: LocalDate<'t>,
 }
@@ -1212,8 +1149,7 @@ pub struct DateTimeLocalDate<'t> {
 /// `DateTime: LocalTime;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DateTimeLocalTime<'t> {
     pub local_time: LocalTime<'t>,
 }
@@ -1224,8 +1160,7 @@ pub struct DateTimeLocalTime<'t> {
 /// `ArrayValuesSuffix0: ArraySep^ /* Clipped */ ArrayValuesSuffix;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayValuesSuffix0ArraySepArrayValuesSuffix<'t> {
     pub array_values_suffix: Box<ArrayValuesSuffix<'t>>,
 }
@@ -1236,8 +1171,7 @@ pub struct ArrayValuesSuffix0ArraySepArrayValuesSuffix<'t> {
 /// `ArrayValuesSuffix0: ;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayValuesSuffix0ArrayValuesSuffix0Empty {}
 
 ///
@@ -1246,8 +1180,7 @@ pub struct ArrayValuesSuffix0ArrayValuesSuffix0Empty {}
 /// `ArrayValuesSuffix: ArrayValues;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayValuesSuffixArrayValues<'t> {
     pub array_values: ArrayValues<'t>,
 }
@@ -1258,8 +1191,7 @@ pub struct ArrayValuesSuffixArrayValues<'t> {
 /// `ArrayValuesSuffix: ;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayValuesSuffixArrayValuesSuffixEmpty {}
 
 ///
@@ -1268,8 +1200,7 @@ pub struct ArrayValuesSuffixArrayValuesSuffixEmpty {}
 /// `Table: StdTable;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TableStdTable<'t> {
     pub std_table: StdTable<'t>,
 }
@@ -1280,8 +1211,7 @@ pub struct TableStdTable<'t> {
 /// `Table: ArrayTable;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TableArrayTable<'t> {
     pub array_table: ArrayTable<'t>,
 }
@@ -1295,8 +1225,7 @@ pub struct TableArrayTable<'t> {
 /// Type derived for non-terminal Apostrophe
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Apostrophe<'t> {
     pub apostrophe: Token<'t>, /* \u{27} */
 }
@@ -1305,8 +1234,7 @@ pub struct Apostrophe<'t> {
 /// Type derived for non-terminal Array
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Array<'t> {
     pub array_opt: Option<ArrayOpt<'t>>,
 }
@@ -1315,8 +1243,7 @@ pub struct Array<'t> {
 /// Type derived for non-terminal ArrayClose
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayClose<'t> {
     pub array_close: Token<'t>, /* \u{5D} */
 }
@@ -1325,8 +1252,7 @@ pub struct ArrayClose<'t> {
 /// Type derived for non-terminal ArrayOpen
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayOpen<'t> {
     pub array_open: Token<'t>, /* \u{5B} */
 }
@@ -1335,8 +1261,7 @@ pub struct ArrayOpen<'t> {
 /// Type derived for non-terminal ArrayOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayOpt<'t> {
     pub array_values: ArrayValues<'t>,
 }
@@ -1345,8 +1270,7 @@ pub struct ArrayOpt<'t> {
 /// Type derived for non-terminal ArraySep
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArraySep<'t> {
     pub array_sep: Token<'t>, /* , */
 }
@@ -1355,8 +1279,7 @@ pub struct ArraySep<'t> {
 /// Type derived for non-terminal ArrayTable
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayTable<'t> {
     pub key: Key<'t>,
 }
@@ -1365,8 +1288,7 @@ pub struct ArrayTable<'t> {
 /// Type derived for non-terminal ArrayTableClose
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayTableClose<'t> {
     pub array_table_close: Token<'t>, /* \u{5D}\u{5D} */
 }
@@ -1375,8 +1297,7 @@ pub struct ArrayTableClose<'t> {
 /// Type derived for non-terminal ArrayTableOpen
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayTableOpen<'t> {
     pub array_table_open: Token<'t>, /* \u{5B}\u{5B} */
 }
@@ -1385,8 +1306,7 @@ pub struct ArrayTableOpen<'t> {
 /// Type derived for non-terminal ArrayValues
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayValues<'t> {
     pub val: Val<'t>,
     pub array_values_suffix0: ArrayValuesSuffix0<'t>,
@@ -1416,8 +1336,7 @@ pub enum ArrayValuesSuffix0<'t> {
 /// Type derived for non-terminal AsciiNoEscape
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AsciiNoEscape<'t> {
     pub ascii_no_escape: Token<'t>, /* [ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+ */
 }
@@ -1436,8 +1355,7 @@ pub enum BasicChar<'t> {
 /// Type derived for non-terminal BasicString
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BasicString<'t> {
     pub quotation_mark: QuotationMark<'t>,
     pub basic_string_list: Vec<BasicStringList<'t>>,
@@ -1448,8 +1366,7 @@ pub struct BasicString<'t> {
 /// Type derived for non-terminal BasicStringList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BasicStringList<'t> {
     pub basic_char: BasicChar<'t>,
 }
@@ -1468,8 +1385,7 @@ pub enum BasicUnescaped<'t> {
 /// Type derived for non-terminal BinInt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinInt<'t> {
     pub bin_int_content: BinIntContent<'t>,
 }
@@ -1478,8 +1394,7 @@ pub struct BinInt<'t> {
 /// Type derived for non-terminal BinIntContent
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinIntContent<'t> {
     pub bin_int_content: Token<'t>, /* [01]([01]|_[01])* */
 }
@@ -1488,8 +1403,7 @@ pub struct BinIntContent<'t> {
 /// Type derived for non-terminal BinPrefix
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinPrefix<'t> {
     pub bin_prefix: Token<'t>, /* 0b */
 }
@@ -1520,8 +1434,7 @@ pub enum DateTime<'t> {
 /// Type derived for non-terminal DecInt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DecInt<'t> {
     pub dec_int_opt: Option<DecIntOpt<'t>>,
     pub unsigned_dec_int: UnsignedDecInt<'t>,
@@ -1531,8 +1444,7 @@ pub struct DecInt<'t> {
 /// Type derived for non-terminal DecIntOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DecIntOpt<'t> {
     pub dec_int_opt_group: DecIntOptGroup<'t>,
 }
@@ -1551,8 +1463,7 @@ pub enum DecIntOptGroup<'t> {
 /// Type derived for non-terminal DotSep
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DotSep<'t> {
     pub dot_sep: Token<'t>, /* \. */
 }
@@ -1561,8 +1472,7 @@ pub struct DotSep<'t> {
 /// Type derived for non-terminal Escape
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Escape<'t> {
     pub escape: Token<'t>, /* \u{5C} */
 }
@@ -1590,8 +1500,7 @@ pub enum EscapeSeqChar<'t> {
 /// Type derived for non-terminal Escaped
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Escaped<'t> {
     pub escape: Escape<'t>,
     pub escape_seq_char: EscapeSeqChar<'t>,
@@ -1621,8 +1530,7 @@ pub enum Float<'t> {
 /// Type derived for non-terminal HexInt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct HexInt<'t> {
     pub hex_int_content: HexIntContent<'t>,
 }
@@ -1631,8 +1539,7 @@ pub struct HexInt<'t> {
 /// Type derived for non-terminal HexIntContent
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct HexIntContent<'t> {
     pub hex_int_content: Token<'t>, /* [0-9a-fA-F]([0-9a-fA-F]|_[0-9a-fA-F])* */
 }
@@ -1641,8 +1548,7 @@ pub struct HexIntContent<'t> {
 /// Type derived for non-terminal HexPrefix
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct HexPrefix<'t> {
     pub hex_prefix: Token<'t>, /* 0x */
 }
@@ -1651,8 +1557,7 @@ pub struct HexPrefix<'t> {
 /// Type derived for non-terminal InlineTable
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InlineTable<'t> {
     pub inline_table_opt: Option<InlineTableOpt<'t>>,
     pub inline_table_opt0: Option<InlineTableOpt0<'t>>,
@@ -1662,8 +1567,7 @@ pub struct InlineTable<'t> {
 /// Type derived for non-terminal InlineTableClose
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InlineTableClose<'t> {
     pub inline_table_close: Token<'t>, /* \u{7D} */
 }
@@ -1672,8 +1576,7 @@ pub struct InlineTableClose<'t> {
 /// Type derived for non-terminal InlineTableKeyVals
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InlineTableKeyVals<'t> {
     pub key_val: KeyVal<'t>,
     pub inline_table_key_vals_opt: Option<Box<InlineTableKeyValsOpt<'t>>>,
@@ -1683,8 +1586,7 @@ pub struct InlineTableKeyVals<'t> {
 /// Type derived for non-terminal InlineTableKeyValsOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InlineTableKeyValsOpt<'t> {
     pub inline_table_key_vals: InlineTableKeyVals<'t>,
 }
@@ -1693,8 +1595,7 @@ pub struct InlineTableKeyValsOpt<'t> {
 /// Type derived for non-terminal InlineTableOpen
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InlineTableOpen<'t> {
     pub inline_table_open: Token<'t>, /* \u{7B} */
 }
@@ -1703,8 +1604,7 @@ pub struct InlineTableOpen<'t> {
 /// Type derived for non-terminal InlineTableOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InlineTableOpt<'t> {
     pub inline_table_key_vals: InlineTableKeyVals<'t>,
 }
@@ -1713,8 +1613,7 @@ pub struct InlineTableOpt<'t> {
 /// Type derived for non-terminal InlineTableOpt0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InlineTableOpt0<'t> {
     pub inline_table_sep: InlineTableSep<'t>,
 }
@@ -1723,8 +1622,7 @@ pub struct InlineTableOpt0<'t> {
 /// Type derived for non-terminal InlineTableSep
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InlineTableSep<'t> {
     pub array_sep: ArraySep<'t>,
 }
@@ -1745,8 +1643,7 @@ pub enum Integer<'t> {
 /// Type derived for non-terminal Key
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Key<'t> {
     pub simple_key: SimpleKey<'t>,
     pub key_suffix: KeySuffix<'t>,
@@ -1756,8 +1653,7 @@ pub struct Key<'t> {
 /// Type derived for non-terminal KeyList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KeyList<'t> {
     pub dot_sep: DotSep<'t>,
     pub simple_key: SimpleKey<'t>,
@@ -1777,8 +1673,7 @@ pub enum KeySuffix<'t> {
 /// Type derived for non-terminal KeyVal
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KeyVal<'t> {
     pub key: Key<'t>,
     pub key_val_sep: KeyValSep<'t>,
@@ -1789,8 +1684,7 @@ pub struct KeyVal<'t> {
 /// Type derived for non-terminal KeyValSep
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KeyValSep<'t> {
     pub key_val_sep: Token<'t>, /* = */
 }
@@ -1809,8 +1703,7 @@ pub enum LiteralChar<'t> {
 /// Type derived for non-terminal LiteralCharNoApostrophe
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LiteralCharNoApostrophe<'t> {
     pub literal_char_no_apostrophe: Token<'t>, /* [\t\u{20}-\u{26}\u{28}-\u{7E}]+ */
 }
@@ -1819,8 +1712,7 @@ pub struct LiteralCharNoApostrophe<'t> {
 /// Type derived for non-terminal LiteralString
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LiteralString<'t> {
     pub literal_string_list: Vec<LiteralStringList<'t>>,
 }
@@ -1829,8 +1721,7 @@ pub struct LiteralString<'t> {
 /// Type derived for non-terminal LiteralStringList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LiteralStringList<'t> {
     pub literal_char: LiteralChar<'t>,
 }
@@ -1839,8 +1730,7 @@ pub struct LiteralStringList<'t> {
 /// Type derived for non-terminal LocalDate
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LocalDate<'t> {
     pub local_date: Token<'t>, /* [0-9]{4}-[0-9]{2}-[0-9]{2} */
 }
@@ -1849,8 +1739,7 @@ pub struct LocalDate<'t> {
 /// Type derived for non-terminal LocalDateTime
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LocalDateTime<'t> {
     pub local_date_time: Token<'t>, /* [0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?[Zz]? */
 }
@@ -1859,8 +1748,7 @@ pub struct LocalDateTime<'t> {
 /// Type derived for non-terminal LocalTime
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LocalTime<'t> {
     pub local_time: Token<'t>, /* [0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)? */
 }
@@ -1900,8 +1788,7 @@ pub enum MLBContentList<'t> {
 /// Type derived for non-terminal MLBContentList1
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBContentList1<'t> {
     pub m_l_b_content: MLBContent<'t>,
     pub m_l_b_content_list: MLBContentList<'t>,
@@ -1911,8 +1798,7 @@ pub struct MLBContentList1<'t> {
 /// Type derived for non-terminal MLBEscapedNL
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBEscapedNL<'t> {
     pub m_l_b_escaped_n_l: Token<'t>, /* \u{5C}[ \t]*\r?\n([ \t]|\r?\n)* */
 }
@@ -1921,8 +1807,7 @@ pub struct MLBEscapedNL<'t> {
 /// Type derived for non-terminal MLBQuotes
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBQuotes<'t> {
     pub m_l_b_quotes: Token<'t>, /* \u{22}{1,2} */
 }
@@ -1941,8 +1826,7 @@ pub enum MLBUnescaped<'t> {
 /// Type derived for non-terminal MLBasicBody
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBasicBody<'t> {
     pub m_l_b_content_list: MLBContentList<'t>,
     pub m_l_basic_body_list: Vec<MLBasicBodyList<'t>>,
@@ -1952,8 +1836,7 @@ pub struct MLBasicBody<'t> {
 /// Type derived for non-terminal MLBasicBodyList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBasicBodyList<'t> {
     pub m_l_b_quotes: MLBQuotes<'t>,
     pub m_l_b_content_list1: MLBContentList1<'t>,
@@ -1963,8 +1846,7 @@ pub struct MLBasicBodyList<'t> {
 /// Type derived for non-terminal MLBasicString
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBasicString<'t> {
     pub m_l_basic_string_start: MLBasicStringStart<'t>,
     pub m_l_basic_body: MLBasicBody<'t>,
@@ -1975,8 +1857,7 @@ pub struct MLBasicString<'t> {
 /// Type derived for non-terminal MLBasicStringEnd
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBasicStringEnd<'t> {
     pub m_l_basic_string_end: Token<'t>, /* \u{22}{3,5} */
 }
@@ -1985,8 +1866,7 @@ pub struct MLBasicStringEnd<'t> {
 /// Type derived for non-terminal MLBasicStringStart
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLBasicStringStart<'t> {
     pub m_l_basic_string_start: Token<'t>, /* \u{22}{3} */
 }
@@ -2015,8 +1895,7 @@ pub enum MLLContentList<'t> {
 /// Type derived for non-terminal MLLContentList1
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLContentList1<'t> {
     pub m_l_l_content: MLLContent<'t>,
     pub m_l_l_content_list: MLLContentList<'t>,
@@ -2026,8 +1905,7 @@ pub struct MLLContentList1<'t> {
 /// Type derived for non-terminal MLLQuotes
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLQuotes<'t> {
     pub m_l_l_quotes: Token<'t>, /* \u{27}{1,2} */
 }
@@ -2036,8 +1914,7 @@ pub struct MLLQuotes<'t> {
 /// Type derived for non-terminal MLLiteralBody
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLiteralBody<'t> {
     pub m_l_l_content_list: MLLContentList<'t>,
     pub m_l_literal_body_list: Vec<MLLiteralBodyList<'t>>,
@@ -2047,8 +1924,7 @@ pub struct MLLiteralBody<'t> {
 /// Type derived for non-terminal MLLiteralBodyList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLiteralBodyList<'t> {
     pub m_l_l_quotes: MLLQuotes<'t>,
     pub m_l_l_content_list1: MLLContentList1<'t>,
@@ -2058,8 +1934,7 @@ pub struct MLLiteralBodyList<'t> {
 /// Type derived for non-terminal MLLiteralString
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLiteralString<'t> {
     pub m_l_literal_body: MLLiteralBody<'t>,
 }
@@ -2068,8 +1943,7 @@ pub struct MLLiteralString<'t> {
 /// Type derived for non-terminal MLLiteralStringEnd
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLiteralStringEnd<'t> {
     pub m_l_literal_string_end: Token<'t>, /* \u{27}{3,5}(?:\r?\n)? */
 }
@@ -2078,8 +1952,7 @@ pub struct MLLiteralStringEnd<'t> {
 /// Type derived for non-terminal MLLiteralStringStart
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MLLiteralStringStart<'t> {
     pub m_l_literal_string_start: Token<'t>, /* \u{27}{3} */
 }
@@ -2088,8 +1961,7 @@ pub struct MLLiteralStringStart<'t> {
 /// Type derived for non-terminal Minus
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Minus<'t> {
     pub minus: Token<'t>, /* - */
 }
@@ -2098,8 +1970,7 @@ pub struct Minus<'t> {
 /// Type derived for non-terminal Newline
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Newline<'t> {
     pub newline: Token<'t>, /* \r?\n */
 }
@@ -2108,8 +1979,7 @@ pub struct Newline<'t> {
 /// Type derived for non-terminal NonAscii
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NonAscii<'t> {
     pub non_ascii: Token<'t>, /* [\u{80}-\u{D7FF}\u{E000}-\u{10FFFF}] */
 }
@@ -2118,8 +1988,7 @@ pub struct NonAscii<'t> {
 /// Type derived for non-terminal NormalFloat
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NormalFloat<'t> {
     pub normal_float: Token<'t>, /* [-+]?(?:0|[1-9](?:[0-9]|_[0-9])*)(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*|(?:\.[0-9](?:[0-9]|_[0-9])*(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*)?)) */
 }
@@ -2138,8 +2007,7 @@ pub enum Numeric<'t> {
 /// Type derived for non-terminal OctInt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct OctInt<'t> {
     pub oct_int_content: OctIntContent<'t>,
 }
@@ -2148,8 +2016,7 @@ pub struct OctInt<'t> {
 /// Type derived for non-terminal OctIntContent
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct OctIntContent<'t> {
     pub oct_int_content: Token<'t>, /* [0-7]([0-7]|_[0-7])* */
 }
@@ -2158,8 +2025,7 @@ pub struct OctIntContent<'t> {
 /// Type derived for non-terminal OctPrefix
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct OctPrefix<'t> {
     pub oct_prefix: Token<'t>, /* 0o */
 }
@@ -2168,8 +2034,7 @@ pub struct OctPrefix<'t> {
 /// Type derived for non-terminal OffsetDateTime
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct OffsetDateTime<'t> {
     pub offset_date_time: Token<'t>, /* [0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?([Zz]|[-+][0-9]{2}(:[0-9]{2})?)? */
 }
@@ -2178,8 +2043,7 @@ pub struct OffsetDateTime<'t> {
 /// Type derived for non-terminal ParolToml
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ParolToml<'t> {
     pub parol_toml_list: Vec<ParolTomlList<'t>>,
 }
@@ -2188,8 +2052,7 @@ pub struct ParolToml<'t> {
 /// Type derived for non-terminal ParolTomlList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ParolTomlList<'t> {
     pub expression: Expression<'t>,
 }
@@ -2198,8 +2061,7 @@ pub struct ParolTomlList<'t> {
 /// Type derived for non-terminal Plus
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Plus<'t> {
     pub plus: Token<'t>, /* + */
 }
@@ -2208,8 +2070,7 @@ pub struct Plus<'t> {
 /// Type derived for non-terminal QuotationMark
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct QuotationMark<'t> {
     pub quotation_mark: Token<'t>, /* \u{22} */
 }
@@ -2238,8 +2099,7 @@ pub enum SimpleKey<'t> {
 /// Type derived for non-terminal SpecialFloat
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SpecialFloat<'t> {
     pub special_float: Token<'t>, /* [-+]?(nan|inf) */
 }
@@ -2248,8 +2108,7 @@ pub struct SpecialFloat<'t> {
 /// Type derived for non-terminal StdTable
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StdTable<'t> {
     pub key: Key<'t>,
 }
@@ -2258,8 +2117,7 @@ pub struct StdTable<'t> {
 /// Type derived for non-terminal StdTableClose
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StdTableClose<'t> {
     pub array_close: ArrayClose<'t>,
 }
@@ -2268,8 +2126,7 @@ pub struct StdTableClose<'t> {
 /// Type derived for non-terminal StdTableOpen
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StdTableOpen<'t> {
     pub array_open: ArrayOpen<'t>,
 }
@@ -2288,8 +2145,7 @@ pub enum Table<'t> {
 /// Type derived for non-terminal Unicode4
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Unicode4<'t> {
     pub unicode4: Token<'t>, /* u[0-9a-fA-F]{4} */
 }
@@ -2298,8 +2154,7 @@ pub struct Unicode4<'t> {
 /// Type derived for non-terminal Unicode8
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Unicode8<'t> {
     pub unicode8: Token<'t>, /* U[0-9a-fA-F]{8} */
 }
@@ -2308,8 +2163,7 @@ pub struct Unicode8<'t> {
 /// Type derived for non-terminal UnquotedKey
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct UnquotedKey<'t> {
     pub unquoted_key: Token<'t>, /* [-_A-Za-z0-9\u{B2}\u{B3}\u{B9}\u{BC}-\u{BE}\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{37D}\u{37F}-\u{1FFF}\u{200C}-\u{200D}\u{203F}-\u{2040}\u{2070}-\u{218F}\u{2460}-\u{24FF}\u{2C00}-\u{2FEF}\u{3001}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFFD}\u{10000}-\u{EFFFF}]+ */
 }
@@ -2318,8 +2172,7 @@ pub struct UnquotedKey<'t> {
 /// Type derived for non-terminal UnsignedDecInt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct UnsignedDecInt<'t> {
     pub unsigned_dec_int: Token<'t>, /* 0|[1-9]([0-9]|_[0-9])* */
 }
@@ -2345,8 +2198,7 @@ pub enum Val<'t> {
 /// Type derived for non-terminal WsNewline
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct WsNewline<'t> {
     pub ws_newline: Token<'t>, /* [ \t]*\r?\n */
 }

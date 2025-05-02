@@ -9,7 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
@@ -75,8 +74,7 @@ pub trait KeywordsGrammarTrait<'t> {
 /// `Items: Declaration;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ItemsDeclaration<'t> {
     pub declaration: Box<Declaration<'t>>,
 }
@@ -87,8 +85,7 @@ pub struct ItemsDeclaration<'t> {
 /// `Items: Block;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ItemsBlock<'t> {
     pub block: Box<Block<'t>>,
 }
@@ -102,8 +99,7 @@ pub struct ItemsBlock<'t> {
 /// Type derived for non-terminal Begin
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Begin<'t> {
     pub begin: Token<'t>, /* [bB][eE][gG][iI][nN] */
 }
@@ -112,8 +108,7 @@ pub struct Begin<'t> {
 /// Type derived for non-terminal Block
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Block<'t> {
     pub begin: Box<Begin<'t>>,
     pub block_list: Vec<BlockList<'t>>,
@@ -124,8 +119,7 @@ pub struct Block<'t> {
 /// Type derived for non-terminal BlockList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BlockList<'t> {
     pub items: Box<Items<'t>>,
 }
@@ -134,8 +128,7 @@ pub struct BlockList<'t> {
 /// Type derived for non-terminal Declaration
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Declaration<'t> {
     pub var: Box<Var<'t>>,
     pub identifier: Box<Identifier<'t>>,
@@ -146,8 +139,7 @@ pub struct Declaration<'t> {
 /// Type derived for non-terminal End
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct End<'t> {
     pub end: Token<'t>, /* [eE][nN][dD] */
 }
@@ -156,8 +148,7 @@ pub struct End<'t> {
 /// Type derived for non-terminal Grammar
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Grammar<'t> {
     pub grammar_list: Vec<GrammarList<'t>>,
 }
@@ -166,8 +157,7 @@ pub struct Grammar<'t> {
 /// Type derived for non-terminal GrammarList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct GrammarList<'t> {
     pub items: Box<Items<'t>>,
 }
@@ -176,8 +166,7 @@ pub struct GrammarList<'t> {
 /// Type derived for non-terminal Identifier
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Identifier<'t> {
     pub identifier: Token<'t>, /* [a-zA-Z_][a-zA-Z0-9_]* */
 }
@@ -196,8 +185,7 @@ pub enum Items<'t> {
 /// Type derived for non-terminal Var
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Var<'t> {
     pub var: Token<'t>, /* [vV][aA][rR] */
 }

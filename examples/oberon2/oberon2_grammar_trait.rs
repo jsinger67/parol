@@ -9,7 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
@@ -400,8 +399,7 @@ pub trait Oberon2GrammarTrait<'t> {
 /// `DeclSeqList0Group: ProcDecl ";"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DeclSeqList0GroupProcDeclSemicolon<'t> {
     pub proc_decl: ProcDecl<'t>,
 }
@@ -412,8 +410,7 @@ pub struct DeclSeqList0GroupProcDeclSemicolon<'t> {
 /// `DeclSeqList0Group: ForwardDecl ";"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DeclSeqList0GroupForwardDeclSemicolon<'t> {
     pub forward_decl: ForwardDecl<'t>,
 }
@@ -424,8 +421,7 @@ pub struct DeclSeqList0GroupForwardDeclSemicolon<'t> {
 /// `DeclBlock: ConstDeclBlock;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DeclBlockConstDeclBlock<'t> {
     pub const_decl_block: ConstDeclBlock<'t>,
 }
@@ -436,8 +432,7 @@ pub struct DeclBlockConstDeclBlock<'t> {
 /// `DeclBlock: TypeDeclBlock;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DeclBlockTypeDeclBlock<'t> {
     pub type_decl_block: TypeDeclBlock<'t>,
 }
@@ -448,8 +443,7 @@ pub struct DeclBlockTypeDeclBlock<'t> {
 /// `DeclBlock: VarDeclBlock;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DeclBlockVarDeclBlock<'t> {
     pub var_decl_block: VarDeclBlock<'t>,
 }
@@ -460,8 +454,7 @@ pub struct DeclBlockVarDeclBlock<'t> {
 /// `TypeDef: QualIdent;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefQualIdent<'t> {
     pub qual_ident: QualIdent<'t>,
 }
@@ -472,8 +465,7 @@ pub struct TypeDefQualIdent<'t> {
 /// `TypeDef: "ARRAY"^ /* Clipped */ TypeDefOpt /* Option */ KwOf^ /* Clipped */ TypeDef;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefARRAYTypeDefOptKwOfTypeDef<'t> {
     pub type_def_opt: Option<TypeDefOpt<'t>>,
     pub type_def: Box<TypeDef<'t>>,
@@ -485,8 +477,7 @@ pub struct TypeDefARRAYTypeDefOptKwOfTypeDef<'t> {
 /// `TypeDef: "RECORD"^ /* Clipped */ TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEnd<'t> {
     pub type_def_opt0: Option<TypeDefOpt0<'t>>,
     pub field_list: Box<FieldList<'t>>,
@@ -499,8 +490,7 @@ pub struct TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEnd<'t> {
 /// `TypeDef: "POINTER"^ /* Clipped */ KwTo^ /* Clipped */ TypeDef;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefPOINTERKwToTypeDef<'t> {
     pub type_def: Box<TypeDef<'t>>,
 }
@@ -511,8 +501,7 @@ pub struct TypeDefPOINTERKwToTypeDef<'t> {
 /// `TypeDef: KwProcedure^ /* Clipped */ TypeDefOpt1 /* Option */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefKwProcedureTypeDefOpt1<'t> {
     pub type_def_opt1: Option<Box<TypeDefOpt1<'t>>>,
 }
@@ -523,8 +512,7 @@ pub struct TypeDefKwProcedureTypeDefOpt1<'t> {
 /// `StatementOptGroup: Designator StatementOptGroupSuffix;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupDesignatorStatementOptGroupSuffix<'t> {
     pub designator: Designator<'t>,
     pub statement_opt_group_suffix: StatementOptGroupSuffix<'t>,
@@ -536,8 +524,7 @@ pub struct StatementOptGroupDesignatorStatementOptGroupSuffix<'t> {
 /// `StatementOptGroupSuffix: ":="^ /* Clipped */ Expr;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupSuffixColonEquExpr<'t> {
     pub expr: Expr<'t>,
 }
@@ -548,8 +535,7 @@ pub struct StatementOptGroupSuffixColonEquExpr<'t> {
 /// `StatementOptGroupSuffix: StatementOpt0 /* Option */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupSuffixStatementOpt0<'t> {
     pub statement_opt0: Option<StatementOpt0<'t>>,
 }
@@ -560,8 +546,7 @@ pub struct StatementOptGroupSuffixStatementOpt0<'t> {
 /// `StatementOptGroup: KwIf^ /* Clipped */ Expr ThenBlock StatementOptGroupList /* Vec */ OptElsePartEnd;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd<'t> {
     pub expr: Expr<'t>,
     pub then_block: Box<ThenBlock<'t>>,
@@ -575,8 +560,7 @@ pub struct StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd
 /// `StatementOptGroup: KwCase^ /* Clipped */ Expr KwOf^ /* Clipped */ Cases OptElsePartEnd;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd<'t> {
     pub expr: Expr<'t>,
     pub cases: Box<Cases<'t>>,
@@ -589,8 +573,7 @@ pub struct StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd<'t> {
 /// `StatementOptGroup: "WHILE"^ /* Clipped */ Expr DoBlock;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupWHILEExprDoBlock<'t> {
     pub expr: Expr<'t>,
     pub do_block: Box<DoBlock<'t>>,
@@ -602,8 +585,7 @@ pub struct StatementOptGroupWHILEExprDoBlock<'t> {
 /// `StatementOptGroup: "REPEAT"^ /* Clipped */ StatementSeq "UNTIL"^ /* Clipped */ Expr;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupREPEATStatementSeqUNTILExpr<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
     pub expr: Expr<'t>,
@@ -615,8 +597,7 @@ pub struct StatementOptGroupREPEATStatementSeqUNTILExpr<'t> {
 /// `StatementOptGroup: "FOR"^ /* Clipped */ ForInit StatementOpt1 /* Option */ DoBlock;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupFORForInitStatementOpt1DoBlock<'t> {
     pub for_init: ForInit<'t>,
     pub statement_opt1: Option<StatementOpt1<'t>>,
@@ -629,8 +610,7 @@ pub struct StatementOptGroupFORForInitStatementOpt1DoBlock<'t> {
 /// `StatementOptGroup: "LOOP"^ /* Clipped */ StatementSeq KwEnd^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupLOOPStatementSeqKwEnd<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
 }
@@ -641,8 +621,7 @@ pub struct StatementOptGroupLOOPStatementSeqKwEnd<'t> {
 /// `StatementOptGroup: "WITH"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0 /* Vec */ OptElsePartEnd;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd<'t> {
     pub guarded_do_block: Box<GuardedDoBlock<'t>>,
     pub statement_opt_group_list0: Vec<StatementOptGroupList0<'t>>,
@@ -655,8 +634,7 @@ pub struct StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartE
 /// `StatementOptGroup: "EXIT"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupEXIT {}
 
 ///
@@ -665,8 +643,7 @@ pub struct StatementOptGroupEXIT {}
 /// `StatementOptGroup: "RETURN"^ /* Clipped */ StatementOpt2 /* Option */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupRETURNStatementOpt2<'t> {
     pub statement_opt2: Option<StatementOpt2<'t>>,
 }
@@ -677,8 +654,7 @@ pub struct StatementOptGroupRETURNStatementOpt2<'t> {
 /// `SimpleExprOptGroup: "\+";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SimpleExprOptGroupPlus<'t> {
     pub plus: Token<'t>, /* \+ */
 }
@@ -689,8 +665,7 @@ pub struct SimpleExprOptGroupPlus<'t> {
 /// `SimpleExprOptGroup: "-";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SimpleExprOptGroupMinus<'t> {
     pub minus: Token<'t>, /* - */
 }
@@ -701,8 +676,7 @@ pub struct SimpleExprOptGroupMinus<'t> {
 /// `Factor: Designator FactorOpt /* Option */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorDesignatorFactorOpt<'t> {
     pub designator: Designator<'t>,
     pub factor_opt: Option<Box<FactorOpt<'t>>>,
@@ -714,8 +688,7 @@ pub struct FactorDesignatorFactorOpt<'t> {
 /// `Factor: Number;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorNumber<'t> {
     pub number: Number<'t>,
 }
@@ -726,8 +699,7 @@ pub struct FactorNumber<'t> {
 /// `Factor: Character;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorCharacter<'t> {
     pub character: Character<'t>,
 }
@@ -738,8 +710,7 @@ pub struct FactorCharacter<'t> {
 /// `Factor: String;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorString<'t> {
     pub string: String<'t>,
 }
@@ -750,8 +721,7 @@ pub struct FactorString<'t> {
 /// `Factor: "NIL"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorNIL {}
 
 ///
@@ -760,8 +730,7 @@ pub struct FactorNIL {}
 /// `Factor: Set;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorSet<'t> {
     pub set: Box<Set<'t>>,
 }
@@ -772,8 +741,7 @@ pub struct FactorSet<'t> {
 /// `Factor: "\("^ /* Clipped */ Expr "\)"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorLParenExprRParen<'t> {
     pub expr: Box<Expr<'t>>,
 }
@@ -784,8 +752,7 @@ pub struct FactorLParenExprRParen<'t> {
 /// `Factor: "~"^ /* Clipped */ Factor;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorTildeFactor<'t> {
     pub factor: Box<Factor<'t>>,
 }
@@ -796,8 +763,7 @@ pub struct FactorTildeFactor<'t> {
 /// `Relation: "="^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationEqu {}
 
 ///
@@ -806,8 +772,7 @@ pub struct RelationEqu {}
 /// `Relation: "#";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationHash<'t> {
     pub hash: Token<'t>, /* # */
 }
@@ -818,8 +783,7 @@ pub struct RelationHash<'t> {
 /// `Relation: "<";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationLT<'t> {
     pub l_t: Token<'t>, /* < */
 }
@@ -830,8 +794,7 @@ pub struct RelationLT<'t> {
 /// `Relation: "<=";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationLTEqu<'t> {
     pub l_t_equ: Token<'t>, /* <= */
 }
@@ -842,8 +805,7 @@ pub struct RelationLTEqu<'t> {
 /// `Relation: ">";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationGT<'t> {
     pub g_t: Token<'t>, /* > */
 }
@@ -854,8 +816,7 @@ pub struct RelationGT<'t> {
 /// `Relation: ">=";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationGTEqu<'t> {
     pub g_t_equ: Token<'t>, /* >= */
 }
@@ -866,8 +827,7 @@ pub struct RelationGTEqu<'t> {
 /// `Relation: InOp;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationInOp {
     pub in_op: InOp,
 }
@@ -878,8 +838,7 @@ pub struct RelationInOp {
 /// `Relation: "IS";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationIS<'t> {
     pub i_s: Token<'t>, /* IS */
 }
@@ -890,8 +849,7 @@ pub struct RelationIS<'t> {
 /// `AddOp: "\+";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AddOpPlus<'t> {
     pub plus: Token<'t>, /* \+ */
 }
@@ -902,8 +860,7 @@ pub struct AddOpPlus<'t> {
 /// `AddOp: "-";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AddOpMinus<'t> {
     pub minus: Token<'t>, /* - */
 }
@@ -914,8 +871,7 @@ pub struct AddOpMinus<'t> {
 /// `AddOp: "OR";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AddOpOR<'t> {
     pub o_r: Token<'t>, /* OR */
 }
@@ -926,8 +882,7 @@ pub struct AddOpOR<'t> {
 /// `MulOp: "\*";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MulOpStar<'t> {
     pub star: Token<'t>, /* \* */
 }
@@ -938,8 +893,7 @@ pub struct MulOpStar<'t> {
 /// `MulOp: "/";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MulOpSlash<'t> {
     pub slash: Token<'t>, /* / */
 }
@@ -950,8 +904,7 @@ pub struct MulOpSlash<'t> {
 /// `MulOp: "DIV";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MulOpDIV<'t> {
     pub d_i_v: Token<'t>, /* DIV */
 }
@@ -962,8 +915,7 @@ pub struct MulOpDIV<'t> {
 /// `MulOp: "MOD";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MulOpMOD<'t> {
     pub m_o_d: Token<'t>, /* MOD */
 }
@@ -974,8 +926,7 @@ pub struct MulOpMOD<'t> {
 /// `MulOp: "&";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MulOpAmp<'t> {
     pub amp: Token<'t>, /* & */
 }
@@ -986,8 +937,7 @@ pub struct MulOpAmp<'t> {
 /// `DesignatorSuffix: "\."^ /* Clipped */ Ident;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DesignatorSuffixDotIdent<'t> {
     pub ident: Ident<'t>,
 }
@@ -998,8 +948,7 @@ pub struct DesignatorSuffixDotIdent<'t> {
 /// `DesignatorSuffix: "\["^ /* Clipped */ ExprList "\]"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DesignatorSuffixLBracketExprListRBracket<'t> {
     pub expr_list: ExprList<'t>,
 }
@@ -1010,8 +959,7 @@ pub struct DesignatorSuffixLBracketExprListRBracket<'t> {
 /// `DesignatorSuffix: "\^"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DesignatorSuffixCircumflex {}
 
 ///
@@ -1020,8 +968,7 @@ pub struct DesignatorSuffixCircumflex {}
 /// `QualIdent: Ident;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct QualIdentIdent<'t> {
     pub ident: Ident<'t>,
 }
@@ -1032,8 +979,7 @@ pub struct QualIdentIdent<'t> {
 /// `QualIdent: QIdent;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct QualIdentQIdent<'t> {
     pub q_ident: QIdent<'t>,
 }
@@ -1044,8 +990,7 @@ pub struct QualIdentQIdent<'t> {
 /// `IdentDefOptGroup: "\*";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IdentDefOptGroupStar<'t> {
     pub star: Token<'t>, /* \* */
 }
@@ -1056,8 +1001,7 @@ pub struct IdentDefOptGroupStar<'t> {
 /// `IdentDefOptGroup: "-";`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IdentDefOptGroupMinus<'t> {
     pub minus: Token<'t>, /* - */
 }
@@ -1068,8 +1012,7 @@ pub struct IdentDefOptGroupMinus<'t> {
 /// `Number: Integer;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NumberInteger<'t> {
     pub integer: Integer<'t>,
 }
@@ -1080,8 +1023,7 @@ pub struct NumberInteger<'t> {
 /// `Number: Real;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NumberReal<'t> {
     pub real: Real<'t>,
 }
@@ -1106,8 +1048,7 @@ pub enum AddOp<'t> {
 /// Type derived for non-terminal Case
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Case<'t> {
     pub case_opt: Option<CaseOpt<'t>>,
 }
@@ -1116,8 +1057,7 @@ pub struct Case<'t> {
 /// Type derived for non-terminal CaseLabels
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct CaseLabels<'t> {
     pub const_expr: ConstExpr<'t>,
     pub case_labels_opt: Option<CaseLabelsOpt<'t>>,
@@ -1127,8 +1067,7 @@ pub struct CaseLabels<'t> {
 /// Type derived for non-terminal CaseLabelsOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct CaseLabelsOpt<'t> {
     pub dot_dot: Token<'t>, /* \.\. */
     pub const_expr: ConstExpr<'t>,
@@ -1138,8 +1077,7 @@ pub struct CaseLabelsOpt<'t> {
 /// Type derived for non-terminal CaseOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct CaseOpt<'t> {
     pub case_labels: CaseLabels<'t>,
     pub case_opt_list: Vec<CaseOptList<'t>>,
@@ -1150,8 +1088,7 @@ pub struct CaseOpt<'t> {
 /// Type derived for non-terminal CaseOptList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct CaseOptList<'t> {
     pub case_labels: CaseLabels<'t>,
 }
@@ -1160,8 +1097,7 @@ pub struct CaseOptList<'t> {
 /// Type derived for non-terminal Cases
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Cases<'t> {
     pub case: Case<'t>,
     pub cases_list: Vec<CasesList<'t>>,
@@ -1171,8 +1107,7 @@ pub struct Cases<'t> {
 /// Type derived for non-terminal CasesList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct CasesList<'t> {
     pub case: Case<'t>,
 }
@@ -1181,8 +1116,7 @@ pub struct CasesList<'t> {
 /// Type derived for non-terminal Character
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Character<'t> {
     pub character: Token<'t>, /* [0-9][0-9A-F]*X */
 }
@@ -1191,8 +1125,7 @@ pub struct Character<'t> {
 /// Type derived for non-terminal ConstDecl
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ConstDecl<'t> {
     pub ident_def: IdentDef<'t>,
     pub const_expr: ConstExpr<'t>,
@@ -1202,8 +1135,7 @@ pub struct ConstDecl<'t> {
 /// Type derived for non-terminal ConstDeclBlock
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ConstDeclBlock<'t> {
     pub const_decl_block_list: Vec<ConstDeclBlockList<'t>>,
 }
@@ -1212,8 +1144,7 @@ pub struct ConstDeclBlock<'t> {
 /// Type derived for non-terminal ConstDeclBlockList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ConstDeclBlockList<'t> {
     pub const_decl: ConstDecl<'t>,
 }
@@ -1222,8 +1153,7 @@ pub struct ConstDeclBlockList<'t> {
 /// Type derived for non-terminal ConstExpr
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ConstExpr<'t> {
     pub expr: Expr<'t>,
 }
@@ -1243,8 +1173,7 @@ pub enum DeclBlock<'t> {
 /// Type derived for non-terminal DeclSeq
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DeclSeq<'t> {
     pub decl_seq_list: Vec<DeclSeqList<'t>>,
     pub decl_seq_list0: Vec<DeclSeqList0<'t>>,
@@ -1254,8 +1183,7 @@ pub struct DeclSeq<'t> {
 /// Type derived for non-terminal DeclSeqList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DeclSeqList<'t> {
     pub decl_block: DeclBlock<'t>,
 }
@@ -1264,8 +1192,7 @@ pub struct DeclSeqList<'t> {
 /// Type derived for non-terminal DeclSeqList0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DeclSeqList0<'t> {
     pub decl_seq_list0_group: DeclSeqList0Group<'t>,
 }
@@ -1284,8 +1211,7 @@ pub enum DeclSeqList0Group<'t> {
 /// Type derived for non-terminal Designator
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Designator<'t> {
     pub qual_ident: QualIdent<'t>,
     pub designator_list: Vec<DesignatorList<'t>>,
@@ -1295,8 +1221,7 @@ pub struct Designator<'t> {
 /// Type derived for non-terminal DesignatorList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DesignatorList<'t> {
     pub designator_suffix: DesignatorSuffix<'t>,
 }
@@ -1316,8 +1241,7 @@ pub enum DesignatorSuffix<'t> {
 /// Type derived for non-terminal DoBlock
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct DoBlock<'t> {
     pub statement_seq: StatementSeq<'t>,
 }
@@ -1326,8 +1250,7 @@ pub struct DoBlock<'t> {
 /// Type derived for non-terminal Element
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Element<'t> {
     pub expr: Box<Expr<'t>>,
     pub element_opt: Option<Box<ElementOpt<'t>>>,
@@ -1337,8 +1260,7 @@ pub struct Element<'t> {
 /// Type derived for non-terminal ElementOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ElementOpt<'t> {
     pub expr: Expr<'t>,
 }
@@ -1347,8 +1269,7 @@ pub struct ElementOpt<'t> {
 /// Type derived for non-terminal ElsePart
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ElsePart<'t> {
     pub statement_seq: StatementSeq<'t>,
 }
@@ -1357,8 +1278,7 @@ pub struct ElsePart<'t> {
 /// Type derived for non-terminal ElsifPart
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ElsifPart<'t> {
     pub expr: Expr<'t>,
     pub then_block: ThenBlock<'t>,
@@ -1368,8 +1288,7 @@ pub struct ElsifPart<'t> {
 /// Type derived for non-terminal Expr
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Expr<'t> {
     pub simple_expr: Box<SimpleExpr<'t>>,
     pub expr_opt: Option<ExprOpt<'t>>,
@@ -1379,8 +1298,7 @@ pub struct Expr<'t> {
 /// Type derived for non-terminal ExprList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ExprList<'t> {
     pub expr: Expr<'t>,
     pub expr_list_list: Vec<ExprListList<'t>>,
@@ -1390,8 +1308,7 @@ pub struct ExprList<'t> {
 /// Type derived for non-terminal ExprListList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ExprListList<'t> {
     pub expr: Expr<'t>,
 }
@@ -1400,8 +1317,7 @@ pub struct ExprListList<'t> {
 /// Type derived for non-terminal ExprOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ExprOpt<'t> {
     pub relation: Relation<'t>,
     pub simple_expr: SimpleExpr<'t>,
@@ -1411,8 +1327,7 @@ pub struct ExprOpt<'t> {
 /// Type derived for non-terminal FPSection
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FPSection<'t> {
     pub f_p_section_opt: Option<FPSectionOpt>,
     pub ident: Ident<'t>,
@@ -1424,8 +1339,7 @@ pub struct FPSection<'t> {
 /// Type derived for non-terminal FPSectionList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FPSectionList<'t> {
     pub ident: Ident<'t>,
 }
@@ -1434,8 +1348,7 @@ pub struct FPSectionList<'t> {
 /// Type derived for non-terminal FPSectionOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FPSectionOpt {}
 
 ///
@@ -1458,8 +1371,7 @@ pub enum Factor<'t> {
 /// Type derived for non-terminal FactorOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorOpt<'t> {
     pub factor_opt0: Option<FactorOpt0<'t>>,
 }
@@ -1468,8 +1380,7 @@ pub struct FactorOpt<'t> {
 /// Type derived for non-terminal FactorOpt0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorOpt0<'t> {
     pub expr_list: ExprList<'t>,
 }
@@ -1478,8 +1389,7 @@ pub struct FactorOpt0<'t> {
 /// Type derived for non-terminal FieldList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FieldList<'t> {
     pub field_list_opt: Option<FieldListOpt<'t>>,
 }
@@ -1488,8 +1398,7 @@ pub struct FieldList<'t> {
 /// Type derived for non-terminal FieldListOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FieldListOpt<'t> {
     pub ident_list: IdentList<'t>,
     pub type_def: TypeDef<'t>,
@@ -1499,8 +1408,7 @@ pub struct FieldListOpt<'t> {
 /// Type derived for non-terminal ForInit
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ForInit<'t> {
     pub ident: Ident<'t>,
     pub expr: Expr<'t>,
@@ -1511,8 +1419,7 @@ pub struct ForInit<'t> {
 /// Type derived for non-terminal ForStep
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ForStep<'t> {
     pub const_expr: ConstExpr<'t>,
 }
@@ -1521,8 +1428,7 @@ pub struct ForStep<'t> {
 /// Type derived for non-terminal FormalPars
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FormalPars<'t> {
     pub formal_pars_opt: Option<FormalParsOpt<'t>>,
     pub formal_pars_opt0: Option<FormalParsOpt0<'t>>,
@@ -1532,8 +1438,7 @@ pub struct FormalPars<'t> {
 /// Type derived for non-terminal FormalParsOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FormalParsOpt<'t> {
     pub f_p_section: FPSection<'t>,
     pub formal_pars_opt_list: Vec<FormalParsOptList<'t>>,
@@ -1543,8 +1448,7 @@ pub struct FormalParsOpt<'t> {
 /// Type derived for non-terminal FormalParsOpt0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FormalParsOpt0<'t> {
     pub qual_ident: QualIdent<'t>,
 }
@@ -1553,8 +1457,7 @@ pub struct FormalParsOpt0<'t> {
 /// Type derived for non-terminal FormalParsOptList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FormalParsOptList<'t> {
     pub f_p_section: FPSection<'t>,
 }
@@ -1563,8 +1466,7 @@ pub struct FormalParsOptList<'t> {
 /// Type derived for non-terminal ForwardDecl
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ForwardDecl<'t> {
     pub circumflex: Token<'t>, /* \^ */
     pub forward_decl_opt: Option<ForwardDeclOpt<'t>>,
@@ -1576,8 +1478,7 @@ pub struct ForwardDecl<'t> {
 /// Type derived for non-terminal ForwardDeclOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ForwardDeclOpt<'t> {
     pub receiver: Receiver<'t>,
 }
@@ -1586,8 +1487,7 @@ pub struct ForwardDeclOpt<'t> {
 /// Type derived for non-terminal ForwardDeclOpt0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ForwardDeclOpt0<'t> {
     pub formal_pars: FormalPars<'t>,
 }
@@ -1596,8 +1496,7 @@ pub struct ForwardDeclOpt0<'t> {
 /// Type derived for non-terminal Guard
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Guard<'t> {
     pub qual_ident: QualIdent<'t>,
     pub qual_ident0: QualIdent<'t>,
@@ -1607,8 +1506,7 @@ pub struct Guard<'t> {
 /// Type derived for non-terminal GuardedDoBlock
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct GuardedDoBlock<'t> {
     pub guard: Guard<'t>,
     pub statement_seq: StatementSeq<'t>,
@@ -1618,8 +1516,7 @@ pub struct GuardedDoBlock<'t> {
 /// Type derived for non-terminal Ident
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Ident<'t> {
     pub ident: Token<'t>, /* [a-zA-Z_]\w* */
 }
@@ -1628,8 +1525,7 @@ pub struct Ident<'t> {
 /// Type derived for non-terminal IdentDef
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IdentDef<'t> {
     pub ident: Ident<'t>,
     pub ident_def_opt: Option<IdentDefOpt<'t>>,
@@ -1639,8 +1535,7 @@ pub struct IdentDef<'t> {
 /// Type derived for non-terminal IdentDefOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IdentDefOpt<'t> {
     pub ident_def_opt_group: IdentDefOptGroup<'t>,
 }
@@ -1659,8 +1554,7 @@ pub enum IdentDefOptGroup<'t> {
 /// Type derived for non-terminal IdentList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IdentList<'t> {
     pub ident_def: IdentDef<'t>,
     pub ident_list_list: Vec<IdentListList<'t>>,
@@ -1670,8 +1564,7 @@ pub struct IdentList<'t> {
 /// Type derived for non-terminal IdentListList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IdentListList<'t> {
     pub ident_def: IdentDef<'t>,
 }
@@ -1680,8 +1573,7 @@ pub struct IdentListList<'t> {
 /// Type derived for non-terminal ImportList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ImportList<'t> {
     pub import_list_opt: Option<ImportListOpt<'t>>,
     pub ident: Ident<'t>,
@@ -1692,8 +1584,7 @@ pub struct ImportList<'t> {
 /// Type derived for non-terminal ImportListList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ImportListList<'t> {
     pub import_list_opt0: Option<ImportListOpt0<'t>>,
     pub ident: Ident<'t>,
@@ -1703,8 +1594,7 @@ pub struct ImportListList<'t> {
 /// Type derived for non-terminal ImportListOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ImportListOpt<'t> {
     pub ident: Ident<'t>,
 }
@@ -1713,8 +1603,7 @@ pub struct ImportListOpt<'t> {
 /// Type derived for non-terminal ImportListOpt0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ImportListOpt0<'t> {
     pub ident: Ident<'t>,
 }
@@ -1723,16 +1612,14 @@ pub struct ImportListOpt0<'t> {
 /// Type derived for non-terminal InOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InOp {}
 
 ///
 /// Type derived for non-terminal Integer
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Integer<'t> {
     pub integer: Token<'t>, /* [0-9][0-9]*|[0-9][0-9A-F]*H */
 }
@@ -1741,104 +1628,91 @@ pub struct Integer<'t> {
 /// Type derived for non-terminal KwBegin
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwBegin {}
 
 ///
 /// Type derived for non-terminal KwCase
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwCase {}
 
 ///
 /// Type derived for non-terminal KwDo
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwDo {}
 
 ///
 /// Type derived for non-terminal KwElse
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwElse {}
 
 ///
 /// Type derived for non-terminal KwElsif
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwElsif {}
 
 ///
 /// Type derived for non-terminal KwEnd
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwEnd {}
 
 ///
 /// Type derived for non-terminal KwIf
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwIf {}
 
 ///
 /// Type derived for non-terminal KwOf
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwOf {}
 
 ///
 /// Type derived for non-terminal KwProcedure
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwProcedure {}
 
 ///
 /// Type derived for non-terminal KwThen
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwThen {}
 
 ///
 /// Type derived for non-terminal KwTo
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwTo {}
 
 ///
 /// Type derived for non-terminal KwVar
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct KwVar {}
 
 ///
 /// Type derived for non-terminal ModuleBody
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ModuleBody<'t> {
     pub statement_block: StatementBlock<'t>,
 }
@@ -1847,8 +1721,7 @@ pub struct ModuleBody<'t> {
 /// Type derived for non-terminal ModuleHead
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ModuleHead<'t> {
     pub ident: Ident<'t>,
 }
@@ -1880,8 +1753,7 @@ pub enum Number<'t> {
 /// Type derived for non-terminal Oberon2
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Oberon2<'t> {
     pub module_head: ModuleHead<'t>,
     pub oberon2_opt: Option<Oberon2Opt<'t>>,
@@ -1893,8 +1765,7 @@ pub struct Oberon2<'t> {
 /// Type derived for non-terminal Oberon2Opt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Oberon2Opt<'t> {
     pub import_list: ImportList<'t>,
 }
@@ -1903,8 +1774,7 @@ pub struct Oberon2Opt<'t> {
 /// Type derived for non-terminal OptElsePartEnd
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct OptElsePartEnd<'t> {
     pub opt_else_part_end_opt: Option<OptElsePartEndOpt<'t>>,
 }
@@ -1913,8 +1783,7 @@ pub struct OptElsePartEnd<'t> {
 /// Type derived for non-terminal OptElsePartEndOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct OptElsePartEndOpt<'t> {
     pub else_part: ElsePart<'t>,
 }
@@ -1923,8 +1792,7 @@ pub struct OptElsePartEndOpt<'t> {
 /// Type derived for non-terminal ProcDecl
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ProcDecl<'t> {
     pub procedure_heading: ProcedureHeading<'t>,
     pub procedure_body: ProcedureBody<'t>,
@@ -1934,8 +1802,7 @@ pub struct ProcDecl<'t> {
 /// Type derived for non-terminal ProcedureBody
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ProcedureBody<'t> {
     pub decl_seq: DeclSeq<'t>,
     pub statement_block: StatementBlock<'t>,
@@ -1945,8 +1812,7 @@ pub struct ProcedureBody<'t> {
 /// Type derived for non-terminal ProcedureHeading
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ProcedureHeading<'t> {
     pub procedure_heading_opt: Option<ProcedureHeadingOpt<'t>>,
     pub ident_def: IdentDef<'t>,
@@ -1957,8 +1823,7 @@ pub struct ProcedureHeading<'t> {
 /// Type derived for non-terminal ProcedureHeadingOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ProcedureHeadingOpt<'t> {
     pub receiver: Receiver<'t>,
 }
@@ -1967,8 +1832,7 @@ pub struct ProcedureHeadingOpt<'t> {
 /// Type derived for non-terminal ProcedureHeadingOpt0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ProcedureHeadingOpt0<'t> {
     pub formal_pars: FormalPars<'t>,
 }
@@ -1977,8 +1841,7 @@ pub struct ProcedureHeadingOpt0<'t> {
 /// Type derived for non-terminal QIdent
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct QIdent<'t> {
     pub q_ident: Token<'t>, /* [a-zA-Z_]\w*\.[a-zA-Z_]\w* */
 }
@@ -1997,8 +1860,7 @@ pub enum QualIdent<'t> {
 /// Type derived for non-terminal Real
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Real<'t> {
     pub real: Token<'t>, /* [0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)? */
 }
@@ -2007,8 +1869,7 @@ pub struct Real<'t> {
 /// Type derived for non-terminal Receiver
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Receiver<'t> {
     pub receiver_opt: Option<ReceiverOpt>,
     pub receiver_var_decl: ReceiverVarDecl<'t>,
@@ -2018,16 +1879,14 @@ pub struct Receiver<'t> {
 /// Type derived for non-terminal ReceiverOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ReceiverOpt {}
 
 ///
 /// Type derived for non-terminal ReceiverVarDecl
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ReceiverVarDecl<'t> {
     pub ident: Ident<'t>,
     pub ident0: Ident<'t>,
@@ -2053,8 +1912,7 @@ pub enum Relation<'t> {
 /// Type derived for non-terminal Set
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Set<'t> {
     pub set_opt: Option<SetOpt<'t>>,
 }
@@ -2063,8 +1921,7 @@ pub struct Set<'t> {
 /// Type derived for non-terminal SetOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SetOpt<'t> {
     pub element: Element<'t>,
     pub set_opt_list: Vec<SetOptList<'t>>,
@@ -2074,8 +1931,7 @@ pub struct SetOpt<'t> {
 /// Type derived for non-terminal SetOptList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SetOptList<'t> {
     pub element: Element<'t>,
 }
@@ -2084,8 +1940,7 @@ pub struct SetOptList<'t> {
 /// Type derived for non-terminal SimpleExpr
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SimpleExpr<'t> {
     pub simple_expr_opt: Option<SimpleExprOpt<'t>>,
     pub term: Term<'t>,
@@ -2096,8 +1951,7 @@ pub struct SimpleExpr<'t> {
 /// Type derived for non-terminal SimpleExprList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SimpleExprList<'t> {
     pub add_op: AddOp<'t>,
     pub term: Term<'t>,
@@ -2107,8 +1961,7 @@ pub struct SimpleExprList<'t> {
 /// Type derived for non-terminal SimpleExprOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SimpleExprOpt<'t> {
     pub simple_expr_opt_group: SimpleExprOptGroup<'t>,
 }
@@ -2127,8 +1980,7 @@ pub enum SimpleExprOptGroup<'t> {
 /// Type derived for non-terminal Statement
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Statement<'t> {
     pub statement_opt: Option<StatementOpt<'t>>,
 }
@@ -2137,8 +1989,7 @@ pub struct Statement<'t> {
 /// Type derived for non-terminal StatementBlock
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementBlock<'t> {
     pub statement_block_opt: Option<StatementBlockOpt<'t>>,
     pub ident: Ident<'t>,
@@ -2148,8 +1999,7 @@ pub struct StatementBlock<'t> {
 /// Type derived for non-terminal StatementBlockOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementBlockOpt<'t> {
     pub statement_seq: StatementSeq<'t>,
 }
@@ -2158,8 +2008,7 @@ pub struct StatementBlockOpt<'t> {
 /// Type derived for non-terminal StatementOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOpt<'t> {
     pub statement_opt_group: StatementOptGroup<'t>,
 }
@@ -2168,8 +2017,7 @@ pub struct StatementOpt<'t> {
 /// Type derived for non-terminal StatementOpt0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOpt0<'t> {
     pub statement_opt3: Option<StatementOpt3<'t>>,
 }
@@ -2178,8 +2026,7 @@ pub struct StatementOpt0<'t> {
 /// Type derived for non-terminal StatementOpt1
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOpt1<'t> {
     pub for_step: ForStep<'t>,
 }
@@ -2188,8 +2035,7 @@ pub struct StatementOpt1<'t> {
 /// Type derived for non-terminal StatementOpt2
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOpt2<'t> {
     pub expr: Expr<'t>,
 }
@@ -2198,8 +2044,7 @@ pub struct StatementOpt2<'t> {
 /// Type derived for non-terminal StatementOpt3
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOpt3<'t> {
     pub expr_list: ExprList<'t>,
 }
@@ -2230,8 +2075,7 @@ pub enum StatementOptGroup<'t> {
 /// Type derived for non-terminal StatementOptGroupList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupList<'t> {
     pub elsif_part: ElsifPart<'t>,
 }
@@ -2240,8 +2084,7 @@ pub struct StatementOptGroupList<'t> {
 /// Type derived for non-terminal StatementOptGroupList0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementOptGroupList0<'t> {
     pub guarded_do_block: GuardedDoBlock<'t>,
 }
@@ -2260,8 +2103,7 @@ pub enum StatementOptGroupSuffix<'t> {
 /// Type derived for non-terminal StatementSeq
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementSeq<'t> {
     pub statement: Statement<'t>,
     pub statement_seq_list: Vec<StatementSeqList<'t>>,
@@ -2271,8 +2113,7 @@ pub struct StatementSeq<'t> {
 /// Type derived for non-terminal StatementSeqList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StatementSeqList<'t> {
     pub statement: Statement<'t>,
 }
@@ -2281,8 +2122,7 @@ pub struct StatementSeqList<'t> {
 /// Type derived for non-terminal String
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct String<'t> {
     pub string: Token<'t>, /* \u{0022}[^\u{0022}]*\u{0022}|'[^']*' */
 }
@@ -2291,8 +2131,7 @@ pub struct String<'t> {
 /// Type derived for non-terminal Term
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Term<'t> {
     pub factor: Factor<'t>,
     pub term_list: Vec<TermList<'t>>,
@@ -2302,8 +2141,7 @@ pub struct Term<'t> {
 /// Type derived for non-terminal TermList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TermList<'t> {
     pub mul_op: MulOp<'t>,
     pub factor: Factor<'t>,
@@ -2313,8 +2151,7 @@ pub struct TermList<'t> {
 /// Type derived for non-terminal ThenBlock
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ThenBlock<'t> {
     pub statement_seq: StatementSeq<'t>,
 }
@@ -2323,8 +2160,7 @@ pub struct ThenBlock<'t> {
 /// Type derived for non-terminal TypeDecl
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDecl<'t> {
     pub ident_def: IdentDef<'t>,
     pub type_def: TypeDef<'t>,
@@ -2334,8 +2170,7 @@ pub struct TypeDecl<'t> {
 /// Type derived for non-terminal TypeDeclBlock
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDeclBlock<'t> {
     pub type_decl_block_list: Vec<TypeDeclBlockList<'t>>,
 }
@@ -2344,8 +2179,7 @@ pub struct TypeDeclBlock<'t> {
 /// Type derived for non-terminal TypeDeclBlockList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDeclBlockList<'t> {
     pub type_decl: TypeDecl<'t>,
 }
@@ -2369,8 +2203,7 @@ pub enum TypeDef<'t> {
 /// Type derived for non-terminal TypeDefList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefList<'t> {
     pub field_list: FieldList<'t>,
 }
@@ -2379,8 +2212,7 @@ pub struct TypeDefList<'t> {
 /// Type derived for non-terminal TypeDefOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefOpt<'t> {
     pub const_expr: ConstExpr<'t>,
     pub type_def_opt_list: Vec<TypeDefOptList<'t>>,
@@ -2390,8 +2222,7 @@ pub struct TypeDefOpt<'t> {
 /// Type derived for non-terminal TypeDefOpt0
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefOpt0<'t> {
     pub qual_ident: QualIdent<'t>,
 }
@@ -2400,8 +2231,7 @@ pub struct TypeDefOpt0<'t> {
 /// Type derived for non-terminal TypeDefOpt1
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefOpt1<'t> {
     pub formal_pars: FormalPars<'t>,
 }
@@ -2410,8 +2240,7 @@ pub struct TypeDefOpt1<'t> {
 /// Type derived for non-terminal TypeDefOptList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TypeDefOptList<'t> {
     pub const_expr: ConstExpr<'t>,
 }
@@ -2420,8 +2249,7 @@ pub struct TypeDefOptList<'t> {
 /// Type derived for non-terminal VarDecl
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct VarDecl<'t> {
     pub ident_list: IdentList<'t>,
     pub type_def: TypeDef<'t>,
@@ -2431,8 +2259,7 @@ pub struct VarDecl<'t> {
 /// Type derived for non-terminal VarDeclBlock
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct VarDeclBlock<'t> {
     pub var_decl_block_list: Vec<VarDeclBlockList<'t>>,
 }
@@ -2441,8 +2268,7 @@ pub struct VarDeclBlock<'t> {
 /// Type derived for non-terminal VarDeclBlockList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct VarDeclBlockList<'t> {
     pub var_decl: VarDecl<'t>,
 }

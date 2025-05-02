@@ -891,7 +891,6 @@ dependencies = [
  "anyhow",
  "clap",
  "derive-new",
- "derive_builder",
  "env_logger 0.11.8",
  "function_name",
  "log",

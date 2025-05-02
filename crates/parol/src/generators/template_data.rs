@@ -162,7 +162,6 @@ impl std::fmt::Display for UserTraitData<'_> {
             ))?;
         }
         f.write_fmt(ume::ume! {
-            use parol_runtime::derive_builder::Builder;
             #[allow(unused_imports)]
             use parol_runtime::parol_macros::{pop_item, pop_and_reverse_item};
             use parol_runtime::log::trace;
@@ -386,8 +385,7 @@ impl std::fmt::Display for NonTerminalTypeStruct {
         });
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            #[derive(Builder, Debug, Clone)]
-            #[builder(crate = "parol_runtime::derive_builder")]
+            #[derive(Debug, Clone)]
             pub struct #type_name #lifetime {
                 #members
             }

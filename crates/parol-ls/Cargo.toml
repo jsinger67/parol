@@ -16,7 +16,6 @@ exclude = ["./data"]
 [dependencies]
 anyhow = { workspace = true }
 clap = { workspace = true }
-derive_builder = { workspace = true }
 derive-new = { workspace = true }
 env_logger = { workspace = true }
 function_name = { workspace = true }
