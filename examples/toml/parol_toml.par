@@ -376,8 +376,8 @@ AsciiNoEscape
     : <BString, Esc, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
 
 Minus
-    : <Val>"\u{2D}" // -
+    : <Val>'-'
     ;
 
-Plus: <Val>"\u{2B}" // +
+Plus: <Val>'+'
     ;

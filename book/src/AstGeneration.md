@@ -121,7 +121,7 @@ of used boxes in generated data structures. The `parol::build::Builder` also pro
 `parol` then determines where no recursions can occur by applying extra calculations on the
 structure of the grammar.
 
-## Manage Type generation
+## Manage AST generation
 
 ### Omission of elements
 
@@ -256,3 +256,6 @@ process.
 There exist some examples that can help to become familiar with this concept. Maybe you would like
 to have a look at my rudimentary
 [basic interpreter example](https://github.com/jsinger67/parol/tree/main/examples/basic_interpreter).
+
+>For a more complete list of the ways to control the AST type generation, please see here:
+[Controlling the AST generation](./ParGrammar.md#controlling-the-ast-generation)

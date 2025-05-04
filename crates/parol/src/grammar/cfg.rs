@@ -159,7 +159,7 @@ impl Cfg {
     /// Generates a function that returns the terminal index (in ordered of occurrence) for given
     /// terminal string and terminal kind
     ///
-    pub fn get_terminal_index_function(&self) -> impl TerminalIndexFn {
+    pub fn get_terminal_index_function(&self) -> impl TerminalIndexFn + use<> {
         let vec = self
             .get_ordered_terminals_owned()
             .into_iter()
@@ -181,7 +181,7 @@ impl Cfg {
                 .iter()
                 .fold(HashMap::<TerminalIndex, String>::new(), |mut acc, p| {
                     if p.1.len() == 1 {
-                        if let crate::Symbol::T(Terminal::Trm(s, k, _, _, _, l)) = &p.1[0] {
+                        if let crate::Symbol::T(Terminal::Trm(s, k, _, _, _, _, l)) = &p.1[0] {
                             let t = terminal_index_finder.terminal_index(s, *k, l);
                             acc.insert(t, p.0.get_n().unwrap());
                         }
@@ -200,9 +200,9 @@ impl Cfg {
     ) -> Vec<(&str, TerminalKind, Option<LookaheadExpression>, Vec<usize>)> {
         self.pr.iter().fold(Vec::new(), |mut acc, p| {
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
-                if let Symbol::T(Terminal::Trm(t, k, s, _, _, l)) = s {
-                    // Unite the scanner states of all terminals withe the same 'behaviour'
-                    // The termials are considered different if they have different lookahead
+                if let Symbol::T(Terminal::Trm(t, k, s, _, _, _, l)) = s {
+                    // Unite the scanner states of all terminals withe the same 'behavior'
+                    // The terminals are considered different if they have different lookahead
                     // expressions.
                     if let Some(pos) = acc
                         .iter_mut()
@@ -338,7 +338,7 @@ impl Cfg {
     ///
     /// macro_rules! terminal {
     ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
-    ///         vec![0], SymbolAttribute::None, None, None))};
+    ///         vec![0], SymbolAttribute::None, None, None, None))};
     /// }
     ///
     /// let g = Cfg::with_start_symbol("S")

@@ -2,7 +2,7 @@ use lsp_types::{
     Diagnostic, DiagnosticRelatedInformation, DiagnosticSeverity, Location, Range, Uri,
 };
 use parol::{
-    analysis::lalr1_parse_table::LRResolvedConflict, GrammarAnalysisError, ParolParserError,
+    GrammarAnalysisError, ParolParserError, analysis::lalr1_parse_table::LRResolvedConflict,
 };
 use parol_runtime::{ParolError, ParserError, SyntaxError};
 use std::error::Error;

@@ -10,7 +10,7 @@ use super::grammar_type_generator::GrammarTypeInfo;
 use super::template_data::{
     ChildAttribute, ChildKind, ChildNodeKind, DisplayArm, NumToTerminalVariant,
 };
-use super::{generate_terminal_name, GrammarConfig};
+use super::{GrammarConfig, generate_terminal_name};
 
 /// Syntree node types generator.
 pub struct SyntreeNodeTypesGenerator<'a> {
@@ -191,7 +191,10 @@ impl SyntreeNodeTypesGenerator<'_> {
     }
 
     fn generate_non_terminal_node_types_impl(&self, f: &mut impl Write) -> anyhow::Result<()> {
-        write!(f, "impl ExpectedChildren<TerminalKind, NonTerminalKind> for NonTerminalKind {{ fn expected_children(&self) -> ExpectedChildrenKinds<TerminalKind, NonTerminalKind> {{ match self {{")?;
+        write!(
+            f,
+            "impl ExpectedChildren<TerminalKind, NonTerminalKind> for NonTerminalKind {{ fn expected_children(&self) -> ExpectedChildrenKinds<TerminalKind, NonTerminalKind> {{ match self {{"
+        )?;
 
         for pr in self.grammar_config.cfg.get_non_terminal_set() {
             self.generate_non_terminal_node_types_impl_single(f, &pr)?;
@@ -482,7 +485,7 @@ impl SyntreeNodeTypesGenerator<'_> {
 
     fn child_kind(&self, symbol: &crate::Symbol) -> Option<ChildKind> {
         match symbol {
-            crate::Symbol::N(s, attrs, _) => match attrs {
+            crate::Symbol::N(s, attrs, _, _) => match attrs {
                 SymbolAttribute::Option => Some(ChildKind {
                     kind: ChildNodeKind::NonTerminal,
                     name: s.clone(),
@@ -504,7 +507,7 @@ impl SyntreeNodeTypesGenerator<'_> {
                     attribute: ChildAttribute::Normal,
                 }),
             },
-            crate::Symbol::T(Terminal::Trm(terminal, _, _, attrs, _, _)) => match attrs {
+            crate::Symbol::T(Terminal::Trm(terminal, _, _, attrs, _, _, _)) => match attrs {
                 SymbolAttribute::Option => Some(ChildKind {
                     kind: ChildNodeKind::Terminal,
                     name: generate_terminal_name(terminal, None, &self.grammar_config.cfg),

@@ -170,6 +170,7 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
                         new_opt_production_name.clone(),
                         SymbolAttribute::Option,
                         None,
+                        None,
                     );
                     trace!(
                         "Extracting optional {} into production {}",
@@ -364,8 +365,12 @@ fn eliminate_single_rep(
         let r_tick_name = generate_name(exclusions.iter(), production_name + "List");
         if let Factor::Repeat(repeat) = production.rhs.0[alt_index].0[rpt_index_in_alt].clone() {
             let mut production1 = production.clone();
-            production1.rhs.0[alt_index].0[rpt_index_in_alt] =
-                Factor::NonTerminal(r_tick_name.clone(), SymbolAttribute::RepetitionAnchor, None);
+            production1.rhs.0[alt_index].0[rpt_index_in_alt] = Factor::NonTerminal(
+                r_tick_name.clone(),
+                SymbolAttribute::RepetitionAnchor,
+                None,
+                None,
+            );
 
             let production2 = if repeat.0.len() == 1 {
                 // Case 1
@@ -724,6 +729,7 @@ mod test {
                 SymbolAttribute::None,
                 None,
                 None,
+                None,
             )
         };
     }
@@ -759,7 +765,8 @@ mod test {
                     Factor::NonTerminal(
                         "StartList".to_string(),
                         SymbolAttribute::RepetitionAnchor,
-                        None
+                        None,
+                        None,
                     ),
                     terminal!("y"),
                 ])]),
@@ -823,7 +830,8 @@ mod test {
                     Factor::NonTerminal(
                         "StartList".to_string(),
                         SymbolAttribute::RepetitionAnchor,
-                        None
+                        None,
+                        None,
                     ),
                     terminal!("y"),
                 ])])
@@ -888,7 +896,8 @@ mod test {
                     Factor::NonTerminal(
                         "StartList".to_string(),
                         SymbolAttribute::RepetitionAnchor,
-                        None
+                        None,
+                        None,
                     ),
                     terminal!("x"),
                 ])])
@@ -955,7 +964,8 @@ mod test {
                     Factor::NonTerminal(
                         "StartList".to_string(),
                         SymbolAttribute::RepetitionAnchor,
-                        None
+                        None,
+                        None,
                     ),
                     terminal!("x"),
                 ])])

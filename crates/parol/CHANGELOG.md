@@ -5,6 +5,145 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.2 - Not released yet
+
+* Generate untransformed grammar with production index comments
+  (i.e. when calling `parol -u  <WRITE_UNTRANSFORMED>` resp.
+  `parol --write-untransformed <WRITE_UNTRANSFORMED>`)
+* Change handling of token aliases when lookahead expressions are used
+* Fix generation of lookahead regex in parser source
+
+## 3.0.1 - 2025-03-08
+
+* Fix [#595](https://github.com/jsinger67/parol/issues/595)
+* Fix [#596](https://github.com/jsinger67/parol/issues/596)
+* Fix parol (par) file generation when `%t_type` is used.
+* Fix parol (par) file generation when `%nt_type` is used.
+* Fix Token alias handling in ParolGrammar
+
+## 3.0.0 - 2025-03-02
+
+The [book](https://jsinger67.github.io) has been updated and received a new chapter on `parol`'s
+[version 3](https://jsinger67.github.io/ParolVersion3.html).
+
+### New feature "User defined member names / Grammar labeling"
+
+  You can now specify for each symbol on the right-hand side of a production how its corresponding
+  member in the generated struct should be named.
+
+  To achieve this you can use the newly introduced `@` operator.
+
+  ```parol
+  Declaration :
+      ...
+      | "%nt_type" Identifier@nt_name "="^ UserTypeName@nt_type
+      ...
+  ```
+
+  In this example the Identifier in the production will be named `nt_name` and the UserTypeName will
+  receive the name `nt_type` in the generated struct data type for this production.
+
+
+  This feature introduces **breaking changes** in the public API. Therefore we need to bump the
+  major version to 3.
+
+####  Detailed list of changes in the public API
+  * The number of elements of the tuple struct used in the enum arm `Trm` of the enum
+  `parol::grammar::symbol::Terminal` has changed.
+  * The number of elements of the tuple struct used in the enum arm `N` of the enum
+  `parol::grammar::symbol::Symbol` has changed.
+  * In the module `parol::parser::parol_grammar` some public enums have similar changes in some arms.
+
+  I expect that most applications that use `parol` v2 can upgrade to v3 without problems. The
+  changes listed above only affect applications that use the `parol` library for very specific tasks.
+
+### New feature "Non-terminal types"
+
+  You can now easily define a user type to which each occurrence of a certain non-terminal should
+  be automatically converted to.
+  This is done like in the following example:
+
+  ```ebnf
+  %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+  ```
+
+  It is similar to the already available `%user_type` with what you could define an alias for a
+  user defined type which in turn you could apply to single symbols on the right-hand side of
+  grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
+  non-terminals much easier.
+  Here is the old version used in `parol` itself before (only partial)
+  ```ebnf
+  %user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
+  // ...
+  %%
+  // ...
+  Prolog
+    : StartDeclaration { Declaration } { ScannerState: ScannerConfig }
+    ;
+  ```
+  And here is the new variant in which `%nt_type` is used.
+  ```ebnf
+  %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+  // ...
+  %%
+  // ...
+  Prolog
+    : StartDeclaration { Declaration } { ScannerState }
+    ;
+  ```
+  The non-terminal `ScannerState` was automatically defined the be converted to `ScannerConfig`.
+  
+  It is semantically completely identical to use `%user_type` and the application of it to each
+  occurrence of the non-terminal in the grammar explicitly.
+
+### New feature "Terminal type"
+
+  You can now easily define a user type to which each occurrence of a terminal should be
+  automatically converted to.
+  This is done like in the following example:
+
+  ```ebnf
+  %t_type crate::parol_ls_grammar::OwnedToken
+  ```
+
+  There can be only one type defined to which all terminals are converted to.
+
+  More precisely, if there are more such directives given the last one will win.
+
+  Here is the old version used in `parol-ls` itself before (only partial)
+  ```ebnf
+  %user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
+  // ...
+  %%
+  // ...
+  ScannerSwitch
+      : "%sc": OwnedToken '(': OwnedToken [ Identifier ] ')': OwnedToken
+      | "%push": OwnedToken '(': OwnedToken Identifier ')': OwnedToken
+      | "%pop": OwnedToken '(': OwnedToken ')': OwnedToken
+      ;
+  ```
+  And here is the new variant in which `%t_type` is used.
+  ```ebnf
+  %t_type crate::parol_ls_grammar::OwnedToken
+  // ...
+  %%
+  // ...
+  ScannerSwitch
+      : "%sc" '(' [ Identifier ] ')'
+      | "%push" '(' Identifier ')'
+      | "%pop" '(' ')'
+      ;
+  ```
+  All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
+
+### Fix issue "Find a way to elide lifetimes if possible in generated ToSpan implementations #581"
+
+  We can simply always generate elided lifetimes.
+
+## 2.2.0 - 2025-02-13
+
+Use version 2.2.0 of `parol_runtime` which provides a new crate feature.
+
 ## 2.1.2 - 2025-01-21
 
 - Fix for [#558](https://github.com/jsinger67/parol/issues/558)

@@ -1,10 +1,10 @@
 //! This module provides functionality for generating variable names and type names so that they
 //! adhere to the Rust naming conventions.
 
-const KEYWORDS: &[&str; 52] = &[
+const KEYWORDS: &[&str] = &[
     "abstract", "as", "async", "await", "become", "box", "break", "const", "continue", "crate",
-    "do", "dyn", "else", "enum", "extern", "false", "final", "fn", "for", "if", "impl", "in",
-    "let", "loop", "macro", "match", "mod", "move", "mut", "override", "priv", "pub", "ref",
+    "do", "dyn", "else", "enum", "extern", "false", "final", "fn", "for", "gen", "if", "impl",
+    "in", "let", "loop", "macro", "match", "mod", "move", "mut", "override", "priv", "pub", "ref",
     "return", "Self", "self", "static", "struct", "super", "trait", "true", "try", "type",
     "typeof", "union", "unsafe", "unsized", "use", "virtual", "where", "while", "yield",
 ];
@@ -51,11 +51,7 @@ impl NamingHelper {
 
     /// Returns an underscore string if the item is not used.
     pub fn item_unused_indicator(used: bool) -> &'static str {
-        if used {
-            ""
-        } else {
-            "_"
-        }
+        if used { "" } else { "_" }
     }
 
     /// Returns an underscore string if the item is not used.

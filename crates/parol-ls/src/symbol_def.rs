@@ -28,6 +28,7 @@ pub(crate) struct SymbolDefs {
 impl SymbolDefs {
     // Add a definition of the symbol
     pub(crate) fn add_definition(&mut self, name: String, range: Range) {
+        // eprintln!("add_definition: {:?}", name);
         self.symbols
             .entry(name)
             .or_default()
@@ -37,6 +38,7 @@ impl SymbolDefs {
 
     // Add a definition of the symbol by token
     pub(crate) fn add_definition_by_token(&mut self, token: &OwnedToken) {
+        // eprintln!("add_definition_by_token: {:?}", token);
         self.symbols
             .entry(token.text().to_string())
             .or_default()
@@ -45,9 +47,9 @@ impl SymbolDefs {
     }
 
     // Add a reference to the symbol
-    pub(crate) fn add_reference(&mut self, range: Range, name: String) {
+    pub(crate) fn add_reference(&mut self, range: Range, name: &str) {
         self.symbols
-            .entry(name)
+            .entry(name.to_string())
             .or_default()
             .references
             .insert(range);
@@ -75,10 +77,16 @@ impl SymbolDefs {
     }
 
     // Find the definitions of the given name
+    // Return only a vector of ranges if there are definitions, otherwise return None
     pub(crate) fn find_definitions(&self, name: &str) -> Option<Vec<Range>> {
-        self.symbols
-            .get(name)
-            .map(|s| s.definitions.iter().cloned().collect())
+        self.symbols.get(name).and_then(|s| {
+            let definitions: Vec<Range> = s.definitions.iter().cloned().collect();
+            if definitions.is_empty() {
+                None
+            } else {
+                Some(definitions)
+            }
+        })
     }
 
     // Find the ranges of all references to the given name

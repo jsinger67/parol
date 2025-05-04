@@ -9,7 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
@@ -70,8 +69,7 @@ pub trait JsonGrammarTrait<'t> {
 /// `ObjectSuffix: Pair ObjectList /* Vec */ '}'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ObjectSuffixPairObjectListRBrace<'t> {
     pub pair: Box<Pair<'t>>,
     pub object_list: Vec<ObjectList<'t>>,
@@ -83,8 +81,7 @@ pub struct ObjectSuffixPairObjectListRBrace<'t> {
 /// `ObjectSuffix: '}'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ObjectSuffixRBrace {}
 
 ///
@@ -93,8 +90,7 @@ pub struct ObjectSuffixRBrace {}
 /// `ArraySuffix: Value ArrayList /* Vec */ ']'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArraySuffixValueArrayListRBracket<'t> {
     pub value: Box<Value<'t>>,
     pub array_list: Vec<ArrayList<'t>>,
@@ -106,8 +102,7 @@ pub struct ArraySuffixValueArrayListRBracket<'t> {
 /// `ArraySuffix: ']'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArraySuffixRBracket {}
 
 ///
@@ -116,8 +111,7 @@ pub struct ArraySuffixRBracket {}
 /// `Value: String;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValueString<'t> {
     pub string: String<'t>,
 }
@@ -128,8 +122,7 @@ pub struct ValueString<'t> {
 /// `Value: Number;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValueNumber<'t> {
     pub number: Number<'t>,
 }
@@ -140,8 +133,7 @@ pub struct ValueNumber<'t> {
 /// `Value: Object;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValueObject<'t> {
     pub object: Object<'t>,
 }
@@ -152,8 +144,7 @@ pub struct ValueObject<'t> {
 /// `Value: Array;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValueArray<'t> {
     pub array: Array<'t>,
 }
@@ -164,8 +155,7 @@ pub struct ValueArray<'t> {
 /// `Value: 'true'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValueTrue {}
 
 ///
@@ -174,8 +164,7 @@ pub struct ValueTrue {}
 /// `Value: 'false'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValueFalse {}
 
 ///
@@ -184,8 +173,7 @@ pub struct ValueFalse {}
 /// `Value: 'null'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ValueNull {}
 
 // -------------------------------------------------------------------------------------------------
@@ -197,8 +185,7 @@ pub struct ValueNull {}
 /// Type derived for non-terminal Array
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Array<'t> {
     pub array_suffix: ArraySuffix<'t>,
 }
@@ -207,8 +194,7 @@ pub struct Array<'t> {
 /// Type derived for non-terminal ArrayList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ArrayList<'t> {
     pub value: Value<'t>,
 }
@@ -227,8 +213,7 @@ pub enum ArraySuffix<'t> {
 /// Type derived for non-terminal Json
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Json<'t> {
     pub value: Value<'t>,
 }
@@ -237,8 +222,7 @@ pub struct Json<'t> {
 /// Type derived for non-terminal Number
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Number<'t> {
     pub number: Token<'t>, /* -?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)? */
 }
@@ -247,8 +231,7 @@ pub struct Number<'t> {
 /// Type derived for non-terminal Object
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Object<'t> {
     pub object_suffix: ObjectSuffix<'t>,
 }
@@ -257,8 +240,7 @@ pub struct Object<'t> {
 /// Type derived for non-terminal ObjectList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ObjectList<'t> {
     pub pair: Pair<'t>,
 }
@@ -277,8 +259,7 @@ pub enum ObjectSuffix<'t> {
 /// Type derived for non-terminal Pair
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Pair<'t> {
     pub string: String<'t>,
     pub value: Value<'t>,
@@ -288,8 +269,7 @@ pub struct Pair<'t> {
 /// Type derived for non-terminal String
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct String<'t> {
     pub string: Token<'t>, /* "(\\.|[^"])*" */
 }

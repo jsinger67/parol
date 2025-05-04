@@ -174,6 +174,10 @@ That's why you know the non-terminals are collected and lay on top of your own p
 
 ## Semantic actions in Auto-generation mode
 
+>Note that this mode is the default mode in versions greater 1. Actually, it is the only generation
+mode in `parol` then and has no specific name. If you encounter the terms `auto-generation mode` or
+`auto-gen mode` in versions greater 1 you can think of them as the normal way `parol` works.
+
 The auto-gen mode abstracts away the [expanded version](AstGeneration.html#the-expanded-grammar) of
 your grammar. As in [vanilla mode](SemanticActions.html#semantic-actions-in-vanilla-mode) the
 `parol` parser generator creates a trait with functions that represent semantic actions. But here

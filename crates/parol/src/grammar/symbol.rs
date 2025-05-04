@@ -2,7 +2,7 @@ use super::{Decorate, SymbolAttribute};
 use crate::analysis::k_tuple::TerminalMappings;
 use crate::parser::parol_grammar::{Factor, LookaheadExpression, UserDefinedTypeName};
 use crate::parser::to_grammar_config::try_from_factor;
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use parol_runtime::parser::ScannerIndex;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
@@ -119,6 +119,8 @@ pub enum Terminal {
         Vec<usize>,
         SymbolAttribute,
         Option<UserDefinedTypeName>,
+        // Member name
+        Option<String>,
         Option<LookaheadExpression>,
     ),
 
@@ -139,7 +141,7 @@ pub enum Terminal {
 impl Terminal {
     /// Creates a terminal
     pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
-        Self::Trm(t.to_owned(), TerminalKind::Legacy, s, a, None, None)
+        Self::Trm(t.to_owned(), TerminalKind::Legacy, s, a, None, None, None)
     }
     /// Checks if self is a terminal
     pub fn is_trm(&self) -> bool {
@@ -157,9 +159,15 @@ impl Terminal {
     /// Creates a terminal from a [Symbol]
     pub fn create(s: &Symbol) -> Self {
         match s {
-            Symbol::T(Terminal::Trm(t, k, s, a, u, l)) => {
-                Terminal::Trm(t.to_string(), *k, s.to_vec(), *a, u.clone(), l.clone())
-            }
+            Symbol::T(Terminal::Trm(t, k, s, a, u, m, l)) => Terminal::Trm(
+                t.to_string(),
+                *k,
+                s.to_vec(),
+                *a,
+                u.clone(),
+                m.clone(),
+                l.clone(),
+            ),
             Symbol::T(Terminal::End) => Terminal::End,
             _ => panic!("Unexpected symbol type: {:?}", s),
         }
@@ -168,7 +176,7 @@ impl Terminal {
     /// Adds a scanner index
     pub fn add_scanner(&mut self, sc: usize) {
         match self {
-            Terminal::Trm(_, _, s, _, _, _) => {
+            Terminal::Trm(_, _, s, _, _, _, _) => {
                 if !s.contains(&sc) {
                     s.push(sc);
                     s.sort_unstable();
@@ -187,7 +195,7 @@ impl Terminal {
         S: Fn(&str) -> Option<String>,
     {
         match self {
-            Self::Trm(t, k, s, a, u, l) => {
+            Self::Trm(t, k, s, a, u, m, l) => {
                 let mut d = String::new();
                 let delimiter = k.delimiter();
                 a.decorate(&mut d, &format!("{}{}{}", delimiter, t, delimiter))
@@ -195,14 +203,24 @@ impl Terminal {
                 if let Some(la) = l {
                     write!(d, " {}", la.to_par()).map_err(|e| anyhow!(e))?;
                 }
-                if let Some(ref user_type) = u {
+                if let Some(member) = m {
+                    if l.is_some() {
+                        // Add space between lookahead expression and member
+                        write!(d, " ").map_err(|e| anyhow!(e))?;
+                    }
+                    write!(d, "@{}", member).map_err(|e| anyhow!(e))?;
+                }
+                if let Some(user_type) = u {
                     let user_type =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
                             alias
                         } else {
                             user_type.to_string()
                         };
-                    write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
+                    if user_type != "%t_type" {
+                        // Don't print user type if it is the globally defined type
+                        write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
+                    }
                 }
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
@@ -267,9 +285,15 @@ impl TerminalMappings<Terminal> for Terminal {
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Symbol {
     ///
-    /// Non-terminal symbol, Meta symbol of the grammar.
+    /// Non-terminal symbol, Meta symbol of the grammar. It has an optional user defined type name
+    /// and an optional member name.
     ///
-    N(String, SymbolAttribute, Option<UserDefinedTypeName>),
+    N(
+        String,
+        SymbolAttribute,
+        Option<UserDefinedTypeName>,
+        Option<String>,
+    ),
 
     ///
     /// Terminal symbol of the grammar.
@@ -297,7 +321,7 @@ pub enum Symbol {
 impl Symbol {
     /// Creates a non-terminal symbol
     pub fn n(n: &str) -> Self {
-        Self::N(n.to_owned(), SymbolAttribute::default(), None)
+        Self::N(n.to_owned(), SymbolAttribute::default(), None, None)
     }
     /// Creates a end-of-input terminal symbol
     pub fn e() -> Self {
@@ -359,7 +383,7 @@ impl Symbol {
     /// Get the symbol attribute or a default value
     pub fn attribute(&self) -> SymbolAttribute {
         match self {
-            Symbol::N(_, a, _) | Symbol::T(Terminal::Trm(_, _, _, a, _, _)) => *a,
+            Symbol::N(_, a, _, _) | Symbol::T(Terminal::Trm(_, _, _, a, _, _, _)) => *a,
             _ => SymbolAttribute::None,
         }
     }
@@ -371,18 +395,27 @@ impl Symbol {
         S: Fn(&str) -> Option<String>,
     {
         match self {
-            Self::N(n, a, u) => {
+            Self::N(n, a, u, m) => {
                 let mut s = String::new();
                 a.decorate(&mut s, n)
                     .map_err(|e| anyhow!("Decorate error!: {}", e))?;
-                if let Some(ref user_type) = u {
-                    let user_type =
+                if let Some(member) = m {
+                    write!(s, "@{}", member).map_err(|e| anyhow!("IO error!: {}", e))?;
+                }
+                if let Some(user_type) = u {
+                    let alias =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
                             alias
+                        } else if let Some(nt_type) = user_type_resolver(n) {
+                            nt_type
                         } else {
-                            user_type.to_string()
+                            // No alias found, use the %nt_type to skip the type later
+                            "%nt_type".to_string()
                         };
-                    write!(s, " : {}", user_type).map_err(|e| anyhow!("IO error!: {}", e))?;
+                    if alias != "%nt_type" && alias != "%t_type" {
+                        // Don't print user type if it is the globally defined type
+                        write!(s, " : {}", alias).map_err(|e| anyhow!("IO error!: {}", e))?;
+                    }
                 }
                 Ok(s)
             }
@@ -403,10 +436,13 @@ impl Symbol {
 impl Display for Symbol {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            Self::N(n, a, u) => {
+            Self::N(n, a, u, m) => {
                 let mut s = String::new();
                 a.decorate(&mut s, n)?;
-                if let Some(ref user_type) = u {
+                if let Some(member) = m {
+                    write!(s, "@{}", member)?;
+                }
+                if let Some(user_type) = u {
                     write!(s, " : {} ", user_type)?;
                 }
                 write!(f, "{}", s)

@@ -160,7 +160,7 @@ impl ScannerConfig {
     /// of the comment. Since the end comment can be any string, we need to build an alternation
     /// of all possible substrings of the end comment.
     /// If the comment end is "*/" the regular expression is:
-    /// `r"/\*([.\r\n--*][^*]|\*[^/])*\*/"`
+    /// `r"/\*([^*]|\*[^/])*\*/"`
     fn format_block_comment(s: &str, e: &str) -> Result<String> {
         let len_with_escaped_chars = |s: &str| {
             let mut prev = None;
@@ -188,7 +188,7 @@ impl ScannerConfig {
                 } else {
                     e.to_string()
                 };
-                format!(r"{s}[.\r\n--{c0}]*{e}")
+                format!(r"{s}[^{c0}]*{e}")
             }
             2 => {
                 let (c0, c1) = if e.chars().nth(0).unwrap() == '\\' {
@@ -197,7 +197,7 @@ impl ScannerConfig {
                     (&e[0..1], &e[1..])
                 };
                 // We need to determine if the character is escaped or not, and if it is escaped
-                // wheter it is a regex meta character or not.
+                // whether it is a regex meta character or not.
                 // If it is a regex meta character we don't need to escape it in a bracket expression.
                 let c0c = if c0.len() > 1 {
                     debug_assert_eq!(c0.chars().nth(0).unwrap(), '\\');
@@ -223,7 +223,7 @@ impl ScannerConfig {
                     debug_assert_eq!(c1.len(), 1);
                     c1.to_string()
                 };
-                format!(r"{s}([.\r\n--{c0c}]|{c0}[^{c1c}])*{e}")
+                format!(r"{s}([^{c0c}]|{c0}[^{c1c}])*{e}")
             }
             _ => bail!(
                 r"Block comment end '{}' is too long. Maximum length is 2.
@@ -275,26 +275,26 @@ mod tests {
         let s = r"/\*";
         let e = r"\*/";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"/\*([.\r\n--*]|\*[^/])*\*/");
+        assert_eq!(r.unwrap(), r"/\*([^*]|\*[^/])*\*/");
 
         let s = r"\{\{";
         let e = r"\}\}";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"\{\{([.\r\n--}]|\}[^}])*\}\}");
+        assert_eq!(r.unwrap(), r"\{\{([^}]|\}[^}])*\}\}");
 
         let s = "--";
         let e = "--";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"--([.\r\n---]|-[^-])*--");
+        assert_eq!(r.unwrap(), r"--([^-]|-[^-])*--");
 
         let s = "#";
         let e = "#";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"#[.\r\n--#]*#");
+        assert_eq!(r.unwrap(), r"#[^#]*#");
 
         let s = r"\{";
         let e = r"\}";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"\{[.\r\n--}]*\}");
+        assert_eq!(r.unwrap(), r"\{[^}]*\}");
     }
 }

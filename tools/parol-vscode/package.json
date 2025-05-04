@@ -9,7 +9,7 @@
     "license": "SEE LICENSE IN LICENSE",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
-    "version": "0.3.2",
+    "version": "0.4.0",
     "repository": {
         "url": "https://github.com/jsinger67/parol.git",
         "type": "git",

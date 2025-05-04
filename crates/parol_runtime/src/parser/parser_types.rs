@@ -345,11 +345,7 @@ impl<'t> LLKParser<'t> {
         let prod_num = match self.predict_production(self.start_symbol_index, stream.clone()) {
             Ok(prod_num) => prod_num,
             Err(source) => {
-                match self.handle_prediction_error(self.start_symbol_index, stream.clone(), source)
-                {
-                    Ok(p) => p,
-                    Err(e) => return Err(e),
-                }
+                self.handle_prediction_error(self.start_symbol_index, stream.clone(), source)?
             }
         };
 

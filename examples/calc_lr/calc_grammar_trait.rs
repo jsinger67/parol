@@ -9,7 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
@@ -195,8 +194,7 @@ pub trait CalcGrammarTrait<'t> {
 /// `Instruction: Assignment;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InstructionAssignment<'t> {
     pub assignment: Assignment<'t>,
 }
@@ -207,8 +205,7 @@ pub struct InstructionAssignment<'t> {
 /// `Instruction: LogicalOr;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct InstructionLogicalOr<'t> {
     pub logical_or: LogicalOr<'t>,
 }
@@ -219,8 +216,7 @@ pub struct InstructionLogicalOr<'t> {
 /// `AddOp: Plus;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AddOpPlus<'t> {
     pub plus: Plus<'t>,
 }
@@ -231,8 +227,7 @@ pub struct AddOpPlus<'t> {
 /// `AddOp: Minus;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AddOpMinus<'t> {
     pub minus: Minus<'t>,
 }
@@ -243,8 +238,7 @@ pub struct AddOpMinus<'t> {
 /// `Factor: Number;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorNumber {
     pub number: Number,
 }
@@ -255,8 +249,7 @@ pub struct FactorNumber {
 /// `Factor: Negate Factor;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorNegateFactor<'t> {
     pub negate: Negate<'t>,
     pub factor: Box<Factor<'t>>,
@@ -268,8 +261,7 @@ pub struct FactorNegateFactor<'t> {
 /// `Factor: IdRef;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorIdRef<'t> {
     pub id_ref: IdRef<'t>,
 }
@@ -280,8 +272,7 @@ pub struct FactorIdRef<'t> {
 /// `Factor: '('^ /* Clipped */ LogicalOr ')'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorLParenLogicalOrRParen<'t> {
     pub logical_or: Box<LogicalOr<'t>>,
 }
@@ -305,8 +296,7 @@ pub enum AddOp<'t> {
 /// Type derived for non-terminal AssignItem
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AssignItem<'t> {
     pub id: Id<'t>,
     pub assign_op: AssignOp<'t>,
@@ -316,8 +306,7 @@ pub struct AssignItem<'t> {
 /// Type derived for non-terminal AssignOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AssignOp<'t> {
     pub assign_op: Token<'t>, /* (\+|-|\*|\/|%|<<|>>|&|\^|\|)?= */
 }
@@ -326,8 +315,7 @@ pub struct AssignOp<'t> {
 /// Type derived for non-terminal Assignment
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Assignment<'t> {
     pub assign_item: AssignItem<'t>,
     pub assignment_list: Vec<AssignmentList<'t>>,
@@ -338,8 +326,7 @@ pub struct Assignment<'t> {
 /// Type derived for non-terminal AssignmentList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AssignmentList<'t> {
     pub assign_item: AssignItem<'t>,
 }
@@ -348,8 +335,7 @@ pub struct AssignmentList<'t> {
 /// Type derived for non-terminal BitwiseAnd
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseAnd<'t> {
     pub equality: Equality<'t>,
     pub bitwise_and_list: Vec<BitwiseAndList<'t>>,
@@ -359,8 +345,7 @@ pub struct BitwiseAnd<'t> {
 /// Type derived for non-terminal BitwiseAndList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseAndList<'t> {
     pub bitwise_and_op: BitwiseAndOp<'t>,
     pub equality: Equality<'t>,
@@ -370,8 +355,7 @@ pub struct BitwiseAndList<'t> {
 /// Type derived for non-terminal BitwiseAndOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseAndOp<'t> {
     pub bitwise_and_op: Token<'t>, /* & */
 }
@@ -380,8 +364,7 @@ pub struct BitwiseAndOp<'t> {
 /// Type derived for non-terminal BitwiseOr
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseOr<'t> {
     pub bitwise_and: BitwiseAnd<'t>,
     pub bitwise_or_list: Vec<BitwiseOrList<'t>>,
@@ -391,8 +374,7 @@ pub struct BitwiseOr<'t> {
 /// Type derived for non-terminal BitwiseOrList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseOrList<'t> {
     pub bitwise_or_op: BitwiseOrOp<'t>,
     pub bitwise_and: BitwiseAnd<'t>,
@@ -402,8 +384,7 @@ pub struct BitwiseOrList<'t> {
 /// Type derived for non-terminal BitwiseOrOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseOrOp<'t> {
     pub bitwise_or_op: Token<'t>, /* | */
 }
@@ -412,8 +393,7 @@ pub struct BitwiseOrOp<'t> {
 /// Type derived for non-terminal BitwiseShift
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseShift<'t> {
     pub summ: Summ<'t>,
     pub bitwise_shift_list: Vec<BitwiseShiftList<'t>>,
@@ -423,8 +403,7 @@ pub struct BitwiseShift<'t> {
 /// Type derived for non-terminal BitwiseShiftList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseShiftList<'t> {
     pub bitwise_shift_op: BitwiseShiftOp<'t>,
     pub summ: Summ<'t>,
@@ -434,8 +413,7 @@ pub struct BitwiseShiftList<'t> {
 /// Type derived for non-terminal BitwiseShiftOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BitwiseShiftOp<'t> {
     pub bitwise_shift_op: Token<'t>, /* <<|>> */
 }
@@ -444,8 +422,7 @@ pub struct BitwiseShiftOp<'t> {
 /// Type derived for non-terminal Calc
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Calc<'t> {
     pub calc_list: Vec<CalcList<'t>>,
 }
@@ -454,8 +431,7 @@ pub struct Calc<'t> {
 /// Type derived for non-terminal CalcList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct CalcList<'t> {
     pub instruction: Instruction<'t>,
 }
@@ -464,8 +440,7 @@ pub struct CalcList<'t> {
 /// Type derived for non-terminal Equality
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Equality<'t> {
     pub relational: Relational<'t>,
     pub equality_list: Vec<EqualityList<'t>>,
@@ -475,8 +450,7 @@ pub struct Equality<'t> {
 /// Type derived for non-terminal EqualityList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EqualityList<'t> {
     pub equality_op: EqualityOp<'t>,
     pub relational: Relational<'t>,
@@ -486,8 +460,7 @@ pub struct EqualityList<'t> {
 /// Type derived for non-terminal EqualityOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EqualityOp<'t> {
     pub equality_op: Token<'t>, /* ==|!= */
 }
@@ -508,8 +481,7 @@ pub enum Factor<'t> {
 /// Type derived for non-terminal Id
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Id<'t> {
     pub id: Token<'t>, /* [a-zA-Z_][a-zA-Z0-9_]* */
 }
@@ -518,8 +490,7 @@ pub struct Id<'t> {
 /// Type derived for non-terminal IdRef
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct IdRef<'t> {
     pub id: Id<'t>,
 }
@@ -538,8 +509,7 @@ pub enum Instruction<'t> {
 /// Type derived for non-terminal LogicalAnd
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LogicalAnd<'t> {
     pub bitwise_or: BitwiseOr<'t>,
     pub logical_and_list: Vec<LogicalAndList<'t>>,
@@ -549,8 +519,7 @@ pub struct LogicalAnd<'t> {
 /// Type derived for non-terminal LogicalAndList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LogicalAndList<'t> {
     pub logical_and_op: LogicalAndOp<'t>,
     pub bitwise_or: BitwiseOr<'t>,
@@ -560,8 +529,7 @@ pub struct LogicalAndList<'t> {
 /// Type derived for non-terminal LogicalAndOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LogicalAndOp<'t> {
     pub logical_and_op: Token<'t>, /* && */
 }
@@ -570,8 +538,7 @@ pub struct LogicalAndOp<'t> {
 /// Type derived for non-terminal LogicalOr
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LogicalOr<'t> {
     pub logical_and: LogicalAnd<'t>,
     pub logical_or_list: Vec<LogicalOrList<'t>>,
@@ -581,8 +548,7 @@ pub struct LogicalOr<'t> {
 /// Type derived for non-terminal LogicalOrList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LogicalOrList<'t> {
     pub logical_or_op: LogicalOrOp<'t>,
     pub logical_and: LogicalAnd<'t>,
@@ -592,8 +558,7 @@ pub struct LogicalOrList<'t> {
 /// Type derived for non-terminal LogicalOrOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LogicalOrOp<'t> {
     pub logical_or_op: Token<'t>, /* || */
 }
@@ -602,8 +567,7 @@ pub struct LogicalOrOp<'t> {
 /// Type derived for non-terminal Minus
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Minus<'t> {
     pub minus: Token<'t>, /* - */
 }
@@ -612,8 +576,7 @@ pub struct Minus<'t> {
 /// Type derived for non-terminal Mult
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Mult<'t> {
     pub power: Power<'t>,
     pub mult_list: Vec<MultList<'t>>,
@@ -623,8 +586,7 @@ pub struct Mult<'t> {
 /// Type derived for non-terminal MultList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MultList<'t> {
     pub mult_op: MultOp<'t>,
     pub power: Power<'t>,
@@ -634,8 +596,7 @@ pub struct MultList<'t> {
 /// Type derived for non-terminal MultOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct MultOp<'t> {
     pub mult_op: Token<'t>, /* \*|\/|% */
 }
@@ -644,8 +605,7 @@ pub struct MultOp<'t> {
 /// Type derived for non-terminal Negate
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Negate<'t> {
     pub minus: Minus<'t>,
 }
@@ -654,8 +614,7 @@ pub struct Negate<'t> {
 /// Type derived for non-terminal Number
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Number {
     pub number: crate::calc_grammar::Number, /* 0|[1-9][0-9]* */
 }
@@ -664,8 +623,7 @@ pub struct Number {
 /// Type derived for non-terminal Plus
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Plus<'t> {
     pub plus: Token<'t>, /* + */
 }
@@ -674,8 +632,7 @@ pub struct Plus<'t> {
 /// Type derived for non-terminal PowOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct PowOp<'t> {
     pub pow_op: Token<'t>, /* ** */
 }
@@ -684,8 +641,7 @@ pub struct PowOp<'t> {
 /// Type derived for non-terminal Power
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Power<'t> {
     pub factor: Factor<'t>,
     pub power_list: Vec<PowerList<'t>>,
@@ -695,8 +651,7 @@ pub struct Power<'t> {
 /// Type derived for non-terminal PowerList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct PowerList<'t> {
     pub pow_op: PowOp<'t>,
     pub factor: Factor<'t>,
@@ -706,8 +661,7 @@ pub struct PowerList<'t> {
 /// Type derived for non-terminal Relational
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Relational<'t> {
     pub bitwise_shift: BitwiseShift<'t>,
     pub relational_list: Vec<RelationalList<'t>>,
@@ -717,8 +671,7 @@ pub struct Relational<'t> {
 /// Type derived for non-terminal RelationalList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationalList<'t> {
     pub relational_op: RelationalOp<'t>,
     pub bitwise_shift: BitwiseShift<'t>,
@@ -728,8 +681,7 @@ pub struct RelationalList<'t> {
 /// Type derived for non-terminal RelationalOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RelationalOp<'t> {
     pub relational_op: Token<'t>, /* <=|<|>=|> */
 }
@@ -738,8 +690,7 @@ pub struct RelationalOp<'t> {
 /// Type derived for non-terminal Summ
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Summ<'t> {
     pub mult: Mult<'t>,
     pub summ_list: Vec<SummList<'t>>,
@@ -749,8 +700,7 @@ pub struct Summ<'t> {
 /// Type derived for non-terminal SummList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct SummList<'t> {
     pub add_op: AddOp<'t>,
     pub mult: Mult<'t>,

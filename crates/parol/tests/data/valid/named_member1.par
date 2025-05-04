@@ -1,0 +1,4 @@
+%start Start
+%%
+Start: "a"@member1 : i32 "b"@member2 C@member3;
+C : "c";

@@ -55,9 +55,6 @@ You have to option to use LALR(1) grammar type this way.
 %grammar_type 'LALR(1)'
 ```
 
-The support of the new grammar type is still in a phase of improvement. If there are any obstacles
-here, you can be sure that they will be soon got out of the way.
-
 ## Case sensitivity
 
 Non-terminals are treated case sensitive, i. e. "list" and "List" are different symbols. But it is
@@ -309,18 +306,15 @@ stack and to switch to a scanner configuration with the given index in parenthes
 The `%pop` instruction is used to pop the index of the scanner pushed before and to switch to the
 scanner configuration with that index.
 
-> Note that `%push` and `%pop` instructions should be balanced. This means that in one context use
+> Note, that `%push` and `%pop` instructions should be balanced. This means that in one context use
 **only one** of the combinations `%push(S1)`/`%pop` and `%sc(<S1>)`/`%sc(<S2>)`. `%push`/`%pop`
 provides a (call) stack semantics over scanner states whereas `%sc`/`%sc` can be used to represent
-scanner state graphs semantics. Mixing both semantics should be avoided or at should least be
+scanner state graphs semantics. Mixing both semantics should be avoided or should at least be
 carefully considered.
 
-> Currently the scanner parser-based state switching only works if the lookahead
-__at the point where the switch is made__ is only of size 1 because the lookahead mechanism is
-directly influenced by the current scanner state. This means the provision of lookahead tokens will
-be made with the current active scanner and may fail if a token is not known by it. In most cases
-this can be circumvented by an appropriate grammar formulation. If this is not possible consider to
-use `Scanner-bases scanner switching` instead.
+> Note, that the provision of lookahead tokens will be made with the current active scanner and may
+fail if a token is not known by it. In most cases this can be circumvented by an appropriate grammar
+formulation. If this is not possible consider to use `Scanner-bases scanner switching` instead.
 
 You may have look at example `scanner_states` that demonstrates the handling of scanner states.
 
@@ -369,11 +363,12 @@ You also may have look at examples `scanner_states_lr` for a simple demonstratio
 >_Be aware that mixing of both parser-bases and scanner-based scanner state switching in one grammar
 file is not allowed and will result in errors._
 
+## Controlling the AST generation
 
-## Omitting grammar symbols from the AST in auto-gen modus
+### Omitting grammar symbols from the AST
 
-You can suffix grammar symbols (terminals and non-terminals) with a cut operator (^). This instructs
-`parol` to not propagate them to the AST in auto-gen modus.
+You can suffix grammar symbols (terminals and non-terminals) with a cut operator (`^`). This
+instructs `parol` to not propagate them to the AST.
 
 ```parol
 Group: '('^ Alternations ')'^;
@@ -382,7 +377,7 @@ Group: '('^ Alternations ')'^;
 The AST type for the symbol `Group` will then only contain a member for the non-terminal
 `Alternations`. The parentheses are left out.
 
-## Assigning user types to grammar symbols
+### Assigning user types to grammar symbols
 
 You can specify a user type to be inserted into the AST structure at the place where the symbol
 would otherwise had the originally generated type.
@@ -414,6 +409,102 @@ Then use these aliases behind the colons.
 ```parol
 Num: "0|[1-9][0-9]*": Number;
 ```
+
+### Define user types for non-terminals
+
+As of version 3.0 you can easily define a user type to which each occurrence of a certain
+non-terminal should be automatically converted to.
+This is done like in the following example:
+
+```ebnf
+%nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+```
+
+It is similar to the already available `%user_type` with what you could define an alias for a
+user defined type which in turn you could apply to single symbols on the right-hand side of
+grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
+non-terminals much easier.
+Here is the old version used in `parol` itself before (only partial)
+```ebnf
+%user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
+// ...
+%%
+// ...
+Prolog
+: StartDeclaration { Declaration } { ScannerState: ScannerConfig }
+;
+```
+And here is the new variant in which `%nt_type` is used.
+```ebnf
+%nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+// ...
+%%
+// ...
+Prolog
+: StartDeclaration { Declaration } { ScannerState }
+;
+```
+The non-terminal `ScannerState` was automatically defined the be converted to `ScannerConfig`.
+
+It is semantically completely identical to use `%user_type` and the application of it to each
+occurrence of the non-terminal in the grammar explicitly.
+
+### User defined terminal type
+
+As of version 3.0 you can easily define a user type to which each occurrence of a terminal should be
+automatically converted to.
+This is done like in the following example:
+
+```ebnf
+%t_type crate::parol_ls_grammar::OwnedToken
+```
+
+There can be only one type defined to which all terminals are converted to.
+
+More specifically, if several such instructions are given, the last one wins.
+
+Here is the old version used in `parol-ls` itself before (only partial)
+```ebnf
+%user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
+// ...
+%%
+// ...
+ScannerSwitch
+    : "%sc": OwnedToken '(': OwnedToken [ Identifier ] ')': OwnedToken
+    | "%push": OwnedToken '(': OwnedToken Identifier ')': OwnedToken
+    | "%pop": OwnedToken '(': OwnedToken ')': OwnedToken
+    ;
+```
+And here is the new variant in which `%t_type` is used.
+```ebnf
+%t_type crate::parol_ls_grammar::OwnedToken
+// ...
+%%
+// ...
+ScannerSwitch
+    : "%sc" '(' [ Identifier ] ')'
+    | "%push" '(' Identifier ')'
+    | "%pop" '(' ')'
+    ;
+```
+All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
+
+### Define user defined member names
+
+As of version 3.0 you can specify for each symbol on the right-hand side of a production how its
+corresponding member in the generated struct should be named.
+
+To achieve this you can use the newly introduced `@` operator.
+
+```parol
+Declaration :
+    ...
+    | "%nt_type" Identifier@nt_name "="^ UserTypeName@nt_type
+    ...
+```
+
+In this example the member for Identifier in the production will be named `nt_name` and the member
+for UserTypeName will receive the name `nt_type` in the generated struct type for this production.
 
 ## Semantic actions
 

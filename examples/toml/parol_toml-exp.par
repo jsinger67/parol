@@ -197,5 +197,5 @@
 /* 153 */ MLLQuotes: <MLLString>"\u{27}{1,2}";
 /* 154 */ Apostrophe: <INITIAL, Val, LString>"\u{27}";
 /* 155 */ AsciiNoEscape: <Esc, BString, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
-/* 156 */ Minus: <Val>"\u{2D}";
-/* 157 */ Plus: <Val>"\u{2B}";
+/* 156 */ Minus: <Val>'-';
+/* 157 */ Plus: <Val>'+';

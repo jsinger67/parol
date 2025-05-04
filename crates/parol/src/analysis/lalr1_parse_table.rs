@@ -55,10 +55,10 @@ impl From<&Cfg> for GrammarLalr {
                 syms: rhs
                     .iter()
                     .map(|s| match s {
-                        crate::Symbol::N(n, _, _) => {
+                        crate::Symbol::N(n, _, _, _) => {
                             lalry::Symbol::Nonterminal(nti.non_terminal_index(n))
                         }
-                        crate::Symbol::T(Terminal::Trm(s, k, _, _, _, l)) => {
+                        crate::Symbol::T(Terminal::Trm(s, k, _, _, _, _, l)) => {
                             lalry::Symbol::Terminal(ti.terminal_index(s, *k, l))
                         }
                         _ => unreachable!(),

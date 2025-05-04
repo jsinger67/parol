@@ -5,14 +5,14 @@
 
 use super::k_tuples::KTuplesBuilder;
 use super::{FirstSet, FollowCache};
-use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::analysis::FirstCache;
+use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn};
 use crate::grammar::symbol_string::SymbolString;
 use crate::{GrammarConfig, KTuples, Pos, Pr, Symbol};
+use parol_runtime::TerminalIndex;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
-use parol_runtime::TerminalIndex;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -78,6 +78,7 @@ type StepFunction = Box<dyn Fn(Rc<ResultMap>, Rc<RefCell<FollowSet>>) -> ResultM
 ///
 /// Calculates the FOLLOW k sets for all non-terminals of the given grammar.
 ///
+#[inline(always)]
 pub fn follow_k(
     grammar_config: &GrammarConfig,
     k: usize,
@@ -126,7 +127,8 @@ pub fn follow_k(
             });
 
     trace!(
-        "Number of equations in equation system for FOLLOW(k) is {}",
+        "FOLLOW({}): {} equations in equation system",
+        k,
         equation_system.len()
     );
 
@@ -220,6 +222,7 @@ pub fn follow_k(
     loop {
         new_result_vector = step_function(Rc::clone(&result_map), Rc::clone(&non_terminal_results));
         if new_result_vector == *result_map {
+            // No change in the result map, we are done
             break;
         }
         result_map = Rc::new(new_result_vector);
@@ -276,10 +279,10 @@ where
                     } else {
                         let last = acc.len() - 1;
                         let last_len = acc[last].1.len();
-                        let last_terminal = &acc[last].1 .0[last_len - 1];
+                        let last_terminal = &acc[last].1.0[last_len - 1];
                         if matches!(last_terminal, Symbol::T(_)) {
                             // Only add to terminals
-                            acc[last].1 .0.push(s.clone());
+                            acc[last].1.0.push(s.clone());
                         } else {
                             // Create a new start of terminal list
                             acc.push((i + 1, SymbolString(vec![s.clone()])));
@@ -328,7 +331,7 @@ where
                                 )
                             });
                     }
-                    Symbol::N(nt, _, _) => {
+                    Symbol::N(nt, _, _, _) => {
                         let first_k_of_nt = Rc::clone(&args.first_k_of_nt);
                         let nt_i = args.nti.non_terminal_index(&nt);
                         result_function =
