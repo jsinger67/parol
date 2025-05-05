@@ -10,11 +10,11 @@ use std::{cell::RefCell, collections::BTreeSet, rc::Rc};
 use log::trace;
 
 use crate::{
-    lr_parser::parse_tree::build_tree,
-    parser::{parse_tree_type::TreeConstruct, parser_types::TreeBuilder},
     FileSource, LRParseTree, NonTerminalIndex, ParolError, ParseTree, ParseTreeStack,
     ParseTreeType, ParserError, ProductionIndex, Result, SyntaxError, TerminalIndex, TokenStream,
     TokenVec, UnexpectedToken, UserActionsTrait,
+    lr_parser::parse_tree::build_tree,
+    parser::{parse_tree_type::TreeConstruct, parser_types::TreeBuilder},
 };
 
 /// The type of the index of a LR action in the parse table's actions array.
@@ -324,7 +324,9 @@ impl<'t> LRParser<'t> {
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<ParseTree> {
-        self.parse_into(TreeBuilder::new_with(), stream, user_actions)
+        let mut builder = TreeBuilder::new_with();
+        self.parse_into(&mut builder, stream, user_actions)?;
+        Ok(builder.build()?)
     }
 
     ///
@@ -332,10 +334,10 @@ impl<'t> LRParser<'t> {
     ///
     pub fn parse_into<'u, T: TreeConstruct<'t>>(
         &mut self,
-        mut tree_builder: T,
+        tree_builder: &mut T,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<T::Tree>
+    ) -> Result<()>
     where
         ParolError: From<T::Error>,
     {
@@ -351,9 +353,7 @@ impl<'t> LRParser<'t> {
             let current_state = self.parser_stack.current_state();
             trace!(
                 "Current state: {}, token type: {} ({})",
-                current_state,
-                terminal_index,
-                self.terminal_names[terminal_index as usize]
+                current_state, terminal_index, self.terminal_names[terminal_index as usize]
             );
             // Get the action for the current state and the current terminal
             let action = self.parse_table.action(current_state, terminal_index);
@@ -368,8 +368,7 @@ impl<'t> LRParser<'t> {
                             self.parser_stack.push(*next_state);
                             trace!(
                                 "Push token {} ({})",
-                                token.text,
-                                self.terminal_names[token.token_type as usize]
+                                token.text, self.terminal_names[token.token_type as usize]
                             );
                             let token = LRParseTree::Terminal(token.clone());
                             self.parse_tree_stack.push(token);
@@ -435,10 +434,7 @@ impl<'t> LRParser<'t> {
                 }
             }
         }
-        let parse_tree = if self.trim_parse_tree {
-            // Return an empty parse tree
-            tree_builder.build()?
-        } else {
+        if !self.trim_parse_tree {
             // The parse tree stack should contain only one element at this point
             // Handle additional tokens after the last token relevant for the grammar
             debug_assert!(!self.parse_tree_stack.is_empty());
@@ -446,10 +442,9 @@ impl<'t> LRParser<'t> {
             // Add a root node to the tree that can receive besides the root symbol all other symbols
             // of the parse tree, e.g. comments, whitespace, etc.
             let parse_tree = LRParseTree::NonTerminal("", Some(self.parse_tree_stack.pop_all()));
-            build_tree::<T>(&mut tree_builder, parse_tree)?;
-            tree_builder.build()?
-        };
-        Ok(parse_tree)
+            build_tree::<T>(tree_builder, parse_tree)?;
+        }
+        Ok(())
     }
 
     fn handle_parse_error(

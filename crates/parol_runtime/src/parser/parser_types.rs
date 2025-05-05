@@ -1,7 +1,8 @@
 use crate::{
-    parser::recovery::Recovery, FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex,
-    ParolError, ParseStack, ParseTreeStack, ParseTreeType, ParseType, ParserError, ProductionIndex,
-    Result, SyntaxError, TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParolError, ParseStack,
+    ParseTreeStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result, SyntaxError,
+    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    parser::recovery::Recovery,
 };
 use log::trace;
 use std::{cell::RefCell, cmp::Ord, rc::Rc};
@@ -319,7 +320,9 @@ impl<'t> LLKParser<'t> {
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<ParseTree> {
-        self.parse_into(TreeBuilder::new_with(), stream, user_actions)
+        let mut builder = TreeBuilder::new_with();
+        self.parse_into(&mut builder, stream, user_actions)?;
+        Ok(builder.build()?)
     }
 
     ///
@@ -330,10 +333,10 @@ impl<'t> LLKParser<'t> {
     ///
     pub fn parse_into<'u, T: TreeConstruct<'t>>(
         &mut self,
-        mut tree_builder: T,
+        tree_builder: &mut T,
         stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<T::Tree>
+    ) -> Result<()>
     where
         ParolError: From<T::Error>,
     {
@@ -349,7 +352,7 @@ impl<'t> LLKParser<'t> {
             }
         };
 
-        self.push_production(&mut tree_builder, prod_num)?;
+        self.push_production(tree_builder, prod_num)?;
 
         'WHILE: while !self.input_accepted() {
             if let Some(entry) = self.parser_stack.stack.last().cloned() {
@@ -359,7 +362,7 @@ impl<'t> LLKParser<'t> {
                         if token.token_type == t {
                             trace!("Consuming token {}", token);
                             self.handle_additional_tokens(
-                                &mut tree_builder,
+                                tree_builder,
                                 stream.clone(),
                                 user_actions,
                             )?;
@@ -379,14 +382,14 @@ impl<'t> LLKParser<'t> {
                     ParseType::N(n) => match self.predict_production(n, stream.clone()) {
                         Ok(prod_num) => {
                             self.parser_stack.stack.pop();
-                            self.push_production(&mut tree_builder, prod_num)?;
+                            self.push_production(tree_builder, prod_num)?;
                         }
                         Err(source) => {
                             match self.handle_prediction_error(n, stream.clone(), source) {
                                 Err(_) => break 'WHILE,
                                 Ok(prod_num) => {
                                     self.parser_stack.stack.pop();
-                                    self.push_production(&mut tree_builder, prod_num)?;
+                                    self.push_production(tree_builder, prod_num)?;
                                 }
                             }
                         }
@@ -424,7 +427,7 @@ impl<'t> LLKParser<'t> {
                         self.production_depth -= 1;
                         trace!("Popped production {} -> depth {}", p, self.production_depth);
                         self.parser_stack.stack.pop(); // Pop the End of production marker
-                        self.process_item_stack(&mut tree_builder, p, user_actions)?;
+                        self.process_item_stack(tree_builder, p, user_actions)?;
                     }
                 }
             }
@@ -437,7 +440,7 @@ impl<'t> LLKParser<'t> {
             .into());
         }
         // Handle additional tokens after the last token relevant for the grammar
-        self.handle_additional_tokens(&mut tree_builder, stream.clone(), user_actions)?;
+        self.handle_additional_tokens(tree_builder, stream.clone(), user_actions)?;
         if !stream.borrow().all_input_consumed() {
             Err((ParserError::UnprocessedInput {
                 input: Box::new(FileSource::from_stream(&stream.borrow())),
@@ -448,7 +451,7 @@ impl<'t> LLKParser<'t> {
             // We close the global root node,
             tree_builder.close_non_terminal()?;
             // build the tree and return it
-            Ok(tree_builder.build()?)
+            Ok(())
         }
     }
 

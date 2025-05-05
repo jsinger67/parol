@@ -2880,16 +2880,17 @@ where
     use parol_runtime::parser::parse_tree_type::SynTree;
     use parol_runtime::parser::parser_types::SynTreeFlavor;
     use parol_runtime::syntree::Builder;
-    let builder = Builder::<SynTree, SynTreeFlavor>::new_with();
-    parse_into(input, builder, file_name, user_actions)
+    let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+    parse_into(input, &mut builder, file_name, user_actions)?;
+    Ok(builder.build()?)
 }
 #[allow(dead_code)]
 pub fn parse_into<'t, T: TreeConstruct<'t>>(
     input: &'t str,
-    tree_builder: T,
+    tree_builder: &mut T,
     file_name: impl AsRef<Path>,
     user_actions: &mut Oberon2Grammar<'t>,
-) -> Result<T::Tree, ParolError>
+) -> Result<(), ParolError>
 where
     ParolError: From<T::Error>,
 {
