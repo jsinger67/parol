@@ -49,3 +49,6 @@ pub use terminal_name_generator::generate_terminal_name;
 
 /// Module with the syntree node types generator
 pub mod syntree_node_types_generator;
+
+/// Module with the node types exporter
+pub mod export_node_types;

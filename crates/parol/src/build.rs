@@ -123,11 +123,12 @@ use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
+use crate::generators::export_node_types::{NodeTypesExporter, NodeTypesInfo};
 use crate::generators::syntree_node_types_generator::SyntreeNodeTypesGenerator;
 use crate::parser::GrammarType;
 use crate::{
-    GrammarConfig, GrammarTypeInfo, LRParseTable, LookaheadDFA, ParolGrammar, UserTraitGenerator,
-    MAX_K,
+    GrammarConfig, GrammarTypeInfo, LRParseTable, LookaheadDFA, MAX_K, ParolGrammar,
+    UserTraitGenerator,
 };
 use clap::{Parser, ValueEnum};
 use parol_macros::parol;
@@ -457,6 +458,7 @@ impl Builder {
             grammar_config: None,
             lookahead_dfa_s: None,
             parse_table: None,
+            type_info: None,
         })
     }
     /// Generate the parser, writing it to the pre-configured output files.
@@ -464,6 +466,12 @@ impl Builder {
         self.begin_generation_with(None)
             .map_err(|e| parol!("Misconfigured parol generation: {}", e))?
             .generate_parser()
+    }
+    /// Generate the parser, writing it to the pre-configured output files. And export the node info.
+    pub fn generate_parser_and_export_node_infos(&mut self) -> Result<NodeTypesInfo> {
+        self.begin_generation_with(None)
+            .map_err(|e| parol!("Misconfigured parol generation: {}", e))?
+            .generate_parser_and_export_node_infos()
     }
 }
 
@@ -523,6 +531,7 @@ pub struct GrammarGenerator<'l> {
     pub(crate) grammar_config: Option<GrammarConfig>,
     lookahead_dfa_s: Option<BTreeMap<String, LookaheadDFA>>,
     parse_table: Option<LRParseTable>,
+    type_info: Option<GrammarTypeInfo>,
 }
 impl GrammarGenerator<'_> {
     /// Generate the parser, writing it to the pre-configured output files.
@@ -532,6 +541,15 @@ impl GrammarGenerator<'_> {
         self.post_process()?;
         self.write_output()?;
         Ok(())
+    }
+
+    /// Generate the parser, writing it to the pre-configured output files. And export the node info.
+    pub fn generate_parser_and_export_node_infos(&mut self) -> Result<NodeTypesInfo> {
+        self.parse()?;
+        self.expand()?;
+        self.post_process()?;
+        self.write_output()?;
+        self.export_node_infos()
     }
 
     //
@@ -705,8 +723,17 @@ impl GrammarGenerator<'_> {
         }
 
         self.state = Some(State::Finished);
+        self.type_info = Some(type_info);
 
         Ok(())
+    }
+
+    fn export_node_infos(&self) -> Result<NodeTypesInfo> {
+        let node_types_exporter = NodeTypesExporter::new(
+            self.grammar_config.as_ref().unwrap(),
+            self.type_info.as_ref().unwrap(),
+        );
+        Ok(node_types_exporter.generate())
     }
 }
 
