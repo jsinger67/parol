@@ -116,12 +116,24 @@ impl SyntreeNodeTypesGenerator<'_> {
                     }
                 }
 
+                fn is_builtin_terminal(&self) -> bool {
+                    matches!(self, TerminalKind::NewLine | TerminalKind::Whitespace | TerminalKind::LineComment | TerminalKind::BlockComment)
+                }
+
                 fn is_builtin_new_line(&self) -> bool {
                     matches!(self, TerminalKind::NewLine)
                 }
 
                 fn is_builtin_whitespace(&self) -> bool {
                     matches!(self, TerminalKind::Whitespace)
+                }
+
+                fn is_builtin_line_comment(&self) -> bool {
+                    matches!(self, TerminalKind::LineComment)
+                }
+
+                fn is_builtin_block_comment(&self) -> bool {
+                    matches!(self, TerminalKind::BlockComment)
                 }
             }
         })?;

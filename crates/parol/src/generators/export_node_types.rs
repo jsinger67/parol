@@ -65,6 +65,8 @@ impl NodeTypesExporter<'_> {
             .map(|(variant, original)| (original.to_string(), variant))
             .collect();
 
+        let start_symbol = self.grammar_config.cfg.get_start_symbol();
+
         let non_terminal_infos = self
             .grammar_config
             .cfg
@@ -87,7 +89,16 @@ impl NodeTypesExporter<'_> {
                     kind: children_type,
                 }
             })
-            .collect();
+            .chain(std::iter::once(NonTerminalInfo {
+                name: "Root".to_string(),
+                variant: "Root".to_string(),
+                children: vec![Child {
+                    kind: ChildAttribute::Normal,
+                    name: NodeName::NonTerminal(NonTerminalName(start_symbol.to_string())),
+                }],
+                kind: ChildrenType::Sequence,
+            }))
+            .collect::<Vec<_>>();
 
         NodeTypesInfo {
             terminals: terminal_infos,

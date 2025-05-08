@@ -1,9 +1,9 @@
-use crate::{lexer::token::PTToken, ParserError, Token};
+use crate::{ParserError, Token, lexer::token::PTToken};
 
 use std::fmt::{Display, Formatter};
 use syntree_layout::Visualize;
 
-use super::{parser_types::TreeBuilder, ParseTree};
+use super::{ParseTree, parser_types::TreeBuilder};
 
 ///
 /// The type of the elements in the parse tree.
@@ -272,11 +272,20 @@ pub trait TerminalEnum: Copy + std::fmt::Debug {
     /// Creates a terminal from an index.
     fn from_terminal_index(index: u16) -> Self;
 
+    /// Returns true if the terminal is a parol's built-in (not user defined) terminal.
+    fn is_builtin_terminal(&self) -> bool;
+
     /// Returns true if the terminal is a parol's built-in (not user defined) new line token.
     fn is_builtin_new_line(&self) -> bool;
 
+    /// Returns true if the terminal is a parol's built-in (not user defined) line comment token.
+    fn is_builtin_line_comment(&self) -> bool;
+
     /// Returns true if the terminal is a parol's built-in (not user defined) whitespace token.
     fn is_builtin_whitespace(&self) -> bool;
+
+    /// Returns true if the terminal is a parol's built-in (not user defined) block comment token.
+    fn is_builtin_block_comment(&self) -> bool;
 }
 
 /// A trait that a non-terminal enum must implement.
