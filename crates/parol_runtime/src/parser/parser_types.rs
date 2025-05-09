@@ -432,15 +432,14 @@ impl<'t> LLKParser<'t> {
                 }
             }
         }
-
+        // Handle additional tokens after the last token relevant for the grammar
+        self.handle_additional_tokens(tree_builder, stream.clone(), user_actions)?;
         if !self.error_entries.is_empty() {
             return Err(ParserError::SyntaxErrors {
                 entries: self.error_entries.drain(..).collect(),
             }
             .into());
         }
-        // Handle additional tokens after the last token relevant for the grammar
-        self.handle_additional_tokens(tree_builder, stream.clone(), user_actions)?;
         if !stream.borrow().all_input_consumed() {
             Err((ParserError::UnprocessedInput {
                 input: Box::new(FileSource::from_stream(&stream.borrow())),
