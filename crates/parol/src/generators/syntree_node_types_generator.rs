@@ -171,9 +171,18 @@ impl SyntreeNodeTypesGenerator<'_> {
         let non_terminals = grammar_type_info.generate_non_terminal_enum_type();
         let non_terminal_arms = non_terminals
             .iter()
-            .map(|(variant, name)| DisplayArm {
-                variant,
-                value: name,
+            .map(|(variant, name)| {
+                if variant == "Root" {
+                    DisplayArm {
+                        variant,
+                        value: "Root",
+                    }
+                } else {
+                    DisplayArm {
+                        variant,
+                        value: name,
+                    }
+                }
             })
             .into_str_iter();
 
