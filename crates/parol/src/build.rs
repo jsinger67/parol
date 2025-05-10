@@ -334,7 +334,7 @@ impl Builder {
     /// The output does not contain any `parol_runtime` dependencies, so you can specify "../other_crate/src/node_kind.rs" as the output file while the other crate does not have `parol_runtime` as a dependency.
     ///
     /// The default location is "$OUT_DIR/node_kind.rs".
-    pub fn node_kind_enum_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
+    pub fn node_kind_enums_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
         self.node_kind_enum_output_file = Some(self.resolve_output_path(p));
         self
     }
