@@ -12,6 +12,7 @@ use std::hash::Hash;
 use std::path::Path;
 use syntree_layout::Layouter;
 
+pub mod str_iter;
 pub mod str_vec;
 
 /// Applies a key-generating function to each element of a vector and yields a vector of
@@ -42,24 +43,31 @@ where
 /// Generates a new unique name avoiding collisions with the names given in the 'exclusions'.
 /// It takes a preferred name and if it collides it adds an increasing suffix number.
 /// If the preferred name already has a suffix number it starts counting up from this number.
-pub(crate) fn generate_name<T>(exclusions: &[T], preferred_name: String) -> String
+pub(crate) fn generate_name<T>(
+    exclusions: impl Iterator<Item = T> + Clone,
+    preferred_name: String,
+) -> String
 where
     T: AsRef<str>,
 {
-    fn gen_name<T>(exclusions: &[T], prefix: String, start_num: usize) -> String
+    fn gen_name<T>(
+        exclusions: impl Iterator<Item = T> + Clone,
+        prefix: String,
+        start_num: usize,
+    ) -> String
     where
         T: AsRef<str>,
     {
         let mut num = start_num;
         let mut new_name = format!("{}{}", prefix, num);
-        while exclusions.iter().any(|n| n.as_ref() == new_name) {
+        while exclusions.clone().any(|n| n.as_ref() == new_name) {
             num += 1;
             new_name = format!("{}{}", prefix, num);
         }
         new_name
     }
 
-    if exclusions.iter().any(|n| n.as_ref() == preferred_name) {
+    if exclusions.clone().any(|n| n.as_ref() == preferred_name) {
         let (suffix_number, prefix) = {
             if let Some(match_) = RX_NUM_SUFFIX.find(&preferred_name) {
                 let num = match_.as_str().parse::<usize>().unwrap_or(1);

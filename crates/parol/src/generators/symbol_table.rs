@@ -484,7 +484,7 @@ impl Scope {
         if preferred_name == SymbolTable::UNNAMED_TYPE {
             SymbolTable::UNNAMED_TYPE.to_string()
         } else {
-            generate_name(&self.names, preferred_name)
+            generate_name(self.names.iter(), preferred_name)
         }
     }
 

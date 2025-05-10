@@ -23,6 +23,10 @@ pub(crate) struct CliArgs {
     #[arg(short, long)]
     pub expanded: Option<PathBuf>,
 
+    /// Output file for the generated parser source
+    #[arg(long = "node-kind-enums")]
+    pub node_kind_enums: Option<PathBuf>,
+
     /// Writes the internal parsed grammar (ParolGrammar)
     #[arg(short = 'i', long)]
     pub write_internal: Option<PathBuf>,

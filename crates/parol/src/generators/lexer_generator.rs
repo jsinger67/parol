@@ -148,7 +148,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
             .enumerate()
             .fold(Vec::new(), |mut acc, (i, e)| {
                 let n = generate_name(
-                    &acc,
+                    acc.iter(),
                     generate_terminal_name(&e.0, Some(i as TerminalIndex), &grammar_config.cfg),
                 );
                 acc.push(n);
@@ -202,7 +202,7 @@ pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
         .enumerate()
         .fold(Vec::new(), |mut acc, (i, e)| {
             let n = generate_name(
-                &acc,
+                acc.iter(),
                 generate_terminal_name(&e.0, Some(i as TerminalIndex), &grammar_config.cfg),
             );
             acc.push(n);

@@ -6,8 +6,9 @@
 
 use parol_runtime::lr_parser::{LR1State, LRAction, LRParseTable, LRParser, LRProduction};
 use parol_runtime::once_cell::sync::Lazy;
+use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
-use parol_runtime::parser::{ParseTreeType, ParseType, Production, Trans};
+use parol_runtime::parser::{ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
 use std::path::Path;
@@ -169,10 +170,28 @@ pub fn parse<T>(
 where
     T: AsRef<Path>,
 {
+    use parol_runtime::parser::parse_tree_type::SynTree;
+    use parol_runtime::parser::parser_types::SynTreeFlavor;
+    use parol_runtime::syntree::Builder;
+    let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+    parse_into(input, &mut builder, file_name, user_actions)?;
+    Ok(builder.build()?)
+}
+#[allow(dead_code)]
+pub fn parse_into<'t, T: TreeConstruct<'t>>(
+    input: &'t str,
+    tree_builder: &mut T,
+    file_name: impl AsRef<Path>,
+    user_actions: &mut ListGrammar,
+) -> Result<(), ParolError>
+where
+    ParolError: From<T::Error>,
+{
     let mut lr_parser = LRParser::new(2, &PARSE_TABLE, PRODUCTIONS, TERMINAL_NAMES, NON_TERMINALS);
     // Initialize wrapper
     let mut user_actions = ListGrammarAuto::new(user_actions);
-    lr_parser.parse(
+    lr_parser.parse_into::<T>(
+        tree_builder,
         TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
         &mut user_actions,
     )

@@ -235,6 +235,8 @@ impl std::fmt::Display for UserTraitData<'_> {
                 // -------------------------------------------------------------------------------------------------
 
                 {ast_type_decl}
+
+                // -------------------------------------------------------------------------------------------------
                 ")?;
 
         let phantom_data_field = if *ast_type_has_lifetime {
@@ -443,6 +445,48 @@ impl std::fmt::Display for RangeCalculation {
                     #code
                 }
             }
+        })
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct NumToTerminalVariant {
+    pub variant: String,
+    pub prod_num: usize,
+}
+
+impl std::fmt::Display for NumToTerminalVariant {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let NumToTerminalVariant { variant, prod_num } = self;
+        f.write_fmt(ume::ume!(#prod_num => Self::#variant,))
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct NameToNonTerminalVariant {
+    pub variant: String,
+    pub name: String,
+}
+
+impl std::fmt::Display for NameToNonTerminalVariant {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let NameToNonTerminalVariant { variant, name } = self;
+        let name = format!("\"{}\"", name);
+        f.write_fmt(ume::ume!(#name => Self::#variant,))
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct DisplayArm<'a> {
+    pub(crate) variant: &'a str,
+    pub(crate) value: &'a str,
+}
+
+impl std::fmt::Display for DisplayArm<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let DisplayArm { variant, value } = self;
+        f.write_fmt(ume::ume! {
+            Self::#variant => write!(f, stringify!(#value)),
         })
     }
 }

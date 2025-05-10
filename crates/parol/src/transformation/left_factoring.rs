@@ -215,7 +215,7 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         // A' -> suffix1|suffix2|... i.e. A' -> suffix1;  A' -> suffix2;  ...
         let first_rule = &rules[0];
         let suffix_rule_name =
-            generate_name(exclusions, first_rule.get_n_str().to_owned() + "Suffix");
+            generate_name(exclusions.iter(), first_rule.get_n_str().to_owned() + "Suffix");
         let mut prod = prefix.to_owned();
         prod.push(Symbol::n(&suffix_rule_name));
         let prefix_rule = Pr::new(first_rule.get_n_str(), prod);

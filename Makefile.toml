@@ -62,7 +62,7 @@ ${PAROL_TARGET} -f ./src/parser/parol.par -e ./src/parser/parol-exp.par -p ./src
 input = ["${CARGO_MAKE_WORKING_DIRECTORY}/src/parser/parol.par"]
 output = [
     "${CARGO_MAKE_WORKING_DIRECTORY}/src/parser/parol_parser.rs",
-    "${CARGO_MAKE_WORKING_DIRECTORY}/src/parser/parol_grammar_trait.rs"
+    "${CARGO_MAKE_WORKING_DIRECTORY}/src/parser/parol_grammar_trait.rs",
 ]
 
 [tasks.generate_and_build_parol]
@@ -93,7 +93,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/calc"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'calc'..."
-${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -b -x
+${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -b -x --node-kind-enums ./calc_nodes.rs
 '''
 
 [tasks.generate_calc_lr]
@@ -102,7 +102,7 @@ cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/calc_lr"
 script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'calc_lr'..."
-${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -b -x
+${PAROL_TARGET} -f ./calc.par -e ./calc-exp.par -p ./calc_parser.rs -a ./calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -b -x --node-kind-enums ./calc_nodes.rs
 '''
 
 [tasks.generate_json_parser]

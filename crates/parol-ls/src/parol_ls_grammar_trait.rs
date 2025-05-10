@@ -1167,6 +1167,8 @@ pub enum ASTType {
     UserTypeNameList(Vec<UserTypeNameList>),
 }
 
+// -------------------------------------------------------------------------------------------------
+
 /// Auto-implemented adapter grammar
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.

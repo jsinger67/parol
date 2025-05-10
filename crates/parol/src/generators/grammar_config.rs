@@ -1,10 +1,11 @@
+use parol_runtime::TerminalIndex;
 use parol_runtime::log::trace;
 use parol_runtime::once_cell::sync::Lazy;
 
-use super::ScannerConfig;
+use super::{ScannerConfig, generate_terminal_name};
 use crate::parser::parol_grammar::{GrammarType, LookaheadExpression};
 use crate::parser::try_to_convert;
-use crate::{Cfg, ParolGrammar};
+use crate::{Cfg, ParolGrammar, generate_name};
 use anyhow::Result;
 use std::collections::HashMap;
 use std::convert::TryFrom;
@@ -174,6 +175,33 @@ impl GrammarConfig {
         );
         terminals.push(("ERROR_TOKEN".to_owned(), None));
         terminals
+    }
+
+    /// Generates a terminal names for the terminal match arms
+    pub fn generate_terminal_names(&self) -> Vec<(usize, String)> {
+        let names = vec![
+            "NewLine".to_owned(),
+            "Whitespace".to_owned(),
+            "LineComment".to_owned(),
+            "BlockComment".to_owned(),
+        ];
+        self.cfg
+            .get_ordered_terminals()
+            .into_iter()
+            .enumerate()
+            .map(|(i, (t, _, _, _))| (i + 5, t))
+            .fold(names, |mut acc, (i, t)| {
+                let name = generate_name(
+                    acc.iter(),
+                    generate_terminal_name(t, Some(i as TerminalIndex), &self.cfg),
+                );
+                acc.push(name);
+                acc
+            })
+            .into_iter()
+            .enumerate()
+            .map(|(i, n)| (i + 1, n))
+            .collect()
     }
 
     /// Generates a function that can be used as scanner_state_resolver argument on Pr::format
@@ -432,5 +460,30 @@ mod test {
                 "Error at test #{i}"
             );
         }
+    }
+
+    #[test]
+    fn check_generate_terminal_names_conflict() {
+        let g = Cfg::with_start_symbol("S")
+            .add_pr(Pr::new("NewLine", vec![terminal!("n")]))
+            .add_pr(Pr::new("A", vec![terminal!("a")]))
+            .add_pr(Pr::new("B", vec![terminal!("b")]));
+
+        let grammar_config = GrammarConfig::new(g, 1);
+
+        let terminal_names = grammar_config.generate_terminal_names();
+
+        assert_eq!(
+            terminal_names,
+            vec![
+                (1, "NewLine".to_owned()),
+                (2, "Whitespace".to_owned()),
+                (3, "LineComment".to_owned()),
+                (4, "BlockComment".to_owned()),
+                (5, "NewLine0".to_owned()),
+                (6, "A".to_owned()),
+                (7, "B".to_owned()),
+            ]
+        );
     }
 }

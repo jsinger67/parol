@@ -110,6 +110,8 @@ pub enum ASTType {
     Num(Num),
 }
 
+// -------------------------------------------------------------------------------------------------
+
 /// Auto-implemented adapter grammar
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.

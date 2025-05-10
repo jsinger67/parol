@@ -102,3 +102,13 @@ impl Index<NonTerminalIndex> for StrVec {
         &self.vec[index]
     }
 }
+
+impl FromIterator<String> for StrVec {
+    fn from_iter<T: IntoIterator<Item = String>>(iter: T) -> Self {
+        Self {
+            vec: iter.into_iter().collect(),
+            indent: Self::build_indent(0),
+            indent_first_line: true,
+        }
+    }
+}

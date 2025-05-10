@@ -4,13 +4,14 @@ mod assign_operator;
 mod binary_operator;
 mod calc_grammar;
 mod calc_grammar_trait;
+mod calc_nodes;
 mod calc_parser;
 mod errors;
 
 use crate::calc_grammar::CalcGrammar;
 use crate::calc_parser::parse;
-use anyhow::{anyhow, Context, Result};
-use parol_runtime::{log::debug, Report};
+use anyhow::{Context, Result, anyhow};
+use parol_runtime::{Report, log::debug};
 use std::{env, fs, time::Instant};
 
 // To generate:
@@ -46,4 +47,17 @@ fn main() -> Result<()> {
     } else {
         Err(anyhow!("Please provide a file name as first parameter!"))
     }
+}
+
+#[test]
+fn test_parse_as() {
+    use crate::calc_parser::parse_into;
+    use parol_runtime::parser::parse_tree_type::SynTree;
+    use parol_runtime::parser::parser_types::SynTreeFlavor;
+    use parol_runtime::syntree::Builder;
+    let input = "1 + 2 * 3;";
+    let mut calc_grammar = CalcGrammar::new();
+    let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+    let _syntax_tree = parse_into(&input, &mut builder, "test.parol", &mut calc_grammar).unwrap();
+    println!("{}", calc_grammar);
 }

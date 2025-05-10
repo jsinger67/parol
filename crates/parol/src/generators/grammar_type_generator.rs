@@ -2,7 +2,7 @@ use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
 use crate::parser::GrammarType;
-use crate::{Pr, Symbol, Terminal};
+use crate::{Pr, Symbol, Terminal, generate_name};
 use anyhow::{Result, anyhow, bail};
 use parol_runtime::log::trace;
 use std::collections::{BTreeMap, HashSet};
@@ -810,6 +810,22 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
+    pub(crate) fn generate_non_terminal_enum_type(&self) -> Vec<NonTerminalEnumType<'_>> {
+        let mut result = Vec::with_capacity(self.non_terminal_types.len() + 1);
+        for (n, _) in self.non_terminal_types.iter() {
+            result.push(NonTerminalEnumType {
+                name: n.to_string(),
+                from_non_terminal_name: n.as_str(),
+            });
+        }
+        let root_name = generate_name(self.non_terminal_types.keys(), "Root".to_string());
+        result.push(NonTerminalEnumType {
+            name: root_name.clone(),
+            from_non_terminal_name: "",
+        });
+        result
+    }
+
     // Generates an enum variant name for the given production from its right-hand side. If the
     // production has an empty RHS we simple name this enum variant "<NonTerminal>Empty".
     fn generate_production_rhs_name(&self, prod_num: usize, cfg: &Cfg) -> String {
@@ -846,6 +862,13 @@ impl GrammarTypeInfo {
         }
         Ok(())
     }
+}
+
+pub(crate) struct NonTerminalEnumType<'a> {
+    /// The name of the variant name
+    pub name: String,
+    /// the value parol_runtime gives us from_non_terminal_name. "" (empty string) for Root
+    pub from_non_terminal_name: &'a str,
 }
 
 impl Display for GrammarTypeInfo {
