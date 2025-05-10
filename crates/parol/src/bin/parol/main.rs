@@ -65,7 +65,7 @@ fn run(args: &CliArgs) -> Result<u128> {
         builder.parser_output_file(parser_file);
     }
     if let Some(typed_node_file) = &args.typed_nodes {
-        builder.typed_nodes_output_file(typed_node_file);
+        builder.node_kind_enum_output_file(typed_node_file);
     }
     if args.trim_parse_tree {
         builder.trim_parse_tree();

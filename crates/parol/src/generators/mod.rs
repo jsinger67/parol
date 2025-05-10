@@ -47,8 +47,8 @@ mod symbol_table_facade;
 pub mod terminal_name_generator;
 pub use terminal_name_generator::generate_terminal_name;
 
-/// Module with the syntree node types generator
-pub mod syntree_node_types_generator;
+/// Module with the node kind enum generator
+pub mod node_kind_enum_generator;
 
 /// Module with the node types exporter
 pub mod export_node_types;

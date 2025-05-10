@@ -124,7 +124,7 @@ use std::{env, fs};
 
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
 use crate::generators::export_node_types::{NodeTypesExporter, NodeTypesInfo};
-use crate::generators::syntree_node_types_generator::SyntreeNodeTypesGenerator;
+use crate::generators::node_kind_enum_generator::NodeKindTypesGenerator;
 use crate::parser::GrammarType;
 use crate::{
     GrammarConfig, GrammarTypeInfo, LRParseTable, LookaheadDFA, MAX_K, ParolGrammar,
@@ -185,7 +185,7 @@ pub struct Builder {
     /// Output file for the generated actions files.
     actions_output_file: Option<PathBuf>,
     /// The output file for the generated syntree node wrappers
-    typed_nodes_output_file: Option<PathBuf>,
+    node_kind_enum_output_file: Option<PathBuf>,
     pub(crate) user_type_name: String,
     pub(crate) module_name: String,
     cargo_integration: bool,
@@ -241,7 +241,7 @@ impl Builder {
         builder
             .parser_output_file("parser.rs")
             .actions_output_file("grammar_trait.rs")
-            .typed_nodes_output_file("syntree_node.rs")
+            .node_kind_enum_output_file("node_kind.rs")
             .expanded_grammar_output_file("grammar-exp.par");
         // Cargo integration should already be enabled (because we are a build script)
         assert!(builder.cargo_integration);
@@ -281,7 +281,7 @@ impl Builder {
             // The default is /dev/null (`None`)
             parser_output_file: None,
             actions_output_file: None,
-            typed_nodes_output_file: None,
+            node_kind_enum_output_file: None,
             expanded_grammar_output_file: None,
             minimize_boxed_types: false,
             inner_attributes: Vec::new(),
@@ -330,11 +330,12 @@ impl Builder {
         self.expanded_grammar_output_file = Some(self.resolve_output_path(p));
         self
     }
-    /// Set the output location for the generated syntree node wrappers.
+    /// Set the output location for the generated node kind enum.
+    /// The output does not contain any `parol_runtime` dependencies, so you can specify "../other_crate/src/node_kind.rs" as the output file while the other crate does not have `parol_runtime` as a dependency.
     ///
-    /// The default location is "$OUT_DIR/syntree.rs".
-    pub fn typed_nodes_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
-        self.typed_nodes_output_file = Some(self.resolve_output_path(p));
+    /// The default location is "$OUT_DIR/node_kind.rs".
+    pub fn node_kind_enum_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
+        self.node_kind_enum_output_file = Some(self.resolve_output_path(p));
         self
     }
     /// Explicitly enable/disable cargo integration.
@@ -707,7 +708,8 @@ impl GrammarGenerator<'_> {
             println!("\nParser source:\n{}", parser_source);
         }
 
-        if let Some(ref syntree_node_wrappers_output_file) = self.builder.typed_nodes_output_file {
+        if let Some(ref syntree_node_wrappers_output_file) = self.builder.node_kind_enum_output_file
+        {
             let mut f = fs::OpenOptions::new()
                 .write(true)
                 .create(true)
@@ -715,7 +717,7 @@ impl GrammarGenerator<'_> {
                 .open(syntree_node_wrappers_output_file)
                 .map_err(|e| parol!("Error opening generated syntree node wrappers!: {}", e))?;
             let syntree_node_types_generator =
-                SyntreeNodeTypesGenerator::new(grammar_config, &type_info);
+                NodeKindTypesGenerator::new(grammar_config, &type_info);
             syntree_node_types_generator
                 .generate(&mut f)
                 .map_err(|e| parol!("Error generating syntree node wrappers!: {}", e))?;
