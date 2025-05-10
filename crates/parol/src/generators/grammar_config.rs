@@ -1,11 +1,11 @@
+use parol_runtime::TerminalIndex;
 use parol_runtime::log::trace;
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::TerminalIndex;
 
-use super::{generate_terminal_name, ScannerConfig};
+use super::{ScannerConfig, generate_terminal_name};
 use crate::parser::parol_grammar::{GrammarType, LookaheadExpression};
 use crate::parser::try_to_convert;
-use crate::{generate_name, Cfg, ParolGrammar};
+use crate::{Cfg, ParolGrammar, generate_name};
 use anyhow::Result;
 use std::collections::HashMap;
 use std::convert::TryFrom;
