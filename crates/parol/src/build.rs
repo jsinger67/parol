@@ -241,7 +241,7 @@ impl Builder {
         builder
             .parser_output_file("parser.rs")
             .actions_output_file("grammar_trait.rs")
-            .node_kind_enum_output_file("node_kind.rs")
+            .node_kind_enums_output_file("node_kind.rs")
             .expanded_grammar_output_file("grammar-exp.par");
         // Cargo integration should already be enabled (because we are a build script)
         assert!(builder.cargo_integration);
