@@ -202,7 +202,7 @@ pub struct Builder {
     /// Generate range information for AST types
     range: bool,
     /// Generate typed syntree node wrappers
-    typed_nodes: bool,
+    enum_kind: bool,
     /// Inner attributes to insert at the top of the generated trait source.
     inner_attributes: Vec<InnerAttributes>,
     /// Enables trimming of the parse tree during parsing.
@@ -273,7 +273,7 @@ impl Builder {
             cargo_integration: is_build_script(),
             debug_verbose: false,
             range: false,
-            typed_nodes: false,
+            enum_kind: false,
             max_lookahead: DEFAULT_MAX_LOOKAHEAD,
             module_name: String::from(DEFAULT_MODULE_NAME),
             user_type_name: String::from(DEFAULT_USER_TYPE_NAME),
@@ -393,9 +393,9 @@ impl Builder {
         self.range = true;
         self
     }
-    /// Generate typed node wrappers
-    pub fn typed_nodes(&mut self) -> &mut Self {
-        self.typed_nodes = true;
+    /// Generate node kind enums `TerminalKind` and `NonTerminalKind`
+    pub fn node_kind_enums(&mut self) -> &mut Self {
+        self.enum_kind = true;
         self
     }
     /// Inserts the given inner attributes at the top of the generated trait source.
@@ -493,8 +493,8 @@ impl CommonGeneratorConfig for Builder {
         self.range
     }
 
-    fn syntree_node_wrappers(&self) -> bool {
-        self.typed_nodes
+    fn node_kind_enums(&self) -> bool {
+        self.enum_kind
     }
 }
 
