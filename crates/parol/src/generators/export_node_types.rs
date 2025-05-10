@@ -4,7 +4,7 @@ use ts_rs::TS;
 use crate::SymbolAttribute;
 
 use super::GrammarConfig;
-use super::grammar_type_generator::GrammarTypeInfo;
+use super::grammar_type_generator::{GrammarTypeInfo, NonTerminalEnumType};
 use std::collections::HashMap;
 
 use crate::generators::{NamingHelper, generate_terminal_name};
@@ -62,7 +62,13 @@ impl NodeTypesExporter<'_> {
             .grammar_type_info
             .generate_non_terminal_enum_type()
             .into_iter()
-            .map(|(variant, original)| (original.to_string(), variant))
+            .map(
+                |NonTerminalEnumType {
+                     from_non_terminal_name,
+                     name,
+                     ..
+                 }| (from_non_terminal_name.to_string(), name),
+            )
             .collect();
 
         let start_symbol = self.grammar_config.cfg.get_start_symbol();

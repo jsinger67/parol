@@ -810,15 +810,21 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
-    pub(crate) fn generate_non_terminal_enum_type(&self) -> Vec<(String, &str)> {
+    pub(crate) fn generate_non_terminal_enum_type(&self) -> Vec<NonTerminalEnumType<'_>> {
         let mut result = Vec::with_capacity(self.non_terminal_types.len() + 1);
         for (n, _) in self.non_terminal_types.iter() {
-            result.push((n.to_string(), n.as_str()));
+            result.push(NonTerminalEnumType {
+                name: n.to_string(),
+                from_non_terminal_name: n.as_str(),
+                display: n.to_string(),
+            });
         }
-        result.push((
-            generate_name(self.non_terminal_types.keys(), "Root".to_string()),
-            "",
-        ));
+        let root_name = generate_name(self.non_terminal_types.keys(), "Root".to_string());
+        result.push(NonTerminalEnumType {
+            name: root_name.clone(),
+            from_non_terminal_name: "",
+            display: root_name,
+        });
         result
     }
 
@@ -858,6 +864,15 @@ impl GrammarTypeInfo {
         }
         Ok(())
     }
+}
+
+pub(crate) struct NonTerminalEnumType<'a> {
+    /// The name of the variant name
+    pub name: String,
+    /// the value parol_runtime gives us from_non_terminal_name. "" (empty string) for Root
+    pub from_non_terminal_name: &'a str,
+    /// What to show on std::fmt::Display for the variant
+    pub display: String,
 }
 
 impl Display for GrammarTypeInfo {

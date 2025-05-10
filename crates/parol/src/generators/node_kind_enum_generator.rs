@@ -5,7 +5,7 @@ use crate::generators::template_data::NameToNonTerminalVariant;
 use crate::utils::str_iter::IteratorExt;
 
 use super::GrammarConfig;
-use super::grammar_type_generator::GrammarTypeInfo;
+use super::grammar_type_generator::{GrammarTypeInfo, NonTerminalEnumType};
 use super::template_data::{DisplayArm, NumToTerminalVariant};
 
 /// Syntree node types generator.
@@ -44,7 +44,7 @@ impl NodeKindTypesGenerator<'_> {
         let non_terminal_enum = grammar_type_info
             .generate_non_terminal_enum_type()
             .into_iter()
-            .map(|(variant, _)| format!("{}", ume::ume!(#variant,)))
+            .map(|NonTerminalEnumType { name, .. }| format!("{}", ume::ume!(#name,)))
             .collect::<StrVec>();
         let terminal_enum = self
             .terminals
@@ -88,10 +88,16 @@ impl NodeKindTypesGenerator<'_> {
         let non_terminal_match_arms = grammar_type_info
             .generate_non_terminal_enum_type()
             .into_iter()
-            .map(|(variant, name)| NameToNonTerminalVariant {
-                variant: variant.to_owned(),
-                name: name.to_owned(),
-            })
+            .map(
+                |NonTerminalEnumType {
+                     name,
+                     from_non_terminal_name,
+                     ..
+                 }| NameToNonTerminalVariant {
+                    variant: name.to_owned(),
+                    name: from_non_terminal_name.to_owned(),
+                },
+            )
             .into_str_iter();
 
         f.write_fmt(ume::ume! {
@@ -158,18 +164,9 @@ impl NodeKindTypesGenerator<'_> {
         let non_terminals = grammar_type_info.generate_non_terminal_enum_type();
         let non_terminal_arms = non_terminals
             .iter()
-            .map(|(variant, name)| {
-                if variant == "Root" {
-                    DisplayArm {
-                        variant,
-                        value: "Root",
-                    }
-                } else {
-                    DisplayArm {
-                        variant,
-                        value: name,
-                    }
-                }
+            .map(|NonTerminalEnumType { name, display, .. }| DisplayArm {
+                variant: name,
+                value: display,
             })
             .into_str_iter();
 
