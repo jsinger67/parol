@@ -101,6 +101,7 @@ impl NodeKindTypesGenerator<'_> {
             .into_str_iter();
 
         f.write_fmt(ume::ume! {
+            #[allow(dead_code)]
             impl TerminalKind {
                 pub fn from_terminal_index(index: u16) -> Self {
                     match index {
@@ -134,6 +135,7 @@ impl NodeKindTypesGenerator<'_> {
         write!(f, "\n\n")?;
 
         f.write_fmt(ume::ume! {
+            #[allow(dead_code)]
             impl NonTerminalKind {
                 pub fn from_non_terminal_name(name: &str) -> Self {
                     match name {
