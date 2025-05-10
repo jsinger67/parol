@@ -816,14 +816,12 @@ impl GrammarTypeInfo {
             result.push(NonTerminalEnumType {
                 name: n.to_string(),
                 from_non_terminal_name: n.as_str(),
-                display: n.to_string(),
             });
         }
         let root_name = generate_name(self.non_terminal_types.keys(), "Root".to_string());
         result.push(NonTerminalEnumType {
             name: root_name.clone(),
             from_non_terminal_name: "",
-            display: root_name,
         });
         result
     }
@@ -871,8 +869,6 @@ pub(crate) struct NonTerminalEnumType<'a> {
     pub name: String,
     /// the value parol_runtime gives us from_non_terminal_name. "" (empty string) for Root
     pub from_non_terminal_name: &'a str,
-    /// What to show on std::fmt::Display for the variant
-    pub display: String,
 }
 
 impl Display for GrammarTypeInfo {

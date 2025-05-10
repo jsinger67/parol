@@ -164,9 +164,9 @@ impl NodeKindTypesGenerator<'_> {
         let non_terminals = grammar_type_info.generate_non_terminal_enum_type();
         let non_terminal_arms = non_terminals
             .iter()
-            .map(|NonTerminalEnumType { name, display, .. }| DisplayArm {
+            .map(|NonTerminalEnumType { name, .. }| DisplayArm {
                 variant: name,
-                value: display,
+                value: name,
             })
             .into_str_iter();
 
