@@ -55,7 +55,7 @@ const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
         /*  3 */ r"//.*(\r\n|\r|\n)?",
-        /*  4 */ r"/\*([.\r\n--*]|\*[^/])*\*/",
+        /*  4 */ r"/\*([^*]|\*[^/])*\*/",
     ],
     &[5 /* Identifier */, 9 /* StringDelimiter */],
 );
@@ -355,16 +355,17 @@ where
     use parol_runtime::parser::parse_tree_type::SynTree;
     use parol_runtime::parser::parser_types::SynTreeFlavor;
     use parol_runtime::syntree::Builder;
-    let builder = Builder::<SynTree, SynTreeFlavor>::new_with();
-    parse_into(input, builder, file_name, user_actions)
+    let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+    parse_into(input, &mut builder, file_name, user_actions)?;
+    Ok(builder.build()?)
 }
 #[allow(dead_code)]
 pub fn parse_into<'t, T: TreeConstruct<'t>>(
     input: &'t str,
-    tree_builder: T,
+    tree_builder: &mut T,
     file_name: impl AsRef<Path>,
     user_actions: &mut ScannerStatesGrammar<'t>,
-) -> Result<T::Tree, ParolError>
+) -> Result<(), ParolError>
 where
     ParolError: From<T::Error>,
 {

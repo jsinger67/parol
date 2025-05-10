@@ -15,7 +15,7 @@ pub trait CommonGeneratorConfig {
     /// Generate range information for AST types
     fn range(&self) -> bool;
     /// Generate typed syntree node wrappers
-    fn syntree_node_wrappers(&self) -> bool;
+    fn node_kind_enums(&self) -> bool;
 }
 
 // ---------------------------------------------------

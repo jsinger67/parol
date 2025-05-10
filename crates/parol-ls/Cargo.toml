@@ -1,6 +1,6 @@
 [package]
 name = "parol-ls"
-version = "2.1.0"
+version = "3.0.2"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "Language server for parol parser generator"
 documentation = "https://docs.rs/parol-ls"
@@ -9,14 +9,13 @@ readme = "README.md"
 keywords = ["language-server", "parsing", "parser-generator"]
 categories = ["algorithms", "parsing", "text-editors"]
 license = "MIT OR Apache-2.0"
-edition = "2021"
+edition = "2024"
 default-run = "parol-ls"
 exclude = ["./data"]
 
 [dependencies]
 anyhow = { workspace = true }
 clap = { workspace = true }
-derive_builder = { workspace = true }
 derive-new = { workspace = true }
 env_logger = { workspace = true }
 function_name = { workspace = true }
@@ -25,14 +24,13 @@ log = { workspace = true }
 lsp-server = "0.7.8"
 lsp-types = "0.97.0"
 once_cell = { workspace = true }
-parol = { path = "../parol", version = "2.1.0" }
-parol_runtime = { path = "../parol_runtime", version = "2.1.0" }
+parol = { path = "../parol", version = "3.0.1" }
+parol_runtime = { path = "../parol_runtime", version = "3.0.0" }
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
 regex = { workspace = true }
-serde = "1.0.217"
-serde_json = "1.0.137"
+serde = "1.0.219"
+serde_json = "1.0.140"
 thiserror = { workspace = true }
 
 [build-dependencies]
-parol = { path = "../parol", version = "2.1.0" }
-parol_runtime = { path = "../parol_runtime", version = "2.1.0" }
+parol = { path = "../parol", version = "3.0.1" }

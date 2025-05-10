@@ -124,7 +124,7 @@ CommentContent: <COMMENT>/[.\r\n]/; // Valid in mode COMMENT
 The `CommentEnd` terminal has precedence over `CommentContent` simply by preceding it in the
 grammar description. This way it can't be 'eaten up' by the `CommentContent` terminal.
 
-## Lookahead for terminals
+### Lookahead for terminals
 
 Having an own scanner implementation enables us to support more features common for lexical analysis.
 Since version 2 parol's scanner generation supports positive and negative lookahead.
@@ -161,6 +161,40 @@ Be sure to define a "primary non-terminal for a terminal"
 above to let `parol` generate different terminal names (here `XTerm1` and `XTerm2`). Using
 terminals with the same `TokenLiteral` and differing lookahead expressions directly in productions,
 i.e. without defining separate primary non-terminals for each, can lead to unexpected behavior.
+
+### The feature `regex_automata`
+
+As of version 2.2.0 of `parol_runtime` if you enable the feature `regex_automata` the `scnr`
+crate basically uses the `regex_automata` crate as regex engine instead of `scnr`'s own regex
+engine. The `regex_automata` crate provides more regex features, such as non-greedy repetitions,
+flags and anchored matches.
+
+Both, the feature `regex_automata` and the `default` feature are mutually exclusive. You can enable
+one of them, but not both at the same time.
+
+Using the default feature set is straight forward:
+```toml
+parol_runtime = "2.2.0"
+```
+For the feature `regex_automata` to be enabled use this variant:
+```toml
+parol_runtime = { version = "2.2.0", default-features = false, features = [ "regex_automata" ] }
+```
+
+Using the `default` feature usually results in a slower scanner, but it is faster at compiling
+the regexes.
+
+On the other hand, the `regex_automata` feature creates faster scanners, but it is possibly slower
+at compiling the regexes. This depends on the size of your scanner modes, i.e. the number of regexes
+you use.
+
+`scnr` maintains a cache of compiled scanner modes, i.e. compiled regexes in both feature
+configurations. This can mitigate the costs of regex compilation if they are used multiple times
+during the lifetime of your parsing tool.
+
+I can't give a simple rule of thumb, which regex engine of `scnr` to chose for your parsing tool.
+Therefore I recommend to carry out your own measurements.
+
 
 ## No vanilla mode
 

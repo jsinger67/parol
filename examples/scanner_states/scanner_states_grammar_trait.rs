@@ -9,7 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
@@ -80,8 +79,7 @@ pub trait ScannerStatesGrammarTrait<'t> {
 /// `Content: Identifier;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ContentIdentifier<'t> {
     pub identifier: Box<Identifier<'t>>,
 }
@@ -92,8 +90,7 @@ pub struct ContentIdentifier<'t> {
 /// `Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ContentStringDelimiterStringContentStringDelimiter<'t> {
     pub string_delimiter: Box<StringDelimiter<'t>>,
     pub string_content: Box<StringContent<'t>>,
@@ -106,8 +103,7 @@ pub struct ContentStringDelimiterStringContentStringDelimiter<'t> {
 /// `StringElement: Escaped;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StringElementEscaped<'t> {
     pub escaped: Box<Escaped<'t>>,
 }
@@ -118,8 +114,7 @@ pub struct StringElementEscaped<'t> {
 /// `StringElement: EscapedLineEnd;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StringElementEscapedLineEnd<'t> {
     pub escaped_line_end: Box<EscapedLineEnd<'t>>,
 }
@@ -130,8 +125,7 @@ pub struct StringElementEscapedLineEnd<'t> {
 /// `StringElement: NoneQuote;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StringElementNoneQuote<'t> {
     pub none_quote: Box<NoneQuote<'t>>,
 }
@@ -157,8 +151,7 @@ pub enum Content<'t> {
 /// Type derived for non-terminal Escaped
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Escaped<'t> {
     pub escaped: Token<'t>, /* \\["\\bfnt] */
 }
@@ -167,8 +160,7 @@ pub struct Escaped<'t> {
 /// Type derived for non-terminal EscapedLineEnd
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct EscapedLineEnd<'t> {
     pub escaped_line_end: Token<'t>, /* \\[\s--\n\r]*\r?\n */
 }
@@ -177,8 +169,7 @@ pub struct EscapedLineEnd<'t> {
 /// Type derived for non-terminal Identifier
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Identifier<'t> {
     pub identifier: Token<'t>, /* [a-zA-Z_]\w* */
 }
@@ -187,8 +178,7 @@ pub struct Identifier<'t> {
 /// Type derived for non-terminal NoneQuote
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NoneQuote<'t> {
     pub none_quote: Token<'t>, /* [^"\\]+ */
 }
@@ -197,8 +187,7 @@ pub struct NoneQuote<'t> {
 /// Type derived for non-terminal Start
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Start<'t> {
     pub start_list: Vec<StartList<'t>>,
 }
@@ -207,8 +196,7 @@ pub struct Start<'t> {
 /// Type derived for non-terminal StartList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StartList<'t> {
     pub content: Box<Content<'t>>,
 }
@@ -217,8 +205,7 @@ pub struct StartList<'t> {
 /// Type derived for non-terminal StringContent
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StringContent<'t> {
     pub string_content_list: Vec<StringContentList<'t>>,
 }
@@ -227,8 +214,7 @@ pub struct StringContent<'t> {
 /// Type derived for non-terminal StringContentList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StringContentList<'t> {
     pub string_element: Box<StringElement<'t>>,
 }
@@ -237,8 +223,7 @@ pub struct StringContentList<'t> {
 /// Type derived for non-terminal StringDelimiter
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct StringDelimiter<'t> {
     pub string_delimiter: Token<'t>, /* " */
 }

@@ -16,7 +16,7 @@ pub fn augment_grammar(cfg: &Cfg) -> Cfg {
         0,
         Pr::new(
             &new_start,
-            vec![Symbol::N(cfg.st.clone(), SymbolAttribute::None, None)],
+            vec![Symbol::N(cfg.st.clone(), SymbolAttribute::None, None, None)],
         ),
     );
     new_cfg

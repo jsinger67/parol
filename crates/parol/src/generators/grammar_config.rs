@@ -1,11 +1,11 @@
+use parol_runtime::TerminalIndex;
 use parol_runtime::log::trace;
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::TerminalIndex;
 
-use super::{generate_terminal_name, ScannerConfig};
+use super::{ScannerConfig, generate_terminal_name};
 use crate::parser::parol_grammar::{GrammarType, LookaheadExpression};
 use crate::parser::try_to_convert;
-use crate::{generate_name, Cfg, ParolGrammar};
+use crate::{Cfg, ParolGrammar, generate_name};
 use anyhow::Result;
 use std::collections::HashMap;
 use std::convert::TryFrom;
@@ -53,8 +53,20 @@ pub struct GrammarConfig {
 
     ///
     /// User type definitions
+    /// The first element of the tuple is the alias, the second the type name.
     ///
     pub user_type_defs: Vec<(String, String)>,
+
+    ///
+    /// Non-terminal type definitions, i.e., user defined types for non-terminals.
+    /// The first element of the tuple is the non-terminal, the second the type name.
+    ///
+    pub nt_type_defs: Vec<(String, String)>,
+
+    ///
+    /// Terminal type definitions, i.e., a single optional user defined type for terminals
+    ///
+    pub t_type_def: Option<String>,
 
     ///
     /// At least one scanner configurations
@@ -73,6 +85,10 @@ pub(crate) type FnScannerStateResolver = Box<dyn Fn(&[usize]) -> String>;
 
 /// The type of a user type resolver function.
 /// A user type resolver function translates a decorated user type name into its shorter alias
+/// Also it resolves a user type for a non-terminal to the non-terminal's name.
+/// For terminals it resolves a user type to the fixed string "%t_type".
+/// The latter two are used to skip the user type on non-terminal and terminal occurrences because
+/// they are globally defined and need not be repeated.
 pub(crate) type FnUserTypeResolver = Box<dyn Fn(&str) -> Option<String>>;
 
 impl GrammarConfig {
@@ -119,6 +135,12 @@ impl GrammarConfig {
     /// Adds a user type definition
     pub fn add_user_type_def(mut self, alias: String, type_name: String) -> Self {
         self.user_type_defs.push((alias, type_name));
+        self
+    }
+
+    /// Adds a nt type definition
+    pub fn add_nt_type_def(mut self, alias: String, type_name: String) -> Self {
+        self.nt_type_defs.push((alias, type_name));
         self
     }
 
@@ -209,13 +231,25 @@ impl GrammarConfig {
 
     /// Generates a function that can be used as user_type_resolver argument on Pr::format
     pub fn get_user_type_resolver(&self) -> FnUserTypeResolver {
-        let user_type_map = self
-            .user_type_defs
+        let mut user_type_map =
+            self.user_type_defs
+                .iter()
+                .fold(HashMap::new(), |mut acc, (a, u)| {
+                    acc.insert(u.to_string(), a.to_string());
+                    acc
+                });
+        user_type_map = self
+            .nt_type_defs
             .iter()
-            .fold(HashMap::new(), |mut acc, (a, u)| {
-                acc.insert(u.to_string(), a.to_string());
+            .fold(user_type_map, |mut acc, (nt, _u)| {
+                // This allows to skip the user type on non-terminal occurrences
+                acc.insert(nt.to_string(), "%nt_type".to_string());
                 acc
             });
+        if let Some(t) = &self.t_type_def {
+            // This allows to skip the user type on terminal occurrences
+            user_type_map.insert(t.to_string(), "%t_type".to_string());
+        }
         Box::new(move |u: &str| user_type_map.get(u).cloned())
     }
 
@@ -254,7 +288,7 @@ mod test {
     use crate::generators::{GrammarConfig, ScannerConfig};
     use crate::parser::parol_grammar::LookaheadExpression;
     use crate::{
-        obtain_grammar_config_from_string, Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind,
+        Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind, obtain_grammar_config_from_string,
     };
 
     macro_rules! terminal {
@@ -264,6 +298,7 @@ mod test {
                 TerminalKind::Legacy,
                 vec![0],
                 SymbolAttribute::None,
+                None,
                 None,
                 None,
             ))
@@ -347,7 +382,7 @@ mod test {
                 "NEW_LINE_TOKEN",
                 "WHITESPACE_TOKEN",
                 r"//.*(\r\n|\r|\n)?",
-                r"/\*([.\r\n--*]|\*[^/])*\*/"
+                r"/\*([^*]|\*[^/])*\*/"
             ]
             .iter()
             .map(|t| (*t).to_owned())

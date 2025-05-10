@@ -13,11 +13,12 @@ use arguments::CliArgs;
 use clap::Parser;
 use owo_colors::OwoColorize;
 use parol_runtime::ParseTree;
-use parol_runtime::{log::trace, Report, Result};
+use parol_runtime::{Report, Result, log::trace};
 
 use parol::{
+    GrammarConfig, ParolErrorReporter, ParolGrammar,
     build::{BuildListener, IntermediateGrammar},
-    render_par_string, GrammarConfig, ParolErrorReporter, ParolGrammar,
+    render_par_string,
 };
 use parol_macros::parol;
 
@@ -63,8 +64,8 @@ fn run(args: &CliArgs) -> Result<u128> {
     if let Some(parser_file) = &args.parser {
         builder.parser_output_file(parser_file);
     }
-    if let Some(typed_node_file) = &args.typed_nodes {
-        builder.typed_nodes_output_file(typed_node_file);
+    if let Some(typed_node_file) = &args.node_kind_enums {
+        builder.node_kind_enums_output_file(typed_node_file);
     }
     if args.trim_parse_tree {
         builder.trim_parse_tree();
@@ -149,7 +150,7 @@ impl BuildListener for CLIListener<'_> {
             // no passes yet
             IntermediateGrammar::Untransformed => {
                 if let Some(file_name) = self.config.write_untransformed.as_ref() {
-                    let serialized = render_par_string(grammar_config, false)?;
+                    let serialized = render_par_string(grammar_config, true)?;
                     fs::write(file_name, serialized)
                         .context("Error writing untransformed grammar!")
                         .map_err(|e| parol!(e))?;

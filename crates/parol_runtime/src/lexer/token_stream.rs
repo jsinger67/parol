@@ -76,7 +76,7 @@ impl<'t> TokenStream<'t> {
             .collect::<Vec<ScannerMode>>();
         debug!("Scanner modes: {}", serde_json::to_string(&modes).unwrap());
         let scanner = ScannerBuilder::new().add_scanner_modes(&modes).build()?;
-        // To output the compliled automata as dot files uncomment the following two lines
+        // To output the compiled automata as dot files uncomment the following two lines
         // const TARGET_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../target");
         // let _ = scanner.generate_compiled_automata_as_dot("Parol", Path::new(TARGET_FOLDER));
         let token_iter = TokenIter::new(scanner, input, file_name.clone(), k);
@@ -114,9 +114,10 @@ impl<'t> TokenStream<'t> {
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
                 if self.tokens.is_empty() && self.recovering {
-                    trace!("LA({}): EOI for recovery", n);
+                    trace!("lookahead LA({}): EOI for recovery", n);
                     Ok(Token::eoi(TokenNumber::MAX))
                 } else {
+                    trace!("{} in {}", n, self.tokens);
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
             } else {
@@ -140,9 +141,10 @@ impl<'t> TokenStream<'t> {
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
                 if self.tokens.is_empty() && self.recovering {
-                    trace!("Type(LA({})): EOI for recovery", n);
+                    trace!("lookahead_token_type LA({}): EOI for recovery", n);
                     Ok(EOI)
                 } else {
+                    trace!("{} in {}", n, self.tokens);
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
             } else {
@@ -167,9 +169,7 @@ impl<'t> TokenStream<'t> {
             self.last_consumed_token_end_pos = token.location.end();
             trace!(
                 "Updated line: {}, column: {}, last consumed token end position: {} in take_skip_tokens",
-                self.line,
-                self.column,
-                self.last_consumed_token_end_pos
+                self.line, self.column, self.last_consumed_token_end_pos
             );
         }
         tokens
@@ -207,9 +207,7 @@ impl<'t> TokenStream<'t> {
             self.last_consumed_token_end_pos = token.location.end();
             trace!(
                 "Updated line: {}, column: {}, last consumed token end position: {}",
-                self.line,
-                self.column,
-                self.last_consumed_token_end_pos
+                self.line, self.column, self.last_consumed_token_end_pos
             );
         }
     }
@@ -382,6 +380,11 @@ impl<'t> TokenStream<'t> {
             if tokens_read >= n {
                 break;
             }
+        }
+        while tokens_read < n {
+            trace!("read_tokens: Filling with EOI at end of input");
+            self.tokens.add(Token::eoi(TokenNumber::MAX));
+            tokens_read += 1;
         }
         Ok(tokens_read)
     }

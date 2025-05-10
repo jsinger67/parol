@@ -1,8 +1,6 @@
 use crate::StrVec;
 use std::fmt::Write;
 
-use super::NamingHelper;
-
 #[derive(Builder, Debug, Default)]
 pub(crate) struct UserTraitCallerFunctionData {
     fn_name: String,
@@ -164,7 +162,6 @@ impl std::fmt::Display for UserTraitData<'_> {
             ))?;
         }
         f.write_fmt(ume::ume! {
-            use parol_runtime::derive_builder::Builder;
             #[allow(unused_imports)]
             use parol_runtime::parol_macros::{pop_item, pop_and_reverse_item};
             use parol_runtime::log::trace;
@@ -390,8 +387,7 @@ impl std::fmt::Display for NonTerminalTypeStruct {
         });
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            #[derive(Builder, Debug, Clone)]
-            #[builder(crate = "parol_runtime::derive_builder")]
+            #[derive(Debug, Clone)]
             pub struct #type_name #lifetime {
                 #members
             }
@@ -444,8 +440,7 @@ impl std::fmt::Display for RangeCalculation {
             code,
         } = self;
         f.write_fmt(ume::ume! {
-            #[allow(clippy::needless_lifetimes)]
-            impl #lifetime ToSpan for #type_name #lifetime {
+            impl ToSpan for #type_name #lifetime {
                 fn span(&self) -> Span {
                     #code
                 }
@@ -493,117 +488,5 @@ impl std::fmt::Display for DisplayArm<'_> {
         f.write_fmt(ume::ume! {
             Self::#variant => write!(f, stringify!(#value)),
         })
-    }
-}
-
-#[derive(Debug, Clone)]
-pub(crate) struct ChildKind {
-    pub attribute: ChildAttribute,
-    pub kind: ChildNodeKind,
-    pub name: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum ChildNodeKind {
-    Terminal,
-    NonTerminal,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum ChildAttribute {
-    Clipped,
-    Normal,
-    Optional,
-    Vec,
-}
-
-impl ChildKind {
-    pub fn print_node_kind(&self) -> String {
-        match self.kind {
-            ChildNodeKind::Terminal => {
-                format!("NodeKind::Terminal(TerminalKind::{})", self.name)
-            }
-            ChildNodeKind::NonTerminal => {
-                format!("NodeKind::NonTerminal(NonTerminalKind::{})", self.name)
-            }
-        }
-    }
-
-    pub fn print_ast_enum_variant(&self) -> String {
-        let name = &self.name;
-        format!("{name}({name}<T>),")
-    }
-
-    pub fn print_find_method_name(&self) -> String {
-        NamingHelper::to_lower_snake_case(&format!("find_{}", self.name))
-    }
-
-    pub fn print_enum_new_match_arms(&self) -> String {
-        let name = &self.name;
-        match self.kind {
-            ChildNodeKind::Terminal => {
-                format!(
-                    "NodeKind::Terminal(TerminalKind::{name}) => Self::{name}({name}::new(node)),"
-                )
-            }
-            ChildNodeKind::NonTerminal => {
-                format!("NodeKind::NonTerminal(NonTerminalKind::{name}) => Self::{name}({name}::new(node)),")
-            }
-        }
-    }
-
-    pub fn print_enum_node_match_arms(&self) -> String {
-        let name = &self.name;
-        match self.kind {
-            ChildNodeKind::Terminal => {
-                format!("Self::{name}(node) => node.node(),")
-            }
-            ChildNodeKind::NonTerminal => {
-                format!("Self::{name}(node) => node.node(),")
-            }
-        }
-    }
-
-    pub fn print_enum_node_mut_match_arms(&self) -> String {
-        let name = &self.name;
-        match self.kind {
-            ChildNodeKind::Terminal => {
-                format!("Self::{name}(node) => node.node_mut(),")
-            }
-            ChildNodeKind::NonTerminal => {
-                format!("Self::{name}(node) => node.node_mut(),")
-            }
-        }
-    }
-}
-
-impl std::fmt::Display for ChildKind {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match (self.kind, self.attribute) {
-            (ChildNodeKind::Terminal, ChildAttribute::Clipped) => {
-                write!(f, "ChildKind {{ kind: NodeKind::Terminal(TerminalKind::{}), attribute: ChildAttribute::Clipped }}", self.name)
-            }
-            (ChildNodeKind::NonTerminal, ChildAttribute::Clipped) => {
-                write!(f, "ChildKind {{ kind: NodeKind::NonTerminal(NonTerminalKind::{}), attribute: ChildAttribute::Clipped }}", self.name)
-            }
-            (ChildNodeKind::Terminal, ChildAttribute::Normal) => {
-                write!(f, "ChildKind {{ kind: NodeKind::Terminal(TerminalKind::{}), attribute: ChildAttribute::Normal }}", self.name)
-            }
-            (ChildNodeKind::NonTerminal, ChildAttribute::Normal) => {
-                write!(f, "ChildKind {{ kind: NodeKind::NonTerminal(NonTerminalKind::{}), attribute: ChildAttribute::Normal }}", self.name)
-            }
-            (ChildNodeKind::NonTerminal, ChildAttribute::Optional) => {
-                write!(f, "ChildKind {{ kind: NodeKind::NonTerminal(NonTerminalKind::{}), attribute: ChildAttribute::Optional }}", self.name)
-            }
-            (ChildNodeKind::NonTerminal, ChildAttribute::Vec) => {
-                write!(f, "ChildKind {{ kind: NodeKind::NonTerminal(NonTerminalKind::{}), attribute: ChildAttribute::Vec }}", self.name)
-            }
-            (ChildNodeKind::Terminal, ChildAttribute::Optional) => {
-                write!(f, "ChildKind {{ kind: NodeKind::Terminal(TerminalKind::{}), attribute: ChildAttribute::Optional }}", self.name)
-            }
-            (ChildNodeKind::Terminal, ChildAttribute::Vec) => {
-                write!(f, "ChildKind {{ kind: NodeKind::Terminal(TerminalKind::{}), attribute: ChildAttribute::Vec }}", self.name)
-            }
-        }
     }
 }

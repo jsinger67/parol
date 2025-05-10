@@ -228,7 +228,7 @@ impl Server {
                 let result = calculate_lalr1_parse_table(&grammar_config);
                 match result {
                     Ok((_, resolved_conflicts)) => {
-                        let _ = Self::notify_resolved_conlicts(
+                        let _ = Self::notify_resolved_conflicts(
                             resolved_conflicts,
                             connection,
                             &uri,
@@ -581,7 +581,7 @@ impl Server {
         Ok(())
     }
 
-    fn notify_resolved_conlicts(
+    fn notify_resolved_conflicts(
         resolved_conflicts: Vec<parol::analysis::lalr1_parse_table::LRResolvedConflict>,
         connection: Arc<lsp_server::Connection>,
         uri: &Uri,

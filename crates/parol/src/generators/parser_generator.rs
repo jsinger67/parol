@@ -1,12 +1,12 @@
+use crate::analysis::LookaheadDFA;
 use crate::analysis::compiled_la_dfa::CompiledDFA;
 use crate::analysis::lalr1_parse_table::LR1State;
 use crate::analysis::lookahead_dfa::CompiledProductionIndex;
-use crate::analysis::LookaheadDFA;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
 use crate::conversions::dot::render_dfa_dot_string;
 use crate::generators::GrammarConfig;
 use crate::{LRAction, LRParseTable, Pr, Symbol, Terminal};
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use parol_runtime::lexer::{
     BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE,
 };
@@ -374,18 +374,19 @@ impl std::fmt::Display for ParserData<'_> {
                 use parol_runtime::parser::parse_tree_type::SynTree;
                 use parol_runtime::parser::parser_types::SynTreeFlavor;
                 use parol_runtime::syntree::Builder;
-                let builder = Builder::<SynTree, SynTreeFlavor>::new_with();
-                parse_into(input, builder, file_name, user_actions)
+                let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+                parse_into(input, &mut builder, file_name, user_actions)?;
+                Ok(builder.build()?)
             }
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
             pub fn parse_into<'t, T: TreeConstruct<'t>>(
                 input: &'t str,
-                tree_builder: T,
+                tree_builder: &mut T,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
-            ) -> Result<T::Tree, ParolError> where ParolError: From<T::Error> {
+            ) -> Result<(), ParolError> where ParolError: From<T::Error> {
                 let mut llk_parser = LLKParser::new(
                     #start_symbol_index,
                     LOOKAHEAD_AUTOMATA,
@@ -520,18 +521,19 @@ impl std::fmt::Display for LRParserData<'_> {
                 use parol_runtime::parser::parse_tree_type::SynTree;
                 use parol_runtime::parser::parser_types::SynTreeFlavor;
                 use parol_runtime::syntree::Builder;
-                let builder = Builder::<SynTree, SynTreeFlavor>::new_with();
-                parse_into(input, builder, file_name, user_actions)
+                let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+                parse_into(input, &mut builder, file_name, user_actions)?;
+                Ok(builder.build()?)
             }
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
             pub fn parse_into<'t, T: TreeConstruct<'t>>(
                 input: &'t str,
-                tree_builder: T,
+                tree_builder: &mut T,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
-            ) -> Result<T::Tree, ParolError> where ParolError: From<T::Error> {
+            ) -> Result<(), ParolError> where ParolError: From<T::Error> {
                 let mut lr_parser = LRParser::new(
                     #start_symbol_index,
                     &PARSE_TABLE,

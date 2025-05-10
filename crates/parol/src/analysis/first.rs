@@ -264,7 +264,7 @@ where
                 });
             }
 
-            Symbol::N(nt, _, _) => {
+            Symbol::N(nt, _, _, _) => {
                 let f = create_union_access_function(nt, pr_count, Rc::clone(&nti_fn));
                 result_function = Box::new(move |result_vector: Rc<ResultVector>| {
                     result_function(result_vector.clone()).k_concat(&f(result_vector), k)

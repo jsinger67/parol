@@ -363,7 +363,7 @@ mod tests {
 
     impl Arbitrary for LookaheadSize {
         fn arbitrary(_g: &mut Gen) -> LookaheadSize {
-            let rand = rand::random::<usize>();
+            let rand = rand::random::<u32>() as usize;
             // Generate a random value between 1 and MAX_K
             LookaheadSize(rand % MAX_K + 1)
         }

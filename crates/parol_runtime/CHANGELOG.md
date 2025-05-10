@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0 - 2025-03-08
+
+* With this release the transition to version 3.0 is completed
+* Switched to edition 2024
+* Fixed [#595](https://github.com/jsinger67/parol/issues/595)
+  * This fix is the same as on version `2.2.1` on branch `release2.2` but is based on main
+
+## 2.2.0 - 2025-02-13
+
+- Introduced new crate feature `regex_automata` to configure `scnr` crate to use an alternative
+regex engine.
+
+  You can enable this feature this way:
+
+  ```toml
+  parol_runtime = { version = "2.2.0", default-features = false, features = [ "regex_automata" ] }
+  ```
+
+  For more details on the effects on scanner's behavior you can have a look at the
+  [CHANGELOG](https://github.com/jsinger67/scnr/blob/main/CHANGELOG.md#080---2025-02-12) and the
+  regarding section in the
+  [README](https://github.com/jsinger67/scnr/blob/main/README.md#the-feature-regex_automata) of the
+  `scnr` crate 
+
 ## 2.1.1 - 2025-01-21
 
 - Fix for [#558](https://github.com/jsinger67/parol/issues/558)

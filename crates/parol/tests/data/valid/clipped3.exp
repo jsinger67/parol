@@ -1,6 +1,6 @@
 %start Start
 
-%scanner B {  }
+%scanner B {}
 
 %%
 

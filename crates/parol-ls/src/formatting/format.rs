@@ -77,6 +77,20 @@ impl Fmt for ASTControl {
         match self {
             ASTControl::CutOperator(_) => ("^".to_string(), comments),
             ASTControl::UserTypeDeclaration(ut) => ut.user_type_declaration.txt(options, comments),
+            ASTControl::MemberNameASTControlOpt(member_with_user_type_opt) => {
+                let (member_name, comments) = member_with_user_type_opt
+                    .member_name
+                    .identifier
+                    .txt(options, comments);
+                let (ast_control_opt, comments) = if let Some(ast_control_opt) =
+                    member_with_user_type_opt.a_s_t_control_opt.as_ref()
+                {
+                    ast_control_opt.user_type_declaration.txt(options, comments)
+                } else {
+                    (String::default(), comments)
+                };
+                (format!("@{}{}", member_name, ast_control_opt), comments)
+            }
         }
     }
 }
@@ -271,6 +285,79 @@ impl Fmt for Declaration {
                         delim,
                         grammar_type.percent_grammar_underscore_type,
                         str
+                    ),
+                    comments,
+                )
+            }
+            Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
+                // "%nt_type" Identifier "=" UserTypeName // comment
+                let (comments_before_token, comments) = Comments::format_comments_before(
+                    comments,
+                    &nt_type.percent_nt_underscore_type,
+                    &options
+                        .clone()
+                        .with_padding(Padding::Left)
+                        .with_line_end(LineEnd::ForceRemove),
+                );
+                let (prod_name, comments) = nt_type.nt_name.txt(options, comments);
+                let (orig_type_name, comments) = nt_type.nt_type.txt(options, comments);
+                let (following_comment, comments) =
+                    Comments::formatted_immediately_following_comment(
+                        comments,
+                        nt_type.nt_type.get_last_token(),
+                        &options
+                            .clone()
+                            .with_padding(Padding::Left)
+                            .with_line_end(LineEnd::ForceRemove),
+                    );
+                if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                    delim = "\n";
+                };
+                (
+                    format!(
+                        "{}{}{} {} {} {}{}",
+                        comments_before_token,
+                        delim,
+                        nt_type.percent_nt_underscore_type,
+                        prod_name,
+                        nt_type.equ,
+                        orig_type_name,
+                        following_comment,
+                    ),
+                    comments,
+                )
+            }
+            Declaration::PercentTUnderscoreTypeTType(t_type) => {
+                // "%t_type" UserTypeName // comment
+                let (comments_before_token, comments) = Comments::format_comments_before(
+                    comments,
+                    &t_type.percent_t_underscore_type,
+                    &options
+                        .clone()
+                        .with_padding(Padding::Left)
+                        .with_line_end(LineEnd::ForceRemove),
+                );
+                let (user_type_name, comments) = t_type.t_type.txt(options, comments);
+                let (following_comment, comments) =
+                    Comments::formatted_immediately_following_comment(
+                        comments,
+                        t_type.t_type.get_last_token(),
+                        &options
+                            .clone()
+                            .with_padding(Padding::Left)
+                            .with_line_end(LineEnd::ForceRemove),
+                    );
+                if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                    delim = "\n";
+                };
+                (
+                    format!(
+                        "{}{}{} {}{}",
+                        comments_before_token,
+                        delim,
+                        t_type.percent_t_underscore_type,
+                        user_type_name,
+                        following_comment,
                     ),
                     comments,
                 )

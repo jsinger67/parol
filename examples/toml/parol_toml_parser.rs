@@ -88,8 +88,8 @@ pub const TERMINALS: &[(&str, Option<(bool, &str)>); 55] = &[
     /* 49 */ (r"\u{27}{1,2}", None),
     /* 50 */ (r"\u{27}", None),
     /* 51 */ (r"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+", None),
-    /* 52 */ (r"\u{2D}", None),
-    /* 53 */ (r"\u{2B}", None),
+    /* 52 */ (r"\-", None),
+    /* 53 */ (r"\+", None),
     /* 54 */ (ERROR_TOKEN, None),
 ];
 
@@ -2083,12 +2083,12 @@ pub const PRODUCTIONS: &[Production; 158] = &[
         lhs: 12,
         production: &[ParseType::T(51)],
     },
-    // 156 - Minus: "\u{2D}";
+    // 156 - Minus: '-';
     Production {
         lhs: 76,
         production: &[ParseType::T(52)],
     },
-    // 157 - Plus: "\u{2B}";
+    // 157 - Plus: '+';
     Production {
         lhs: 87,
         production: &[ParseType::T(53)],
@@ -2161,16 +2161,17 @@ where
     use parol_runtime::parser::parse_tree_type::SynTree;
     use parol_runtime::parser::parser_types::SynTreeFlavor;
     use parol_runtime::syntree::Builder;
-    let builder = Builder::<SynTree, SynTreeFlavor>::new_with();
-    parse_into(input, builder, file_name, user_actions)
+    let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+    parse_into(input, &mut builder, file_name, user_actions)?;
+    Ok(builder.build()?)
 }
 #[allow(dead_code)]
 pub fn parse_into<'t, T: TreeConstruct<'t>>(
     input: &'t str,
-    tree_builder: T,
+    tree_builder: &mut T,
     file_name: impl AsRef<Path>,
     user_actions: &mut ParolTomlGrammar<'t>,
-) -> Result<T::Tree, ParolError>
+) -> Result<(), ParolError>
 where
     ParolError: From<T::Error>,
 {

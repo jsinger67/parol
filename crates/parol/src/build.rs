@@ -123,11 +123,12 @@ use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
-use crate::generators::syntree_node_types_generator::SyntreeNodeTypesGenerator;
+use crate::generators::export_node_types::{NodeTypesExporter, NodeTypesInfo};
+use crate::generators::node_kind_enum_generator::NodeKindTypesGenerator;
 use crate::parser::GrammarType;
 use crate::{
-    GrammarConfig, GrammarTypeInfo, LRParseTable, LookaheadDFA, ParolGrammar, UserTraitGenerator,
-    MAX_K,
+    GrammarConfig, GrammarTypeInfo, LRParseTable, LookaheadDFA, MAX_K, ParolGrammar,
+    UserTraitGenerator,
 };
 use clap::{Parser, ValueEnum};
 use parol_macros::parol;
@@ -184,7 +185,7 @@ pub struct Builder {
     /// Output file for the generated actions files.
     actions_output_file: Option<PathBuf>,
     /// The output file for the generated syntree node wrappers
-    typed_nodes_output_file: Option<PathBuf>,
+    node_kind_enum_output_file: Option<PathBuf>,
     pub(crate) user_type_name: String,
     pub(crate) module_name: String,
     cargo_integration: bool,
@@ -201,7 +202,7 @@ pub struct Builder {
     /// Generate range information for AST types
     range: bool,
     /// Generate typed syntree node wrappers
-    typed_nodes: bool,
+    enum_kind: bool,
     /// Inner attributes to insert at the top of the generated trait source.
     inner_attributes: Vec<InnerAttributes>,
     /// Enables trimming of the parse tree during parsing.
@@ -240,7 +241,7 @@ impl Builder {
         builder
             .parser_output_file("parser.rs")
             .actions_output_file("grammar_trait.rs")
-            .typed_nodes_output_file("syntree_node.rs")
+            .node_kind_enums_output_file("node_kind.rs")
             .expanded_grammar_output_file("grammar-exp.par");
         // Cargo integration should already be enabled (because we are a build script)
         assert!(builder.cargo_integration);
@@ -272,7 +273,7 @@ impl Builder {
             cargo_integration: is_build_script(),
             debug_verbose: false,
             range: false,
-            typed_nodes: false,
+            enum_kind: false,
             max_lookahead: DEFAULT_MAX_LOOKAHEAD,
             module_name: String::from(DEFAULT_MODULE_NAME),
             user_type_name: String::from(DEFAULT_USER_TYPE_NAME),
@@ -280,7 +281,7 @@ impl Builder {
             // The default is /dev/null (`None`)
             parser_output_file: None,
             actions_output_file: None,
-            typed_nodes_output_file: None,
+            node_kind_enum_output_file: None,
             expanded_grammar_output_file: None,
             minimize_boxed_types: false,
             inner_attributes: Vec::new(),
@@ -329,11 +330,12 @@ impl Builder {
         self.expanded_grammar_output_file = Some(self.resolve_output_path(p));
         self
     }
-    /// Set the output location for the generated syntree node wrappers.
+    /// Set the output location for the generated node kind enum.
+    /// The output does not contain any `parol_runtime` dependencies, so you can specify "../other_crate/src/node_kind.rs" as the output file while the other crate does not have `parol_runtime` as a dependency.
     ///
-    /// The default location is "$OUT_DIR/syntree.rs".
-    pub fn typed_nodes_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
-        self.typed_nodes_output_file = Some(self.resolve_output_path(p));
+    /// The default location is "$OUT_DIR/node_kind.rs".
+    pub fn node_kind_enums_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
+        self.node_kind_enum_output_file = Some(self.resolve_output_path(p));
         self
     }
     /// Explicitly enable/disable cargo integration.
@@ -391,9 +393,9 @@ impl Builder {
         self.range = true;
         self
     }
-    /// Generate typed node wrappers
-    pub fn typed_nodes(&mut self) -> &mut Self {
-        self.typed_nodes = true;
+    /// Generate node kind enums `TerminalKind` and `NonTerminalKind`
+    pub fn node_kind_enums(&mut self) -> &mut Self {
+        self.enum_kind = true;
         self
     }
     /// Inserts the given inner attributes at the top of the generated trait source.
@@ -457,6 +459,7 @@ impl Builder {
             grammar_config: None,
             lookahead_dfa_s: None,
             parse_table: None,
+            type_info: None,
         })
     }
     /// Generate the parser, writing it to the pre-configured output files.
@@ -464,6 +467,12 @@ impl Builder {
         self.begin_generation_with(None)
             .map_err(|e| parol!("Misconfigured parol generation: {}", e))?
             .generate_parser()
+    }
+    /// Generate the parser, writing it to the pre-configured output files. And export the node info.
+    pub fn generate_parser_and_export_node_infos(&mut self) -> Result<NodeTypesInfo> {
+        self.begin_generation_with(None)
+            .map_err(|e| parol!("Misconfigured parol generation: {}", e))?
+            .generate_parser_and_export_node_infos()
     }
 }
 
@@ -484,8 +493,8 @@ impl CommonGeneratorConfig for Builder {
         self.range
     }
 
-    fn syntree_node_wrappers(&self) -> bool {
-        self.typed_nodes
+    fn node_kind_enums(&self) -> bool {
+        self.enum_kind
     }
 }
 
@@ -523,6 +532,7 @@ pub struct GrammarGenerator<'l> {
     pub(crate) grammar_config: Option<GrammarConfig>,
     lookahead_dfa_s: Option<BTreeMap<String, LookaheadDFA>>,
     parse_table: Option<LRParseTable>,
+    type_info: Option<GrammarTypeInfo>,
 }
 impl GrammarGenerator<'_> {
     /// Generate the parser, writing it to the pre-configured output files.
@@ -532,6 +542,15 @@ impl GrammarGenerator<'_> {
         self.post_process()?;
         self.write_output()?;
         Ok(())
+    }
+
+    /// Generate the parser, writing it to the pre-configured output files. And export the node info.
+    pub fn generate_parser_and_export_node_infos(&mut self) -> Result<NodeTypesInfo> {
+        self.parse()?;
+        self.expand()?;
+        self.post_process()?;
+        self.write_output()?;
+        self.export_node_infos()
     }
 
     //
@@ -689,7 +708,8 @@ impl GrammarGenerator<'_> {
             println!("\nParser source:\n{}", parser_source);
         }
 
-        if let Some(ref syntree_node_wrappers_output_file) = self.builder.typed_nodes_output_file {
+        if let Some(ref syntree_node_wrappers_output_file) = self.builder.node_kind_enum_output_file
+        {
             let mut f = fs::OpenOptions::new()
                 .write(true)
                 .create(true)
@@ -697,7 +717,7 @@ impl GrammarGenerator<'_> {
                 .open(syntree_node_wrappers_output_file)
                 .map_err(|e| parol!("Error opening generated syntree node wrappers!: {}", e))?;
             let syntree_node_types_generator =
-                SyntreeNodeTypesGenerator::new(grammar_config, &type_info);
+                NodeKindTypesGenerator::new(grammar_config, &type_info);
             syntree_node_types_generator
                 .generate(&mut f)
                 .map_err(|e| parol!("Error generating syntree node wrappers!: {}", e))?;
@@ -705,8 +725,17 @@ impl GrammarGenerator<'_> {
         }
 
         self.state = Some(State::Finished);
+        self.type_info = Some(type_info);
 
         Ok(())
+    }
+
+    fn export_node_infos(&self) -> Result<NodeTypesInfo> {
+        let node_types_exporter = NodeTypesExporter::new(
+            self.grammar_config.as_ref().unwrap(),
+            self.type_info.as_ref().unwrap(),
+        );
+        Ok(node_types_exporter.generate())
     }
 }
 

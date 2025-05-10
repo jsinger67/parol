@@ -1,26 +1,23 @@
 use super::parol_grammar_trait::{
-    self, AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog,
-    PrologList, PrologList0, ScannerDirectives,
+    self, ASTControl, AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait,
+    Prolog, PrologList, PrologList0, ScannerDirectives,
     ScannerDirectivesPercentOnIdentifierListPercentEnterIdentifier, ScannerSwitch,
     StartDeclaration, TokenLiteral,
 };
-use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use crate::ParolParserError;
+use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use anyhow::anyhow;
 
 use parol_macros::{bail, parol};
 
 use parol_runtime::Location;
-use parol_runtime::{lexer::Token, once_cell::sync::Lazy, Result};
+use parol_runtime::{Result, lexer::Token};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use std::collections::BTreeMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
 use std::marker::PhantomData;
-
-/// Used for implementation of trait `Default` for `&ParolGrammar`.
-static DEFAULT_PAROL_GRAMMAR: Lazy<ParolGrammar<'static>> = Lazy::new(ParolGrammar::default);
 
 pub(crate) const INITIAL_STATE: usize = 0;
 
@@ -101,7 +98,7 @@ impl TryFrom<&parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
 ///
 #[derive(Debug, Clone, Eq, PartialEq, Hash, PartialOrd, Ord)]
 pub struct LookaheadExpression {
-    /// If the lookahead oparation is positive or negative
+    /// If the lookahead operation is positive or negative
     pub is_positive: bool,
     /// The scanned text
     pub pattern: String,
@@ -186,11 +183,19 @@ pub enum Factor {
         SymbolAttribute,
         /// A possibly provided user destination type
         Option<UserDefinedTypeName>,
+        /// An optional member name
+        Option<String>,
         /// An optional lookahead
         Option<LookaheadExpression>,
     ),
-    /// A non-terminal with a symbol attribute an an optional user type name
-    NonTerminal(String, SymbolAttribute, Option<UserDefinedTypeName>),
+    /// A non-terminal with a symbol attribute an an optional user type name and an optional
+    /// member name
+    NonTerminal(
+        String,
+        SymbolAttribute,
+        Option<UserDefinedTypeName>,
+        Option<String>,
+    ),
     /// An identifier, scanner state name
     Identifier(String),
     /// A scanner switch instruction
@@ -203,7 +208,7 @@ pub enum Factor {
 
 impl Factor {
     pub(crate) fn default_non_terminal(non_terminal: String) -> Self {
-        Self::NonTerminal(non_terminal, SymbolAttribute::default(), None)
+        Self::NonTerminal(non_terminal, SymbolAttribute::default(), None, None)
     }
 
     pub(crate) fn inner_alts_mut(&mut self) -> Result<&mut Alternations> {
@@ -221,11 +226,11 @@ impl Factor {
             Self::Group(g) => format!("({})", g.to_par()),
             Self::Repeat(r) => format!("{{{}}}", r.to_par()),
             Self::Optional(o) => format!("[{}]", o.to_par()),
-            Self::Terminal(t, k, s, a, u, l) => {
+            Self::Terminal(t, k, s, a, u, m, l) => {
                 let mut d = String::new();
-                a.decorate(&mut d, &format!("T({})", t))
+                a.decorate(&mut d, &format!("T({})", m.as_ref().unwrap_or(t)))
                     .expect("Failed to decorate terminal!");
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     let _ = write!(d, " /* : {} */", user_type);
                 }
                 let delimiter = k.delimiter();
@@ -238,18 +243,18 @@ impl Factor {
                     delimiter,
                     d,
                     delimiter,
-                    if let Some(ref lookahead) = l {
+                    if let Some(lookahead) = l {
                         format!(" {}", lookahead.to_par())
                     } else {
                         "".to_string()
                     }
                 )
             }
-            Self::NonTerminal(n, a, u) => {
+            Self::NonTerminal(n, a, u, m) => {
                 let mut buf = String::new();
-                a.decorate(&mut buf, n)
+                a.decorate(&mut buf, &m.as_ref().unwrap_or(n))
                     .expect("Failed to decorate non-terminal!");
-                if let Some(ref user_type) = u {
+                if let Some(user_type) = u {
                     let _ = write!(buf, " /* : {} */", user_type);
                 }
                 buf
@@ -263,7 +268,7 @@ impl Factor {
 
     fn is_used_scanner(&self, scanner_index: usize) -> bool {
         match self {
-            Factor::Terminal(_, _, s, _, _, _) => s.contains(&scanner_index),
+            Factor::Terminal(_, _, s, _, _, _, _) => s.contains(&scanner_index),
             Factor::Group(a) | Factor::Repeat(a) | Factor::Optional(a) => {
                 a.is_used_scanner(scanner_index)
             }
@@ -278,11 +283,14 @@ impl Display for Factor {
             Self::Group(g) => write!(f, "G({})", g),
             Self::Repeat(r) => write!(f, "R{{{}}}", r),
             Self::Optional(o) => write!(f, "O[{}]", o),
-            Self::Terminal(t, k, s, a, u, l) => {
+            Self::Terminal(t, k, s, a, u, m, l) => {
                 let mut d = String::new();
                 let delimiter = k.delimiter();
                 a.decorate(&mut d, &format!("T({}{}{})", delimiter, t, delimiter))?;
-                if let Some(ref user_type) = u {
+                if let Some(member_name) = m {
+                    write!(d, "@{}", member_name)?;
+                }
+                if let Some(user_type) = u {
                     write!(d, " : {}", user_type)?;
                 }
                 write!(
@@ -293,17 +301,20 @@ impl Display for Factor {
                         .collect::<Vec<String>>()
                         .join(", "),
                     d,
-                    if let Some(ref lookahead) = l {
+                    if let Some(lookahead) = l {
                         format!(" {}", lookahead.to_par())
                     } else {
                         "".to_string()
                     }
                 )
             }
-            Self::NonTerminal(n, a, u) => {
+            Self::NonTerminal(n, a, u, m) => {
                 let mut s = String::new();
                 a.decorate(&mut s, &format!("N({})", n))?;
-                if let Some(ref user_type) = u {
+                if let Some(member_name) = m {
+                    write!(s, "@{}", member_name)?;
+                }
+                if let Some(user_type) = u {
                     write!(s, " : {}", user_type)?;
                 }
                 write!(f, "{}", s)
@@ -366,7 +377,7 @@ impl Alternation {
     fn terminal(&self) -> Option<(&str, TerminalKind)> {
         if self.is_terminal() {
             match &self.0[0] {
-                Factor::Terminal(t, k, _, _, _, _) => Some((t, *k)),
+                Factor::Terminal(t, k, _, _, _, _, _) => Some((t, *k)),
                 _ => None,
             }
         } else {
@@ -609,7 +620,7 @@ impl TryFrom<&parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
         scanner_state: &parol_grammar_trait::ScannerState<'_>,
     ) -> std::result::Result<Self, Self::Error> {
         let mut me = Self {
-            name: scanner_state.identifier.identifier.text().to_string(),
+            name: scanner_state.state_name.identifier.text().to_string(),
             ..Default::default()
         };
         for scanner_directive in &scanner_state.scanner_state_list {
@@ -641,7 +652,9 @@ impl TryFrom<&parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
 #[derive(Debug, Clone)]
 enum ASTControlKind {
     Attr(SymbolAttribute),
+    MemberName(String),
     UserTyped(UserDefinedTypeName),
+    MemberNameUserTyped(String, UserDefinedTypeName),
 }
 
 /// The type of grammar supported by parol
@@ -661,7 +674,7 @@ pub enum GrammarType {
 ///
 /// Data structure used to build up a parol::GrammarConfig during parsing.
 ///
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct ParolGrammar<'t> {
     /// The parsed productions
     pub productions: Vec<Production>,
@@ -675,10 +688,14 @@ pub struct ParolGrammar<'t> {
     pub scanner_configurations: Vec<ScannerConfig>,
     /// User type definitions (aliases)
     pub user_type_definitions: BTreeMap<String, UserDefinedTypeName>,
+    /// Non-terminal type definitions, i.e., user defined types for non-terminals
+    pub nt_type_definitions: BTreeMap<String, UserDefinedTypeName>,
+    /// Terminal type definitions, i.e., user defined types for terminals
+    pub t_type_def: Option<UserDefinedTypeName>,
     /// The grammar type
     pub grammar_type: GrammarType,
     /// Contains information about token aliases:
-    /// (LHS identifier, Token literal, expanded text)
+    /// (LHS identifier as Token to keep location, expanded text)
     token_aliases: Vec<(Token<'static>, String)>,
     // Just to hold the lifetime generated by parol
     phantom: PhantomData<&'t str>,
@@ -689,10 +706,7 @@ impl ParolGrammar<'_> {
     /// Constructs a new item
     ///
     pub fn new() -> Self {
-        ParolGrammar::<'_> {
-            scanner_configurations: vec![ScannerConfig::default()],
-            ..Default::default()
-        }
+        Self::default()
     }
 
     fn process_parol(&mut self, parol: &Parol<'_>) -> Result<()> {
@@ -735,6 +749,13 @@ impl ParolGrammar<'_> {
             }
             Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(user_type_def) => {
                 self.process_user_type_definition(user_type_def)
+            }
+            Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
+                self.process_nt_type_definition(nt_type)
+            }
+            Declaration::PercentTUnderscoreTypeTType(t_type) => {
+                // The last TType definition is used
+                self.t_type_def = Some(t_type.t_type.clone());
             }
             Declaration::ScannerDirectives(scanner_decl) => {
                 self.process_scanner_directive(&scanner_decl.scanner_directives)?
@@ -801,6 +822,11 @@ impl ParolGrammar<'_> {
     ) -> Result<()> {
         for prod in productions {
             self.process_production(prod)?;
+        }
+        for prod in productions {
+            if self.is_single_production(prod.identifier.identifier.text()) {
+                self.handle_token_alias(prod)?;
+            }
         }
         Ok(())
     }
@@ -893,15 +919,10 @@ impl ParolGrammar<'_> {
         }
     }
 
-    fn process_ast_control(
-        &mut self,
-        ast_control: &parol_grammar_trait::ASTControl,
-    ) -> ASTControlKind {
+    fn process_ast_control(&mut self, ast_control: &ASTControl) -> ASTControlKind {
         match ast_control {
-            parol_grammar_trait::ASTControl::CutOperator(_) => {
-                ASTControlKind::Attr(SymbolAttribute::Clipped)
-            }
-            parol_grammar_trait::ASTControl::UserTypeDeclaration(t) => {
+            ASTControl::CutOperator(_) => ASTControlKind::Attr(SymbolAttribute::Clipped),
+            ASTControl::UserTypeDeclaration(t) => {
                 let mut user_type_name = t.user_type_declaration.user_type_name.clone();
                 if let Some(defined_type) = self
                     .user_type_definitions
@@ -910,6 +931,28 @@ impl ParolGrammar<'_> {
                     user_type_name = defined_type.clone();
                 }
                 ASTControlKind::UserTyped(user_type_name)
+            }
+            ASTControl::MemberNameASTControlOpt(user_type_decl_opt) => {
+                let member_name = user_type_decl_opt
+                    .member_name
+                    .identifier
+                    .identifier
+                    .text()
+                    .to_string();
+                match user_type_decl_opt.a_s_t_control_opt.as_ref() {
+                    Some(user_type_decl) => {
+                        let mut user_type_name =
+                            user_type_decl.user_type_declaration.user_type_name.clone();
+                        if let Some(defined_type) = self
+                            .user_type_definitions
+                            .get(&user_type_name.get_module_scoped_name())
+                        {
+                            user_type_name = defined_type.clone();
+                        }
+                        ASTControlKind::MemberNameUserTyped(member_name, user_type_name)
+                    }
+                    None => ASTControlKind::MemberName(member_name),
+                }
             }
         }
     }
@@ -933,30 +976,52 @@ impl ParolGrammar<'_> {
             parol_grammar_trait::Symbol::NonTerminal(non_terminal) => {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
-                if let Some(ref non_terminal_opt) = &non_terminal.non_terminal.non_terminal_opt {
-                    match self.process_ast_control(&non_terminal_opt.a_s_t_control) {
-                        ASTControlKind::Attr(a) => attr = a,
-                        ASTControlKind::UserTyped(u) => user_type_name = Some(u),
+                let mut member_name = None;
+                if let Some(non_terminal_opt) = &non_terminal.non_terminal.non_terminal_opt {
+                    self.extract_attributes_from_ast_control(
+                        &non_terminal_opt.a_s_t_control,
+                        &mut attr,
+                        &mut user_type_name,
+                        &mut member_name,
+                    );
+                }
+                let non_terminal_name = non_terminal
+                    .non_terminal
+                    .identifier
+                    .identifier
+                    .text()
+                    .to_string();
+                if user_type_name.is_none() {
+                    // If no local user type is defined, check if a global user type is defined
+                    // for this non-terminal and use it.
+                    if let Some(defined_type) = self.nt_type_definitions.get(&non_terminal_name) {
+                        user_type_name = Some(defined_type.clone());
                     }
                 }
                 Ok(Factor::NonTerminal(
-                    non_terminal
-                        .non_terminal
-                        .identifier
-                        .identifier
-                        .text()
-                        .to_string(),
+                    non_terminal_name,
                     attr,
                     user_type_name,
+                    member_name,
                 ))
             }
             parol_grammar_trait::Symbol::SimpleToken(simple_token) => {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
-                if let Some(ref terminal_opt) = &simple_token.simple_token.simple_token_opt {
-                    match self.process_ast_control(&terminal_opt.a_s_t_control) {
-                        ASTControlKind::Attr(a) => attr = a,
-                        ASTControlKind::UserTyped(u) => user_type_name = Some(u),
+                let mut member_name = None;
+                if let Some(terminal_opt) = &simple_token.simple_token.simple_token_opt {
+                    self.extract_attributes_from_ast_control(
+                        &terminal_opt.a_s_t_control,
+                        &mut attr,
+                        &mut user_type_name,
+                        &mut member_name,
+                    );
+                }
+                if user_type_name.is_none() {
+                    // If no local user type is defined, check if a global user type is defined
+                    // for all terminals and use it.
+                    if let Some(defined_type) = self.t_type_def.as_ref() {
+                        user_type_name = Some(defined_type.clone());
                     }
                 }
                 let (content, kind) = Self::measure_token_literal(
@@ -975,6 +1040,7 @@ impl ParolGrammar<'_> {
                     vec![0],
                     attr,
                     user_type_name,
+                    member_name,
                     lookahead,
                 ))
             }
@@ -985,13 +1051,16 @@ impl ParolGrammar<'_> {
                 scanner_states.sort_unstable();
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
-                if let Some(ref terminal_opt) =
+                let mut member_name = None;
+                if let Some(terminal_opt) =
                     &token_with_states.token_with_states.token_with_states_opt
                 {
-                    match self.process_ast_control(&terminal_opt.a_s_t_control) {
-                        ASTControlKind::Attr(a) => attr = a,
-                        ASTControlKind::UserTyped(u) => user_type_name = Some(u),
-                    }
+                    self.extract_attributes_from_ast_control(
+                        &terminal_opt.a_s_t_control,
+                        &mut attr,
+                        &mut user_type_name,
+                        &mut member_name,
+                    );
                 }
                 let (content, kind) = Self::measure_token_literal(
                     &token_with_states
@@ -1012,11 +1081,30 @@ impl ParolGrammar<'_> {
                     scanner_states,
                     attr,
                     user_type_name,
+                    member_name,
                     lookahead,
                 ))
             }
             parol_grammar_trait::Symbol::ScannerSwitch(scanner_switch) => {
                 self.process_scanner_switch(scanner_switch)
+            }
+        }
+    }
+
+    fn extract_attributes_from_ast_control(
+        &mut self,
+        ast_control: &parol_grammar_trait::ASTControl<'_>,
+        attr: &mut SymbolAttribute,
+        user_type_name: &mut Option<UserDefinedTypeName>,
+        member_name: &mut Option<String>,
+    ) {
+        match self.process_ast_control(ast_control) {
+            ASTControlKind::Attr(a) => *attr = a,
+            ASTControlKind::UserTyped(u) => *user_type_name = Some(u),
+            ASTControlKind::MemberName(n) => *member_name = Some(n),
+            ASTControlKind::MemberNameUserTyped(member, user_defined_type_name) => {
+                *member_name = Some(member);
+                *user_type_name = Some(user_defined_type_name);
             }
         }
     }
@@ -1104,25 +1192,66 @@ impl ParolGrammar<'_> {
         );
     }
 
-    fn handle_token_alias(
+    fn process_nt_type_definition(
         &mut self,
-        lhs_non_terminal: Token<'static>,
-        expanded: String,
-    ) -> Result<()> {
-        if let Some(conflicting_alias) = self.token_aliases.iter().find(|(_, e)| {
-            *e == expanded // Is true if conflict found
-        }) {
-            bail!(ParolParserError::ConflictingTokenAliases {
-                first_alias: conflicting_alias.0.text().to_string(),
-                second_alias: lhs_non_terminal.text().to_string(),
-                expanded,
-                input: lhs_non_terminal.location.file_name.to_path_buf(),
-                first: (&conflicting_alias.0).into(),
-                second: (&lhs_non_terminal).into(),
-            })
+        user_type_def: &parol_grammar_trait::DeclarationPercentNtUnderscoreTypeNtNameEquNtType,
+    ) {
+        self.nt_type_definitions.insert(
+            user_type_def.nt_name.identifier.text().to_string(),
+            user_type_def.nt_type.clone(),
+        );
+    }
+
+    fn handle_token_alias(&mut self, prod: &parol_grammar_trait::Production) -> Result<()> {
+        if !prod.alternations.alternations_list.is_empty()
+            || prod.alternations.alternation.alternation_list.len() != 1
+        {
+            return Ok(());
         }
-        self.token_aliases.push((lhs_non_terminal, expanded));
+        if let parol_grammar_trait::Factor::Symbol(sym) =
+            &prod.alternations.alternation.alternation_list[0].factor
+        {
+            let expanded = match &sym.symbol {
+                // Only applicable for SimpleToken ...
+                parol_grammar_trait::Symbol::SimpleToken(
+                    parol_grammar_trait::SymbolSimpleToken { simple_token },
+                ) => ParolGrammar::expanded_token_expression(&simple_token.token_expression),
+                // .. and TokenWithStates!
+                parol_grammar_trait::Symbol::TokenWithStates(
+                    parol_grammar_trait::SymbolTokenWithStates { token_with_states },
+                ) => ParolGrammar::expanded_token_expression(&token_with_states.token_expression),
+                _ => return Ok(()),
+            };
+
+            if let Some(conflicting_alias) = self.token_aliases.iter().find(|(_, e)| {
+                *e == expanded // Is true if conflict found
+            }) {
+                bail!(ParolParserError::ConflictingTokenAliases {
+                    first_alias: conflicting_alias.0.text().to_string(),
+                    second_alias: prod.identifier.identifier.text().to_string(),
+                    expanded,
+                    input: prod.identifier.identifier.location.file_name.to_path_buf(),
+                    first: (&conflicting_alias.0).into(),
+                    second: (&prod.identifier.identifier).into(),
+                })
+            }
+            self.token_aliases
+                .push((prod.identifier.identifier.to_owned(), expanded));
+        }
         Ok(())
+    }
+
+    fn expanded_token_expression(
+        token_expression: &parol_grammar_trait::TokenExpression,
+    ) -> String {
+        let mut expanded = Self::expanded_token_literal(&token_expression.token_literal);
+        if let Some(lookahead) = token_expression.token_expression_opt.as_ref() {
+            expanded.push_str(&format!(
+                " {}",
+                LookaheadExpression::try_from(&lookahead.look_ahead).unwrap()
+            ))
+        }
+        expanded
     }
 
     fn expanded_token_literal(token_literal: &parol_grammar_trait::TokenLiteral) -> String {
@@ -1222,10 +1351,16 @@ impl ParolGrammar<'_> {
         Ok(())
     }
 
+    fn is_single_production(&self, lhs: &str) -> bool {
+        self.productions.iter().filter(|p| p.lhs == lhs).count() == 1
+    }
+
     fn is_primary_non_terminal(&self, k: &Token<'_>) -> bool {
-        self.productions
-            .iter()
-            .any(|p| p.lhs == k.text() && p.rhs.0.len() == 1 && p.rhs.0[0].is_terminal())
+        self.is_single_production(k.text())
+            && self
+                .productions
+                .iter()
+                .any(|p| p.lhs == k.text() && p.rhs.0.len() == 1 && p.rhs.0[0].is_terminal())
     }
 
     // Check if a terminal is used in the given scanner state
@@ -1242,7 +1377,7 @@ impl ParolGrammar<'_> {
             self.productions.iter().any(|p| {
                 p.rhs.0.iter().any(|a| {
                     if a.0.len() == 1 {
-                        if let Factor::Terminal(t, k, _, _, _, _) = &a.0[0] {
+                        if let Factor::Terminal(t, k, _, _, _, _, _) = &a.0[0] {
                             *t == tx && k.behaves_like(kind) && a.is_used_scanner(index)
                         } else {
                             false
@@ -1294,56 +1429,46 @@ impl Display for ParolGrammar<'_> {
     }
 }
 
-impl Default for &ParolGrammar<'_> {
+impl Default for ParolGrammar<'_> {
     fn default() -> Self {
-        &DEFAULT_PAROL_GRAMMAR
+        Self {
+            productions: Vec::new(),
+            title: None,
+            comment: None,
+            start_symbol: "".to_string(),
+            scanner_configurations: vec![ScannerConfig::default()],
+            user_type_definitions: BTreeMap::new(),
+            nt_type_definitions: BTreeMap::new(),
+            t_type_def: None,
+            grammar_type: GrammarType::LLK,
+            token_aliases: Vec::new(),
+            phantom: PhantomData,
+        }
     }
 }
 
 impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
-    /// Semantic action for non-terminal 'Production'
-    fn production(&mut self, arg: &parol_grammar_trait::Production<'t>) -> Result<()> {
-        use super::parol_grammar_trait::{
-            Factor, Symbol, SymbolSimpleToken, SymbolTokenWithStates,
-        };
-        // Only one alternation
-        if arg.alternations.alternations_list.is_empty() {
-            // Only one factor in the single alternation
-            if arg.alternations.alternation.alternation_list.len() == 1 {
-                if let Factor::Symbol(symbol) =
-                    &arg.alternations.alternation.alternation_list[0].factor
-                {
-                    match &symbol.symbol {
-                        // Only applicable for SimpleToken ...
-                        Symbol::SimpleToken(SymbolSimpleToken { simple_token }) => {
-                            let expanded = ParolGrammar::expanded_token_literal(
-                                &simple_token.token_expression.token_literal,
-                            );
-                            self.handle_token_alias(
-                                arg.identifier.identifier.to_owned(),
-                                expanded,
-                            )?;
-                        }
-                        // .. and TokenWithStates!
-                        Symbol::TokenWithStates(SymbolTokenWithStates { token_with_states }) => {
-                            let expanded = ParolGrammar::expanded_token_literal(
-                                &token_with_states.token_expression.token_literal,
-                            );
-                            self.handle_token_alias(
-                                arg.identifier.identifier.to_owned(),
-                                expanded,
-                            )?;
-                        }
-                        _ => (),
-                    }
-                }
-            }
-        }
-        Ok(())
-    }
-
     /// Semantic action for non-terminal 'Parol'
     fn parol(&mut self, parol: &Parol<'t>) -> Result<()> {
         self.process_parol(parol)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // A test the checks the correct implementation of the `Default` for the `ParolGrammar`
+    #[test]
+    fn test_default() {
+        let pg = ParolGrammar::default();
+        assert_eq!(pg.title, None);
+        assert_eq!(pg.comment, None);
+        assert_eq!(pg.start_symbol, "");
+        assert_eq!(pg.scanner_configurations.len(), 1);
+        assert_eq!(pg.user_type_definitions.len(), 0);
+        assert_eq!(pg.nt_type_definitions.len(), 0);
+        assert_eq!(pg.grammar_type, GrammarType::LLK);
+        assert_eq!(pg.productions.len(), 0);
     }
 }

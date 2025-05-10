@@ -6,6 +6,16 @@ impl From<&ASTControl> for Rng {
         match val {
             ASTControl::CutOperator(cut) => Self::from(&cut.cut_operator),
             ASTControl::UserTypeDeclaration(ut) => Self::from(&ut.user_type_declaration),
+            ASTControl::MemberNameASTControlOpt(member_with_user_type_opt) => {
+                let member =
+                    Self::from(&member_with_user_type_opt.member_name.identifier.identifier);
+                member_with_user_type_opt.a_s_t_control_opt.as_ref().map_or(
+                    member,
+                    |ast_control_opt| {
+                        member.extend(Self::from(&ast_control_opt.user_type_declaration))
+                    },
+                )
+            }
         }
     }
 }
@@ -53,10 +63,17 @@ impl From<&Declaration> for Rng {
                 Self::from(&user_type.percent_user_underscore_type)
                     .extend(Self::from(&user_type.user_type_name))
             }
+            Declaration::PercentTUnderscoreTypeTType(t_type) => {
+                Self::from(&t_type.percent_t_underscore_type)
+                    .extend(Self::from(&t_type.t_type.identifier))
+            }
             Declaration::ScannerDirectives(scanner) => Self::from(&scanner.scanner_directives),
             Declaration::PercentGrammarUnderscoreTypeLiteralString(grammar_type) => {
                 Self::from(&grammar_type.percent_grammar_underscore_type)
                     .extend(Self::from(&grammar_type.literal_string))
+            }
+            Declaration::PercentNtUnderscoreTypeNtNameEquNtType(nt_type) => {
+                Self::from(&nt_type.percent_nt_underscore_type).extend(Self::from(&nt_type.nt_type))
             }
         }
     }

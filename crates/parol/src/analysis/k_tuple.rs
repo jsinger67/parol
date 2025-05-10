@@ -68,7 +68,9 @@ impl Terminals {
         if bits > MAX_BITS {
             panic!(
                 "The number of bits required to store {} terminals is {} which is greater than the maximum of {}",
-                max_terminal_index + 1, bits, MAX_BITS
+                max_terminal_index + 1,
+                bits,
+                MAX_BITS
             );
         }
         let mut this = Self { t: 0 };
@@ -213,7 +215,7 @@ impl Terminals {
     /// assert!(t.is_k_complete(5));
     /// ```
     pub fn is_k_complete(&self, k: usize) -> bool {
-        !self.is_eps() && (self.len() >= k || self.last().map_or(false, |t| t.is_end()))
+        !self.is_eps() && (self.len() >= k || self.last().is_some_and(|t| t.is_end()))
     }
 
     /// Returns the k-length, i.e. the number of symbols that contributes to lookahead sizes
@@ -663,7 +665,7 @@ impl<'a> KTupleBuilder<'a> {
         if self.max_terminal_index.is_none() {
             return Err("max_terminal_index is not set".to_owned());
         }
-        let k = self.k.unwrap_or(0);
+        let k = self.k.unwrap();
         let max_terminal_index = self.max_terminal_index.unwrap_or(0);
         if let Some(k_tuple) = self.k_tuple {
             let mut terminals = Terminals::new(max_terminal_index);
@@ -708,11 +710,12 @@ impl<'a> KTupleBuilder<'a> {
         if self.max_terminal_index.is_none() {
             return Err("max_terminal_index is not set".to_owned());
         }
+        let k = self.k.unwrap();
         let terminals =
             TerminalString::Incomplete(Terminals::eps(self.max_terminal_index.unwrap()));
         Ok(KTuple {
             terminals,
-            k: self.k.unwrap(),
+            k: std::cmp::min(k, MAX_K),
         })
     }
     ///
@@ -725,10 +728,11 @@ impl<'a> KTupleBuilder<'a> {
         if self.max_terminal_index.is_none() {
             return Err("max_terminal_index is not set".to_owned());
         }
+        let k = self.k.unwrap();
         let terminals = TerminalString::Complete(Terminals::end(self.max_terminal_index.unwrap()));
         Ok(KTuple {
             terminals,
-            k: self.k.unwrap(),
+            k: std::cmp::min(k, MAX_K),
         })
     }
 }
@@ -934,8 +938,8 @@ mod test {
 
     use super::{TerminalString, Terminals};
     use crate::{
-        analysis::k_tuple::{KTupleBuilder, EOI},
         CompiledTerminal, KTuple, MAX_K,
+        analysis::k_tuple::{EOI, KTupleBuilder},
     };
 
     fn term(terminals: &[TerminalIndex], k: usize, max_terminal_index: usize) -> Terminals {

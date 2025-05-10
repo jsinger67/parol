@@ -26,7 +26,7 @@ pub fn detect_left_recursive_non_terminals(cfg: &Cfg) -> Vec<String> {
             let lhs_entry = can_start_with.get_mut(lhs).unwrap();
             for s in &p.1 {
                 match s {
-                    crate::Symbol::N(ref n, _, _) => {
+                    crate::Symbol::N(n, _, _, _) => {
                         changed |= lhs_entry.insert(n.clone());
                         if !nullables.contains(n) {
                             break;

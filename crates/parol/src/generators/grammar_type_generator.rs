@@ -2,13 +2,13 @@ use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
 use crate::parser::GrammarType;
-use crate::{generate_name, Pr, Symbol, Terminal};
-use anyhow::{anyhow, bail, Result};
+use crate::{Pr, Symbol, Terminal, generate_name};
+use anyhow::{Result, anyhow, bail};
 use parol_runtime::log::trace;
 use std::collections::{BTreeMap, HashSet};
 use std::fmt::{Debug, Display, Error, Formatter};
 
-use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
+use crate::{Cfg, GrammarConfig, grammar::SymbolAttribute};
 
 use super::generate_terminal_name;
 use super::symbol_table::{
@@ -547,24 +547,39 @@ impl GrammarTypeInfo {
     }
 
     /// Generates a member name from a symbol that stems from a production's right-hand side
-    /// The second string in the returned tuple is used as description, here the terminal's content.
-    pub fn generate_member_name(&self, s: &Symbol) -> (String, String) {
+    ///
+    /// The returned 3-tuple is used *on non-terminals* as follows:
+    ///   (member_name, empty, original_name)
+    ///     for nothing, an empty string.
+    /// And *on terminals* it is used as follows:
+    ///   (member_name, terminal_content, empty)
+    ///
+    /// member_name: The name of the member in the struct if a user defined name is given, otherwise
+    ///              the name of the symbol in lower snake case.
+    pub fn generate_member_name(&self, s: &Symbol) -> (String, String, String) {
         match s {
-            Symbol::N(n, ..) => (NmHlp::to_lower_snake_case(n), String::default()),
-            Symbol::T(Terminal::Trm(t, k, ..)) => {
-                let terminal_name = &self.terminal_names[self.get_terminal_index(&k.expand(t))];
-                (NmHlp::to_lower_snake_case(terminal_name), t.to_string())
-            }
+            Symbol::N(n, _, _, m) => (
+                m.clone().unwrap_or(NmHlp::to_lower_snake_case(n)),
+                String::default(),
+                n.to_string(),
+            ),
+            Symbol::T(Terminal::Trm(t, k, _, _, _, m, _)) => (
+                m.clone().unwrap_or(NmHlp::to_lower_snake_case(
+                    &self.terminal_names[self.get_terminal_index(&k.expand(t))],
+                )),
+                t.to_string(),
+                String::default(),
+            ),
             _ => panic!("Invalid symbol type {}", s),
         }
     }
 
     /// Convenience function
-    pub fn generate_member_names(&self, rhs: &[Symbol]) -> Vec<(String, String)> {
+    pub fn generate_member_names(&self, rhs: &[Symbol]) -> Vec<(String, String, String)> {
         rhs.iter()
             .filter(|s| s.is_n() || s.is_t())
             .map(|s| self.generate_member_name(s))
-            .collect::<Vec<(String, String)>>()
+            .collect::<Vec<(String, String, String)>>()
     }
 
     /// Build the arguments of the given function.
@@ -613,7 +628,7 @@ impl GrammarTypeInfo {
                 .generate_member_names(prod.get_r())
                 .iter()
                 .zip(types.drain(..))
-                .try_for_each(|((n, r), (t, a))| {
+                .try_for_each(|((n, r, o), (t, a))| {
                     // Tokens are taken from the parameter list per definition.
                     let mut used =
                         matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
@@ -631,7 +646,7 @@ impl GrammarTypeInfo {
                         {
                             "Token".to_owned()
                         } else {
-                            NmHlp::to_upper_camel_case(n)
+                            NmHlp::to_upper_camel_case(o)
                         };
                         self.symbol_table.get_or_create_type(
                             &type_name,
@@ -664,10 +679,10 @@ impl GrammarTypeInfo {
 
     fn deduce_type_of_symbol(&self, symbol: &Symbol) -> Result<TypeEntrails> {
         match symbol {
-            Symbol::T(Terminal::Trm(_, _, _, a, u, _)) => {
+            Symbol::T(Terminal::Trm(_, _, _, a, u, _, _)) => {
                 if *a == SymbolAttribute::Clipped {
                     Ok(TypeEntrails::Clipped(MetaSymbolKind::Token))
-                } else if let Some(ref user_defined_type) = u {
+                } else if let Some(user_defined_type) = u {
                     Ok(TypeEntrails::UserDefinedType(
                         MetaSymbolKind::Token,
                         user_defined_type.clone(),
@@ -676,9 +691,9 @@ impl GrammarTypeInfo {
                     Ok(TypeEntrails::Token)
                 }
             }
-            Symbol::N(n, a, u) => {
+            Symbol::N(n, a, u, _) => {
                 let inner_type = self.non_terminal_types.get(n).unwrap();
-                if let Some(ref user_defined_type) = u {
+                if let Some(user_defined_type) = u {
                     Ok(TypeEntrails::UserDefinedType(
                         MetaSymbolKind::NonTerminal(*inner_type),
                         user_defined_type.clone(),
@@ -795,15 +810,19 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
-    pub(crate) fn generate_non_terminal_enum_type(&self) -> Vec<(String, &str)> {
+    pub(crate) fn generate_non_terminal_enum_type(&self) -> Vec<NonTerminalEnumType<'_>> {
         let mut result = Vec::with_capacity(self.non_terminal_types.len() + 1);
         for (n, _) in self.non_terminal_types.iter() {
-            result.push((n.to_string(), n.as_str()));
+            result.push(NonTerminalEnumType {
+                name: n.to_string(),
+                from_non_terminal_name: n.as_str(),
+            });
         }
-        result.push((
-            generate_name(self.non_terminal_types.keys(), "Root".to_string()),
-            "",
-        ));
+        let root_name = generate_name(self.non_terminal_types.keys(), "Root".to_string());
+        result.push(NonTerminalEnumType {
+            name: root_name.clone(),
+            from_non_terminal_name: "",
+        });
         result
     }
 
@@ -817,11 +836,13 @@ impl GrammarTypeInfo {
         } else {
             lhs.iter().fold(String::new(), |mut acc, s| {
                 match s {
-                    Symbol::N(n, _, _) => acc.push_str(&NmHlp::to_upper_camel_case(n)),
-                    Symbol::T(Terminal::Trm(t, k, ..)) => {
-                        acc.push_str(&NmHlp::to_upper_camel_case(
+                    Symbol::N(n, _, _, m) => {
+                        acc.push_str(&NmHlp::to_upper_camel_case(m.as_ref().unwrap_or(n)))
+                    }
+                    Symbol::T(Terminal::Trm(t, k, _, _, _, m, _)) => {
+                        acc.push_str(m.as_ref().unwrap_or(&NmHlp::to_upper_camel_case(
                             &self.terminal_names[self.get_terminal_index(&k.expand(t))],
-                        ))
+                        )))
                     }
                     _ => (),
                 }
@@ -841,6 +862,13 @@ impl GrammarTypeInfo {
         }
         Ok(())
     }
+}
+
+pub(crate) struct NonTerminalEnumType<'a> {
+    /// The name of the variant name
+    pub name: String,
+    /// the value parol_runtime gives us from_non_terminal_name. "" (empty string) for Root
+    pub from_non_terminal_name: &'a str,
 }
 
 impl Display for GrammarTypeInfo {

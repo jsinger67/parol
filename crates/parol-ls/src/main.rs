@@ -1,5 +1,5 @@
-use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicI32, Ordering};
 use std::{cell::RefCell, error::Error, result::Result};
 
 use crate::handler::RequestHandler;
@@ -32,6 +32,8 @@ use lsp_server::{Connection, ExtractError, Message, Request, RequestId};
 use lsp_types::notification::DidChangeConfiguration;
 use lsp_types::request::RegisterCapability;
 use lsp_types::{
+    HoverProviderCapability, InitializeParams, OneOf, RenameOptions, ServerCapabilities,
+    TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
     notification::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
     },
@@ -39,8 +41,6 @@ use lsp_types::{
         DocumentSymbolRequest, Formatting, GotoDefinition, HoverRequest, PrepareRenameRequest,
         Rename,
     },
-    HoverProviderCapability, InitializeParams, OneOf, RenameOptions, ServerCapabilities,
-    TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
 };
 use lsp_types::{Registration, RegistrationParams};
 use parol_runtime::log::debug;

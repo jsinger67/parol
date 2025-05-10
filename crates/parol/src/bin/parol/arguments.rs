@@ -24,8 +24,8 @@ pub(crate) struct CliArgs {
     pub expanded: Option<PathBuf>,
 
     /// Output file for the generated parser source
-    #[arg(long = "typed-nodes")]
-    pub typed_nodes: Option<PathBuf>,
+    #[arg(long = "node-kind-enums")]
+    pub node_kind_enums: Option<PathBuf>,
 
     /// Writes the internal parsed grammar (ParolGrammar)
     #[arg(short = 'i', long)]
@@ -79,7 +79,7 @@ pub(crate) struct CliArgs {
     #[arg(long, value_enum)]
     pub inner_attributes: Vec<InnerAttributes>,
 
-    /// Disbales the error recovery mechanism in the generated parser
+    /// Disables the error recovery mechanism in the generated parser
     /// This has currently no effect on LR parsers, because error recovery is not available yet.
     #[arg(long)]
     pub disable_recovery: bool,

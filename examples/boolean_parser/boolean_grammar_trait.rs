@@ -9,7 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::derive_builder::Builder;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
@@ -140,8 +139,7 @@ pub trait BooleanGrammarTrait<'t> {
 /// `Boolean: True;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BooleanTrue {
     pub r#true: True,
 }
@@ -152,8 +150,7 @@ pub struct BooleanTrue {
 /// `Boolean: False;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BooleanFalse {
     pub r#false: False,
 }
@@ -164,8 +161,7 @@ pub struct BooleanFalse {
 /// `BinaryOperator: AndOp;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinaryOperatorAndOp {
     pub and_op: AndOp,
 }
@@ -176,8 +172,7 @@ pub struct BinaryOperatorAndOp {
 /// `BinaryOperator: OrOp;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinaryOperatorOrOp {
     pub or_op: OrOp,
 }
@@ -188,8 +183,7 @@ pub struct BinaryOperatorOrOp {
 /// `BinaryOperator: XorOp;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinaryOperatorXorOp {
     pub xor_op: XorOp,
 }
@@ -200,8 +194,7 @@ pub struct BinaryOperatorXorOp {
 /// `BinaryOperator: NorOp;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinaryOperatorNorOp {
     pub nor_op: NorOp,
 }
@@ -212,8 +205,7 @@ pub struct BinaryOperatorNorOp {
 /// `BinaryOperator: NandOp;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinaryOperatorNandOp {
     pub nand_op: NandOp,
 }
@@ -224,8 +216,7 @@ pub struct BinaryOperatorNandOp {
 /// `BinaryOperator: XnorOp;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct BinaryOperatorXnorOp {
     pub xnor_op: XnorOp,
 }
@@ -236,8 +227,7 @@ pub struct BinaryOperatorXnorOp {
 /// `Factor: Boolean;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorBoolean {
     pub boolean: Boolean,
 }
@@ -248,8 +238,7 @@ pub struct FactorBoolean {
 /// `Factor: Parenthesized;`
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct FactorParenthesized {
     pub parenthesized: Box<Parenthesized>,
 }
@@ -263,8 +252,7 @@ pub struct FactorParenthesized {
 /// Type derived for non-terminal AndOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct AndOp {}
 
 ///
@@ -295,8 +283,7 @@ pub enum Boolean {
 /// Type derived for non-terminal Expression
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Expression {
     pub term: Term,
     pub expression_list: Vec<ExpressionList>,
@@ -306,8 +293,7 @@ pub struct Expression {
 /// Type derived for non-terminal ExpressionList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ExpressionList {
     pub binary_operator: BinaryOperator,
     pub term: Term,
@@ -317,8 +303,7 @@ pub struct ExpressionList {
 /// Type derived for non-terminal Expressions
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Expressions {
     pub expression: Expression,
     pub expressions_list: Vec<ExpressionsList>,
@@ -328,8 +313,7 @@ pub struct Expressions {
 /// Type derived for non-terminal ExpressionsList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct ExpressionsList {
     pub expression: Expression,
 }
@@ -348,16 +332,14 @@ pub enum Factor {
 /// Type derived for non-terminal False
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct False {}
 
 ///
 /// Type derived for non-terminal LeftParenthesis
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct LeftParenthesis<'t> {
     pub left_parenthesis: Token<'t>, /* ( */
 }
@@ -366,40 +348,35 @@ pub struct LeftParenthesis<'t> {
 /// Type derived for non-terminal NandOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NandOp {}
 
 ///
 /// Type derived for non-terminal NorOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct NorOp {}
 
 ///
 /// Type derived for non-terminal Not
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Not {}
 
 ///
 /// Type derived for non-terminal OrOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct OrOp {}
 
 ///
 /// Type derived for non-terminal Parenthesized
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Parenthesized {
     pub expression: Expression,
 }
@@ -408,8 +385,7 @@ pub struct Parenthesized {
 /// Type derived for non-terminal RightParenthesis
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct RightParenthesis<'t> {
     pub right_parenthesis: Token<'t>, /* ) */
 }
@@ -418,8 +394,7 @@ pub struct RightParenthesis<'t> {
 /// Type derived for non-terminal Semicolon
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Semicolon<'t> {
     pub semicolon: Token<'t>, /* ; */
 }
@@ -428,8 +403,7 @@ pub struct Semicolon<'t> {
 /// Type derived for non-terminal Term
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct Term {
     pub term_opt: Option<TermOpt>,
     pub factor: Factor,
@@ -439,8 +413,7 @@ pub struct Term {
 /// Type derived for non-terminal TermOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TermOpt {
     pub unary_operator: UnaryOperator,
 }
@@ -449,8 +422,7 @@ pub struct TermOpt {
 /// Type derived for non-terminal TrailingSemicolon
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TrailingSemicolon<'t> {
     pub trailing_semicolon_opt: Option<TrailingSemicolonOpt<'t>>,
 }
@@ -459,8 +431,7 @@ pub struct TrailingSemicolon<'t> {
 /// Type derived for non-terminal TrailingSemicolonOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct TrailingSemicolonOpt<'t> {
     pub semicolon: Semicolon<'t>,
 }
@@ -469,16 +440,14 @@ pub struct TrailingSemicolonOpt<'t> {
 /// Type derived for non-terminal True
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct True {}
 
 ///
 /// Type derived for non-terminal UnaryOperator
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct UnaryOperator {
     pub not: Not,
 }
@@ -487,16 +456,14 @@ pub struct UnaryOperator {
 /// Type derived for non-terminal XnorOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct XnorOp {}
 
 ///
 /// Type derived for non-terminal XorOp
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-#[builder(crate = "parol_runtime::derive_builder")]
+#[derive(Debug, Clone)]
 pub struct XorOp {}
 
 // -------------------------------------------------------------------------------------------------

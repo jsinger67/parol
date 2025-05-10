@@ -25,8 +25,7 @@ impl std::fmt::Display for BuildRsData<'_> {
             f,
             r#"use std::process;
 
-use parol::{{build::Builder, ParolErrorReporter}};
-use parol_runtime::Report;
+use parol::{{build::Builder, parol_runtime::Report, ParolErrorReporter}};
 
 fn main() {{
     // CLI equivalent is:

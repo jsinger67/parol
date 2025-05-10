@@ -8,7 +8,7 @@ use grammar_rs::GrammarRsDataBuilder;
 use lib_rs::LibRsDataBuilder;
 use main_rs::MainRsDataBuilder;
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use clap::ArgGroup;
 use derive_builder::Builder;
 use owo_colors::OwoColorize;
@@ -95,7 +95,7 @@ pub fn main(args: &Args) -> Result<()> {
 
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "env_logger@0.11"],
-    &["add", "parol_runtime@2.1"],
+    &["add", "parol_runtime@3.0"],
     &["add", "thiserror@2.0"],
     &["add", "anyhow@1.0"],
     &[
@@ -103,7 +103,6 @@ const DEPENDENCIES: &[&[&str]] = &[
         concat!("parol@", env!("CARGO_PKG_VERSION")),
         "--build",
     ],
-    &["add", "parol_runtime@2.1", "--build"],
 ];
 
 const TREE_GEN_DEPENDENCY: &str = "add syntree_layout@0.4.0";
@@ -159,22 +158,6 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
             .status()
             .map(|_| ())?
     }
-
-    let mut cargo_toml = fs::OpenOptions::new()
-        .append(true)
-        .open(creation_data.path.join("Cargo.toml"))
-        .context("Error opening Cargo.toml file")?;
-    write!(
-        cargo_toml,
-        "
-# For faster builds.
-[profile.dev.build-override]
-opt-level = 3
-[profile.release.build-override]
-opt-level = 3
-"
-    )
-    .context("Error writing to Cargo.toml file")?;
 
     Ok(())
 }
