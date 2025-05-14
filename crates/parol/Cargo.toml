@@ -30,7 +30,7 @@ parol_runtime = { path = "../parol_runtime", version = "1.0.1", features = [
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
 petgraph = { workspace = true }
 rand = "0.9.1"
-rand_regex = "0.18.0"
+rand_regex = "0.18.1"
 regex = { workspace = true }
 regex-syntax = "0.8.5"
 serde = { version = "1.0", features = ["derive"] }
