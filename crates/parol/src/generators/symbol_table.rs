@@ -1044,7 +1044,7 @@ impl SymbolTable {
         ));
         let parent_scope_id = self.symbol_as_type(parent_type).member_scope();
         let parent_scope = self.scope_mut(parent_scope_id);
-        if parent_scope.symbols.iter().any(|s| *s == type_symbol_id) {
+        if parent_scope.symbols.contains(&type_symbol_id) {
             self[type_symbol_id].set_inner_type(referred_type_id)?;
             // parent_scope.symbols[index] = referred_type_id;
         } else {
@@ -1216,9 +1216,7 @@ impl SymbolTable {
                                     if let SymbolKind::Type(t) = &s.kind {
                                         if matches!(t.entrails, TypeEntrails::Enum) {
                                             self.members(s.my_id())
-                                                .unwrap()
-                                                .iter()
-                                                .any(|m| *m == *symbol_id)
+                                                .unwrap().contains(symbol_id)
                                         } else {
                                             false
                                         }
