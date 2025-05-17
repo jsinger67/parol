@@ -18,3 +18,10 @@ updates:
       time: "20:00"
     open-pull-requests-limit: 10
     target-branch: "release1.0"
+  - package-ecosystem: cargo # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: daily
+      time: "21:00"
+    open-pull-requests-limit: 10
+    target-branch: "release2.2"
