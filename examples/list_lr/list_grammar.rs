@@ -37,7 +37,7 @@ impl Display for ListGrammar<'_> {
     }
 }
 
-impl<'t> ListGrammarTrait for ListGrammar<'t> {
+impl ListGrammarTrait for ListGrammar<'_> {
     /// Semantic action for non-terminal 'List'
     fn list(&mut self, arg: &List) -> Result<()> {
         self.list = Some(arg.clone());

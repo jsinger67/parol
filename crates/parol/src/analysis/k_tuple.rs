@@ -213,7 +213,7 @@ impl Terminals {
     /// assert!(t.is_k_complete(5));
     /// ```
     pub fn is_k_complete(&self, k: usize) -> bool {
-        !self.is_eps() && (self.len() >= k || self.last().map_or(false, |t| t.is_end()))
+        !self.is_eps() && (self.len() >= k || self.last().is_some_and(|t| t.is_end()))
     }
 
     /// Returns the k-length, i.e. the number of symbols that contributes to lookahead sizes
