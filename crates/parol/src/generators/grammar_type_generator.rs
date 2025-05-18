@@ -624,8 +624,7 @@ impl GrammarTypeInfo {
                 }
             }
 
-            let result = self
-                .generate_member_names(prod.get_r())
+            self.generate_member_names(prod.get_r())
                 .iter()
                 .zip(types.drain(..))
                 .try_for_each(|((n, r, o), (t, a))| {
@@ -670,8 +669,7 @@ impl GrammarTypeInfo {
                             r,
                         )
                         .map(|_| Ok(()))?
-                });
-            result
+                })
         } else {
             bail!("No function!")
         }

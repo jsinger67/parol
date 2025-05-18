@@ -337,9 +337,10 @@ impl Display for KTuples {
 
 #[cfg(test)]
 mod tests {
+    use std::hint::black_box;
+
     use super::*;
-    use crate::{analysis::compiled_terminal::EPS, MAX_K};
-    use criterion::black_box;
+    use crate::{MAX_K, analysis::compiled_terminal::EPS};
     use quickcheck::{Arbitrary, Gen};
 
     // The maximum terminal index used in the k-tuples

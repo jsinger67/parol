@@ -1059,12 +1059,14 @@ fn handle_scanner_directives(
                 .identifier_list_list
                 .iter()
                 .fold(
-                    vec![trans
-                        .identifier_list
-                        .identifier
-                        .identifier
-                        .text()
-                        .to_string()],
+                    vec![
+                        trans
+                            .identifier_list
+                            .identifier
+                            .identifier
+                            .text()
+                            .to_string(),
+                    ],
                     |mut acc, i| {
                         acc.push(i.identifier.identifier.text().to_string());
                         acc
@@ -1104,7 +1106,7 @@ mod test {
     use parol_runtime::Report;
 
     use crate::{
-        formatting::{fmt_options::Trimming, format::Fmt, FmtOptions, LineEnd, Padding},
+        formatting::{FmtOptions, LineEnd, Padding, fmt_options::Trimming, format::Fmt},
         parol_ls_grammar::ParolLsGrammar,
         parol_ls_parser::parse,
         utils::RX_NEW_LINE,
@@ -1225,7 +1227,7 @@ mod test {
 
             // Only to support debugging we write out the currently generated source
             let mut actual_file = std::path::PathBuf::from(ACTUAL_FOLDER);
-            let expected_sub_folder = expected_file.iter().last().unwrap();
+            let expected_sub_folder = expected_file.iter().next_back().unwrap();
             actual_file.push(expected_sub_folder);
             fs::DirBuilder::new()
                 .recursive(true)
