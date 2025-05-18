@@ -12,6 +12,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   `parol --write-untransformed <WRITE_UNTRANSFORMED>`)
 * Change handling of token aliases when lookahead expressions are used
 * Fix generation of lookahead regex in parser source
+* Fixed clippy warnings in tests, benches and production code
+* Merged PR [#652](https://github.com/jsinger67/parol/pull/652) from [ryo33](https://github.com/ryo33)
+
+  The new feature allows to additionally generate enum node types for terminals and non-terminals.
+  Here is a quote from the PR:
+  - Introduce `TreeConstruct` trait and `parse_into` methods
+    - `parse` methods now calls `parse_into` with TreeBuilder as `TreeConstruct`.
+  - Added `generate_parser_and_export_node_infos` method to the `Builder`
+    - Exported information is helpful for users to have their generator code.
+  - Added `node_kind_enums` and `node_kind_enums_output_file` to the `Builder`
+
+  For more details please have a look at the conversation at the PR and visit ryo's
+  [swon](https://github.com/Hihaheho/swon/tree/main) project and here especially to the crate
+  [swon-tree](https://github.com/Hihaheho/swon/tree/main) to find out more about his approach of
+  constructing customized trees from parol's parse trees.
+
+  *Thanks a lot, ryo!*
+
 
 ## 3.0.1 - 2025-03-08
 
