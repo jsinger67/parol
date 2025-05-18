@@ -1,10 +1,10 @@
 use std::{borrow::Cow, cell::RefCell, path::Path};
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use parol_runtime::{
+    ScannerConfig, TerminalIndex, TokenStream, Tokenizer,
     lexer::tokenizer::{ERROR_TOKEN, UNMATCHABLE_TOKEN},
     once_cell::sync::Lazy,
-    ScannerConfig, TerminalIndex, TokenStream, Tokenizer,
 };
 use scnr::{ScannerBuilder, ScannerMode};
 
@@ -180,7 +180,7 @@ static USED_MODES: Lazy<Vec<ScannerMode>> = Lazy::new(|| {
 });
 
 fn build_scanner() {
-    let _scanner = black_box(
+    let _scanner = std::hint::black_box(
         ScannerBuilder::new()
             .add_scanner_modes(&USED_MODES)
             .build()
