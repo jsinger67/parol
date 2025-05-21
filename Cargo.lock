@@ -541,7 +541,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3092eb8c0a52f9146161afd672f10fbb970daec4fa79d17b26f79f10139cba9e"
 dependencies = [
  "ahash",
- "petgraph 0.7.1",
+ "petgraph",
 ]
 
 [[package]]
@@ -822,7 +822,7 @@ dependencies = [
  "owo-colors",
  "parol-macros",
  "parol_runtime",
- "petgraph 0.6.6",
+ "petgraph",
  "predicates",
  "pretty_assertions",
  "quickcheck",
@@ -885,7 +885,7 @@ dependencies = [
  "log",
  "once_cell",
  "parol-macros",
- "petgraph 0.6.6",
+ "petgraph",
  "quickcheck",
  "quickcheck_macros",
  "scnr",
@@ -893,16 +893,6 @@ dependencies = [
  "syntree",
  "syntree_layout",
  "thiserror",
-]
-
-[[package]]
-name = "petgraph"
-version = "0.6.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c94eb96835f05ec51384814c9b2daef83f68486f67a0e2e9680e0f698dca808e"
-dependencies = [
- "fixedbitset",
- "indexmap",
 ]
 
 [[package]]
