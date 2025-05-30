@@ -22,7 +22,7 @@ clap = { workspace = true }
 derive_builder = { version = "0.20.2" }
 env_logger = { workspace = true }
 function_name = { workspace = true }
-num_cpus = "1.16.0"
+num_cpus = "1.17.0"
 owo-colors = "4.2.1"
 parol_runtime = { path = "../parol_runtime", version = "2.2.0" }
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
