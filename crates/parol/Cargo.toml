@@ -44,7 +44,7 @@ ts-rs = "11.0.0"
 ume = "0.1"
 rayon = "1.10.0"
 tempfile = "3"
-graph-cycles = "0.2.0"
+graph-cycles = "0.3.0"
 lalry = "0.1.0"
 rustc-hash = "2.1.1"
 
