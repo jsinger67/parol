@@ -164,7 +164,7 @@ impl Recovery {
         }
 
         let root_node_index = *node_indices.get(&root_key).unwrap();
-        for end_node in graph.node_references().filter(|n| n.1 .1) {
+        for end_node in graph.node_references().filter(|n| n.1.1) {
             for path in all_simple_paths::<Vec<_>, _>(&graph, root_node_index, end_node.0, 0, None)
             {
                 let mut terminal_string = Vec::new();
@@ -214,7 +214,7 @@ mod test {
         for (i, d) in test_data.iter().enumerate() {
             assert_eq!(
                 d.1,
-                Recovery::calculate_match_ranges(d.0 .0, d.0 .1),
+                Recovery::calculate_match_ranges(d.0.0, d.0.1),
                 "test case {i} failed for input {:?}",
                 d.0
             );
