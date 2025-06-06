@@ -22,7 +22,7 @@ clap = { workspace = true }
 derive_builder = { version = "0.20.2" }
 env_logger = { workspace = true }
 function_name = { workspace = true }
-num_cpus = "1.16.0"
+num_cpus = "1.17.0"
 owo-colors = "4.2.1"
 parol_runtime = { path = "../parol_runtime", version = "3.0.0" }
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
@@ -40,7 +40,7 @@ syn = { version = "2", default-features = false, features = [
 syntree = { workspace = true }
 syntree_layout = { workspace = true }
 thiserror = { workspace = true }
-ts-rs = "10.1.0"
+ts-rs = "11.0.1"
 ume = "0.1"
 rayon = "1.10.0"
 tempfile = "3"
