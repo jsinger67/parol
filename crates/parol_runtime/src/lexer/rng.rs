@@ -177,7 +177,7 @@ mod tests {
         // Chars:
         // 0  1     2  3  4  5        6        7  8  9     10 11 12 13 14
         // L  ö     w  e  _  老       虎       _  L  é     o  p  a  r  d
-        assert_eq!(21, s.bytes().len());
+        assert_eq!(21, s.len());
         // for (i, b) in s.bytes().enumerate() {
         //     print!("{i}: 0x{b:x}");
         // }

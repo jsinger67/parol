@@ -1087,7 +1087,7 @@ mod test {
 
             // Only to support debugging we write out the currently generated source
             let mut actual_file = std::path::PathBuf::from(ACTUAL_FOLDER);
-            let expected_sub_folder = expected_file.iter().last().unwrap();
+            let expected_sub_folder = expected_file.iter().next_back().unwrap();
             actual_file.push(expected_sub_folder);
             fs::DirBuilder::new()
                 .recursive(true)
