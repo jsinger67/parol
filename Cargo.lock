@@ -536,9 +536,9 @@ dependencies = [
 
 [[package]]
 name = "graph-cycles"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3092eb8c0a52f9146161afd672f10fbb970daec4fa79d17b26f79f10139cba9e"
+checksum = "27b92c49194cd4f20bad0d9875503c951993f4249c0cfd210a49ed39ef072a0c"
 dependencies = [
  "ahash",
  "petgraph",
