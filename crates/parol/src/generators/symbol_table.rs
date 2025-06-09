@@ -1154,8 +1154,7 @@ impl SymbolTable {
         let sccs: Vec<Vec<NodeIndex>> = tarjan_scc(&graph);
 
         // Filter SCCs that contain more than one node (these contain cycles)
-        let cycles = sccs
-            .into_iter()
+        sccs.into_iter()
             .filter(|scc| scc.len() > 1)
             .map(|scc| {
                 let mut cycle_ids = scc
@@ -1165,8 +1164,7 @@ impl SymbolTable {
                 cycle_ids.sort();
                 cycle_ids
             })
-            .collect::<Vec<Vec<SymbolId>>>();
-        cycles
+            .collect::<Vec<Vec<SymbolId>>>()
     }
 
     pub(crate) fn remove_recursivity(&mut self) -> Result<()> {
