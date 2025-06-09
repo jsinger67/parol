@@ -6,8 +6,8 @@ use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::parol_grammar::UserDefinedTypeName;
 use crate::{generators::NamingHelper as NmHlp, utils::generate_name};
 use anyhow::{Result, bail};
-use graph_cycles::Cycles;
 use parol_runtime::log::trace;
+use petgraph::algo::tarjan_scc;
 use petgraph::visit::NodeRef;
 use petgraph::{
     algo::is_cyclic_directed,
@@ -1154,17 +1154,21 @@ impl SymbolTable {
         }
 
         // Now we find the cycles in the graph.
-        graph.cycles().iter().fold(Vec::new(), |mut acc, cycle| {
-            let mut cycle_ids = cycle
-                .iter()
-                .map(|i| *graph.node_weight(*i).unwrap())
-                .collect::<Vec<SymbolId>>();
-            cycle_ids.sort();
-            if !acc.contains(&cycle_ids) {
-                acc.push(cycle_ids);
-            }
-            acc
-        })
+        // Find all strongly connected components
+        let sccs: Vec<Vec<NodeIndex>> = tarjan_scc(&graph);
+
+        // Filter SCCs that contain more than one node (these contain cycles)
+        sccs.into_iter()
+            .filter(|scc| scc.len() > 1)
+            .map(|scc| {
+                let mut cycle_ids = scc
+                    .iter()
+                    .map(|&node_idx| *graph.node_weight(node_idx).unwrap())
+                    .collect::<Vec<SymbolId>>();
+                cycle_ids.sort();
+                cycle_ids
+            })
+            .collect::<Vec<Vec<SymbolId>>>()
     }
 
     pub(crate) fn remove_recursivity(&mut self) -> Result<()> {
