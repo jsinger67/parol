@@ -1,6 +1,7 @@
 use std::{
     cmp::max,
     collections::{BTreeMap, HashSet},
+    hash::RandomState,
     ops::Range,
 };
 
@@ -165,8 +166,13 @@ impl Recovery {
 
         let root_node_index = *node_indices.get(&root_key).unwrap();
         for end_node in graph.node_references().filter(|n| n.1 .1) {
-            for path in all_simple_paths::<Vec<_>, _>(&graph, root_node_index, end_node.0, 0, None)
-            {
+            for path in all_simple_paths::<Vec<_>, _, RandomState>(
+                &graph,
+                root_node_index,
+                end_node.0,
+                0,
+                None,
+            ) {
                 let mut terminal_string = Vec::new();
                 let mut prev_node_index = root_node_index;
                 for node_index in path.iter().skip(1) {
