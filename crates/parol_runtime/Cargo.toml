@@ -23,7 +23,7 @@ petgraph = { workspace = true }
 # The default feature is disabled to allow the use of the `regex_automata` feature.
 # The `regex_automata` feature can be enabled by users of this crate and it will be propagated to
 # the `scnr` crate.
-scnr = { version = "0.8.0", default-features = false }
+scnr2 = { version = "0.1.0", path = "../../../scnr2/scnr2" }
 serde_json = "1.0"
 syntree = { workspace = true }
 syntree_layout = { workspace = true }
@@ -40,12 +40,6 @@ name = "lexer_benchmark"
 harness = false
 
 [features]
-# The default feature of this crate enables the `scnr` crate with the `default` feature.
-default = ["scnr/default"]
-# Alternatively, the `regex_automata` feature can be enabled which propagates the `regex_automata`
-# feature to the `scnr` crate.
-regex_automata = ["scnr/regex_automata"]
-
 # Features to statically disable log levels in binary crates during compile time.
 # Avoid using them in libraries.
 # See https://docs.rs/log/0.4.17/log/#compile-time-filters for details.

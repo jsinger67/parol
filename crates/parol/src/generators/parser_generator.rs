@@ -296,7 +296,7 @@ impl std::fmt::Display for ParserData<'_> {
         )?;
 
         f.write_fmt(ume::ume! {
-            use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+            use parol_runtime::{TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
             use parol_runtime::parser::parse_tree_type::TreeConstruct;
@@ -381,7 +381,7 @@ impl std::fmt::Display for ParserData<'_> {
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            pub fn parse_into<'t, T: TreeConstruct<'t>>(
+            pub fn parse_into<'t, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize>>(
                 input: &'t str,
                 tree_builder: &mut T,
                 file_name: impl AsRef<Path>,
@@ -397,7 +397,7 @@ impl std::fmt::Display for ParserData<'_> {
                 #enable_trimming
                 #recovery
                 #auto_wrapper
-                llk_parser.parse_into::<T>(tree_builder, TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+                llk_parser.parse_into::<T, F>(tree_builder, TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
                     #mut_ref_user_actions)
             }
         })
@@ -447,7 +447,7 @@ impl std::fmt::Display for LRParserData<'_> {
         )?;
 
         f.write_fmt(ume::ume! {
-            use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+            use parol_runtime::{TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             use parol_runtime::{ParolError, ParseTree, TerminalIndex};
             use parol_runtime::parser::parse_tree_type::TreeConstruct;
@@ -528,7 +528,7 @@ impl std::fmt::Display for LRParserData<'_> {
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            pub fn parse_into<'t, T: TreeConstruct<'t>>(
+            pub fn parse_into<'t, T: TreeConstruct<'t>. F: Fn(char) -> Option<usize>>(
                 input: &'t str,
                 tree_builder: &mut T,
                 file_name: impl AsRef<Path>,
@@ -543,7 +543,7 @@ impl std::fmt::Display for LRParserData<'_> {
                 );
                 #enable_trimming
                 #auto_wrapper
-                lr_parser.parse_into::<T>(tree_builder, TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
+                lr_parser.parse_into::<T, F>(tree_builder, TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
                     #mut_ref_user_actions)
             }
         })

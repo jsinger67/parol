@@ -41,25 +41,13 @@ pub mod rng;
 pub use rng::{Span, ToSpan};
 
 ///
-/// Module that provides the type used for scanner configurations.
-///
-pub mod scanner_config;
-pub use scanner_config::ScannerConfig;
-
-///
 /// Module that provides basic token implementation.
 ///
 pub mod token;
-pub use token::{Token, BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE};
+pub use token::{BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, Token, WHITESPACE};
 
 mod token_buffer;
 pub(crate) use token_buffer::TokenBuffer;
-
-///
-/// Module that provides the Tokenizer type.
-///
-pub mod tokenizer;
-pub use tokenizer::Tokenizer;
 
 ///
 /// Module that provides the TokenIter type.
@@ -72,3 +60,29 @@ pub use token_iter::TokenIter;
 ///
 pub mod token_stream;
 pub use token_stream::TokenStream;
+
+///
+/// This is an  unmatchable regular expression.
+/// It is normally not included in the generated Regex's source but stands for
+/// tokens that should be skipped, i.e. if a language doesn't support block
+/// comments you could mark the regex on index token::BLOCK_COMMENT as
+/// unmatchable.
+///
+pub const UNMATCHABLE_TOKEN: &str = r"\w\b\w";
+
+///
+/// Regular expression for new lines
+///
+pub const NEW_LINE_TOKEN: &str = r"\r\n|\r|\n";
+
+///
+/// Regular expression for any whitespace except newline characters
+///
+pub const WHITESPACE_TOKEN: &str = r"[\s--\r\n]+";
+
+///
+/// Regular expression that matches any other token. With this you can detect
+/// so far unmatched tokens. It is only used for error detection during lexical
+/// analysis.
+///
+pub const ERROR_TOKEN: &str = r###"."###;

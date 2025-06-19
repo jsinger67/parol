@@ -2,11 +2,64 @@ use std::{borrow::Cow, cell::RefCell, path::Path};
 
 use criterion::{Criterion, criterion_group, criterion_main};
 use parol_runtime::{
-    ScannerConfig, TerminalIndex, TokenStream, Tokenizer,
+    TerminalIndex, TokenStream, Tokenizer,
     lexer::tokenizer::{ERROR_TOKEN, UNMATCHABLE_TOKEN},
     once_cell::sync::Lazy,
 };
-use scnr::{ScannerBuilder, ScannerMode};
+use scnr2::scanner;
+
+scanner! {
+    ParolScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1;
+            token r"[\s--\r\n]+" => 2;
+            token r"//.*(\r\n|\r|\n)?" => 3;
+            token r"/\*([^*]|\*[^/])*\*/" => 4;
+            token r"%start" => 5;
+            token r"%title" => 6;
+            token r"%comment" => 7;
+            token r"%user_type" => 8;
+            token r"=" => 9;
+            token r"%nt_type" => 10;
+            token r"=" => 11;
+            token r"%t_type" => 12;
+            token r"%grammar_type" => 13;
+            token r"%line_comment" => 14;
+            token r"%block_comment" => 15;
+            token r"%auto_newline_off" => 16;
+            token r"%auto_ws_off" => 17;
+            token r"%on" => 18;
+            token r"%enter" => 19;
+            token r"%%" => 20;
+            token r"::" => 21;
+            token r":" => 22;
+            token r";" => 23;
+            token r"\|" => 24;
+            token r"<" => 25;
+            token r">" => 26;
+            token r#""(\\.|[^"])*""# => 27;
+            token r"'(\\.|[^'])*'" => 28;
+            token r"/(\\.|[^\/])*/" => 29;
+            token r"\(" => 30;
+            token r"\)" => 31;
+            token r"\[" => 32;
+            token r"\]" => 33;
+            token r"\{" => 34;
+            token r"\}" => 35;
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 36;
+            token r"%scanner" => 37;
+            token r"," => 38;
+            token r"%sc" => 39;
+            token r"%push" => 40;
+            token r"%pop" => 41;
+            token r"@" => 42;
+            token r"\^" => 43;
+            token r"\?=" => 44;
+            token r"\?!" => 45;
+            token r"." => 46;
+        }
+    }
+}
 
 const LEXER_INPUT: &str = include_str!("./input_1.txt");
 
@@ -164,34 +217,12 @@ const SCANNER_TERMINAL_INDICES: &[TerminalIndex] = &[
 const MAX_K: usize = 3;
 const ERROR_TOKEN_INDEX: TerminalIndex = PATTERNS.len() as TerminalIndex - 1;
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig {
-        name: "INITIAL",
-        tokenizer: Tokenizer::build(PATTERNS, SCANNER_SPECIFICS, SCANNER_TERMINAL_INDICES).unwrap(),
-        transitions: &[],
-    }]
-});
-
-static USED_MODES: Lazy<Vec<ScannerMode>> = Lazy::new(|| {
-    SCANNERS
-        .iter()
-        .map(|s| s.into())
-        .collect::<Vec<ScannerMode>>()
-});
-
-fn build_scanner() {
-    let _scanner = std::hint::black_box(
-        ScannerBuilder::new()
-            .add_scanner_modes(&USED_MODES)
-            .build()
-            .expect("Scanner build failed"),
-    );
-}
-
 fn tokenize() {
     let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
-    let token_stream =
-        RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &SCANNERS, MAX_K).unwrap());
+    let scanner = parol_scanner::ParolScanner::new();
+    let token_stream = RefCell::new(
+        TokenStream::new(LEXER_INPUT, file_name, &scanner.scanner_impl, MAX_K).unwrap(),
+    );
     while !token_stream.borrow().all_input_consumed() {
         let tok = token_stream.borrow_mut().lookahead(0).unwrap();
         assert_ne!(

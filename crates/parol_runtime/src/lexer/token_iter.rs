@@ -1,25 +1,22 @@
 use crate::{
-    lexer::{location, Token},
     Location, TokenNumber,
+    lexer::{Token, location},
 };
 use location::LocationBuilder;
 use log::trace;
-use scnr::{
-    FindMatches, MatchExt, MatchExtIterator, PositionProvider, Scanner, ScannerModeSwitcher,
-    WithPositions,
-};
+use scnr2::{FindMatchesWithPosition, MatchWithPosition};
 use std::{path::PathBuf, sync::Arc};
 
 ///
 /// The TokenIter type provides iterator functionality for Token<'t> objects.
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
-pub struct TokenIter<'t> {
+pub struct TokenIter<'t, F>
+where
+    F: Fn(char) -> Option<usize> + 'static,
+{
     /// An iterator over token matches
-    pub(crate) find_iter: WithPositions<FindMatches<'t>>,
-
-    /// The tokenizer itself
-    pub(crate) scanner: Scanner,
+    pub(crate) find_iter: FindMatchesWithPosition<'t, F>,
 
     /// The input text
     pub(crate) input: &'t str,
@@ -35,15 +32,22 @@ pub struct TokenIter<'t> {
     last_location: Option<Location>,
 }
 
-impl<'t> TokenIter<'t> {
+impl<'t, F> TokenIter<'t, F>
+where
+    F: Fn(char) -> Option<usize> + 'static,
+{
     ///
     /// This function creates a token iterator from a tokenizer and an input.
     /// k determines the number of lookahead tokens the stream shall support.
     ///
-    pub fn new(scanner: Scanner, input: &'t str, file_name: Arc<PathBuf>, k: usize) -> Self {
+    pub fn new(
+        find_iter: FindMatchesWithPosition<'t, F>,
+        input: &'t str,
+        file_name: Arc<PathBuf>,
+        k: usize,
+    ) -> Self {
         Self {
-            find_iter: scanner.find_iter(input).with_positions(),
-            scanner,
+            find_iter,
             input,
             k,
             file_name: file_name.clone(),
@@ -53,8 +57,8 @@ impl<'t> TokenIter<'t> {
     }
 
     /// Returns the name of the scanner mode with the given index.
-    pub(crate) fn scanner_mode_name(&self, index: usize) -> Option<&str> {
-        self.scanner.mode_name(index)
+    pub(crate) fn scanner_mode_name(&self, index: usize) -> Option<&'static str> {
+        self.find_iter.mode_name(index)
     }
 
     /// Returns the index of the current scanner mode.
@@ -62,23 +66,22 @@ impl<'t> TokenIter<'t> {
         self.find_iter.current_mode()
     }
 
-    pub(crate) fn token_from_match(&mut self, matched: MatchExt) -> Option<Token<'t>> {
-        let token_type = matched.token_type();
+    pub(crate) fn token_from_match(&mut self, matched: MatchWithPosition) -> Option<Token<'t>> {
         if let Ok(location) = LocationBuilder::default()
-            .start_line(matched.start_position().line as u32)
-            .start_column(matched.start_position().column as u32)
-            .end_line(matched.end_position().line as u32)
-            .end_column(matched.end_position().column as u32)
-            .start(matched.start() as u32)
-            .end(matched.end() as u32)
+            .start_line(matched.start_position.line as u32)
+            .start_column(matched.start_position.column as u32)
+            .end_line(matched.end_position.line as u32)
+            .end_column(matched.end_position.column as u32)
+            .start(matched.span.start as u32)
+            .end(matched.span.end as u32)
             .file_name(self.file_name.clone())
             .build()
         {
             self.last_location = Some(location.clone());
 
             // The token's text is taken from the match
-            let text = &self.input[matched.range()];
-            let token = Token::with(text, token_type as u16, location, self.token_number);
+            let text = &self.input[matched.span];
+            let token = Token::with(text, matched.token_type as u16, location, self.token_number);
 
             if !token.is_skip_token() || token.is_comment_token() {
                 self.token_number += 1;
@@ -91,22 +94,6 @@ impl<'t> TokenIter<'t> {
         }
     }
 
-    /// Set the iterator to the given position.
-    ///
-    /// If the position is equal to the current position, the function does nothing.
-    /// If the position is greater than the current position, the function advances the iterator to
-    /// the given position.
-    /// If the position is less than the current position, the function creates a new iterator and
-    /// advances it to the given position.
-    pub fn set_position(&mut self, position: usize) {
-        self.find_iter.set_offset(position);
-    }
-
-    pub(crate) fn set_mode(&mut self, scanner_index: usize) {
-        self.scanner.set_mode(scanner_index);
-        self.find_iter.set_mode(scanner_index);
-    }
-
     #[inline]
     pub(crate) fn next_token_number(&mut self) -> TokenNumber {
         self.token_number += 1;
@@ -114,7 +101,10 @@ impl<'t> TokenIter<'t> {
     }
 }
 
-impl<'t> Iterator for TokenIter<'t> {
+impl<'t, F> Iterator for TokenIter<'t, F>
+where
+    F: Fn(char) -> Option<usize> + 'static,
+{
     type Item = Token<'t>;
     fn next(&mut self) -> Option<Token<'t>> {
         if let Some(matched) = self.find_iter.next() {

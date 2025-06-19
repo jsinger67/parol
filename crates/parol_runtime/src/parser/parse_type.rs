@@ -1,5 +1,5 @@
 use crate::lexer::TerminalIndex;
-use crate::parser::{NonTerminalIndex, ProductionIndex, ScannerIndex};
+use crate::parser::{NonTerminalIndex, ProductionIndex};
 use std::fmt::{Display, Error, Formatter};
 
 ///
@@ -18,32 +18,9 @@ pub enum ParseType {
     T(TerminalIndex),
 
     ///
-    /// Instruction to switch to a scanner configuration with the given index
-    ///
-    S(ScannerIndex),
-
-    ///
-    /// Instruction to push the index of the current scanner and switch to a scanner configuration
-    /// with the given index
-    ///
-    Push(ScannerIndex),
-
-    ///
-    /// Instruction to pop the index of the scanner pushed before and switch to the scanner
-    /// configuration with that index
-    ///
-    Pop,
-
-    ///
     /// End of production marker
     ///
     E(ProductionIndex),
-}
-
-impl ParseType {
-    pub(crate) fn is_switch(&self) -> bool {
-        matches!(self, Self::S(_)) || matches!(self, Self::Push(_)) || matches!(self, Self::Pop)
-    }
 }
 
 impl Display for ParseType {
@@ -51,9 +28,6 @@ impl Display for ParseType {
         match self {
             Self::N(n) => write!(f, "N({})", n),
             Self::T(t) => write!(f, "T({})", t),
-            Self::S(s) => write!(f, "S({})", s),
-            Self::Push(s) => write!(f, "Push({})", s),
-            Self::Pop => write!(f, "Pop"),
             Self::E(e) => write!(f, "E({})", e),
         }
     }
