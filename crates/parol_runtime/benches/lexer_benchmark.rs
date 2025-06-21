@@ -2,9 +2,8 @@ use std::{borrow::Cow, cell::RefCell, path::Path};
 
 use criterion::{Criterion, criterion_group, criterion_main};
 use parol_runtime::{
-    TerminalIndex, TokenStream, Tokenizer,
-    lexer::tokenizer::{ERROR_TOKEN, UNMATCHABLE_TOKEN},
-    once_cell::sync::Lazy,
+    TerminalIndex, TokenStream,
+    lexer::{ERROR_TOKEN, UNMATCHABLE_TOKEN},
 };
 use scnr2::scanner;
 
@@ -198,30 +197,22 @@ const PATTERNS: &[(&str, Option<(bool, &str)>)] = &[
     /* 118 */ (ERROR_TOKEN, None),
 ];
 
-const SCANNER_SPECIFICS: &[&str] = &[
-    /*  0 */ parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN,
-    /*  1 */ parol_runtime::lexer::tokenizer::NEW_LINE_TOKEN,
-    /*  2 */ parol_runtime::lexer::tokenizer::WHITESPACE_TOKEN,
-    /*  3 */ parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN,
-    /*  4 */ parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN,
-];
-
-const SCANNER_TERMINAL_INDICES: &[TerminalIndex] = &[
-    5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-    30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
-    54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
-    78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100,
-    101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118,
-];
-
 const MAX_K: usize = 3;
 const ERROR_TOKEN_INDEX: TerminalIndex = PATTERNS.len() as TerminalIndex - 1;
 
 fn tokenize() {
+    use parol_scanner::ParolScanner;
     let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
-    let scanner = parol_scanner::ParolScanner::new();
+    let scanner = ParolScanner::new();
     let token_stream = RefCell::new(
-        TokenStream::new(LEXER_INPUT, file_name, &scanner.scanner_impl, MAX_K).unwrap(),
+        TokenStream::new(
+            LEXER_INPUT,
+            file_name,
+            &scanner.scanner_impl,
+            &ParolScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
     );
     while !token_stream.borrow().all_input_consumed() {
         let tok = token_stream.borrow_mut().lookahead(0).unwrap();
@@ -245,10 +236,5 @@ fn tokenize_benchmark(c: &mut Criterion) {
     c.bench_function("tokenize", |b| b.iter(tokenize));
 }
 
-fn build_scanner_benchmark(c: &mut Criterion) {
-    c.bench_function("build_scanner", |b| b.iter(build_scanner));
-}
-
 criterion_group!(benchesscanner, tokenize_benchmark);
-criterion_group!(benchesbuilder, build_scanner_benchmark);
-criterion_main!(benchesscanner, benchesbuilder);
+criterion_main!(benchesscanner, benchesscanner);
