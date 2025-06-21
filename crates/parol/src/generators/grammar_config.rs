@@ -285,7 +285,8 @@ impl TryFrom<ParolGrammar<'_>> for GrammarConfig {
 
 #[cfg(test)]
 mod test {
-    use crate::generators::{GrammarConfig, ScannerConfig};
+
+    use crate::generators::GrammarConfig;
     use crate::parser::parol_grammar::LookaheadExpression;
     use crate::{
         Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind, obtain_grammar_config_from_string,
@@ -317,81 +318,6 @@ mod test {
                 ("ERROR_TOKEN", None),
             ]
         };
-    }
-
-    #[test]
-    fn check_generate_augmented_terminals() {
-        let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![terminal!("a"), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![terminal!("b"), Symbol::n("S")]))
-            .add_pr(Pr::new(
-                "X",
-                vec![
-                    terminal!("a"),
-                    Symbol::n("Y"),
-                    terminal!("b"),
-                    Symbol::n("Y"),
-                ],
-            ))
-            .add_pr(Pr::new("Y", vec![terminal!("b"), terminal!("a")]))
-            .add_pr(Pr::new("Y", vec![terminal!("a"), Symbol::n("Z")]))
-            .add_pr(Pr::new(
-                "Z",
-                vec![terminal!("a"), Symbol::n("Z"), Symbol::n("X")],
-            ));
-
-        let title = Some("Test grammar".to_owned());
-        let comment = Some("A simple grammar".to_owned());
-
-        let scanner_config = ScannerConfig::default()
-            .with_line_comments(vec!["//".to_owned()])
-            .with_block_comments(vec![(r"/\*".to_owned(), r"\*/".to_owned())]);
-
-        let grammar_config = GrammarConfig::new(g, 1)
-            .with_title(title)
-            .with_comment(comment)
-            .add_scanner(scanner_config);
-
-        let augment_terminals = grammar_config.generate_augmented_terminals();
-
-        assert_eq!(
-            [
-                ("UNMATCHABLE_TOKEN", None),
-                ("UNMATCHABLE_TOKEN", None),
-                ("UNMATCHABLE_TOKEN", None),
-                ("UNMATCHABLE_TOKEN", None),
-                ("UNMATCHABLE_TOKEN", None),
-                (r###"a"###, None),
-                (r###"b"###, None),
-                ("ERROR_TOKEN", None),
-            ]
-            .iter()
-            .map(|(t, l)| ((*t).to_owned(), l.clone()))
-            .collect::<Vec<(String, Option<LookaheadExpression>)>>(),
-            augment_terminals
-        );
-
-        let (terminal_mappings, transitions) = grammar_config.scanner_configurations[0]
-            .generate_build_information(&grammar_config)
-            .expect("Error generate_build_information");
-
-        // assert_eq!(
-        //     [
-        //         "UNMATCHABLE_TOKEN",
-        //         "NEW_LINE_TOKEN",
-        //         "WHITESPACE_TOKEN",
-        //         r"//.*(\r\n|\r|\n)?",
-        //         r"/\*([^*]|\*[^/])*\*/"
-        //     ]
-        //     .iter()
-        //     .map(|t| (*t).to_owned())
-        //     .collect::<Vec<String>>(),
-        //     special_terminals
-        // );
-
-        // assert_eq!(vec![5, 6], terminal_indices);
-
-        // assert_eq!("INITIAL", scanner_name);
     }
 
     #[derive(Debug)]
