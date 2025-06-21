@@ -38,14 +38,12 @@ run_task = { name = [
     "generate_calc_lr",
     "generate_json_parser",
     "generate_keywords",
-    "generate_keywords2",
     "generate_list",
     "generate_list_lr",
     "generate_oberon_0",
     "generate_oberon2",
     "generate_scanner_states",
     "generate_scanner_states_lr",
-    "generate_toml",
 ] }
 
 [tasks.generate_parol]
@@ -123,16 +121,6 @@ echo "Building parser sources of example 'keywords'..."
 ${PAROL_TARGET} -f ./keywords.par -e ./keywords-exp.par -p ./keywords_parser.rs -a ./keywords_grammar_trait.rs -t KeywordsGrammar -m keywords_grammar
 '''
 
-[tasks.generate_keywords2]
-workspace = false
-cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/keywords2"
-script_runner = "@shell"
-script = '''
-echo "Building parser sources of example 'keywords2'..."
-${PAROL_TARGET} -f ./keywords.par -e ./keywords-exp.par -p ./keywords_parser.rs -a ./keywords_grammar_trait.rs -t KeywordsGrammar -m keywords_grammar --disable-recovery
-'''
-
-
 [tasks.generate_list]
 workspace = false
 cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/list"
@@ -185,13 +173,4 @@ script_runner = "@shell"
 script = '''
 echo "Building parser sources of example 'scanner_states_lr'..."
 ${PAROL_TARGET} -f ./scanner_states.par -e ./scanner_states-exp.par -p ./scanner_states_parser.rs -a ./scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar -b -x
-'''
-
-[tasks.generate_toml]
-workspace = false
-cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/toml"
-script_runner = "@shell"
-script = '''
-echo "Building parser sources of example 'toml'..."
-${PAROL_TARGET} -f ./parol_toml.par -e ./parol_toml-exp.par -p ./parol_toml_parser.rs -a ./parol_toml_grammar_trait.rs -t ParolTomlGrammar -m parol_toml_grammar -b -x
 '''

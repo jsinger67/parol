@@ -71,7 +71,6 @@ Symbol
     : NonTerminal // EBNF: Meta-identifier
     | SimpleToken
     | TokenWithStates
-    | ScannerSwitch // Instruction to switch to new scanner state
     ;
 
 // EBNF: Terminal-string
@@ -136,12 +135,6 @@ ScannerState
 // The list of scanner states a terminal symbol is associated with
 IdentifierList
     : Identifier { ','^ Identifier }
-    ;
-
-ScannerSwitch
-    : '%sc' '('^ [ Identifier ] ')'^ // Missing identifier implies INITIAL state
-    | '%push' '('^ Identifier ')'^ // Identifier of scanner state is mandatory
-    | '%pop' '('^ ')'^ // Parentheses are also mandatory
     ;
 
 ASTControl

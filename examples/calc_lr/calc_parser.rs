@@ -5,46 +5,15 @@
 // ---------------------------------------------------------
 
 use parol_runtime::lr_parser::{LR1State, LRAction, LRParseTable, LRParser, LRProduction};
-use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
 use parol_runtime::parser::{ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{ParolError, ParseTree, TokenStream};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::calc_grammar::CalcGrammar;
 use crate::calc_grammar_trait::CalcGrammarAuto;
-
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 23] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None),
-    /*  1 */ (UNMATCHABLE_TOKEN, None),
-    /*  2 */ (UNMATCHABLE_TOKEN, None),
-    /*  3 */ (UNMATCHABLE_TOKEN, None),
-    /*  4 */ (UNMATCHABLE_TOKEN, None),
-    /*  5 */ (r";", None),
-    /*  6 */ (r"==|!=", None),
-    /*  7 */ (r"(\+|-|\*|\/|%|<<|>>|&|\^|\|)?=", None),
-    /*  8 */ (r"\|\|", None),
-    /*  9 */ (r"\&\&", None),
-    /* 10 */ (r"\|", None),
-    /* 11 */ (r"\&", None),
-    /* 12 */ (r"<<|>>", None),
-    /* 13 */ (r"<=|<|>=|>", None),
-    /* 14 */ (r"\+", None),
-    /* 15 */ (r"\-", None),
-    /* 16 */ (r"\*\*", None),
-    /* 17 */ (r"\*|\/|%", None),
-    /* 18 */ (r"\(", None),
-    /* 19 */ (r"\)", None),
-    /* 20 */ (r"0|[1-9][0-9]*", None),
-    /* 21 */ (r"[a-zA-Z_][a-zA-Z0-9_]*", None),
-    /* 22 */ (ERROR_TOKEN, None),
-];
 
 pub const TERMINAL_NAMES: &[&str; 23] = &[
     /*  0 */ "EndOfInput",
@@ -72,35 +41,33 @@ pub const TERMINAL_NAMES: &[&str; 23] = &[
     /* 22 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 17]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ NEW_LINE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"//.*(\r\n|\r|\n)?",
-        /*  4 */ r"/\*([^*]|\*[^/])*\*/",
-    ],
-    &[
-        5,  /* Semicolon */
-        6,  /* EqualityOp */
-        7,  /* AssignOp */
-        8,  /* LogicalOrOp */
-        9,  /* LogicalAndOp */
-        10, /* BitwiseOrOp */
-        11, /* BitwiseAndOp */
-        12, /* BitwiseShiftOp */
-        13, /* RelationalOp */
-        14, /* Plus */
-        15, /* Minus */
-        16, /* PowOp */
-        17, /* MultOp */
-        18, /* LParen */
-        19, /* RParen */
-        20, /* Number */
-        21, /* Id */
-    ],
-);
+scanner! {
+  CalcGrammarScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1;
+            token r"[\s--\r\n]+" => 2;
+            token r"//.*(\r\n|\r|\n)?" => 3;
+            token r"/\*([^*]|\*[^/])*\*/" => 4;
+            token r";" => 5;
+            token r"==|!=" => 6;
+            token r"(\+|-|\*|\/|%|<<|>>|&|\^|\|)?=" => 7;
+            token r"\|\|" => 8;
+            token r"\&\&" => 9;
+            token r"\|" => 10;
+            token r"\&" => 11;
+            token r"<<|>>" => 12;
+            token r"<=|<|>=|>" => 13;
+            token r"\+" => 14;
+            token r"\-" => 15;
+            token r"\*\*" => 16;
+            token r"\*|\/|%" => 17;
+            token r"\(" => 18;
+            token r"\)" => 19;
+            token r"0|[1-9][0-9]*" => 20;
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 21;
+    }
+  }
+}
 
 pub const NON_TERMINALS: &[&str; 44] = &[
     /*  0 */ "AddOp",
@@ -1475,14 +1442,6 @@ pub const PRODUCTIONS: &[LRProduction; 61] = &[
     LRProduction { lhs: 20, len: 1 },
 ];
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig::new(
-        "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-        &[],
-    )]
-});
-
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
@@ -1508,14 +1467,23 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use calc_grammar_scanner::CalcGrammarScanner;
     let mut lr_parser = LRParser::new(14, &PARSE_TABLE, PRODUCTIONS, TERMINAL_NAMES, NON_TERMINALS);
     lr_parser.trim_parse_tree();
 
     // Initialize wrapper
     let mut user_actions = CalcGrammarAuto::new(user_actions);
-    lr_parser.parse_into::<T>(
+    let scanner = CalcGrammarScanner::new();
+    lr_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &CalcGrammarScanner::match_function,
+            1,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

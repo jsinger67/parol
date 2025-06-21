@@ -4,7 +4,7 @@ use crate::analysis::lalr1_parse_table::LR1State;
 use crate::analysis::lookahead_dfa::CompiledProductionIndex;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
 use crate::conversions::dot::render_dfa_dot_string;
-use crate::generators::GrammarConfig;
+use crate::generators::{GrammarConfig, NamingHelper};
 use crate::{LRAction, LRParseTable, Pr, Symbol, Terminal};
 use anyhow::{Result, anyhow};
 use parol_runtime::lexer::{
@@ -258,9 +258,10 @@ struct ParserData<'a> {
     dfa_source: String,
     productions: String,
     max_k: usize,
-    scanner_builds: StrVec,
     user_type_name: &'a str,
     user_type_life_time: &'static str,
+    scanner_type_name: String,
+    scanner_module_name: String,
     module_name: &'a str,
     trim_parse_tree: bool,
     disable_recovery: bool,
@@ -276,8 +277,9 @@ impl std::fmt::Display for ParserData<'_> {
             dfa_source,
             productions,
             max_k,
-            scanner_builds,
             user_type_name,
+            scanner_type_name,
+            scanner_module_name,
             user_type_life_time,
             module_name,
             trim_parse_tree,
@@ -296,14 +298,13 @@ impl std::fmt::Display for ParserData<'_> {
         )?;
 
         f.write_fmt(ume::ume! {
-            use parol_runtime::{TokenStream, Tokenizer};
-            use parol_runtime::once_cell::sync::Lazy;
-            use parol_runtime::{ParolError, ParseTree, TerminalIndex};
+            use parol_runtime::{ParolError, ParseTree, TokenStream};
             use parol_runtime::parser::parse_tree_type::TreeConstruct;
             #[allow(unused_imports)]
             use parol_runtime::parser::{
                 Trans, LLKParser, LookaheadDFA, ParseType, Production
             };
+            use scnr2::scanner;
             use std::path::Path;
         })?;
 
@@ -329,12 +330,6 @@ impl std::fmt::Display for ParserData<'_> {
         writeln!(f, "\n\n{}", dfa_source)?;
         writeln!(f, "\n{}\n", productions)?;
 
-        f.write_fmt(ume::ume! {
-            static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| vec![
-                #scanner_builds
-            ]);
-        })?;
-
         writeln!(f, "\n")?;
 
         let user_actions = ume::ume!(&mut #user_type_name #user_type_life_time).to_string();
@@ -348,6 +343,14 @@ impl std::fmt::Display for ParserData<'_> {
         } else {
             ""
         };
+        let use_scanner_type = ume::ume! {
+            use #scanner_module_name::#scanner_type_name;
+        }
+        .to_string();
+        let scanner_instance = ume::ume! {
+            let scanner = #scanner_type_name::new();
+        }
+        .to_string();
         let auto_wrapper = format!(
             "\n// Initialize wrapper\n{}",
             ume::ume! {
@@ -381,12 +384,13 @@ impl std::fmt::Display for ParserData<'_> {
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            pub fn parse_into<'t, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize>>(
+            pub fn parse_into<'t, T: TreeConstruct<'t>>(
                 input: &'t str,
                 tree_builder: &mut T,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
             ) -> Result<(), ParolError> where ParolError: From<T::Error> {
+                #use_scanner_type
                 let mut llk_parser = LLKParser::new(
                     #start_symbol_index,
                     LOOKAHEAD_AUTOMATA,
@@ -396,9 +400,21 @@ impl std::fmt::Display for ParserData<'_> {
                 );
                 #enable_trimming
                 #recovery
+                #scanner_instance
                 #auto_wrapper
-                llk_parser.parse_into::<T, F>(tree_builder, TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
-                    #mut_ref_user_actions)
+
+                llk_parser.parse_into(
+                    tree_builder,
+                    TokenStream::new(
+                        input,
+                        file_name,
+                        &scanner.scanner_impl,
+                        &#scanner_type_name::match_function,
+                        MAX_K,
+                    )
+                    .unwrap(),
+                    #mut_ref_user_actions
+                )
             }
         })
     }
@@ -411,9 +427,10 @@ struct LRParserData<'a> {
     non_terminals: StrVec,
     non_terminal_count: usize,
     productions: String,
-    scanner_builds: StrVec,
     user_type_name: &'a str,
     user_type_life_time: &'static str,
+    scanner_type_name: String,
+    scanner_module_name: String,
     module_name: &'a str,
     trim_parse_tree: bool,
     parse_table_source: String,
@@ -427,9 +444,10 @@ impl std::fmt::Display for LRParserData<'_> {
             non_terminals,
             non_terminal_count,
             productions,
-            scanner_builds,
             user_type_name,
             user_type_life_time,
+            scanner_type_name,
+            scanner_module_name,
             module_name,
             trim_parse_tree,
             parse_table_source,
@@ -447,13 +465,12 @@ impl std::fmt::Display for LRParserData<'_> {
         )?;
 
         f.write_fmt(ume::ume! {
-            use parol_runtime::{TokenStream, Tokenizer};
-            use parol_runtime::once_cell::sync::Lazy;
-            use parol_runtime::{ParolError, ParseTree, TerminalIndex};
+            use parol_runtime::{ParolError, ParseTree, TokenStream};
             use parol_runtime::parser::parse_tree_type::TreeConstruct;
             #[allow(unused_imports)]
             use parol_runtime::parser::{Trans, ParseType, Production};
             use parol_runtime::lr_parser::{LRParseTable, LRParser, LRProduction, LR1State, LRAction};
+            use scnr2::scanner;
             use std::path::Path;
         })?;
 
@@ -480,12 +497,6 @@ impl std::fmt::Display for LRParserData<'_> {
         )?;
         writeln!(f, "\n{}\n", productions)?;
 
-        f.write_fmt(ume::ume! {
-            static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| vec![
-                #scanner_builds
-            ]);
-        })?;
-
         writeln!(f, "\n")?;
 
         let user_actions = ume::ume!(&mut #user_type_name #user_type_life_time).to_string();
@@ -511,6 +522,14 @@ impl std::fmt::Display for LRParserData<'_> {
         } else {
             ""
         };
+        let use_scanner_type = ume::ume! {
+            use #scanner_module_name::#scanner_type_name;
+        }
+        .to_string();
+        let scanner_instance = ume::ume! {
+            let scanner = #scanner_type_name::new();
+        }
+        .to_string();
 
         f.write_fmt(ume::ume! {
             pub fn parse<#lifetime_on_parse T>(
@@ -528,12 +547,13 @@ impl std::fmt::Display for LRParserData<'_> {
         })?;
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
-            pub fn parse_into<'t, T: TreeConstruct<'t>. F: Fn(char) -> Option<usize>>(
+            pub fn parse_into<'t, T: TreeConstruct<'t>>(
                 input: &'t str,
                 tree_builder: &mut T,
                 file_name: impl AsRef<Path>,
                 user_actions: #user_actions,
             ) -> Result<(), ParolError> where ParolError: From<T::Error> {
+                #use_scanner_type
                 let mut lr_parser = LRParser::new(
                     #start_symbol_index,
                     &PARSE_TABLE,
@@ -543,8 +563,19 @@ impl std::fmt::Display for LRParserData<'_> {
                 );
                 #enable_trimming
                 #auto_wrapper
-                lr_parser.parse_into::<T, F>(tree_builder, TokenStream::new(input, file_name, &SCANNERS, 1).unwrap(),
-                    #mut_ref_user_actions)
+                #scanner_instance
+                lr_parser.parse_into(
+                    tree_builder,
+                    TokenStream::new(
+                        input,
+                        file_name,
+                        &scanner.scanner_impl,
+                        &#scanner_type_name::match_function,
+                        1,
+                    )
+                    .unwrap(),
+                    #mut_ref_user_actions
+                )
             }
         })
     }
@@ -587,8 +618,6 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
 
     let max_k = grammar_config.lookahead_size;
 
-    let scanner_builds = generate_scanner_builds(grammar_config);
-
     let user_type_life_time = if ast_type_has_lifetime { "<'t>" } else { "" };
 
     let parser_data = ParserData {
@@ -599,35 +628,16 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
         dfa_source,
         productions,
         max_k,
-        scanner_builds,
         user_type_name: config.user_type_name(),
         user_type_life_time,
+        scanner_type_name: get_scanner_type_name(config),
+        scanner_module_name: get_scanner_module_name(config),
         module_name: config.module_name(),
         trim_parse_tree: config.trim_parse_tree(),
         disable_recovery: config.recovery_disabled(),
     };
 
     Ok(format!("{}", parser_data))
-}
-
-fn generate_scanner_builds(grammar_config: &GrammarConfig) -> StrVec {
-    let primary_non_terminal_finder = grammar_config.cfg.get_primary_non_terminal_finder();
-    let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
-    grammar_config
-        .scanner_configurations
-        .iter()
-        .enumerate()
-        .fold(StrVec::new(0), |mut acc, (i, e)| {
-            let transitions = e.transitions.iter().fold(StrVec::new(4), |mut acc, t| {
-                acc.push(format!(r#"({} /* {} */, {} /* {} */),"#, t.0, primary_non_terminal_finder(t.0).unwrap_or("".to_string()), t.1, scanner_state_resolver(&[t.1])));
-                acc
-            });
-            acc.push(format!(
-                r#"ScannerConfig::new("{}", Tokenizer::build(TERMINALS, SCANNER_{}.0, SCANNER_{}.1).unwrap(), &[{}]),"#,
-                e.scanner_name, i, i, transitions
-            ));
-            acc
-        })
 }
 
 fn get_terminals(grammar_config: &GrammarConfig) -> Vec<&str> {
@@ -652,6 +662,16 @@ fn find_start_symbol_index(
                 grammar_config.cfg.get_start_symbol()
             )
         })
+}
+
+fn get_scanner_module_name<C: CommonGeneratorConfig>(config: &C) -> String {
+    let scanner_module_name = NamingHelper::to_lower_snake_case(config.user_type_name());
+    scanner_module_name + "_scanner"
+}
+
+fn get_scanner_type_name<C: CommonGeneratorConfig>(config: &C) -> String {
+    let scanner_type_name = NamingHelper::to_upper_camel_case(config.user_type_name());
+    scanner_type_name + "Scanner"
 }
 
 // ---------------------------------------------------
@@ -685,7 +705,6 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
                 acc
             });
     let productions = generate_lr_productions(grammar_config, &original_non_terminals);
-    let scanner_builds = generate_scanner_builds(grammar_config);
 
     let user_type_life_time = if ast_type_has_lifetime { "<'t>" } else { "" };
 
@@ -697,9 +716,10 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
         non_terminals: non_terminals_with_index_comment,
         non_terminal_count,
         productions,
-        scanner_builds,
         user_type_name: config.user_type_name(),
         user_type_life_time,
+        scanner_type_name: get_scanner_type_name(config),
+        scanner_module_name: get_scanner_module_name(config),
         module_name: config.module_name(),
         trim_parse_tree: config.trim_parse_tree(),
         parse_table_source,

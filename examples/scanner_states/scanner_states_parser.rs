@@ -4,34 +4,15 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{ParolError, ParseTree, TokenStream};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::scanner_states_grammar::ScannerStatesGrammar;
 use crate::scanner_states_grammar_trait::ScannerStatesGrammarAuto;
-
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 11] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None),
-    /*  1 */ (UNMATCHABLE_TOKEN, None),
-    /*  2 */ (UNMATCHABLE_TOKEN, None),
-    /*  3 */ (UNMATCHABLE_TOKEN, None),
-    /*  4 */ (UNMATCHABLE_TOKEN, None),
-    /*  5 */ (r"[a-zA-Z_]\w*", None),
-    /*  6 */ (r#"\\["\\bfnt]"#, None),
-    /*  7 */ (r"\\[\s--\n\r]*\r?\n", None),
-    /*  8 */ (r#"[^"\\]+"#, None),
-    /*  9 */ (r#"""#, None),
-    /* 10 */ (ERROR_TOKEN, None),
-];
 
 pub const TERMINAL_NAMES: &[&str; 11] = &[
     /*  0 */ "EndOfInput",
@@ -47,34 +28,26 @@ pub const TERMINAL_NAMES: &[&str; 11] = &[
     /* 10 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ NEW_LINE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"//.*(\r\n|\r|\n)?",
-        /*  4 */ r"/\*([^*]|\*[^/])*\*/",
-    ],
-    &[5 /* Identifier */, 9 /* StringDelimiter */],
-);
-
-/* SCANNER_1: "String" */
-const SCANNER_1: (&[&str; 5], &[TerminalIndex; 4]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ UNMATCHABLE_TOKEN,
-        /*  2 */ UNMATCHABLE_TOKEN,
-        /*  3 */ UNMATCHABLE_TOKEN,
-        /*  4 */ UNMATCHABLE_TOKEN,
-    ],
-    &[
-        6, /* Escaped */
-        7, /* EscapedLineEnd */
-        8, /* NoneQuote */
-        9, /* StringDelimiter */
-    ],
-);
+scanner! {
+  ScannerStatesGrammarScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1;
+            token r"[\s--\r\n]+" => 2;
+            token r"//.*(\r\n|\r|\n)?" => 3;
+            token r"/\*([^*]|\*[^/])*\*/" => 4;
+            token r"[a-zA-Z_]\w*" => 5;
+            token r#"""# => 9;
+            transition 9 => String;
+    }
+        mode String {
+            token r#"\\["\\bfnt]"# => 6;
+            token r"\\[\s--\n\r]*\r?\n" => 7;
+            token r#"[^"\\]+"# => 8;
+            token r#"""# => 9;
+            transition 9 => INITIAL;
+    }
+  }
+}
 
 const MAX_K: usize = 1;
 
@@ -187,16 +160,10 @@ pub const PRODUCTIONS: &[Production; 16] = &[
         lhs: 0,
         production: &[ParseType::N(3)],
     },
-    // 4 - Content: StringDelimiter Push(1) StringContent StringDelimiter Pop;
+    // 4 - Content: StringDelimiter StringContent StringDelimiter;
     Production {
         lhs: 0,
-        production: &[
-            ParseType::Pop,
-            ParseType::N(9),
-            ParseType::N(7),
-            ParseType::Push(1),
-            ParseType::N(9),
-        ],
+        production: &[ParseType::N(9), ParseType::N(7), ParseType::N(9)],
     },
     // 5 - StringContent: StringContentList /* Vec */;
     Production {
@@ -255,21 +222,6 @@ pub const PRODUCTIONS: &[Production; 16] = &[
     },
 ];
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![
-        ScannerConfig::new(
-            "INITIAL",
-            Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-            &[],
-        ),
-        ScannerConfig::new(
-            "String",
-            Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
-            &[],
-        ),
-    ]
-});
-
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
@@ -295,6 +247,7 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use scanner_states_grammar_scanner::ScannerStatesGrammarScanner;
     let mut llk_parser = LLKParser::new(
         5,
         LOOKAHEAD_AUTOMATA,
@@ -303,12 +256,19 @@ where
         NON_TERMINALS,
     );
     llk_parser.disable_recovery();
-
+    let scanner = ScannerStatesGrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = ScannerStatesGrammarAuto::new(user_actions);
-    llk_parser.parse_into::<T>(
+    llk_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &ScannerStatesGrammarScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

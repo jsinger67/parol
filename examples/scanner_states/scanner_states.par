@@ -6,10 +6,13 @@
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
+%on StringDelimiter %enter String
+
 // Here we introduce a new scanner state 'String'
 %scanner String {
     %auto_newline_off
     %auto_ws_off
+    %on StringDelimiter %enter INITIAL
 }
 
 %%
@@ -22,11 +25,9 @@ Content
     | StringDelimiter
       // Here we push the current scanner index (INITIAL) on the scanner stack and switch to
       // the scanner 'String'
-      %push(String)
       StringContent StringDelimiter
       // And here we return to the scanner INITIAL again by popping it from the scanner stack and
       // switching to it.
-      %pop()
     ;
 
 // Another valid version of the production above with the same effect is to use %sc as shown below.

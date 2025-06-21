@@ -1252,8 +1252,8 @@ pub struct DoBlock<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Element<'t> {
-    pub expr: Box<Expr<'t>>,
-    pub element_opt: Option<Box<ElementOpt<'t>>>,
+    pub expr: Expr<'t>,
+    pub element_opt: Option<ElementOpt<'t>>,
 }
 
 ///
@@ -1290,7 +1290,7 @@ pub struct ElsifPart<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Expr<'t> {
-    pub simple_expr: Box<SimpleExpr<'t>>,
+    pub simple_expr: SimpleExpr<'t>,
     pub expr_opt: Option<ExprOpt<'t>>,
 }
 
@@ -1362,7 +1362,7 @@ pub enum Factor<'t> {
     Character(FactorCharacter<'t>),
     String(FactorString<'t>),
     NIL(FactorNIL),
-    Set(Box<FactorSet<'t>>),
+    Set(FactorSet<'t>),
     LParenExprRParen(FactorLParenExprRParen<'t>),
     TildeFactor(FactorTildeFactor<'t>),
 }
@@ -5415,7 +5415,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr_opt = pop_item!(self, expr_opt, ExprOpt, context);
         let simple_expr = pop_item!(self, simple_expr, SimpleExpr, context);
         let expr_built = Expr {
-            simple_expr: Box::new(simple_expr),
+            simple_expr,
             expr_opt,
         };
         // Calling user action here
@@ -5746,7 +5746,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let set = pop_item!(self, set, Set, context);
         let factor_5_built = FactorSet { set: Box::new(set) };
-        let factor_5_built = Factor::Set(Box::new(factor_5_built));
+        let factor_5_built = Factor::Set(factor_5_built);
         // Calling user action here
         self.user_grammar.factor(&factor_5_built)?;
         self.push(ASTType::Factor(factor_5_built), context);
@@ -5957,10 +5957,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let element_opt = pop_item!(self, element_opt, ElementOpt, context);
         let expr = pop_item!(self, expr, Expr, context);
-        let element_built = Element {
-            expr: Box::new(expr),
-            element_opt: element_opt.map(Box::new),
-        };
+        let element_built = Element { expr, element_opt };
         // Calling user action here
         self.user_grammar.element(&element_built)?;
         self.push(ASTType::Element(element_built), context);

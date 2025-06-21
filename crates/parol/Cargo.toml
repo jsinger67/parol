@@ -43,6 +43,7 @@ thiserror = { workspace = true }
 ts-rs = "11.0.1"
 ume = "0.1"
 rayon = "1.10.0"
+scnr2 = { workspace = true }
 tempfile = "3"
 lalry = "0.1.0"
 rustc-hash = "2.1.1"
@@ -81,10 +82,6 @@ name = "keywords"
 path = "../../examples/keywords/main.rs"
 
 [[example]]
-name = "keywords2"
-path = "../../examples/keywords2/main.rs"
-
-[[example]]
 name = "list"
 path = "../../examples/list/main.rs"
 
@@ -107,10 +104,6 @@ path = "../../examples/scanner_states/main.rs"
 [[example]]
 name = "scanner_states_lr"
 path = "../../examples/scanner_states_lr/main.rs"
-
-[[example]]
-name = "toml"
-path = "../../examples/toml/main.rs"
 
 
 [[bench]]

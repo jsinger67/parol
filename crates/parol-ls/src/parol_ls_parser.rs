@@ -4,69 +4,15 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{ParolError, ParseTree, TokenStream};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::parol_ls_grammar::ParolLsGrammar;
 use crate::parol_ls_grammar_trait::ParolLsGrammarAuto;
-
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 46] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None),
-    /*  1 */ (UNMATCHABLE_TOKEN, None),
-    /*  2 */ (UNMATCHABLE_TOKEN, None),
-    /*  3 */ (UNMATCHABLE_TOKEN, None),
-    /*  4 */ (UNMATCHABLE_TOKEN, None),
-    /*  5 */ (r"%start", None),
-    /*  6 */ (r"%title", None),
-    /*  7 */ (r"%comment", None),
-    /*  8 */ (r"%user_type", None),
-    /*  9 */ (r"=", None),
-    /* 10 */ (r"%nt_type", None),
-    /* 11 */ (r"%t_type", None),
-    /* 12 */ (r"%grammar_type", None),
-    /* 13 */ (r"%line_comment", None),
-    /* 14 */ (r"%block_comment", None),
-    /* 15 */ (r"%auto_newline_off", None),
-    /* 16 */ (r"%auto_ws_off", None),
-    /* 17 */ (r"%on", None),
-    /* 18 */ (r"%enter", None),
-    /* 19 */ (r"%%", None),
-    /* 20 */ (r"::", None),
-    /* 21 */ (r":", None),
-    /* 22 */ (r";", None),
-    /* 23 */ (r"\|", None),
-    /* 24 */ (r"<", None),
-    /* 25 */ (r">", None),
-    /* 26 */ (r"\(", None),
-    /* 27 */ (r"\)", None),
-    /* 28 */ (r"\[", None),
-    /* 29 */ (r"\]", None),
-    /* 30 */ (r"\{", None),
-    /* 31 */ (r"\}", None),
-    /* 32 */ (r"[a-zA-Z_][a-zA-Z0-9_]*", None),
-    /* 33 */ (r#""(\\.|[^"])*""#, None),
-    /* 34 */ (r"'(\\.|[^'])*'", None),
-    /* 35 */ (r"%scanner", None),
-    /* 36 */ (r",", None),
-    /* 37 */ (r"%sc", None),
-    /* 38 */ (r"%push", None),
-    /* 39 */ (r"%pop", None),
-    /* 40 */ (r"@", None),
-    /* 41 */ (r"\^", None),
-    /* 42 */ (r"/(\\.|[^\/])*/", None),
-    /* 43 */ (r"\?=", None),
-    /* 44 */ (r"\?!", None),
-    /* 45 */ (ERROR_TOKEN, None),
-];
 
 pub const TERMINAL_NAMES: &[&str; 46] = &[
     /*  0 */ "EndOfInput",
@@ -117,58 +63,56 @@ pub const TERMINAL_NAMES: &[&str; 46] = &[
     /* 45 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 40]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ NEW_LINE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"//.*(\r\n|\r|\n)?",
-        /*  4 */ r"/\*([^*]|\*[^/])*\*/",
-    ],
-    &[
-        5,  /* PercentStart */
-        6,  /* PercentTitle */
-        7,  /* PercentComment */
-        8,  /* PercentUserUnderscoreType */
-        9,  /* Equ */
-        10, /* PercentNtUnderscoreType */
-        11, /* PercentTUnderscoreType */
-        12, /* PercentGrammarUnderscoreType */
-        13, /* PercentLineUnderscoreComment */
-        14, /* PercentBlockUnderscoreComment */
-        15, /* PercentAutoUnderscoreNewlineUnderscoreOff */
-        16, /* PercentAutoUnderscoreWsUnderscoreOff */
-        17, /* PercentOn */
-        18, /* PercentEnter */
-        19, /* PercentPercent */
-        20, /* DoubleColon */
-        21, /* Colon */
-        22, /* Semicolon */
-        23, /* Or */
-        24, /* LT */
-        25, /* GT */
-        26, /* LParen */
-        27, /* RParen */
-        28, /* LBracket */
-        29, /* RBracket */
-        30, /* LBrace */
-        31, /* RBrace */
-        32, /* Identifier */
-        33, /* String */
-        34, /* LiteralString */
-        35, /* PercentScanner */
-        36, /* Comma */
-        37, /* PercentSc */
-        38, /* PercentPush */
-        39, /* PercentPop */
-        40, /* At */
-        41, /* CutOperator */
-        42, /* Regex */
-        43, /* PositiveLookahead */
-        44, /* NegativeLookahead */
-    ],
-);
+scanner! {
+  ParolLsGrammarScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1;
+            token r"[\s--\r\n]+" => 2;
+            token r"//.*(\r\n|\r|\n)?" => 3;
+            token r"/\*([^*]|\*[^/])*\*/" => 4;
+            token r"%start" => 5;
+            token r"%title" => 6;
+            token r"%comment" => 7;
+            token r"%user_type" => 8;
+            token r"=" => 9;
+            token r"%nt_type" => 10;
+            token r"%t_type" => 11;
+            token r"%grammar_type" => 12;
+            token r"%line_comment" => 13;
+            token r"%block_comment" => 14;
+            token r"%auto_newline_off" => 15;
+            token r"%auto_ws_off" => 16;
+            token r"%on" => 17;
+            token r"%enter" => 18;
+            token r"%%" => 19;
+            token r"::" => 20;
+            token r":" => 21;
+            token r";" => 22;
+            token r"\|" => 23;
+            token r"<" => 24;
+            token r">" => 25;
+            token r"\(" => 26;
+            token r"\)" => 27;
+            token r"\[" => 28;
+            token r"\]" => 29;
+            token r"\{" => 30;
+            token r"\}" => 31;
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 32;
+            token r#""(\\.|[^"])*""# => 33;
+            token r"'(\\.|[^'])*'" => 34;
+            token r"%scanner" => 35;
+            token r"," => 36;
+            token r"%sc" => 37;
+            token r"%push" => 38;
+            token r"%pop" => 39;
+            token r"@" => 40;
+            token r"\^" => 41;
+            token r"/(\\.|[^\/])*/" => 42;
+            token r"\?=" => 43;
+            token r"\?!" => 44;
+    }
+  }
+}
 
 const MAX_K: usize = 1;
 
@@ -1245,14 +1189,6 @@ pub const PRODUCTIONS: &[Production; 88] = &[
     },
 ];
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig::new(
-        "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-        &[],
-    )]
-});
-
 pub fn parse<T>(
     input: &str,
     file_name: T,
@@ -1278,6 +1214,7 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use parol_ls_grammar_scanner::ParolLsGrammarScanner;
     let mut llk_parser = LLKParser::new(
         24,
         LOOKAHEAD_AUTOMATA,
@@ -1286,12 +1223,19 @@ where
         NON_TERMINALS,
     );
     llk_parser.trim_parse_tree();
-
+    let scanner = ParolLsGrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = ParolLsGrammarAuto::new(user_actions);
-    llk_parser.parse_into::<T>(
+    llk_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &ParolLsGrammarScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

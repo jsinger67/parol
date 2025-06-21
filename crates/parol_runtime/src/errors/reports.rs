@@ -122,14 +122,6 @@ pub trait Report {
                         .with_message(format!("Lexer recovery error: {e}"))
                         .with_code("parol_runtime::lexer::recovery"),
                 )?),
-                LexerError::RegexError(e) => Ok(term::emit(
-                    &mut writer.lock(),
-                    &config,
-                    &files,
-                    &Diagnostic::bug()
-                        .with_message(format!("Regex error: {e}"))
-                        .with_code("parol_runtime::lexer::regex_error"),
-                )?),
             }
         };
 

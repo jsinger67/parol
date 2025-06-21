@@ -23,7 +23,7 @@ petgraph = { workspace = true }
 # The default feature is disabled to allow the use of the `regex_automata` feature.
 # The `regex_automata` feature can be enabled by users of this crate and it will be propagated to
 # the `scnr` crate.
-scnr2 = { version = "0.1.0", path = "../../../scnr2/scnr2" }
+scnr2 = { workspace = true }
 serde_json = "1.0"
 syntree = { workspace = true }
 syntree_layout = { workspace = true }

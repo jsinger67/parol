@@ -4,72 +4,17 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{ParolError, ParseTree, TokenStream};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_grammar_trait::ParolGrammarAuto;
 
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 47] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None),
-    /*  1 */ (UNMATCHABLE_TOKEN, None),
-    /*  2 */ (UNMATCHABLE_TOKEN, None),
-    /*  3 */ (UNMATCHABLE_TOKEN, None),
-    /*  4 */ (UNMATCHABLE_TOKEN, None),
-    /*  5 */ (r"%start", None),
-    /*  6 */ (r"%title", None),
-    /*  7 */ (r"%comment", None),
-    /*  8 */ (r"%user_type", None),
-    /*  9 */ (r"=", None),
-    /* 10 */ (r"%nt_type", None),
-    /* 11 */ (r"=", None),
-    /* 12 */ (r"%t_type", None),
-    /* 13 */ (r"%grammar_type", None),
-    /* 14 */ (r"%line_comment", None),
-    /* 15 */ (r"%block_comment", None),
-    /* 16 */ (r"%auto_newline_off", None),
-    /* 17 */ (r"%auto_ws_off", None),
-    /* 18 */ (r"%on", None),
-    /* 19 */ (r"%enter", None),
-    /* 20 */ (r"%%", None),
-    /* 21 */ (r"::", None),
-    /* 22 */ (r":", None),
-    /* 23 */ (r";", None),
-    /* 24 */ (r"\|", None),
-    /* 25 */ (r"<", None),
-    /* 26 */ (r">", None),
-    /* 27 */ (r#""(\\.|[^"])*""#, None),
-    /* 28 */ (r"'(\\.|[^'])*'", None),
-    /* 29 */ (r"/(\\.|[^\/])*/", None),
-    /* 30 */ (r"\(", None),
-    /* 31 */ (r"\)", None),
-    /* 32 */ (r"\[", None),
-    /* 33 */ (r"\]", None),
-    /* 34 */ (r"\{", None),
-    /* 35 */ (r"\}", None),
-    /* 36 */ (r"[a-zA-Z_][a-zA-Z0-9_]*", None),
-    /* 37 */ (r"%scanner", None),
-    /* 38 */ (r",", None),
-    /* 39 */ (r"%sc", None),
-    /* 40 */ (r"%push", None),
-    /* 41 */ (r"%pop", None),
-    /* 42 */ (r"@", None),
-    /* 43 */ (r"\^", None),
-    /* 44 */ (r"\?=", None),
-    /* 45 */ (r"\?!", None),
-    /* 46 */ (ERROR_TOKEN, None),
-];
-
-pub const TERMINAL_NAMES: &[&str; 47] = &[
+pub const TERMINAL_NAMES: &[&str; 44] = &[
     /*  0 */ "EndOfInput",
     /*  1 */ "Newline",
     /*  2 */ "Whitespace",
@@ -109,73 +54,65 @@ pub const TERMINAL_NAMES: &[&str; 47] = &[
     /* 36 */ "Identifier",
     /* 37 */ "PercentScanner",
     /* 38 */ "Comma",
-    /* 39 */ "PercentSc",
-    /* 40 */ "PercentPush",
-    /* 41 */ "PercentPop",
-    /* 42 */ "At",
-    /* 43 */ "CutOperator",
-    /* 44 */ "PositiveLookahead",
-    /* 45 */ "NegativeLookahead",
-    /* 46 */ "Error",
+    /* 39 */ "At",
+    /* 40 */ "CutOperator",
+    /* 41 */ "PositiveLookahead",
+    /* 42 */ "NegativeLookahead",
+    /* 43 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 41]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ NEW_LINE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"//.*(\r\n|\r|\n)?",
-        /*  4 */ r"/\*([^*]|\*[^/])*\*/",
-    ],
-    &[
-        5,  /* PercentStart */
-        6,  /* PercentTitle */
-        7,  /* PercentComment */
-        8,  /* PercentUserUnderscoreType */
-        9,  /* Equ */
-        10, /* PercentNtUnderscoreType */
-        11, /* Equ0 */
-        12, /* PercentTUnderscoreType */
-        13, /* PercentGrammarUnderscoreType */
-        14, /* PercentLineUnderscoreComment */
-        15, /* PercentBlockUnderscoreComment */
-        16, /* PercentAutoUnderscoreNewlineUnderscoreOff */
-        17, /* PercentAutoUnderscoreWsUnderscoreOff */
-        18, /* PercentOn */
-        19, /* PercentEnter */
-        20, /* PercentPercent */
-        21, /* DoubleColon */
-        22, /* Colon */
-        23, /* Semicolon */
-        24, /* Or */
-        25, /* LT */
-        26, /* GT */
-        27, /* String */
-        28, /* RawString */
-        29, /* Regex */
-        30, /* LParen */
-        31, /* RParen */
-        32, /* LBracket */
-        33, /* RBracket */
-        34, /* LBrace */
-        35, /* RBrace */
-        36, /* Identifier */
-        37, /* PercentScanner */
-        38, /* Comma */
-        39, /* PercentSc */
-        40, /* PercentPush */
-        41, /* PercentPop */
-        42, /* At */
-        43, /* CutOperator */
-        44, /* PositiveLookahead */
-        45, /* NegativeLookahead */
-    ],
-);
+scanner! {
+  ParolGrammarScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1;
+            token r"[\s--\r\n]+" => 2;
+            token r"//.*(\r\n|\r|\n)?" => 3;
+            token r"/\*([^*]|\*[^/])*\*/" => 4;
+            token r"%start" => 5;
+            token r"%title" => 6;
+            token r"%comment" => 7;
+            token r"%user_type" => 8;
+            token r"=" => 9;
+            token r"%nt_type" => 10;
+            token r"=" => 11;
+            token r"%t_type" => 12;
+            token r"%grammar_type" => 13;
+            token r"%line_comment" => 14;
+            token r"%block_comment" => 15;
+            token r"%auto_newline_off" => 16;
+            token r"%auto_ws_off" => 17;
+            token r"%on" => 18;
+            token r"%enter" => 19;
+            token r"%%" => 20;
+            token r"::" => 21;
+            token r":" => 22;
+            token r";" => 23;
+            token r"\|" => 24;
+            token r"<" => 25;
+            token r">" => 26;
+            token r#""(\\.|[^"])*""# => 27;
+            token r"'(\\.|[^'])*'" => 28;
+            token r"/(\\.|[^\/])*/" => 29;
+            token r"\(" => 30;
+            token r"\)" => 31;
+            token r"\[" => 32;
+            token r"\]" => 33;
+            token r"\{" => 34;
+            token r"\}" => 35;
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 36;
+            token r"%scanner" => 37;
+            token r"," => 38;
+            token r"@" => 39;
+            token r"\^" => 40;
+            token r"\?=" => 41;
+            token r"\?!" => 42;
+    }
+  }
+}
 
 const MAX_K: usize = 1;
 
-pub const NON_TERMINALS: &[&str; 50] = &[
+pub const NON_TERMINALS: &[&str; 48] = &[
     /*  0 */ "ASTControl",
     /*  1 */ "ASTControlOpt",
     /*  2 */ "Alternation",
@@ -211,31 +148,29 @@ pub const NON_TERMINALS: &[&str; 50] = &[
     /* 32 */ "ScannerDirectives",
     /* 33 */ "ScannerState",
     /* 34 */ "ScannerStateList",
-    /* 35 */ "ScannerSwitch",
-    /* 36 */ "ScannerSwitchOpt",
-    /* 37 */ "SimpleToken",
-    /* 38 */ "SimpleTokenOpt",
-    /* 39 */ "StartDeclaration",
-    /* 40 */ "String",
-    /* 41 */ "Symbol",
-    /* 42 */ "TokenExpression",
-    /* 43 */ "TokenExpressionOpt",
-    /* 44 */ "TokenLiteral",
-    /* 45 */ "TokenWithStates",
-    /* 46 */ "TokenWithStatesOpt",
-    /* 47 */ "UserTypeDeclaration",
-    /* 48 */ "UserTypeName",
-    /* 49 */ "UserTypeNameList",
+    /* 35 */ "SimpleToken",
+    /* 36 */ "SimpleTokenOpt",
+    /* 37 */ "StartDeclaration",
+    /* 38 */ "String",
+    /* 39 */ "Symbol",
+    /* 40 */ "TokenExpression",
+    /* 41 */ "TokenExpressionOpt",
+    /* 42 */ "TokenLiteral",
+    /* 43 */ "TokenWithStates",
+    /* 44 */ "TokenWithStatesOpt",
+    /* 45 */ "UserTypeDeclaration",
+    /* 46 */ "UserTypeName",
+    /* 47 */ "UserTypeNameList",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 48] = &[
     /* 0 - "ASTControl" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 22, 3, 73),
-            Trans(0, 42, 2, 72),
-            Trans(0, 43, 1, 71),
+            Trans(0, 22, 3, 67),
+            Trans(0, 39, 2, 66),
+            Trans(0, 40, 1, 65),
         ],
         k: 1,
     },
@@ -243,23 +178,20 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 22, 1, 74),
-            Trans(0, 23, 2, 75),
-            Trans(0, 24, 2, 75),
-            Trans(0, 25, 2, 75),
-            Trans(0, 27, 2, 75),
-            Trans(0, 28, 2, 75),
-            Trans(0, 29, 2, 75),
-            Trans(0, 30, 2, 75),
-            Trans(0, 31, 2, 75),
-            Trans(0, 32, 2, 75),
-            Trans(0, 33, 2, 75),
-            Trans(0, 34, 2, 75),
-            Trans(0, 35, 2, 75),
-            Trans(0, 36, 2, 75),
-            Trans(0, 39, 2, 75),
-            Trans(0, 40, 2, 75),
-            Trans(0, 41, 2, 75),
+            Trans(0, 22, 1, 68),
+            Trans(0, 23, 2, 69),
+            Trans(0, 24, 2, 69),
+            Trans(0, 25, 2, 69),
+            Trans(0, 27, 2, 69),
+            Trans(0, 28, 2, 69),
+            Trans(0, 29, 2, 69),
+            Trans(0, 30, 2, 69),
+            Trans(0, 31, 2, 69),
+            Trans(0, 32, 2, 69),
+            Trans(0, 33, 2, 69),
+            Trans(0, 34, 2, 69),
+            Trans(0, 35, 2, 69),
+            Trans(0, 36, 2, 69),
         ],
         k: 1,
     },
@@ -286,9 +218,6 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
             Trans(0, 34, 1, 28),
             Trans(0, 35, 2, 29),
             Trans(0, 36, 1, 28),
-            Trans(0, 39, 1, 28),
-            Trans(0, 40, 1, 28),
-            Trans(0, 41, 1, 28),
         ],
         k: 1,
     },
@@ -312,7 +241,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     },
     /* 6 - "CutOperator" */
     LookaheadDFA {
-        prod0: 77,
+        prod0: 71,
         transitions: &[],
         k: 0,
     },
@@ -352,9 +281,6 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
             Trans(0, 32, 3, 32),
             Trans(0, 34, 2, 31),
             Trans(0, 36, 4, 33),
-            Trans(0, 39, 4, 33),
-            Trans(0, 40, 4, 33),
-            Trans(0, 41, 4, 33),
         ],
         k: 1,
     },
@@ -372,19 +298,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     },
     /* 12 - "Group" */
     LookaheadDFA {
-        prod0: 53,
+        prod0: 52,
         transitions: &[],
         k: 0,
     },
     /* 13 - "Identifier" */
     LookaheadDFA {
-        prod0: 59,
+        prod0: 58,
         transitions: &[],
         k: 0,
     },
     /* 14 - "IdentifierList" */
     LookaheadDFA {
-        prod0: 63,
+        prod0: 62,
         transitions: &[],
         k: 0,
     },
@@ -392,39 +318,39 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 19, 2, 65),
-            Trans(0, 26, 2, 65),
-            Trans(0, 38, 1, 64),
+            Trans(0, 19, 2, 64),
+            Trans(0, 26, 2, 64),
+            Trans(0, 38, 1, 63),
         ],
         k: 1,
     },
     /* 16 - "LookAhead" */
     LookaheadDFA {
-        prod0: 82,
+        prod0: 76,
         transitions: &[],
         k: 0,
     },
     /* 17 - "LookAheadGroup" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 44, 1, 83), Trans(0, 45, 2, 84)],
+        transitions: &[Trans(0, 41, 1, 77), Trans(0, 42, 2, 78)],
         k: 1,
     },
     /* 18 - "MemberName" */
     LookaheadDFA {
-        prod0: 76,
+        prod0: 70,
         transitions: &[],
         k: 0,
     },
     /* 19 - "NegativeLookahead" */
     LookaheadDFA {
-        prod0: 86,
+        prod0: 80,
         transitions: &[],
         k: 0,
     },
     /* 20 - "NonTerminal" */
     LookaheadDFA {
-        prod0: 56,
+        prod0: 55,
         transitions: &[],
         k: 0,
     },
@@ -432,31 +358,28 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 22, 1, 57),
-            Trans(0, 23, 2, 58),
-            Trans(0, 24, 2, 58),
-            Trans(0, 25, 2, 58),
-            Trans(0, 27, 2, 58),
-            Trans(0, 28, 2, 58),
-            Trans(0, 29, 2, 58),
-            Trans(0, 30, 2, 58),
-            Trans(0, 31, 2, 58),
-            Trans(0, 32, 2, 58),
-            Trans(0, 33, 2, 58),
-            Trans(0, 34, 2, 58),
-            Trans(0, 35, 2, 58),
-            Trans(0, 36, 2, 58),
-            Trans(0, 39, 2, 58),
-            Trans(0, 40, 2, 58),
-            Trans(0, 41, 2, 58),
-            Trans(0, 42, 1, 57),
-            Trans(0, 43, 1, 57),
+            Trans(0, 22, 1, 56),
+            Trans(0, 23, 2, 57),
+            Trans(0, 24, 2, 57),
+            Trans(0, 25, 2, 57),
+            Trans(0, 27, 2, 57),
+            Trans(0, 28, 2, 57),
+            Trans(0, 29, 2, 57),
+            Trans(0, 30, 2, 57),
+            Trans(0, 31, 2, 57),
+            Trans(0, 32, 2, 57),
+            Trans(0, 33, 2, 57),
+            Trans(0, 34, 2, 57),
+            Trans(0, 35, 2, 57),
+            Trans(0, 36, 2, 57),
+            Trans(0, 39, 1, 56),
+            Trans(0, 40, 1, 56),
         ],
         k: 1,
     },
     /* 22 - "Optional" */
     LookaheadDFA {
-        prod0: 54,
+        prod0: 53,
         transitions: &[],
         k: 0,
     },
@@ -468,7 +391,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     },
     /* 24 - "PositiveLookahead" */
     LookaheadDFA {
-        prod0: 85,
+        prod0: 79,
         transitions: &[],
         k: 0,
     },
@@ -512,19 +435,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     },
     /* 29 - "RawString" */
     LookaheadDFA {
-        prod0: 51,
+        prod0: 50,
         transitions: &[],
         k: 0,
     },
     /* 30 - "Regex" */
     LookaheadDFA {
-        prod0: 52,
+        prod0: 51,
         transitions: &[],
         k: 0,
     },
     /* 31 - "Repeat" */
     LookaheadDFA {
-        prod0: 55,
+        prod0: 54,
         transitions: &[],
         k: 0,
     },
@@ -542,7 +465,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     },
     /* 33 - "ScannerState" */
     LookaheadDFA {
-        prod0: 60,
+        prod0: 59,
         transitions: &[],
         k: 0,
     },
@@ -550,76 +473,57 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 14, 1, 61),
-            Trans(0, 15, 1, 61),
-            Trans(0, 16, 1, 61),
-            Trans(0, 17, 1, 61),
-            Trans(0, 18, 1, 61),
-            Trans(0, 35, 2, 62),
+            Trans(0, 14, 1, 60),
+            Trans(0, 15, 1, 60),
+            Trans(0, 16, 1, 60),
+            Trans(0, 17, 1, 60),
+            Trans(0, 18, 1, 60),
+            Trans(0, 35, 2, 61),
         ],
         k: 1,
     },
-    /* 35 - "ScannerSwitch" */
+    /* 35 - "SimpleToken" */
     LookaheadDFA {
-        prod0: -1,
-        transitions: &[
-            Trans(0, 39, 1, 66),
-            Trans(0, 40, 2, 67),
-            Trans(0, 41, 3, 68),
-        ],
-        k: 1,
-    },
-    /* 36 - "ScannerSwitchOpt" */
-    LookaheadDFA {
-        prod0: -1,
-        transitions: &[Trans(0, 31, 2, 70), Trans(0, 36, 1, 69)],
-        k: 1,
-    },
-    /* 37 - "SimpleToken" */
-    LookaheadDFA {
-        prod0: 44,
+        prod0: 43,
         transitions: &[],
         k: 0,
     },
-    /* 38 - "SimpleTokenOpt" */
+    /* 36 - "SimpleTokenOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 22, 1, 45),
-            Trans(0, 23, 2, 46),
-            Trans(0, 24, 2, 46),
-            Trans(0, 25, 2, 46),
-            Trans(0, 27, 2, 46),
-            Trans(0, 28, 2, 46),
-            Trans(0, 29, 2, 46),
-            Trans(0, 30, 2, 46),
-            Trans(0, 31, 2, 46),
-            Trans(0, 32, 2, 46),
-            Trans(0, 33, 2, 46),
-            Trans(0, 34, 2, 46),
-            Trans(0, 35, 2, 46),
-            Trans(0, 36, 2, 46),
-            Trans(0, 39, 2, 46),
-            Trans(0, 40, 2, 46),
-            Trans(0, 41, 2, 46),
-            Trans(0, 42, 1, 45),
-            Trans(0, 43, 1, 45),
+            Trans(0, 22, 1, 44),
+            Trans(0, 23, 2, 45),
+            Trans(0, 24, 2, 45),
+            Trans(0, 25, 2, 45),
+            Trans(0, 27, 2, 45),
+            Trans(0, 28, 2, 45),
+            Trans(0, 29, 2, 45),
+            Trans(0, 30, 2, 45),
+            Trans(0, 31, 2, 45),
+            Trans(0, 32, 2, 45),
+            Trans(0, 33, 2, 45),
+            Trans(0, 34, 2, 45),
+            Trans(0, 35, 2, 45),
+            Trans(0, 36, 2, 45),
+            Trans(0, 39, 1, 44),
+            Trans(0, 40, 1, 44),
         ],
         k: 1,
     },
-    /* 39 - "StartDeclaration" */
+    /* 37 - "StartDeclaration" */
     LookaheadDFA {
         prod0: 6,
         transitions: &[],
         k: 0,
     },
-    /* 40 - "String" */
+    /* 38 - "String" */
     LookaheadDFA {
-        prod0: 50,
+        prod0: 49,
         transitions: &[],
         k: 0,
     },
-    /* 41 - "Symbol" */
+    /* 39 - "Symbol" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -628,140 +532,128 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
             Trans(0, 28, 2, 35),
             Trans(0, 29, 2, 35),
             Trans(0, 36, 1, 34),
-            Trans(0, 39, 4, 37),
-            Trans(0, 40, 4, 37),
-            Trans(0, 41, 4, 37),
         ],
         k: 1,
     },
-    /* 42 - "TokenExpression" */
+    /* 40 - "TokenExpression" */
     LookaheadDFA {
-        prod0: 41,
+        prod0: 40,
         transitions: &[],
         k: 0,
     },
-    /* 43 - "TokenExpressionOpt" */
+    /* 41 - "TokenExpressionOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 22, 2, 43),
-            Trans(0, 23, 2, 43),
-            Trans(0, 24, 2, 43),
-            Trans(0, 25, 2, 43),
-            Trans(0, 27, 2, 43),
-            Trans(0, 28, 2, 43),
-            Trans(0, 29, 2, 43),
-            Trans(0, 30, 2, 43),
-            Trans(0, 31, 2, 43),
-            Trans(0, 32, 2, 43),
-            Trans(0, 33, 2, 43),
-            Trans(0, 34, 2, 43),
-            Trans(0, 35, 2, 43),
-            Trans(0, 36, 2, 43),
-            Trans(0, 39, 2, 43),
-            Trans(0, 40, 2, 43),
-            Trans(0, 41, 2, 43),
-            Trans(0, 42, 2, 43),
-            Trans(0, 43, 2, 43),
-            Trans(0, 44, 1, 42),
-            Trans(0, 45, 1, 42),
+            Trans(0, 22, 2, 42),
+            Trans(0, 23, 2, 42),
+            Trans(0, 24, 2, 42),
+            Trans(0, 25, 2, 42),
+            Trans(0, 27, 2, 42),
+            Trans(0, 28, 2, 42),
+            Trans(0, 29, 2, 42),
+            Trans(0, 30, 2, 42),
+            Trans(0, 31, 2, 42),
+            Trans(0, 32, 2, 42),
+            Trans(0, 33, 2, 42),
+            Trans(0, 34, 2, 42),
+            Trans(0, 35, 2, 42),
+            Trans(0, 36, 2, 42),
+            Trans(0, 39, 2, 42),
+            Trans(0, 40, 2, 42),
+            Trans(0, 41, 1, 41),
+            Trans(0, 42, 1, 41),
         ],
         k: 1,
     },
-    /* 44 - "TokenLiteral" */
+    /* 42 - "TokenLiteral" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 27, 1, 38),
-            Trans(0, 28, 2, 39),
-            Trans(0, 29, 3, 40),
+            Trans(0, 27, 1, 37),
+            Trans(0, 28, 2, 38),
+            Trans(0, 29, 3, 39),
         ],
         k: 1,
     },
-    /* 45 - "TokenWithStates" */
+    /* 43 - "TokenWithStates" */
     LookaheadDFA {
-        prod0: 47,
+        prod0: 46,
         transitions: &[],
         k: 0,
     },
-    /* 46 - "TokenWithStatesOpt" */
+    /* 44 - "TokenWithStatesOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 22, 1, 48),
-            Trans(0, 23, 2, 49),
-            Trans(0, 24, 2, 49),
-            Trans(0, 25, 2, 49),
-            Trans(0, 27, 2, 49),
-            Trans(0, 28, 2, 49),
-            Trans(0, 29, 2, 49),
-            Trans(0, 30, 2, 49),
-            Trans(0, 31, 2, 49),
-            Trans(0, 32, 2, 49),
-            Trans(0, 33, 2, 49),
-            Trans(0, 34, 2, 49),
-            Trans(0, 35, 2, 49),
-            Trans(0, 36, 2, 49),
-            Trans(0, 39, 2, 49),
-            Trans(0, 40, 2, 49),
-            Trans(0, 41, 2, 49),
-            Trans(0, 42, 1, 48),
-            Trans(0, 43, 1, 48),
+            Trans(0, 22, 1, 47),
+            Trans(0, 23, 2, 48),
+            Trans(0, 24, 2, 48),
+            Trans(0, 25, 2, 48),
+            Trans(0, 27, 2, 48),
+            Trans(0, 28, 2, 48),
+            Trans(0, 29, 2, 48),
+            Trans(0, 30, 2, 48),
+            Trans(0, 31, 2, 48),
+            Trans(0, 32, 2, 48),
+            Trans(0, 33, 2, 48),
+            Trans(0, 34, 2, 48),
+            Trans(0, 35, 2, 48),
+            Trans(0, 36, 2, 48),
+            Trans(0, 39, 1, 47),
+            Trans(0, 40, 1, 47),
         ],
         k: 1,
     },
-    /* 47 - "UserTypeDeclaration" */
+    /* 45 - "UserTypeDeclaration" */
     LookaheadDFA {
-        prod0: 78,
+        prod0: 72,
         transitions: &[],
         k: 0,
     },
-    /* 48 - "UserTypeName" */
+    /* 46 - "UserTypeName" */
     LookaheadDFA {
-        prod0: 79,
+        prod0: 73,
         transitions: &[],
         k: 0,
     },
-    /* 49 - "UserTypeNameList" */
+    /* 47 - "UserTypeNameList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 6, 2, 81),
-            Trans(0, 7, 2, 81),
-            Trans(0, 8, 2, 81),
-            Trans(0, 10, 2, 81),
-            Trans(0, 12, 2, 81),
-            Trans(0, 13, 2, 81),
-            Trans(0, 14, 2, 81),
-            Trans(0, 15, 2, 81),
-            Trans(0, 16, 2, 81),
-            Trans(0, 17, 2, 81),
-            Trans(0, 18, 2, 81),
-            Trans(0, 20, 2, 81),
-            Trans(0, 21, 1, 80),
-            Trans(0, 23, 2, 81),
-            Trans(0, 24, 2, 81),
-            Trans(0, 25, 2, 81),
-            Trans(0, 27, 2, 81),
-            Trans(0, 28, 2, 81),
-            Trans(0, 29, 2, 81),
-            Trans(0, 30, 2, 81),
-            Trans(0, 31, 2, 81),
-            Trans(0, 32, 2, 81),
-            Trans(0, 33, 2, 81),
-            Trans(0, 34, 2, 81),
-            Trans(0, 35, 2, 81),
-            Trans(0, 36, 2, 81),
-            Trans(0, 37, 2, 81),
-            Trans(0, 39, 2, 81),
-            Trans(0, 40, 2, 81),
-            Trans(0, 41, 2, 81),
+            Trans(0, 6, 2, 75),
+            Trans(0, 7, 2, 75),
+            Trans(0, 8, 2, 75),
+            Trans(0, 10, 2, 75),
+            Trans(0, 12, 2, 75),
+            Trans(0, 13, 2, 75),
+            Trans(0, 14, 2, 75),
+            Trans(0, 15, 2, 75),
+            Trans(0, 16, 2, 75),
+            Trans(0, 17, 2, 75),
+            Trans(0, 18, 2, 75),
+            Trans(0, 20, 2, 75),
+            Trans(0, 21, 1, 74),
+            Trans(0, 23, 2, 75),
+            Trans(0, 24, 2, 75),
+            Trans(0, 25, 2, 75),
+            Trans(0, 27, 2, 75),
+            Trans(0, 28, 2, 75),
+            Trans(0, 29, 2, 75),
+            Trans(0, 30, 2, 75),
+            Trans(0, 31, 2, 75),
+            Trans(0, 32, 2, 75),
+            Trans(0, 33, 2, 75),
+            Trans(0, 34, 2, 75),
+            Trans(0, 35, 2, 75),
+            Trans(0, 36, 2, 75),
+            Trans(0, 37, 2, 75),
         ],
         k: 1,
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 87] = &[
+pub const PRODUCTIONS: &[Production; 81] = &[
     // 0 - Parol: Prolog GrammarDefinition;
     Production {
         lhs: 23,
@@ -770,7 +662,7 @@ pub const PRODUCTIONS: &[Production; 87] = &[
     // 1 - Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
     Production {
         lhs: 26,
-        production: &[ParseType::N(28), ParseType::N(27), ParseType::N(39)],
+        production: &[ParseType::N(28), ParseType::N(27), ParseType::N(37)],
     },
     // 2 - PrologList0: ScannerState : crate::parser::parol_grammar::ScannerConfig  PrologList0;
     Production {
@@ -794,24 +686,24 @@ pub const PRODUCTIONS: &[Production; 87] = &[
     },
     // 6 - StartDeclaration: '%start'^ /* Clipped */ Identifier;
     Production {
-        lhs: 39,
+        lhs: 37,
         production: &[ParseType::N(13), ParseType::T(5)],
     },
     // 7 - Declaration: '%title'^ /* Clipped */ String;
     Production {
         lhs: 7,
-        production: &[ParseType::N(40), ParseType::T(6)],
+        production: &[ParseType::N(38), ParseType::T(6)],
     },
     // 8 - Declaration: '%comment'^ /* Clipped */ String;
     Production {
         lhs: 7,
-        production: &[ParseType::N(40), ParseType::T(7)],
+        production: &[ParseType::N(38), ParseType::T(7)],
     },
     // 9 - Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
         lhs: 7,
         production: &[
-            ParseType::N(48),
+            ParseType::N(46),
             ParseType::T(9),
             ParseType::N(13),
             ParseType::T(8),
@@ -821,7 +713,7 @@ pub const PRODUCTIONS: &[Production; 87] = &[
     Production {
         lhs: 7,
         production: &[
-            ParseType::N(48),
+            ParseType::N(46),
             ParseType::T(9),
             ParseType::N(13),
             ParseType::T(10),
@@ -830,7 +722,7 @@ pub const PRODUCTIONS: &[Production; 87] = &[
     // 11 - Declaration: "%t_type" UserTypeName@t_type : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
         lhs: 7,
-        production: &[ParseType::N(48), ParseType::T(12)],
+        production: &[ParseType::N(46), ParseType::T(12)],
     },
     // 12 - Declaration: '%grammar_type'^ /* Clipped */ RawString;
     Production {
@@ -845,12 +737,12 @@ pub const PRODUCTIONS: &[Production; 87] = &[
     // 14 - ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
     Production {
         lhs: 32,
-        production: &[ParseType::N(44), ParseType::T(14)],
+        production: &[ParseType::N(42), ParseType::T(14)],
     },
     // 15 - ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;
     Production {
         lhs: 32,
-        production: &[ParseType::N(44), ParseType::N(44), ParseType::T(15)],
+        production: &[ParseType::N(42), ParseType::N(42), ParseType::T(15)],
     },
     // 16 - ScannerDirectives: '%auto_newline_off'^ /* Clipped */;
     Production {
@@ -950,145 +842,140 @@ pub const PRODUCTIONS: &[Production; 87] = &[
     // 33 - Factor: Symbol;
     Production {
         lhs: 9,
-        production: &[ParseType::N(41)],
+        production: &[ParseType::N(39)],
     },
     // 34 - Symbol: NonTerminal;
     Production {
-        lhs: 41,
+        lhs: 39,
         production: &[ParseType::N(20)],
     },
     // 35 - Symbol: SimpleToken;
     Production {
-        lhs: 41,
-        production: &[ParseType::N(37)],
+        lhs: 39,
+        production: &[ParseType::N(35)],
     },
     // 36 - Symbol: TokenWithStates;
     Production {
-        lhs: 41,
-        production: &[ParseType::N(45)],
+        lhs: 39,
+        production: &[ParseType::N(43)],
     },
-    // 37 - Symbol: ScannerSwitch;
-    Production {
-        lhs: 41,
-        production: &[ParseType::N(35)],
-    },
-    // 38 - TokenLiteral: String;
-    Production {
-        lhs: 44,
-        production: &[ParseType::N(40)],
-    },
-    // 39 - TokenLiteral: RawString;
-    Production {
-        lhs: 44,
-        production: &[ParseType::N(29)],
-    },
-    // 40 - TokenLiteral: Regex;
-    Production {
-        lhs: 44,
-        production: &[ParseType::N(30)],
-    },
-    // 41 - TokenExpression: TokenLiteral TokenExpressionOpt /* Option */;
+    // 37 - TokenLiteral: String;
     Production {
         lhs: 42,
-        production: &[ParseType::N(43), ParseType::N(44)],
+        production: &[ParseType::N(38)],
     },
-    // 42 - TokenExpressionOpt: LookAhead;
+    // 38 - TokenLiteral: RawString;
     Production {
-        lhs: 43,
+        lhs: 42,
+        production: &[ParseType::N(29)],
+    },
+    // 39 - TokenLiteral: Regex;
+    Production {
+        lhs: 42,
+        production: &[ParseType::N(30)],
+    },
+    // 40 - TokenExpression: TokenLiteral TokenExpressionOpt /* Option */;
+    Production {
+        lhs: 40,
+        production: &[ParseType::N(41), ParseType::N(42)],
+    },
+    // 41 - TokenExpressionOpt: LookAhead;
+    Production {
+        lhs: 41,
         production: &[ParseType::N(16)],
     },
-    // 43 - TokenExpressionOpt: ;
+    // 42 - TokenExpressionOpt: ;
     Production {
-        lhs: 43,
+        lhs: 41,
         production: &[],
     },
-    // 44 - SimpleToken: TokenExpression SimpleTokenOpt /* Option */;
+    // 43 - SimpleToken: TokenExpression SimpleTokenOpt /* Option */;
     Production {
-        lhs: 37,
-        production: &[ParseType::N(38), ParseType::N(42)],
+        lhs: 35,
+        production: &[ParseType::N(36), ParseType::N(40)],
     },
-    // 45 - SimpleTokenOpt: ASTControl;
+    // 44 - SimpleTokenOpt: ASTControl;
     Production {
-        lhs: 38,
+        lhs: 36,
         production: &[ParseType::N(0)],
     },
-    // 46 - SimpleTokenOpt: ;
+    // 45 - SimpleTokenOpt: ;
     Production {
-        lhs: 38,
+        lhs: 36,
         production: &[],
     },
-    // 47 - TokenWithStates: '<'^ /* Clipped */ IdentifierList '>'^ /* Clipped */ TokenExpression TokenWithStatesOpt /* Option */;
+    // 46 - TokenWithStates: '<'^ /* Clipped */ IdentifierList '>'^ /* Clipped */ TokenExpression TokenWithStatesOpt /* Option */;
     Production {
-        lhs: 45,
+        lhs: 43,
         production: &[
-            ParseType::N(46),
-            ParseType::N(42),
+            ParseType::N(44),
+            ParseType::N(40),
             ParseType::T(26),
             ParseType::N(14),
             ParseType::T(25),
         ],
     },
-    // 48 - TokenWithStatesOpt: ASTControl;
+    // 47 - TokenWithStatesOpt: ASTControl;
     Production {
-        lhs: 46,
+        lhs: 44,
         production: &[ParseType::N(0)],
     },
-    // 49 - TokenWithStatesOpt: ;
+    // 48 - TokenWithStatesOpt: ;
     Production {
-        lhs: 46,
+        lhs: 44,
         production: &[],
     },
-    // 50 - String: /"(\\.|[^"])*"/;
+    // 49 - String: /"(\\.|[^"])*"/;
     Production {
-        lhs: 40,
+        lhs: 38,
         production: &[ParseType::T(27)],
     },
-    // 51 - RawString: /'(\\.|[^'])*'/;
+    // 50 - RawString: /'(\\.|[^'])*'/;
     Production {
         lhs: 29,
         production: &[ParseType::T(28)],
     },
-    // 52 - Regex: "/(\\.|[^\/])*/";
+    // 51 - Regex: "/(\\.|[^\/])*/";
     Production {
         lhs: 30,
         production: &[ParseType::T(29)],
     },
-    // 53 - Group: '(' Alternations ')';
+    // 52 - Group: '(' Alternations ')';
     Production {
         lhs: 12,
         production: &[ParseType::T(31), ParseType::N(4), ParseType::T(30)],
     },
-    // 54 - Optional: '[' Alternations ']';
+    // 53 - Optional: '[' Alternations ']';
     Production {
         lhs: 22,
         production: &[ParseType::T(33), ParseType::N(4), ParseType::T(32)],
     },
-    // 55 - Repeat: '{' Alternations '}';
+    // 54 - Repeat: '{' Alternations '}';
     Production {
         lhs: 31,
         production: &[ParseType::T(35), ParseType::N(4), ParseType::T(34)],
     },
-    // 56 - NonTerminal: Identifier NonTerminalOpt /* Option */;
+    // 55 - NonTerminal: Identifier NonTerminalOpt /* Option */;
     Production {
         lhs: 20,
         production: &[ParseType::N(21), ParseType::N(13)],
     },
-    // 57 - NonTerminalOpt: ASTControl;
+    // 56 - NonTerminalOpt: ASTControl;
     Production {
         lhs: 21,
         production: &[ParseType::N(0)],
     },
-    // 58 - NonTerminalOpt: ;
+    // 57 - NonTerminalOpt: ;
     Production {
         lhs: 21,
         production: &[],
     },
-    // 59 - Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
+    // 58 - Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
     Production {
         lhs: 13,
         production: &[ParseType::T(36)],
     },
-    // 60 - ScannerState: '%scanner'^ /* Clipped */ Identifier@state_name '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;
+    // 59 - ScannerState: '%scanner'^ /* Clipped */ Identifier@state_name '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;
     Production {
         lhs: 33,
         production: &[
@@ -1099,155 +986,112 @@ pub const PRODUCTIONS: &[Production; 87] = &[
             ParseType::T(37),
         ],
     },
-    // 61 - ScannerStateList: ScannerDirectives ScannerStateList;
+    // 60 - ScannerStateList: ScannerDirectives ScannerStateList;
     Production {
         lhs: 34,
         production: &[ParseType::N(34), ParseType::N(32)],
     },
-    // 62 - ScannerStateList: ;
+    // 61 - ScannerStateList: ;
     Production {
         lhs: 34,
         production: &[],
     },
-    // 63 - IdentifierList: Identifier IdentifierListList /* Vec */;
+    // 62 - IdentifierList: Identifier IdentifierListList /* Vec */;
     Production {
         lhs: 14,
         production: &[ParseType::N(15), ParseType::N(13)],
     },
-    // 64 - IdentifierListList: ','^ /* Clipped */ Identifier IdentifierListList;
+    // 63 - IdentifierListList: ','^ /* Clipped */ Identifier IdentifierListList;
     Production {
         lhs: 15,
         production: &[ParseType::N(15), ParseType::N(13), ParseType::T(38)],
     },
-    // 65 - IdentifierListList: ;
+    // 64 - IdentifierListList: ;
     Production {
         lhs: 15,
         production: &[],
     },
-    // 66 - ScannerSwitch: '%sc' '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
-    Production {
-        lhs: 35,
-        production: &[
-            ParseType::T(31),
-            ParseType::N(36),
-            ParseType::T(30),
-            ParseType::T(39),
-        ],
-    },
-    // 67 - ScannerSwitch: '%push' '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
-    Production {
-        lhs: 35,
-        production: &[
-            ParseType::T(31),
-            ParseType::N(13),
-            ParseType::T(30),
-            ParseType::T(40),
-        ],
-    },
-    // 68 - ScannerSwitch: '%pop' '('^ /* Clipped */ ')'^ /* Clipped */;
-    Production {
-        lhs: 35,
-        production: &[ParseType::T(31), ParseType::T(30), ParseType::T(41)],
-    },
-    // 69 - ScannerSwitchOpt: Identifier;
-    Production {
-        lhs: 36,
-        production: &[ParseType::N(13)],
-    },
-    // 70 - ScannerSwitchOpt: ;
-    Production {
-        lhs: 36,
-        production: &[],
-    },
-    // 71 - ASTControl: CutOperator;
+    // 65 - ASTControl: CutOperator;
     Production {
         lhs: 0,
         production: &[ParseType::N(6)],
     },
-    // 72 - ASTControl: MemberName ASTControlOpt /* Option */;
+    // 66 - ASTControl: MemberName ASTControlOpt /* Option */;
     Production {
         lhs: 0,
         production: &[ParseType::N(1), ParseType::N(18)],
     },
-    // 73 - ASTControl: UserTypeDeclaration;
+    // 67 - ASTControl: UserTypeDeclaration;
     Production {
         lhs: 0,
-        production: &[ParseType::N(47)],
+        production: &[ParseType::N(45)],
     },
-    // 74 - ASTControlOpt: UserTypeDeclaration;
+    // 68 - ASTControlOpt: UserTypeDeclaration;
     Production {
         lhs: 1,
-        production: &[ParseType::N(47)],
+        production: &[ParseType::N(45)],
     },
-    // 75 - ASTControlOpt: ;
+    // 69 - ASTControlOpt: ;
     Production {
         lhs: 1,
         production: &[],
     },
-    // 76 - MemberName: '@'^ /* Clipped */ Identifier;
+    // 70 - MemberName: '@'^ /* Clipped */ Identifier;
     Production {
         lhs: 18,
-        production: &[ParseType::N(13), ParseType::T(42)],
+        production: &[ParseType::N(13), ParseType::T(39)],
     },
-    // 77 - CutOperator: '^'^ /* Clipped */;
+    // 71 - CutOperator: '^'^ /* Clipped */;
     Production {
         lhs: 6,
-        production: &[ParseType::T(43)],
+        production: &[ParseType::T(40)],
     },
-    // 78 - UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName ;
+    // 72 - UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName ;
+    Production {
+        lhs: 45,
+        production: &[ParseType::N(46), ParseType::T(22)],
+    },
+    // 73 - UserTypeName: Identifier UserTypeNameList /* Vec */;
+    Production {
+        lhs: 46,
+        production: &[ParseType::N(47), ParseType::N(13)],
+    },
+    // 74 - UserTypeNameList: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;
     Production {
         lhs: 47,
-        production: &[ParseType::N(48), ParseType::T(22)],
+        production: &[ParseType::N(47), ParseType::N(13), ParseType::N(8)],
     },
-    // 79 - UserTypeName: Identifier UserTypeNameList /* Vec */;
+    // 75 - UserTypeNameList: ;
     Production {
-        lhs: 48,
-        production: &[ParseType::N(49), ParseType::N(13)],
-    },
-    // 80 - UserTypeNameList: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;
-    Production {
-        lhs: 49,
-        production: &[ParseType::N(49), ParseType::N(13), ParseType::N(8)],
-    },
-    // 81 - UserTypeNameList: ;
-    Production {
-        lhs: 49,
+        lhs: 47,
         production: &[],
     },
-    // 82 - LookAhead: LookAheadGroup TokenLiteral;
+    // 76 - LookAhead: LookAheadGroup TokenLiteral;
     Production {
         lhs: 16,
-        production: &[ParseType::N(44), ParseType::N(17)],
+        production: &[ParseType::N(42), ParseType::N(17)],
     },
-    // 83 - LookAheadGroup: PositiveLookahead;
+    // 77 - LookAheadGroup: PositiveLookahead;
     Production {
         lhs: 17,
         production: &[ParseType::N(24)],
     },
-    // 84 - LookAheadGroup: NegativeLookahead;
+    // 78 - LookAheadGroup: NegativeLookahead;
     Production {
         lhs: 17,
         production: &[ParseType::N(19)],
     },
-    // 85 - PositiveLookahead: '?='^ /* Clipped */;
+    // 79 - PositiveLookahead: '?='^ /* Clipped */;
     Production {
         lhs: 24,
-        production: &[ParseType::T(44)],
+        production: &[ParseType::T(41)],
     },
-    // 86 - NegativeLookahead: '?!'^ /* Clipped */;
+    // 80 - NegativeLookahead: '?!'^ /* Clipped */;
     Production {
         lhs: 19,
-        production: &[ParseType::T(45)],
+        production: &[ParseType::T(42)],
     },
 ];
-
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig::new(
-        "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-        &[],
-    )]
-});
 
 pub fn parse<'t, T>(
     input: &'t str,
@@ -1274,6 +1118,7 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use parol_grammar_scanner::ParolGrammarScanner;
     let mut llk_parser = LLKParser::new(
         23,
         LOOKAHEAD_AUTOMATA,
@@ -1281,11 +1126,19 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    let scanner = ParolGrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = ParolGrammarAuto::new(user_actions);
-    llk_parser.parse_into::<T>(
+    llk_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &ParolGrammarScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

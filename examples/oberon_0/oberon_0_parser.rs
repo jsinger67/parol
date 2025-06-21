@@ -4,65 +4,15 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{ParolError, ParseTree, TokenStream};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::oberon_0_grammar::Oberon0Grammar;
 use crate::oberon_0_grammar_trait::Oberon0GrammarAuto;
-
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 42] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None),
-    /*  1 */ (UNMATCHABLE_TOKEN, None),
-    /*  2 */ (UNMATCHABLE_TOKEN, None),
-    /*  3 */ (UNMATCHABLE_TOKEN, None),
-    /*  4 */ (UNMATCHABLE_TOKEN, None),
-    /*  5 */ (r"\.", None),
-    /*  6 */ (r"\[", None),
-    /*  7 */ (r"]", None),
-    /*  8 */ (r"\(", None),
-    /*  9 */ (r"\)", None),
-    /* 10 */ (r"~", None),
-    /* 11 */ (r":=", None),
-    /* 12 */ (r">=|<=|\#|<|>", None),
-    /* 13 */ (r"=", None),
-    /* 14 */ (r",", None),
-    /* 15 */ (r"ELSE", None),
-    /* 16 */ (r"END", None),
-    /* 17 */ (r"IF", None),
-    /* 18 */ (r"THEN", None),
-    /* 19 */ (r"ELSIF", None),
-    /* 20 */ (r"WHILE", None),
-    /* 21 */ (r"DO", None),
-    /* 22 */ (r"REPEAT", None),
-    /* 23 */ (r"UNTIL", None),
-    /* 24 */ (r";", None),
-    /* 25 */ (r"ARRAY", None),
-    /* 26 */ (r"OF", None),
-    /* 27 */ (r":", None),
-    /* 28 */ (r"RECORD", None),
-    /* 29 */ (r"VAR", None),
-    /* 30 */ (r"PROCEDURE", None),
-    /* 31 */ (r"BEGIN", None),
-    /* 32 */ (r"RETURN", None),
-    /* 33 */ (r"TYPE", None),
-    /* 34 */ (r"CONST", None),
-    /* 35 */ (r"MODULE", None),
-    /* 36 */ (r"\*|/|DIV|MOD|&", None),
-    /* 37 */ (r"\+|-|OR", None),
-    /* 38 */ (r"\+|-", None),
-    /* 39 */ (r"[a-zA-Z][a-zA-Z0-9]*", None),
-    /* 40 */ (r"[0-9]+", None),
-    /* 41 */ (ERROR_TOKEN, None),
-];
 
 pub const TERMINAL_NAMES: &[&str; 42] = &[
     /*  0 */ "EndOfInput",
@@ -109,54 +59,51 @@ pub const TERMINAL_NAMES: &[&str; 42] = &[
     /* 41 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 36]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ NEW_LINE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ UNMATCHABLE_TOKEN,
-        /*  4 */ r"\(\*([^*]|\*[^)])*\*\)",
-    ],
-    &[
-        5,  /* Dot */
-        6,  /* LBracket */
-        7,  /* RBracket */
-        8,  /* LParen */
-        9,  /* RParen */
-        10, /* Tilde */
-        11, /* ColonEqu */
-        12, /* RelationalOps */
-        13, /* Equ */
-        14, /* Comma */
-        15, /* ELSE */
-        16, /* END */
-        17, /* IF */
-        18, /* THEN */
-        19, /* ELSIF */
-        20, /* WHILE */
-        21, /* DO */
-        22, /* REPEAT */
-        23, /* UNTIL */
-        24, /* Semicolon */
-        25, /* ARRAY */
-        26, /* OF */
-        27, /* Colon */
-        28, /* RECORD */
-        29, /* VAR */
-        30, /* PROCEDURE */
-        31, /* BEGIN */
-        32, /* RETURN */
-        33, /* TYPE */
-        34, /* CONST */
-        35, /* MODULE */
-        36, /* MulOperator */
-        37, /* AddOperator */
-        38, /* UnaryOp */
-        39, /* Ident */
-        40, /* Integer */
-    ],
-);
+scanner! {
+  Oberon0GrammarScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1;
+            token r"[\s--\r\n]+" => 2;
+            token r"\(\*([^*]|\*[^)])*\*\)" => 4;
+            token r"\." => 5;
+            token r"\[" => 6;
+            token r"]" => 7;
+            token r"\(" => 8;
+            token r"\)" => 9;
+            token r"~" => 10;
+            token r":=" => 11;
+            token r">=|<=|\#|<|>" => 12;
+            token r"=" => 13;
+            token r"," => 14;
+            token r"ELSE" => 15;
+            token r"END" => 16;
+            token r"IF" => 17;
+            token r"THEN" => 18;
+            token r"ELSIF" => 19;
+            token r"WHILE" => 20;
+            token r"DO" => 21;
+            token r"REPEAT" => 22;
+            token r"UNTIL" => 23;
+            token r";" => 24;
+            token r"ARRAY" => 25;
+            token r"OF" => 26;
+            token r":" => 27;
+            token r"RECORD" => 28;
+            token r"VAR" => 29;
+            token r"PROCEDURE" => 30;
+            token r"BEGIN" => 31;
+            token r"RETURN" => 32;
+            token r"TYPE" => 33;
+            token r"CONST" => 34;
+            token r"MODULE" => 35;
+            token r"\*|/|DIV|MOD|&" => 36;
+            token r"\+|-|OR" => 37;
+            token r"\+|-" => 38;
+            token r"[a-zA-Z][a-zA-Z0-9]*" => 39;
+            token r"[0-9]+" => 40;
+    }
+  }
+}
 
 const MAX_K: usize = 2;
 
@@ -1433,14 +1380,6 @@ pub const PRODUCTIONS: &[Production; 105] = &[
     },
 ];
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig::new(
-        "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-        &[],
-    )]
-});
-
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
@@ -1466,6 +1405,7 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use oberon0_grammar_scanner::Oberon0GrammarScanner;
     let mut llk_parser = LLKParser::new(
         30,
         LOOKAHEAD_AUTOMATA,
@@ -1474,12 +1414,19 @@ where
         NON_TERMINALS,
     );
     llk_parser.trim_parse_tree();
-
+    let scanner = Oberon0GrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = Oberon0GrammarAuto::new(user_actions);
-    llk_parser.parse_into::<T>(
+    llk_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &Oberon0GrammarScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

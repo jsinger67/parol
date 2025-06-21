@@ -4,41 +4,15 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{ParolError, ParseTree, TokenStream};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::boolean_grammar::BooleanGrammar;
 use crate::boolean_grammar_trait::BooleanGrammarAuto;
-
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 18] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None),
-    /*  1 */ (UNMATCHABLE_TOKEN, None),
-    /*  2 */ (UNMATCHABLE_TOKEN, None),
-    /*  3 */ (UNMATCHABLE_TOKEN, None),
-    /*  4 */ (UNMATCHABLE_TOKEN, None),
-    /*  5 */ (r"[aA][nN][dD]", None),
-    /*  6 */ (r"[oO][rR]", None),
-    /*  7 */ (r"[xX][oO][rR]", None),
-    /*  8 */ (r"[nN][oO][rR]", None),
-    /*  9 */ (r"[nN][aA][nN][dD]", None),
-    /* 10 */ (r"[xX][nN][oO][rR]", None),
-    /* 11 */ (r"[tT][rR][uU][eE]", None),
-    /* 12 */ (r"[fF][aA][lL][sS][eE]", None),
-    /* 13 */ (r"[nN][oO][tT]", None),
-    /* 14 */ (r";", None),
-    /* 15 */ (r"\(", None),
-    /* 16 */ (r"\)", None),
-    /* 17 */ (ERROR_TOKEN, None),
-];
 
 pub const TERMINAL_NAMES: &[&str; 18] = &[
     /*  0 */ "EndOfInput",
@@ -61,30 +35,28 @@ pub const TERMINAL_NAMES: &[&str; 18] = &[
     /* 17 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 12]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ NEW_LINE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r"//.*(\r\n|\r|\n)?",
-        /*  4 */ r"\(\*([^*]|\*[^)])*\*\)",
-    ],
-    &[
-        5,  /* AndOp */
-        6,  /* OrOp */
-        7,  /* XorOp */
-        8,  /* NorOp */
-        9,  /* NandOp */
-        10, /* XnorOp */
-        11, /* True */
-        12, /* False */
-        13, /* Not */
-        14, /* Semicolon */
-        15, /* LeftParenthesis */
-        16, /* RightParenthesis */
-    ],
-);
+scanner! {
+  BooleanGrammarScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1;
+            token r"[\s--\r\n]+" => 2;
+            token r"//.*(\r\n|\r|\n)?" => 3;
+            token r"\(\*([^*]|\*[^)])*\*\)" => 4;
+            token r"[aA][nN][dD]" => 5;
+            token r"[oO][rR]" => 6;
+            token r"[xX][oO][rR]" => 7;
+            token r"[nN][oO][rR]" => 8;
+            token r"[nN][aA][nN][dD]" => 9;
+            token r"[xX][nN][oO][rR]" => 10;
+            token r"[tT][rR][uU][eE]" => 11;
+            token r"[fF][aA][lL][sS][eE]" => 12;
+            token r"[nN][oO][tT]" => 13;
+            token r";" => 14;
+            token r"\(" => 15;
+            token r"\)" => 16;
+    }
+  }
+}
 
 const MAX_K: usize = 2;
 
@@ -486,14 +458,6 @@ pub const PRODUCTIONS: &[Production; 36] = &[
     },
 ];
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig::new(
-        "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-        &[],
-    )]
-});
-
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
@@ -519,6 +483,7 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use boolean_grammar_scanner::BooleanGrammarScanner;
     let mut llk_parser = LLKParser::new(
         5,
         LOOKAHEAD_AUTOMATA,
@@ -526,11 +491,19 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    let scanner = BooleanGrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = BooleanGrammarAuto::new(user_actions);
-    llk_parser.parse_into::<T>(
+    llk_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &BooleanGrammarScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

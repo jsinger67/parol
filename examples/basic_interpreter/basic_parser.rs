@@ -4,57 +4,15 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::parse_tree_type::TreeConstruct;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{ParolError, ParseTree, TokenStream};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_grammar_trait::BasicGrammarAuto;
-
-use parol_runtime::lexer::tokenizer::{ERROR_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 32] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None),
-    /*  1 */ (UNMATCHABLE_TOKEN, None),
-    /*  2 */ (UNMATCHABLE_TOKEN, None),
-    /*  3 */ (UNMATCHABLE_TOKEN, None),
-    /*  4 */ (UNMATCHABLE_TOKEN, None),
-    /*  5 */ (r":", None),
-    /*  6 */ (r"[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+", None),
-    /*  7 */ (r",", None),
-    /*  8 */ (r"(?:\r?\n|\r)+", None),
-    /*  9 */
-    (
-        r"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?",
-        None,
-    ),
-    /* 10 */ (r"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+", None),
-    /* 11 */ (r"(?:[0-9] *)+", None),
-    /* 12 */ (r"REM", None),
-    /* 13 */ (r"IF", None),
-    /* 14 */ (r"THEN", None),
-    /* 15 */ (r"GOTO", None),
-    /* 16 */ (r"LET", None),
-    /* 17 */ (r"PRINT|\?", None),
-    /* 18 */ (r"END", None),
-    /* 19 */ (r"=", None),
-    /* 20 */ (r"N?OR", None),
-    /* 21 */ (r"AND", None),
-    /* 22 */ (r"NOT", None),
-    /* 23 */ (r"<\s*>|<\s*=|<|>\s*=|>|=", None),
-    /* 24 */ (r"\+", None),
-    /* 25 */ (r"\-", None),
-    /* 26 */ (r"\*|\u{2F}", None),
-    /* 27 */ (r"\(", None),
-    /* 28 */ (r"\)", None),
-    /* 29 */ (r"[^\r\n]+", None),
-    /* 30 */ (r"[A-Z][0-9A-Z]*", None),
-    /* 31 */ (ERROR_TOKEN, None),
-];
 
 pub const TERMINAL_NAMES: &[&str; 32] = &[
     /*  0 */ "EndOfInput",
@@ -91,74 +49,60 @@ pub const TERMINAL_NAMES: &[&str; 32] = &[
     /* 31 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 13]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ UNMATCHABLE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ UNMATCHABLE_TOKEN,
-        /*  4 */ UNMATCHABLE_TOKEN,
-    ],
-    &[
-        5,  /* Colon */
-        6,  /* LineNumber */
-        7,  /* Comma */
-        8,  /* EndOfLine */
-        12, /* Rem */
-        13, /* If */
-        14, /* Then */
-        15, /* Goto */
-        16, /* Let */
-        17, /* Print */
-        18, /* End */
-        19, /* AssignOp */
-        30, /* Variable */
-    ],
-);
-
-/* SCANNER_1: "Cmnt" */
-const SCANNER_1: (&[&str; 5], &[TerminalIndex; 2]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ UNMATCHABLE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ UNMATCHABLE_TOKEN,
-        /*  4 */ UNMATCHABLE_TOKEN,
-    ],
-    &[8 /* EndOfLine */, 29 /* Comment */],
-);
-
-/* SCANNER_2: "Expr" */
-const SCANNER_2: (&[&str; 5], &[TerminalIndex; 18]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ UNMATCHABLE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ UNMATCHABLE_TOKEN,
-        /*  4 */ UNMATCHABLE_TOKEN,
-    ],
-    &[
-        5,  /* Colon */
-        7,  /* Comma */
-        8,  /* EndOfLine */
-        9,  /* Float1 */
-        10, /* Float2 */
-        11, /* Integer */
-        14, /* Then */
-        15, /* Goto */
-        20, /* LogicalOrOp */
-        21, /* LogicalAndOp */
-        22, /* LogicalNotOp */
-        23, /* RelationalOp */
-        24, /* Plus */
-        25, /* Minus */
-        26, /* MulOp */
-        27, /* LParen */
-        28, /* RParen */
-        30, /* Variable */
-    ],
-);
+scanner! {
+  BasicGrammarScanner {
+        mode INITIAL {
+            token r"[\s--\r\n]+" => 2;
+            token r":" => 5;
+            token r"[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" => 6;
+            token r"," => 7;
+            token r"(?:\r?\n|\r)+" => 8;
+            token r"REM" => 12;
+            token r"IF" => 13;
+            token r"THEN" => 14;
+            token r"GOTO" => 15;
+            token r"LET" => 16;
+            token r"PRINT|\?" => 17;
+            token r"END" => 18;
+            token r"=" => 19;
+            token r"[A-Z][0-9A-Z]*" => 30;
+            transition 12 => Cmnt;
+            transition 13 => Expr;
+            transition 17 => Expr;
+            transition 19 => Expr;
+    }
+        mode Cmnt {
+            token r"[\s--\r\n]+" => 2;
+            token r"(?:\r?\n|\r)+" => 8;
+            token r"[^\r\n]+" => 29;
+            transition 8 => INITIAL;
+    }
+        mode Expr {
+            token r"[\s--\r\n]+" => 2;
+            token r":" => 5;
+            token r"," => 7;
+            token r"(?:\r?\n|\r)+" => 8;
+            token r"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?" => 9;
+            token r"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+" => 10;
+            token r"(?:[0-9] *)+" => 11;
+            token r"THEN" => 14;
+            token r"GOTO" => 15;
+            token r"N?OR" => 20;
+            token r"AND" => 21;
+            token r"NOT" => 22;
+            token r"<\s*>|<\s*=|<|>\s*=|>|=" => 23;
+            token r"\+" => 24;
+            token r"\-" => 25;
+            token r"\*|\u{2F}" => 26;
+            token r"\(" => 27;
+            token r"\)" => 28;
+            token r"[A-Z][0-9A-Z]*" => 30;
+            transition 8 => INITIAL;
+            transition 14 => INITIAL;
+            transition 15 => INITIAL;
+    }
+  }
+}
 
 const MAX_K: usize = 2;
 
@@ -1109,35 +1053,6 @@ pub const PRODUCTIONS: &[Production; 84] = &[
     },
 ];
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![
-        ScannerConfig::new(
-            "INITIAL",
-            Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-            &[
-                (12 /* Rem */, 1 /* Cmnt */),
-                (13 /* If */, 2 /* Expr */),
-                (17 /* Print */, 2 /* Expr */),
-                (19 /* AssignOp */, 2 /* Expr */),
-            ],
-        ),
-        ScannerConfig::new(
-            "Cmnt",
-            Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
-            &[(8 /* EndOfLine */, 0 /* INITIAL */)],
-        ),
-        ScannerConfig::new(
-            "Expr",
-            Tokenizer::build(TERMINALS, SCANNER_2.0, SCANNER_2.1).unwrap(),
-            &[
-                (8 /* EndOfLine */, 0 /* INITIAL */),
-                (14 /* Then */, 0 /* INITIAL */),
-                (15 /* Goto */, 0 /* INITIAL */),
-            ],
-        ),
-    ]
-});
-
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
@@ -1163,6 +1078,7 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use basic_grammar_scanner::BasicGrammarScanner;
     let mut llk_parser = LLKParser::new(
         3,
         LOOKAHEAD_AUTOMATA,
@@ -1170,11 +1086,19 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    let scanner = BasicGrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = BasicGrammarAuto::new(user_actions);
-    llk_parser.parse_into::<T>(
+    llk_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &BasicGrammarScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

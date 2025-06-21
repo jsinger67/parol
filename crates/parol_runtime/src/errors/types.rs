@@ -62,9 +62,6 @@ pub enum LexerError {
 
     #[error("{0}")]
     RecoveryError(String),
-
-    #[error(transparent)]
-    RegexError(#[from] Box<dyn std::error::Error>),
 }
 
 #[derive(Error, Debug)]

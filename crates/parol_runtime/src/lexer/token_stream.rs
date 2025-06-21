@@ -63,10 +63,10 @@ where
     ///
     /// Currently this never return LexerError but it could be changed in the future.
     ///
-    pub fn new<T>(
+    pub fn new<'s, T>(
         input: &'t str,
         file_name: T,
-        scanner: &'t ScannerImpl,
+        scanner: &'s ScannerImpl,
         match_function: &'static F,
         k: usize,
     ) -> Result<Self, LexerError>

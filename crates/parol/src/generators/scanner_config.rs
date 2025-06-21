@@ -1,6 +1,12 @@
-use crate::Cfg;
-use anyhow::{bail, Result};
-use parol_runtime::{lexer::FIRST_USER_TOKEN, TerminalIndex};
+use crate::GrammarConfig;
+use anyhow::{Result, bail};
+use parol_runtime::{
+    TerminalIndex,
+    lexer::{
+        BLOCK_COMMENT, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, NEW_LINE_TOKEN, WHITESPACE,
+        WHITESPACE_TOKEN,
+    },
+};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 // ---------------------------------------------------
@@ -92,27 +98,24 @@ impl ScannerConfig {
 
     ///
     /// Generates the data needed by the lexer generator.
-    /// The tuple contains of the specific internal tokens of the scanner (ws,
-    /// comments etc.) and the indices of the terminals that are valid in this
-    /// scanner.
+    /// The tuple contains the mapping of terminal strings to their indices plus an optional
+    /// lookahead pattern and the transitions, i.e. a mapping of terminal indices to scanner names.
     ///
     pub fn generate_build_information(
         &self,
-        cfg: &Cfg,
-    ) -> Result<(Vec<String>, Vec<TerminalIndex>, String)> {
-        let mut scanner_specific = vec![
-            "UNMATCHABLE_TOKEN".to_owned(),
-            if self.auto_newline {
-                "NEW_LINE_TOKEN".to_owned()
-            } else {
-                "UNMATCHABLE_TOKEN".to_owned()
-            },
-            if self.auto_ws {
-                "WHITESPACE_TOKEN".to_owned()
-            } else {
-                "UNMATCHABLE_TOKEN".to_owned()
-            },
-        ];
+        grammar_config: &GrammarConfig,
+    ) -> Result<(
+        Vec<(String, TerminalIndex, Option<(bool, String)>)>,
+        Vec<(TerminalIndex, String)>,
+    )> {
+        let cfg = &grammar_config.cfg;
+        let mut terminal_mappings = Vec::new();
+        if self.auto_newline {
+            terminal_mappings.push((NEW_LINE_TOKEN.to_owned(), NEW_LINE, None));
+        }
+        if self.auto_ws {
+            terminal_mappings.push((WHITESPACE_TOKEN.to_owned(), WHITESPACE, None));
+        }
         if !self.line_comments.is_empty() {
             let line_comments_rx = self
                 .line_comments
@@ -120,9 +123,7 @@ impl ScannerConfig {
                 .map(|s| format!(r###"{}.*(\r\n|\r|\n)?"###, s))
                 .collect::<Vec<String>>()
                 .join("|");
-            scanner_specific.push(line_comments_rx);
-        } else {
-            scanner_specific.push("UNMATCHABLE_TOKEN".to_owned());
+            terminal_mappings.push((line_comments_rx, LINE_COMMENT, None));
         }
         if !self.block_comments.is_empty() {
             let block_comments_rx = self
@@ -131,25 +132,32 @@ impl ScannerConfig {
                 .map(|(s, e)| Self::format_block_comment(s, e))
                 .collect::<Result<Vec<String>>>()?
                 .join("|");
-            scanner_specific.push(block_comments_rx);
-        } else {
-            scanner_specific.push("UNMATCHABLE_TOKEN".to_owned());
+            terminal_mappings.push((block_comments_rx, BLOCK_COMMENT, None));
         }
 
-        let terminals = cfg.get_ordered_terminals();
+        let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
 
-        let term_indices =
-            terminals
-                .iter()
-                .enumerate()
-                .fold(Vec::new(), |mut acc, (i, (_, _, _, s))| {
-                    if s.contains(&self.scanner_state) {
-                        acc.push(i as TerminalIndex + FIRST_USER_TOKEN);
-                    }
-                    acc
-                });
+        let terminal_mappings = cfg.get_ordered_terminals().iter().enumerate().fold(
+            terminal_mappings,
+            |mut acc, (i, (t, k, l, s))| {
+                if s.contains(&self.scanner_state) {
+                    acc.push((
+                        k.expand(t),
+                        i as TerminalIndex + FIRST_USER_TOKEN,
+                        l.as_ref().map(|l| (l.is_positive, l.pattern.clone())),
+                    ));
+                }
+                acc
+            },
+        );
 
-        Ok((scanner_specific, term_indices, self.scanner_name.clone()))
+        let transitions = self
+            .transitions
+            .iter()
+            .map(|(t, s)| (*t, scanner_state_resolver(&[*s])))
+            .collect::<Vec<(TerminalIndex, String)>>();
+
+        Ok((terminal_mappings, transitions))
     }
 
     /// Formats a block comment
