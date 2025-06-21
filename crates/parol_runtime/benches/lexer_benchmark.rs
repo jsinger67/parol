@@ -237,4 +237,4 @@ fn tokenize_benchmark(c: &mut Criterion) {
 }
 
 criterion_group!(benchesscanner, tokenize_benchmark);
-criterion_main!(benchesscanner, benchesscanner);
+criterion_main!(benchesscanner);
