@@ -6,17 +6,22 @@ use parol_runtime::TerminalIndex;
 use crate::StrVec;
 use std::fmt::Debug;
 
+// Regular expression + terminal index + optional lookahead expression
+type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>);
+// Scanner transition is a tuple of terminal index and the name of the next scanner mode
+type ScannerTransition = (TerminalIndex, String);
+
 #[derive(Debug, Default)]
 struct ScannerBuildInfo {
     scanner_name: String,
-    terminal_mappings: Vec<(String, TerminalIndex, Option<(bool, String)>)>,
-    transitions: Vec<(TerminalIndex, String)>,
+    terminal_mappings: Vec<TerminalMapping>,
+    transitions: Vec<ScannerTransition>,
 }
 
 impl ScannerBuildInfo {
     fn from_scanner_build_info(
-        terminal_mappings: Vec<(String, TerminalIndex, Option<(bool, String)>)>,
-        transitions: Vec<(TerminalIndex, String)>,
+        terminal_mappings: Vec<TerminalMapping>,
+        transitions: Vec<ScannerTransition>,
         scanner_name: String,
     ) -> Self {
         Self {
@@ -83,8 +88,8 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
         })
         .collect::<Result<
             Vec<(
-                Vec<(String, TerminalIndex, Option<(bool, String)>)>,
-                Vec<(TerminalIndex, String)>,
+                Vec<TerminalMapping>,
+                Vec<ScannerTransition>,
                 String,
             )>,
             anyhow::Error,

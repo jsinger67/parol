@@ -9,6 +9,13 @@ use parol_runtime::{
 };
 use std::fmt::{Debug, Display, Error, Formatter};
 
+// Regular expression + terminal index + optional lookahead expression
+type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>);
+// Scanner transition is a tuple of terminal index and the name of the next scanner mode
+type ScannerTransition = (TerminalIndex, String);
+// The build information is a tuple of terminal mappings and scanner transitions
+type BuildInformation = (Vec<TerminalMapping>, Vec<ScannerTransition>);
+
 // ---------------------------------------------------
 // Part of the Public API
 // *Changes will affect crate's version according to semver*
@@ -104,10 +111,7 @@ impl ScannerConfig {
     pub fn generate_build_information(
         &self,
         grammar_config: &GrammarConfig,
-    ) -> Result<(
-        Vec<(String, TerminalIndex, Option<(bool, String)>)>,
-        Vec<(TerminalIndex, String)>,
-    )> {
+    ) -> Result<BuildInformation> {
         let cfg = &grammar_config.cfg;
         let mut terminal_mappings = Vec::new();
         if self.auto_newline {
