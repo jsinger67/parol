@@ -9,8 +9,8 @@ use parol_runtime::{
 };
 use std::fmt::{Debug, Display, Error, Formatter};
 
-// Regular expression + terminal index + optional lookahead expression
-type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>);
+// Regular expression + terminal index + optional lookahead expression + generated token name
+type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>, String);
 // Scanner transition is a tuple of terminal index and the name of the next scanner mode
 type ScannerTransition = (TerminalIndex, String);
 // The build information is a tuple of terminal mappings and scanner transitions
@@ -111,14 +111,25 @@ impl ScannerConfig {
     pub fn generate_build_information(
         &self,
         grammar_config: &GrammarConfig,
+        terminal_names: &[String],
     ) -> Result<BuildInformation> {
         let cfg = &grammar_config.cfg;
         let mut terminal_mappings = Vec::new();
         if self.auto_newline {
-            terminal_mappings.push((NEW_LINE_TOKEN.to_owned(), NEW_LINE, None));
+            terminal_mappings.push((
+                NEW_LINE_TOKEN.to_owned(),
+                NEW_LINE,
+                None,
+                terminal_names[NEW_LINE as usize].clone(),
+            ));
         }
         if self.auto_ws {
-            terminal_mappings.push((WHITESPACE_TOKEN.to_owned(), WHITESPACE, None));
+            terminal_mappings.push((
+                WHITESPACE_TOKEN.to_owned(),
+                WHITESPACE,
+                None,
+                terminal_names[WHITESPACE as usize].clone(),
+            ));
         }
         if !self.line_comments.is_empty() {
             let line_comments_rx = self
@@ -127,7 +138,12 @@ impl ScannerConfig {
                 .map(|s| format!(r###"{}.*(\r\n|\r|\n)?"###, s))
                 .collect::<Vec<String>>()
                 .join("|");
-            terminal_mappings.push((line_comments_rx, LINE_COMMENT, None));
+            terminal_mappings.push((
+                line_comments_rx,
+                LINE_COMMENT,
+                None,
+                terminal_names[LINE_COMMENT as usize].clone(),
+            ));
         }
         if !self.block_comments.is_empty() {
             let block_comments_rx = self
@@ -136,7 +152,12 @@ impl ScannerConfig {
                 .map(|(s, e)| Self::format_block_comment(s, e))
                 .collect::<Result<Vec<String>>>()?
                 .join("|");
-            terminal_mappings.push((block_comments_rx, BLOCK_COMMENT, None));
+            terminal_mappings.push((
+                block_comments_rx,
+                BLOCK_COMMENT,
+                None,
+                terminal_names[BLOCK_COMMENT as usize].clone(),
+            ));
         }
 
         let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
@@ -149,6 +170,7 @@ impl ScannerConfig {
                         k.expand(t),
                         i as TerminalIndex + FIRST_USER_TOKEN,
                         l.as_ref().map(|l| (l.is_positive, l.pattern.clone())),
+                        terminal_names[i + FIRST_USER_TOKEN as usize].clone(),
                     ));
                 }
                 acc

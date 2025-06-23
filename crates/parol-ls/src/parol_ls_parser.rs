@@ -64,54 +64,54 @@ pub const TERMINAL_NAMES: &[&str; 46] = &[
 ];
 
 scanner! {
-  ParolLsGrammarScanner {
+    ParolLsGrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"//.*(\r\n|\r|\n)?" => 3;
-            token r"/\*([^*]|\*[^/])*\*/" => 4;
-            token r"%start" => 5;
-            token r"%title" => 6;
-            token r"%comment" => 7;
-            token r"%user_type" => 8;
-            token r"=" => 9;
-            token r"%nt_type" => 10;
-            token r"%t_type" => 11;
-            token r"%grammar_type" => 12;
-            token r"%line_comment" => 13;
-            token r"%block_comment" => 14;
-            token r"%auto_newline_off" => 15;
-            token r"%auto_ws_off" => 16;
-            token r"%on" => 17;
-            token r"%enter" => 18;
-            token r"%%" => 19;
-            token r"::" => 20;
-            token r":" => 21;
-            token r";" => 22;
-            token r"\|" => 23;
-            token r"<" => 24;
-            token r">" => 25;
-            token r"\(" => 26;
-            token r"\)" => 27;
-            token r"\[" => 28;
-            token r"\]" => 29;
-            token r"\{" => 30;
-            token r"\}" => 31;
-            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 32;
-            token r#""(\\.|[^"])*""# => 33;
-            token r"'(\\.|[^'])*'" => 34;
-            token r"%scanner" => 35;
-            token r"," => 36;
-            token r"%sc" => 37;
-            token r"%push" => 38;
-            token r"%pop" => 39;
-            token r"@" => 40;
-            token r"\^" => 41;
-            token r"/(\\.|[^\/])*/" => 42;
-            token r"\?=" => 43;
-            token r"\?!" => 44;
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
+            token r"/\*([^*]|\*[^/])*\*/" => 4; // "BlockComment"
+            token r"%start" => 5; // "PercentStart"
+            token r"%title" => 6; // "PercentTitle"
+            token r"%comment" => 7; // "PercentComment"
+            token r"%user_type" => 8; // "PercentUserUnderscoreType"
+            token r"=" => 9; // "Equ"
+            token r"%nt_type" => 10; // "PercentNtUnderscoreType"
+            token r"%t_type" => 11; // "PercentTUnderscoreType"
+            token r"%grammar_type" => 12; // "PercentGrammarUnderscoreType"
+            token r"%line_comment" => 13; // "PercentLineUnderscoreComment"
+            token r"%block_comment" => 14; // "PercentBlockUnderscoreComment"
+            token r"%auto_newline_off" => 15; // "PercentAutoUnderscoreNewlineUnderscoreOff"
+            token r"%auto_ws_off" => 16; // "PercentAutoUnderscoreWsUnderscoreOff"
+            token r"%on" => 17; // "PercentOn"
+            token r"%enter" => 18; // "PercentEnter"
+            token r"%%" => 19; // "PercentPercent"
+            token r"::" => 20; // "DoubleColon"
+            token r":" => 21; // "Colon"
+            token r";" => 22; // "Semicolon"
+            token r"\|" => 23; // "Or"
+            token r"<" => 24; // "LT"
+            token r">" => 25; // "GT"
+            token r"\(" => 26; // "LParen"
+            token r"\)" => 27; // "RParen"
+            token r"\[" => 28; // "LBracket"
+            token r"\]" => 29; // "RBracket"
+            token r"\{" => 30; // "LBrace"
+            token r"\}" => 31; // "RBrace"
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 32; // "Identifier"
+            token r#""(\\.|[^"])*""# => 33; // "String"
+            token r"'(\\.|[^'])*'" => 34; // "LiteralString"
+            token r"%scanner" => 35; // "PercentScanner"
+            token r"," => 36; // "Comma"
+            token r"%sc" => 37; // "PercentSc"
+            token r"%push" => 38; // "PercentPush"
+            token r"%pop" => 39; // "PercentPop"
+            token r"@" => 40; // "At"
+            token r"\^" => 41; // "CutOperator"
+            token r"/(\\.|[^\/])*/" => 42; // "Regex"
+            token r"\?=" => 43; // "PositiveLookahead"
+            token r"\?!" => 44; // "NegativeLookahead"
+        }
     }
-  }
 }
 
 const MAX_K: usize = 1;

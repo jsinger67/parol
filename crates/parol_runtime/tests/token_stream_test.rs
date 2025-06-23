@@ -17,7 +17,7 @@ scanner!(
             token r"[a-zA-Z_]\w*" => 5; // Identifier
             token r"\u{22}" => 9; // StringDelimiter
             token "." => 10; // ERROR_TOKEN
-            transition 9 => STRING; // Switch to String mode
+            on 9 enter STRING; // Switch to String mode
         }
         mode STRING {
             token r"\u{5c}[\u{22}\u{5c}bfnt]" => 6; // Escaped
@@ -25,7 +25,7 @@ scanner!(
             token r"[^\u{22}\u{5c}]+" => 8; // NoneQuote
             token r"\u{22}" => 9; // StringDelimiter
             token "." => 10; // ERROR_TOKEN
-            transition 9 => INITIAL; // Switch back to INITIAL mode
+            on 9 enter INITIAL; // Switch back to INITIAL mode
         }
     }
 );

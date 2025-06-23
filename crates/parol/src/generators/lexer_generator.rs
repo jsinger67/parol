@@ -6,8 +6,8 @@ use parol_runtime::TerminalIndex;
 use crate::StrVec;
 use std::fmt::Debug;
 
-// Regular expression + terminal index + optional lookahead expression
-type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>);
+// Regular expression + terminal index + optional lookahead expression + generated token name
+type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>, String);
 // Scanner transition is a tuple of terminal index and the name of the next scanner mode
 type ScannerTransition = (TerminalIndex, String);
 
@@ -78,12 +78,13 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
                 acc
             });
 
-    let macro_start = StrVec::from_iter(vec![format!("\n  {} {{", get_scanner_type_name(config))]);
+    let macro_start =
+        StrVec::from_iter(vec![format!("\n    {} {{", get_scanner_type_name(config))]);
     let mut scanner_macro = grammar_config
         .scanner_configurations
         .iter()
         .map(|sc| {
-            sc.generate_build_information(grammar_config)
+            sc.generate_build_information(grammar_config, &terminal_names)
                 .map(|(r, t)| (r, t, sc.scanner_name.clone()))
         })
         .collect::<Result<
@@ -102,7 +103,7 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
             acc.push(format!("{}", e));
             acc
         });
-    scanner_macro.push("  }".to_string());
+    scanner_macro.push("    }".to_string());
 
     let terminal_names =
         terminal_names
@@ -175,33 +176,36 @@ impl std::fmt::Display for ScannerBuildInfo {
 
         let tokens = terminal_mappings
             .iter()
-            .fold(StrVec::new(12), |mut acc, (rx, i, l)| {
+            .fold(StrVec::new(12), |mut acc, (rx, i, l, tn)| {
                 // Generate the token definition
                 //   No lookahead expression
                 //     token r"World" => 10;
                 //   With positive lookahead expression
-                //     token r"World" => 11 followed by r"!";
+                //     token r"World" followed by r"!" => 11;
                 //   With negative lookahead expression
-                //     token r"!" => 12 not followed by r"!";
+                //     token r"!" not followed by r"!" => 12;
 
                 let hashes = determine_hashes_for_raw_string(rx);
-                let mut token = format!(r#"token r{}"{}"{} => {}"#, hashes, rx, hashes, i);
-                if let Some((is_positive, pattern)) = l {
+                let terminal_name_comment = if tn.is_empty() {
+                    String::new()
+                } else {
+                    format!(r#" // "{}""#, tn)
+                };
+                let lookahead = if let Some((is_positive, pattern)) = l {
                     let hashes = determine_hashes_for_raw_string(pattern);
                     if *is_positive {
-                        token.push_str(&format!(
-                            " followed by r{}\"{}\"{};",
-                            hashes, pattern, hashes
-                        ));
+                        format!(" followed by r{}\"{}\"{}", hashes, pattern, hashes)
                     } else {
-                        token.push_str(&format!(
-                            " not followed by r{}\"{}\"{};",
-                            hashes, pattern, hashes
-                        ));
+                        format!(" not followed by r{}\"{}\"{}", hashes, pattern, hashes)
                     }
                 } else {
-                    token.push(';');
-                }
+                    String::new()
+                };
+
+                let token = format!(
+                    r#"token r{}"{}"{} {}=> {};{}"#,
+                    hashes, rx, hashes, lookahead, i, terminal_name_comment
+                );
 
                 acc.push(token);
                 acc
@@ -209,8 +213,8 @@ impl std::fmt::Display for ScannerBuildInfo {
 
         let transitions = transitions.iter().fold(StrVec::new(12), |mut acc, (i, e)| {
             // Generate the transition definition
-            //   transition 10 => World;
-            acc.push(format!(r#"transition {} => {};"#, i, e));
+            //   on 10 enter World;
+            acc.push(format!(r#"on {} enter {};"#, i, e));
             acc
         });
 
@@ -218,6 +222,6 @@ impl std::fmt::Display for ScannerBuildInfo {
         f.write_fmt(format_args!("        mode {} {{\n", scanner_name))?;
         f.write_fmt(format_args!("{}", tokens))?;
         f.write_fmt(format_args!("{}", transitions))?;
-        f.write_str("    }")
+        f.write_str("        }")
     }
 }

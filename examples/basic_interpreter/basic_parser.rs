@@ -50,58 +50,58 @@ pub const TERMINAL_NAMES: &[&str; 32] = &[
 ];
 
 scanner! {
-  BasicGrammarScanner {
+    BasicGrammarScanner {
         mode INITIAL {
-            token r"[\s--\r\n]+" => 2;
-            token r":" => 5;
-            token r"[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" => 6;
-            token r"," => 7;
-            token r"(?:\r?\n|\r)+" => 8;
-            token r"REM" => 12;
-            token r"IF" => 13;
-            token r"THEN" => 14;
-            token r"GOTO" => 15;
-            token r"LET" => 16;
-            token r"PRINT|\?" => 17;
-            token r"END" => 18;
-            token r"=" => 19;
-            token r"[A-Z][0-9A-Z]*" => 30;
-            transition 12 => Cmnt;
-            transition 13 => Expr;
-            transition 17 => Expr;
-            transition 19 => Expr;
-    }
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r":" => 5; // "Colon"
+            token r"[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" => 6; // "LineNumber"
+            token r"," => 7; // "Comma"
+            token r"(?:\r?\n|\r)+" => 8; // "EndOfLine"
+            token r"REM" => 12; // "Rem"
+            token r"IF" => 13; // "If"
+            token r"THEN" => 14; // "Then"
+            token r"GOTO" => 15; // "Goto"
+            token r"LET" => 16; // "Let"
+            token r"PRINT|\?" => 17; // "Print"
+            token r"END" => 18; // "End"
+            token r"=" => 19; // "AssignOp"
+            token r"[A-Z][0-9A-Z]*" => 30; // "Variable"
+            on 12 enter Cmnt;
+            on 13 enter Expr;
+            on 17 enter Expr;
+            on 19 enter Expr;
+        }
         mode Cmnt {
-            token r"[\s--\r\n]+" => 2;
-            token r"(?:\r?\n|\r)+" => 8;
-            token r"[^\r\n]+" => 29;
-            transition 8 => INITIAL;
-    }
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"(?:\r?\n|\r)+" => 8; // "EndOfLine"
+            token r"[^\r\n]+" => 29; // "Comment"
+            on 8 enter INITIAL;
+        }
         mode Expr {
-            token r"[\s--\r\n]+" => 2;
-            token r":" => 5;
-            token r"," => 7;
-            token r"(?:\r?\n|\r)+" => 8;
-            token r"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?" => 9;
-            token r"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+" => 10;
-            token r"(?:[0-9] *)+" => 11;
-            token r"THEN" => 14;
-            token r"GOTO" => 15;
-            token r"N?OR" => 20;
-            token r"AND" => 21;
-            token r"NOT" => 22;
-            token r"<\s*>|<\s*=|<|>\s*=|>|=" => 23;
-            token r"\+" => 24;
-            token r"\-" => 25;
-            token r"\*|\u{2F}" => 26;
-            token r"\(" => 27;
-            token r"\)" => 28;
-            token r"[A-Z][0-9A-Z]*" => 30;
-            transition 8 => INITIAL;
-            transition 14 => INITIAL;
-            transition 15 => INITIAL;
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r":" => 5; // "Colon"
+            token r"," => 7; // "Comma"
+            token r"(?:\r?\n|\r)+" => 8; // "EndOfLine"
+            token r"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?" => 9; // "Float1"
+            token r"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+" => 10; // "Float2"
+            token r"(?:[0-9] *)+" => 11; // "Integer"
+            token r"THEN" => 14; // "Then"
+            token r"GOTO" => 15; // "Goto"
+            token r"N?OR" => 20; // "LogicalOrOp"
+            token r"AND" => 21; // "LogicalAndOp"
+            token r"NOT" => 22; // "LogicalNotOp"
+            token r"<\s*>|<\s*=|<|>\s*=|>|=" => 23; // "RelationalOp"
+            token r"\+" => 24; // "Plus"
+            token r"\-" => 25; // "Minus"
+            token r"\*|\u{2F}" => 26; // "MulOp"
+            token r"\(" => 27; // "LParen"
+            token r"\)" => 28; // "RParen"
+            token r"[A-Z][0-9A-Z]*" => 30; // "Variable"
+            on 8 enter INITIAL;
+            on 14 enter INITIAL;
+            on 15 enter INITIAL;
+        }
     }
-  }
 }
 
 const MAX_K: usize = 2;

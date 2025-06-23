@@ -30,24 +30,24 @@ pub const TERMINAL_NAMES: &[&str; 11] = &[
 ];
 
 scanner! {
-  ScannerStatesGrammarScanner {
+    ScannerStatesGrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"//.*(\r\n|\r|\n)?" => 3;
-            token r"/\*([^*]|\*[^/])*\*/" => 4;
-            token r"[a-zA-Z_]\w*" => 5;
-            token r"\u{22}" => 9;
-            transition 9 => String;
-    }
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
+            token r"/\*([^*]|\*[^/])*\*/" => 4; // "BlockComment"
+            token r"[a-zA-Z_]\w*" => 5; // "Identifier"
+            token r"\u{22}" => 9; // "StringDelimiter"
+            on 9 enter String;
+        }
         mode String {
-            token r"\u{5c}[\u{22}\u{5c}bfnt]" => 6;
-            token r"\u{5c}[\s^\n\r]*\r?\n" => 7;
-            token r"[^\u{22}\u{5c}]+" => 8;
-            token r"\u{22}" => 9;
-            transition 9 => INITIAL;
+            token r"\u{5c}[\u{22}\u{5c}bfnt]" => 6; // "Escaped"
+            token r"\u{5c}[\s^\n\r]*\r?\n" => 7; // "EscapedLineEnd"
+            token r"[^\u{22}\u{5c}]+" => 8; // "NoneQuote"
+            token r"\u{22}" => 9; // "StringDelimiter"
+            on 9 enter INITIAL;
+        }
     }
-  }
 }
 
 pub const NON_TERMINALS: &[&str; 11] = &[

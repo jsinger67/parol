@@ -41,31 +41,31 @@ pub const TERMINAL_NAMES: &[&str; 23] = &[
 ];
 
 scanner! {
-  CalcGrammarScanner {
+    CalcGrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"//.*(\r\n|\r|\n)?" => 3;
-            token r"/\*([^*]|\*[^/])*\*/" => 4;
-            token r";" => 5;
-            token r"==|!=" => 6;
-            token r"(\+|-|\*|/|%|<<|>>|&|\^|\|)?=" => 7;
-            token r"\|\|" => 8;
-            token r"&&" => 9;
-            token r"\|" => 10;
-            token r"&" => 11;
-            token r"<<|>>" => 12;
-            token r"<=|<|>=|>" => 13;
-            token r"\+" => 14;
-            token r"-" => 15;
-            token r"\*\*" => 16;
-            token r"\*|/|%" => 17;
-            token r"\(" => 18;
-            token r"\)" => 19;
-            token r"0|[1-9][0-9]*" => 20;
-            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 21;
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
+            token r"/\*([^*]|\*[^/])*\*/" => 4; // "BlockComment"
+            token r";" => 5; // "Semicolon"
+            token r"==|!=" => 6; // "EqualityOp"
+            token r"(\+|-|\*|/|%|<<|>>|&|\^|\|)?=" => 7; // "AssignOp"
+            token r"\|\|" => 8; // "LogicalOrOp"
+            token r"&&" => 9; // "LogicalAndOp"
+            token r"\|" => 10; // "BitwiseOrOp"
+            token r"&" => 11; // "BitwiseAndOp"
+            token r"<<|>>" => 12; // "BitwiseShiftOp"
+            token r"<=|<|>=|>" => 13; // "RelationalOp"
+            token r"\+" => 14; // "Plus"
+            token r"-" => 15; // "Minus"
+            token r"\*\*" => 16; // "PowOp"
+            token r"\*|/|%" => 17; // "MultOp"
+            token r"\(" => 18; // "LParen"
+            token r"\)" => 19; // "RParen"
+            token r"0|[1-9][0-9]*" => 20; // "Number"
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 21; // "Id"
+        }
     }
-  }
 }
 
 const MAX_K: usize = 2;

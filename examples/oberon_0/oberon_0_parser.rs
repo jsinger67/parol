@@ -60,49 +60,49 @@ pub const TERMINAL_NAMES: &[&str; 42] = &[
 ];
 
 scanner! {
-  Oberon0GrammarScanner {
+    Oberon0GrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"\(\*([^*]|\*[^)])*\*\)" => 4;
-            token r"\." => 5;
-            token r"\[" => 6;
-            token r"]" => 7;
-            token r"\(" => 8;
-            token r"\)" => 9;
-            token r"~" => 10;
-            token r":=" => 11;
-            token r">=|<=|\#|<|>" => 12;
-            token r"=" => 13;
-            token r"," => 14;
-            token r"ELSE" => 15;
-            token r"END" => 16;
-            token r"IF" => 17;
-            token r"THEN" => 18;
-            token r"ELSIF" => 19;
-            token r"WHILE" => 20;
-            token r"DO" => 21;
-            token r"REPEAT" => 22;
-            token r"UNTIL" => 23;
-            token r";" => 24;
-            token r"ARRAY" => 25;
-            token r"OF" => 26;
-            token r":" => 27;
-            token r"RECORD" => 28;
-            token r"VAR" => 29;
-            token r"PROCEDURE" => 30;
-            token r"BEGIN" => 31;
-            token r"RETURN" => 32;
-            token r"TYPE" => 33;
-            token r"CONST" => 34;
-            token r"MODULE" => 35;
-            token r"\*|/|DIV|MOD|&" => 36;
-            token r"\+|-|OR" => 37;
-            token r"\+|-" => 38;
-            token r"[a-zA-Z][a-zA-Z0-9]*" => 39;
-            token r"[0-9]+" => 40;
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"\(\*([^*]|\*[^)])*\*\)" => 4; // "BlockComment"
+            token r"\." => 5; // "Dot"
+            token r"\[" => 6; // "LBracket"
+            token r"]" => 7; // "RBracket"
+            token r"\(" => 8; // "LParen"
+            token r"\)" => 9; // "RParen"
+            token r"~" => 10; // "Tilde"
+            token r":=" => 11; // "ColonEqu"
+            token r">=|<=|\#|<|>" => 12; // "RelationalOps"
+            token r"=" => 13; // "Equ"
+            token r"," => 14; // "Comma"
+            token r"ELSE" => 15; // "ELSE"
+            token r"END" => 16; // "END"
+            token r"IF" => 17; // "IF"
+            token r"THEN" => 18; // "THEN"
+            token r"ELSIF" => 19; // "ELSIF"
+            token r"WHILE" => 20; // "WHILE"
+            token r"DO" => 21; // "DO"
+            token r"REPEAT" => 22; // "REPEAT"
+            token r"UNTIL" => 23; // "UNTIL"
+            token r";" => 24; // "Semicolon"
+            token r"ARRAY" => 25; // "ARRAY"
+            token r"OF" => 26; // "OF"
+            token r":" => 27; // "Colon"
+            token r"RECORD" => 28; // "RECORD"
+            token r"VAR" => 29; // "VAR"
+            token r"PROCEDURE" => 30; // "PROCEDURE"
+            token r"BEGIN" => 31; // "BEGIN"
+            token r"RETURN" => 32; // "RETURN"
+            token r"TYPE" => 33; // "TYPE"
+            token r"CONST" => 34; // "CONST"
+            token r"MODULE" => 35; // "MODULE"
+            token r"\*|/|DIV|MOD|&" => 36; // "MulOperator"
+            token r"\+|-|OR" => 37; // "AddOperator"
+            token r"\+|-" => 38; // "UnaryOp"
+            token r"[a-zA-Z][a-zA-Z0-9]*" => 39; // "Ident"
+            token r"[0-9]+" => 40; // "Integer"
+        }
     }
-  }
 }
 
 const MAX_K: usize = 2;

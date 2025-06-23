@@ -26,15 +26,15 @@ pub const TERMINAL_NAMES: &[&str; 8] = &[
 ];
 
 scanner! {
-  ListGrammarScanner {
+    ListGrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"//.*(\r\n|\r|\n)?" => 3;
-            token r"," => 5;
-            token r"0|[1-9][0-9]*" => 6;
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
+            token r"," => 5; // "Comma"
+            token r"0|[1-9][0-9]*" => 6; // "Num"
+        }
     }
-  }
 }
 
 const MAX_K: usize = 2;

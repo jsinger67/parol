@@ -90,79 +90,79 @@ pub const TERMINAL_NAMES: &[&str; 72] = &[
 ];
 
 scanner! {
-  Oberon2GrammarScanner {
+    Oberon2GrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"\(\*([^*]|\*[^)])*\*\)" => 4;
-            token r"BEGIN" => 5;
-            token r"CASE" => 6;
-            token r"DO" => 7;
-            token r"ELSE" => 8;
-            token r"ELSIF" => 9;
-            token r"END" => 10;
-            token r"IF" => 11;
-            token r"OF" => 12;
-            token r"PROCEDURE" => 13;
-            token r"THEN" => 14;
-            token r"TO" => 15;
-            token r"VAR" => 16;
-            token r"MODULE" => 17;
-            token r";" => 18;
-            token r"\." => 19;
-            token r"IMPORT" => 20;
-            token r"," => 21;
-            token r":=" => 22;
-            token r"CONST" => 23;
-            token r"TYPE" => 24;
-            token r"=" => 25;
-            token r":" => 26;
-            token r"\^" => 27;
-            token r"\(" => 28;
-            token r"\)" => 29;
-            token r"ARRAY" => 30;
-            token r"RECORD" => 31;
-            token r"POINTER" => 32;
-            token r"WHILE" => 33;
-            token r"REPEAT" => 34;
-            token r"UNTIL" => 35;
-            token r"FOR" => 36;
-            token r"LOOP" => 37;
-            token r"WITH" => 38;
-            token r"EXIT" => 39;
-            token r"RETURN" => 40;
-            token r"\|" => 41;
-            token r"BY" => 42;
-            token r"\.\." => 43;
-            token r"\+" => 44;
-            token r"-" => 45;
-            token r"NIL" => 46;
-            token r"~" => 47;
-            token r"\{" => 48;
-            token r"\}" => 49;
-            token r"#" => 50;
-            token r"<" => 51;
-            token r"<=" => 52;
-            token r">" => 53;
-            token r">=" => 54;
-            token r"IS" => 55;
-            token r"OR" => 56;
-            token r"\*" => 57;
-            token r"/" => 58;
-            token r"DIV" => 59;
-            token r"MOD" => 60;
-            token r"&" => 61;
-            token r"\[" => 62;
-            token r"\]" => 63;
-            token r"[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?" => 64;
-            token r"[0-9][0-9A-F]*X" => 65;
-            token r"[0-9][0-9]*|[0-9][0-9A-F]*H" => 66;
-            token r"[a-zA-Z_]\w*\.[a-zA-Z_]\w*" => 67;
-            token r"[a-zA-Z_]\w*" => 68;
-            token r"\u{0022}[^\u{0022}]*\u{0022}|'[^']*'" => 69;
-            token r"IN" => 70;
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"\(\*([^*]|\*[^)])*\*\)" => 4; // "BlockComment"
+            token r"BEGIN" => 5; // "KwBegin"
+            token r"CASE" => 6; // "KwCase"
+            token r"DO" => 7; // "KwDo"
+            token r"ELSE" => 8; // "KwElse"
+            token r"ELSIF" => 9; // "KwElsif"
+            token r"END" => 10; // "KwEnd"
+            token r"IF" => 11; // "KwIf"
+            token r"OF" => 12; // "KwOf"
+            token r"PROCEDURE" => 13; // "KwProcedure"
+            token r"THEN" => 14; // "KwThen"
+            token r"TO" => 15; // "KwTo"
+            token r"VAR" => 16; // "KwVar"
+            token r"MODULE" => 17; // "MODULE"
+            token r";" => 18; // "Semicolon"
+            token r"\." => 19; // "Dot"
+            token r"IMPORT" => 20; // "IMPORT"
+            token r"," => 21; // "Comma"
+            token r":=" => 22; // "ColonEqu"
+            token r"CONST" => 23; // "CONST"
+            token r"TYPE" => 24; // "TYPE"
+            token r"=" => 25; // "Equ"
+            token r":" => 26; // "Colon"
+            token r"\^" => 27; // "Circumflex"
+            token r"\(" => 28; // "LParen"
+            token r"\)" => 29; // "RParen"
+            token r"ARRAY" => 30; // "ARRAY"
+            token r"RECORD" => 31; // "RECORD"
+            token r"POINTER" => 32; // "POINTER"
+            token r"WHILE" => 33; // "WHILE"
+            token r"REPEAT" => 34; // "REPEAT"
+            token r"UNTIL" => 35; // "UNTIL"
+            token r"FOR" => 36; // "FOR"
+            token r"LOOP" => 37; // "LOOP"
+            token r"WITH" => 38; // "WITH"
+            token r"EXIT" => 39; // "EXIT"
+            token r"RETURN" => 40; // "RETURN"
+            token r"\|" => 41; // "Or"
+            token r"BY" => 42; // "BY"
+            token r"\.\." => 43; // "DotDot"
+            token r"\+" => 44; // "Plus"
+            token r"-" => 45; // "Minus"
+            token r"NIL" => 46; // "NIL"
+            token r"~" => 47; // "Tilde"
+            token r"\{" => 48; // "LBrace"
+            token r"\}" => 49; // "RBrace"
+            token r"#" => 50; // "Hash"
+            token r"<" => 51; // "LT"
+            token r"<=" => 52; // "LTEqu"
+            token r">" => 53; // "GT"
+            token r">=" => 54; // "GTEqu"
+            token r"IS" => 55; // "IS"
+            token r"OR" => 56; // "OR"
+            token r"\*" => 57; // "Star"
+            token r"/" => 58; // "Slash"
+            token r"DIV" => 59; // "DIV"
+            token r"MOD" => 60; // "MOD"
+            token r"&" => 61; // "Amp"
+            token r"\[" => 62; // "LBracket"
+            token r"\]" => 63; // "RBracket"
+            token r"[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?" => 64; // "Real"
+            token r"[0-9][0-9A-F]*X" => 65; // "Character"
+            token r"[0-9][0-9]*|[0-9][0-9A-F]*H" => 66; // "Integer"
+            token r"[a-zA-Z_]\w*\.[a-zA-Z_]\w*" => 67; // "QIdent"
+            token r"[a-zA-Z_]\w*" => 68; // "Ident"
+            token r"\u{0022}[^\u{0022}]*\u{0022}|'[^']*'" => 69; // "String"
+            token r"IN" => 70; // "InOp"
+        }
     }
-  }
 }
 
 const MAX_K: usize = 2;

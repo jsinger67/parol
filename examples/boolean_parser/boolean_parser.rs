@@ -36,26 +36,26 @@ pub const TERMINAL_NAMES: &[&str; 18] = &[
 ];
 
 scanner! {
-  BooleanGrammarScanner {
+    BooleanGrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"//.*(\r\n|\r|\n)?" => 3;
-            token r"\(\*([^*]|\*[^)])*\*\)" => 4;
-            token r"[aA][nN][dD]" => 5;
-            token r"[oO][rR]" => 6;
-            token r"[xX][oO][rR]" => 7;
-            token r"[nN][oO][rR]" => 8;
-            token r"[nN][aA][nN][dD]" => 9;
-            token r"[xX][nN][oO][rR]" => 10;
-            token r"[tT][rR][uU][eE]" => 11;
-            token r"[fF][aA][lL][sS][eE]" => 12;
-            token r"[nN][oO][tT]" => 13;
-            token r";" => 14;
-            token r"\(" => 15;
-            token r"\)" => 16;
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
+            token r"\(\*([^*]|\*[^)])*\*\)" => 4; // "BlockComment"
+            token r"[aA][nN][dD]" => 5; // "AndOp"
+            token r"[oO][rR]" => 6; // "OrOp"
+            token r"[xX][oO][rR]" => 7; // "XorOp"
+            token r"[nN][oO][rR]" => 8; // "NorOp"
+            token r"[nN][aA][nN][dD]" => 9; // "NandOp"
+            token r"[xX][nN][oO][rR]" => 10; // "XnorOp"
+            token r"[tT][rR][uU][eE]" => 11; // "True"
+            token r"[fF][aA][lL][sS][eE]" => 12; // "False"
+            token r"[nN][oO][tT]" => 13; // "Not"
+            token r";" => 14; // "Semicolon"
+            token r"\(" => 15; // "LeftParenthesis"
+            token r"\)" => 16; // "RightParenthesis"
+        }
     }
-  }
 }
 
 const MAX_K: usize = 2;

@@ -35,23 +35,23 @@ pub const TERMINAL_NAMES: &[&str; 17] = &[
 ];
 
 scanner! {
-  JsonGrammarScanner {
+    JsonGrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"\{" => 5;
-            token r"\}" => 6;
-            token r"," => 7;
-            token r":" => 8;
-            token r"\[" => 9;
-            token r"\]" => 10;
-            token r"true" => 11;
-            token r"false" => 12;
-            token r"null" => 13;
-            token r#""(\\.|[^"])*""# => 14;
-            token r"-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?" => 15;
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"\{" => 5; // "LBrace"
+            token r"\}" => 6; // "RBrace"
+            token r"," => 7; // "Comma"
+            token r":" => 8; // "Colon"
+            token r"\[" => 9; // "LBracket"
+            token r"\]" => 10; // "RBracket"
+            token r"true" => 11; // "True"
+            token r"false" => 12; // "False"
+            token r"null" => 13; // "Null"
+            token r#""(\\.|[^"])*""# => 14; // "String"
+            token r"-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?" => 15; // "Number"
+        }
     }
-  }
 }
 
 const MAX_K: usize = 1;

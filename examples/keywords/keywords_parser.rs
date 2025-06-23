@@ -29,18 +29,18 @@ pub const TERMINAL_NAMES: &[&str; 11] = &[
 ];
 
 scanner! {
-  KeywordsGrammarScanner {
+    KeywordsGrammarScanner {
         mode INITIAL {
-            token r"\r\n|\r|\n" => 1;
-            token r"[\s--\r\n]+" => 2;
-            token r"//.*(\r\n|\r|\n)?" => 3;
-            token r";" => 5;
-            token r"[bB][eE][gG][iI][nN]" => 6;
-            token r"[eE][nN][dD]" => 7;
-            token r"[vV][aA][rR]" => 8;
-            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 9;
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
+            token r";" => 5; // "Semicolon"
+            token r"[bB][eE][gG][iI][nN]" => 6; // "Begin"
+            token r"[eE][nN][dD]" => 7; // "End"
+            token r"[vV][aA][rR]" => 8; // "Var"
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 9; // "Identifier"
+        }
     }
-  }
 }
 
 const MAX_K: usize = 1;
