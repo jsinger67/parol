@@ -1,4 +1,4 @@
-use crate::GrammarConfig;
+use crate::{GrammarConfig, parser::parol_grammar::ScannerStateSwitch};
 use anyhow::{Result, bail};
 use parol_runtime::{
     TerminalIndex,
@@ -12,7 +12,7 @@ use std::fmt::{Debug, Display, Error, Formatter};
 // Regular expression + terminal index + optional lookahead expression + generated token name
 type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>, String);
 // Scanner transition is a tuple of terminal index and the name of the next scanner mode
-type ScannerTransition = (TerminalIndex, String);
+type ScannerTransition = (TerminalIndex, ScannerStateSwitch);
 // The build information is a tuple of terminal mappings and scanner transitions
 type BuildInformation = (Vec<TerminalMapping>, Vec<ScannerTransition>);
 
@@ -62,7 +62,7 @@ pub struct ScannerConfig {
     /// Scanner state transitions
     /// Maps from token to scanner state, where the token is identified by its TerminalIndex
     /// The scanner state is identified by its index.
-    pub transitions: Vec<(TerminalIndex, usize)>,
+    pub transitions: Vec<(TerminalIndex, ScannerStateSwitch)>,
 }
 
 impl ScannerConfig {
@@ -160,8 +160,6 @@ impl ScannerConfig {
             ));
         }
 
-        let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
-
         let terminal_mappings = cfg.get_ordered_terminals().iter().enumerate().fold(
             terminal_mappings,
             |mut acc, (i, (t, k, l, s))| {
@@ -177,13 +175,7 @@ impl ScannerConfig {
             },
         );
 
-        let transitions = self
-            .transitions
-            .iter()
-            .map(|(t, s)| (*t, scanner_state_resolver(&[*s])))
-            .collect::<Vec<(TerminalIndex, String)>>();
-
-        Ok((terminal_mappings, transitions))
+        Ok((terminal_mappings, self.transitions.clone()))
     }
 
     /// Formats a block comment

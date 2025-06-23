@@ -1,4 +1,5 @@
 use crate::generators::{GrammarConfig, NamingHelper, generate_terminal_name};
+use crate::parser::parol_grammar::ScannerStateSwitch;
 use crate::{CommonGeneratorConfig, generate_name};
 use anyhow::Result;
 use parol_runtime::TerminalIndex;
@@ -9,7 +10,7 @@ use std::fmt::Debug;
 // Regular expression + terminal index + optional lookahead expression + generated token name
 type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>, String);
 // Scanner transition is a tuple of terminal index and the name of the next scanner mode
-type ScannerTransition = (TerminalIndex, String);
+type ScannerTransition = (TerminalIndex, ScannerStateSwitch);
 
 #[derive(Debug, Default)]
 struct ScannerBuildInfo {
@@ -214,7 +215,7 @@ impl std::fmt::Display for ScannerBuildInfo {
         let transitions = transitions.iter().fold(StrVec::new(12), |mut acc, (i, e)| {
             // Generate the transition definition
             //   on 10 enter World;
-            acc.push(format!(r#"on {} enter {};"#, i, e));
+            acc.push(format!(r#"on {} {};"#, i, e));
             acc
         });
 

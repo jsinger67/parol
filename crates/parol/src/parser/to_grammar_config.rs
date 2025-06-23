@@ -1,9 +1,9 @@
 use crate::parser::{Factor, ParolGrammar};
 use crate::transformation::transform_productions;
-use crate::{generators, Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal, TerminalKind};
-use anyhow::{bail, Result};
+use crate::{Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal, TerminalKind, generators};
+use anyhow::{Result, bail};
 
-use super::parol_grammar::LookaheadExpression;
+use super::parol_grammar::{LookaheadExpression, ScannerStateSwitch};
 
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let st = parol_grammar.start_symbol;
@@ -115,18 +115,43 @@ fn insert_transitions(
         scanner_configurations[source_configuration]
             .transitions
             .iter()
-            .try_for_each(|(token, target_state_name)| {
+            .try_for_each(|(token, scanner_switch_kind)| {
                 if let Some((txt, kind, la)) = terminal_finder(token.text()) {
-                    if let Some(target_scanner) = scanner_resolver(target_state_name.text()) {
-                        transitions.push((
-                            terminal_resolver.terminal_index(&txt, kind, &la),
-                            target_scanner,
-                        ));
-                    } else {
-                        bail!(
-                            "Target scanner configuration {} not found",
-                            target_state_name
-                        );
+                    match scanner_switch_kind {
+                        ScannerStateSwitch::Switch(m, location) => {
+                            // Check if the target scanner is defined
+                            if scanner_resolver(m).is_some() {
+                                transitions.push((
+                                    terminal_resolver.terminal_index(&txt, kind, &la),
+                                    ScannerStateSwitch::Switch(m.to_string(), location.clone()),
+                                ));
+                            } else {
+                                bail!(
+                                    "Target scanner configuration {} not found",
+                                    scanner_switch_kind
+                                );
+                            }
+                        }
+                        ScannerStateSwitch::SwitchPush(m, location) => {
+                            // Check if the target scanner is defined
+                            if scanner_resolver(m).is_some() {
+                                transitions.push((
+                                    terminal_resolver.terminal_index(&txt, kind, &la),
+                                    ScannerStateSwitch::SwitchPush(m.to_string(), location.clone()),
+                                ));
+                            } else {
+                                bail!(
+                                    "Target scanner configuration {} not found",
+                                    scanner_switch_kind
+                                );
+                            }
+                        }
+                        ScannerStateSwitch::SwitchPop(location) => {
+                            transitions.push((
+                                terminal_resolver.terminal_index(&txt, kind, &la),
+                                ScannerStateSwitch::SwitchPop(location.clone()),
+                            ));
+                        }
                     }
                 } else {
                     bail!("Terminal {} not found", token);

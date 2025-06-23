@@ -173,6 +173,12 @@ impl FormatToken for Token<'_> {
     }
 }
 
+impl AsRef<str> for Token<'_> {
+    fn as_ref(&self) -> &str {
+        self.text.as_ref()
+    }
+}
+
 impl From<&Token<'_>> for std::ops::Range<usize> {
     fn from(token: &Token<'_>) -> Self {
         (&token.location).into()

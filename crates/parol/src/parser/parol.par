@@ -6,6 +6,7 @@
 %block_comment '/*' '*/'
 %nt_type UserTypeName = crate::parser::parol_grammar::UserDefinedTypeName
 %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+%nt_type ScannerStateDirectives = crate::parser::parol_grammar::ScannerStateSwitch
 
 %%
 
@@ -37,7 +38,13 @@ ScannerDirectives
     | '%block_comment'^ TokenLiteral TokenLiteral
     | '%auto_newline_off'^
     | '%auto_ws_off'^
-    | '%on'^ IdentifierList '%enter'^ Identifier // Scanner state enter directives
+    | '%on'^ IdentifierList ScannerStateDirectives
+    ;
+
+ScannerStateDirectives
+    : '%enter'^ Identifier // Scanner state enter directives
+    | '%push'^ Identifier // Scanner state push directives
+    | '%pop' // Scanner state pop directives
     ;
 
 GrammarDefinition
