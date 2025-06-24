@@ -1,6 +1,6 @@
 use std::{borrow::Cow, cell::RefCell, path::Path};
 
-use criterion::{Criterion, criterion_group, criterion_main};
+use criterion::{Criterion, Throughput, criterion_group, criterion_main};
 use parol_runtime::{
     TerminalIndex, TokenStream,
     lexer::{ERROR_TOKEN, UNMATCHABLE_TOKEN},
@@ -200,8 +200,9 @@ const PATTERNS: &[(&str, Option<(bool, &str)>)] = &[
 const MAX_K: usize = 3;
 const ERROR_TOKEN_INDEX: TerminalIndex = PATTERNS.len() as TerminalIndex - 1;
 
+use parol_scanner::ParolScanner;
+
 fn tokenize() {
-    use parol_scanner::ParolScanner;
     let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
     let scanner = ParolScanner::new();
     let token_stream = RefCell::new(
@@ -236,5 +237,42 @@ fn tokenize_benchmark(c: &mut Criterion) {
     c.bench_function("tokenize", |b| b.iter(tokenize));
 }
 
-criterion_group!(benchesscanner, tokenize_benchmark);
+fn throughput_benchmark(c: &mut Criterion) {
+    let mut group = c.benchmark_group("throughput");
+    group.throughput(Throughput::Bytes(LEXER_INPUT.len() as u64));
+    let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
+    group.bench_function("throughput", |b| {
+        b.iter(|| {
+            let scanner = ParolScanner::new();
+            let token_stream = RefCell::new(
+                TokenStream::new(
+                    LEXER_INPUT,
+                    file_name.clone(),
+                    &scanner.scanner_impl,
+                    &ParolScanner::match_function,
+                    MAX_K,
+                )
+                .unwrap(),
+            );
+            while !token_stream.borrow().all_input_consumed() {
+                let tok = token_stream.borrow_mut().lookahead(0).unwrap();
+                assert_ne!(
+                    tok.token_type, ERROR_TOKEN_INDEX,
+                    "Error token found: {:?}",
+                    tok
+                );
+                // Drop the skip tokens
+                let _ = token_stream
+                    .borrow_mut()
+                    .take_skip_tokens()
+                    .into_iter()
+                    .collect::<Vec<_>>();
+
+                token_stream.borrow_mut().consume().unwrap();
+            }
+        })
+    });
+}
+
+criterion_group!(benchesscanner, tokenize_benchmark, throughput_benchmark);
 criterion_main!(benchesscanner);
