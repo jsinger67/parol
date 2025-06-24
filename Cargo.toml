@@ -32,8 +32,10 @@ opt-level = 3
 opt-level = 3
 debug = true
 
+
 [profile.bench]
 debug = true
 
 [profile.release]
 lto = true
+debug = true

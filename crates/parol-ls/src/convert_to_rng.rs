@@ -239,8 +239,35 @@ impl From<&ScannerDirectives> for Rng {
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(auto_ws) => {
                 Self::from(&auto_ws.percent_auto_underscore_ws_underscore_off)
             }
-            ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(trans) => {
-                Self::from(&trans.percent_on).extend(Self::from(&trans.identifier))
+            ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(trans) => {
+                Self::from(&trans.percent_on).extend(Self::from(&trans.scanner_state_directives))
+            }
+        }
+    }
+}
+
+impl From<&ScannerStateDirectives> for Rng {
+    fn from(val: &ScannerStateDirectives) -> Self {
+        match val {
+            ScannerStateDirectives::PercentEnterIdentifier(
+                scanner_state_directives_percent_enter_identifier,
+            ) => Self::from(&scanner_state_directives_percent_enter_identifier.percent_enter)
+                .extend(Self::from(
+                    &scanner_state_directives_percent_enter_identifier
+                        .identifier
+                        .identifier,
+                )),
+            ScannerStateDirectives::PercentPushIdentifier(
+                scanner_state_directives_percent_push_identifier,
+            ) => Self::from(&scanner_state_directives_percent_push_identifier.percent_push).extend(
+                Self::from(
+                    &scanner_state_directives_percent_push_identifier
+                        .identifier
+                        .identifier,
+                ),
+            ),
+            ScannerStateDirectives::PercentPop(scanner_state_directives_percent_pop) => {
+                Self::from(&scanner_state_directives_percent_pop.percent_pop)
             }
         }
     }

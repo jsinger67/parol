@@ -4,11 +4,13 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::parser::parse_tree_type::TreeConstruct;
-#[allow(unused_imports)]
-use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TokenStream};
-use scnr2::scanner;
+use parol_runtime::{
+    parser::{
+        parse_tree_type::TreeConstruct, LLKParser, LookaheadDFA, ParseType, Production, Trans,
+    },
+    scnr2::scanner,
+    ParolError, ParseTree, TokenStream,
+};
 use std::path::Path;
 
 use crate::boolean_grammar::BooleanGrammar;

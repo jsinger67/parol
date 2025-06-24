@@ -4,7 +4,7 @@ use crate::{
 };
 use location::LocationBuilder;
 use log::trace;
-use scnr2::{FindMatchesWithPosition, MatchWithPosition};
+use scnr2::{FindMatchesWithPosition, Match};
 use std::{path::PathBuf, sync::Arc};
 
 ///
@@ -66,12 +66,13 @@ where
         self.find_iter.current_mode()
     }
 
-    pub(crate) fn token_from_match(&mut self, matched: MatchWithPosition) -> Option<Token<'t>> {
+    pub(crate) fn token_from_match(&mut self, matched: Match) -> Option<Token<'t>> {
+        let positions = matched.positions.unwrap_or_default();
         if let Ok(location) = LocationBuilder::default()
-            .start_line(matched.start_position.line as u32)
-            .start_column(matched.start_position.column as u32)
-            .end_line(matched.end_position.line as u32)
-            .end_column(matched.end_position.column as u32)
+            .start_line(positions.start_position.line as u32)
+            .start_column(positions.start_position.column as u32)
+            .end_line(positions.end_position.line as u32)
+            .end_column(positions.end_position.column as u32)
             .start(matched.span.start as u32)
             .end(matched.span.end as u32)
             .file_name(self.file_name.clone())

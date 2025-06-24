@@ -8,10 +8,12 @@ use crate::{
         Declaration, DoubleColon, Factor, GrammarDefinition, GrammarDefinitionList, Group,
         Identifier, IdentifierList, IdentifierListList, LiteralString, LookAhead, LookAheadGroup,
         NonTerminal, NonTerminalOpt, Optional, ParolLs, Production, ProductionLHS, Prolog,
-        PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState, ScannerStateList,
-        ScannerSwitch, ScannerSwitchOpt, SimpleToken, SimpleTokenOpt, StartDeclaration, Symbol,
-        TokenExpression, TokenExpressionOpt, TokenLiteral, TokenWithStates, TokenWithStatesOpt,
-        UserTypeDeclaration, UserTypeName, UserTypeNameList,
+        PrologList, PrologList0, Regex, Repeat, ScannerDirectives,
+        ScannerDirectivesPercentOnIdentifierListScannerStateDirectives, ScannerState,
+        ScannerStateDirectives, ScannerStateList, ScannerSwitch, ScannerSwitchOpt, SimpleToken,
+        SimpleTokenOpt, StartDeclaration, Symbol, TokenExpression, TokenExpressionOpt,
+        TokenLiteral, TokenWithStates, TokenWithStatesOpt, UserTypeDeclaration, UserTypeName,
+        UserTypeNameList,
     },
     rng::Rng,
     utils::RX_NEW_LINE,
@@ -51,6 +53,30 @@ impl LastToken for TokenLiteral {
             TokenLiteral::String(s) => &s.string.string,
             TokenLiteral::LiteralString(l) => &l.literal_string.literal_string,
             TokenLiteral::Regex(r) => &r.regex.regex,
+        }
+    }
+}
+
+impl LastToken for ScannerDirectivesPercentOnIdentifierListScannerStateDirectives {
+    fn get_last_token(&self) -> &OwnedToken {
+        match &self.scanner_state_directives {
+            ScannerStateDirectives::PercentEnterIdentifier(
+                scanner_state_directives_percent_enter_identifier,
+            ) => {
+                &scanner_state_directives_percent_enter_identifier
+                    .identifier
+                    .identifier
+            }
+            ScannerStateDirectives::PercentPushIdentifier(
+                scanner_state_directives_percent_push_identifier,
+            ) => {
+                &scanner_state_directives_percent_push_identifier
+                    .identifier
+                    .identifier
+            }
+            ScannerStateDirectives::PercentPop(scanner_state_directives_percent_pop) => {
+                &scanner_state_directives_percent_pop.percent_pop
+            }
         }
     }
 }
@@ -1037,7 +1063,7 @@ fn handle_scanner_directives(
                 comments,
             )
         }
-        ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(trans) => {
+        ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(trans) => {
             let (comments_before_token, comments) = Comments::format_comments_before(
                 comments,
                 &trans.percent_on,
@@ -1048,7 +1074,7 @@ fn handle_scanner_directives(
             };
             let (following_comment, comments) = Comments::formatted_immediately_following_comment(
                 comments,
-                &trans.identifier.identifier,
+                trans.get_last_token(),
                 &options
                     .clone()
                     .with_padding(Padding::Left)
@@ -1073,15 +1099,33 @@ fn handle_scanner_directives(
                     },
                 )
                 .join(", ");
+            let (text, comments) = match &trans.scanner_state_directives {
+                ScannerStateDirectives::PercentEnterIdentifier(
+                    scanner_state_directives_percent_enter_identifier,
+                ) => {
+                    let (ident, comments) = scanner_state_directives_percent_enter_identifier
+                        .identifier
+                        .txt(options, comments);
+                    (format!("%enter {};", ident,), comments)
+                }
+                ScannerStateDirectives::PercentPushIdentifier(
+                    scanner_state_directives_percent_push_identifier,
+                ) => {
+                    let (ident, comments) = scanner_state_directives_percent_push_identifier
+                        .identifier
+                        .txt(options, comments);
+                    (format!("%push {}", ident,), comments)
+                }
+                ScannerStateDirectives::PercentPop(_) => ("%pop".to_string(), comments),
+            };
             (
                 format!(
-                    "{}{}{} {} {} {}{}",
+                    "{}{}{} {} {}{}",
                     comments_before_token,
                     indent,
                     trans.percent_on,
                     ident_list,
-                    trans.percent_enter,
-                    trans.identifier.identifier.text(),
+                    text,
                     following_comment
                 ),
                 comments,

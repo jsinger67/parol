@@ -298,13 +298,13 @@ impl std::fmt::Display for ParserData<'_> {
         )?;
 
         f.write_fmt(ume::ume! {
-            use parol_runtime::{ParolError, ParseTree, TokenStream};
-            use parol_runtime::parser::parse_tree_type::TreeConstruct;
-            #[allow(unused_imports)]
-            use parol_runtime::parser::{
-                Trans, LLKParser, LookaheadDFA, ParseType, Production
+            use parol_runtime::{
+                parser::{
+                    parse_tree_type::TreeConstruct, LLKParser, LookaheadDFA, ParseType, Production, Trans,
+                },
+                scnr2::scanner,
+                ParolError, ParseTree, TokenStream,
             };
-            use scnr2::scanner;
             use std::path::Path;
         })?;
 
