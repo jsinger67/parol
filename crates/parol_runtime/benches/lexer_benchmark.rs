@@ -1,6 +1,6 @@
 use std::{borrow::Cow, cell::RefCell, path::Path};
 
-use criterion::{Criterion, criterion_group, criterion_main};
+use criterion::{Criterion, Throughput, criterion_group, criterion_main};
 use parol_runtime::{
     ScannerConfig, TerminalIndex, TokenStream, Tokenizer,
     lexer::tokenizer::{ERROR_TOKEN, UNMATCHABLE_TOKEN},
@@ -218,6 +218,34 @@ fn build_scanner_benchmark(c: &mut Criterion) {
     c.bench_function("build_scanner", |b| b.iter(build_scanner));
 }
 
-criterion_group!(benchesscanner, tokenize_benchmark);
+fn throughput_benchmark(c: &mut Criterion) {
+    let mut group = c.benchmark_group("throughput");
+    group.throughput(Throughput::Bytes(LEXER_INPUT.len() as u64));
+    group.bench_function("scanner", |b| {
+        b.iter(|| {
+            let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
+            let token_stream =
+                RefCell::new(TokenStream::new(LEXER_INPUT, file_name, &SCANNERS, MAX_K).unwrap());
+            while !token_stream.borrow().all_input_consumed() {
+                let tok = token_stream.borrow_mut().lookahead(0).unwrap();
+                assert_ne!(
+                    tok.token_type, ERROR_TOKEN_INDEX,
+                    "Error token found: {:?}",
+                    tok
+                );
+                // Drop the skip tokens
+                let _ = token_stream
+                    .borrow_mut()
+                    .take_skip_tokens()
+                    .into_iter()
+                    .collect::<Vec<_>>();
+
+                token_stream.borrow_mut().consume().unwrap();
+            }
+        });
+    });
+}
+
+criterion_group!(benchesscanner, tokenize_benchmark, throughput_benchmark);
 criterion_group!(benchesbuilder, build_scanner_benchmark);
 criterion_main!(benchesscanner, benchesbuilder);
