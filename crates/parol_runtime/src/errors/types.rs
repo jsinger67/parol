@@ -176,7 +176,7 @@ impl FileSource {
         Ok(Self { file_name, input })
     }
 
-    pub fn from_stream<F: Fn(char) -> Option<usize>>(token_stream: &TokenStream<'_, F>) -> Self {
+    pub fn from_stream<F: Fn(char) -> Option<usize> + Clone>(token_stream: &TokenStream<'_, F>) -> Self {
         let file_name = token_stream.file_name.clone();
         let input = token_stream.input.to_string();
         Self { file_name, input }

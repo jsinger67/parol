@@ -133,7 +133,9 @@ fn init() {
     let _ = env_logger::builder().is_test(true).try_init();
 }
 
-fn print_skip_tokens<F: Fn(char) -> Option<usize>>(token_stream: &RefCell<TokenStream<'_, F>>) {
+fn print_skip_tokens<F: Fn(char) -> Option<usize> + Clone>(
+    token_stream: &RefCell<TokenStream<'_, F>>,
+) {
     // Print the skip tokens
     token_stream
         .borrow_mut()

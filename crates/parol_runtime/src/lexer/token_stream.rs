@@ -21,7 +21,7 @@ use super::TokenBuffer;
 ///
 pub struct TokenStream<'t, F>
 where
-    F: Fn(char) -> Option<usize> + 'static,
+    F: Fn(char) -> Option<usize> + 'static + Clone,
 {
     /// The number of available lookahead tokens
     pub k: usize,
@@ -54,7 +54,7 @@ where
 
 impl<'t, F> TokenStream<'t, F>
 where
-    F: Fn(char) -> Option<usize> + 'static,
+    F: Fn(char) -> Option<usize> + 'static + Clone,
 {
     ///
     /// Creates a new TokenStream object from an augmented terminals list and

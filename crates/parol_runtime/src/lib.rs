@@ -52,6 +52,5 @@ pub use function_name;
 pub use log;
 pub use once_cell;
 pub use parol_macros;
-pub use scnr2;
 pub use syntree;
 pub use syntree_layout;

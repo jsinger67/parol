@@ -273,7 +273,7 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-    fn predict_production<F: Fn(char) -> Option<usize>>(
+    fn predict_production<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         non_terminal: NonTerminalIndex,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
@@ -282,7 +282,7 @@ impl<'t> LLKParser<'t> {
         lookahead_dfa.eval(&mut stream.borrow_mut(), non_terminal)
     }
 
-    fn diagnostic_message<F: Fn(char) -> Option<usize>>(
+    fn diagnostic_message<F: Fn(char) -> Option<usize> + Clone>(
         &self,
         msg: &str,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
@@ -312,7 +312,7 @@ impl<'t> LLKParser<'t> {
     /// The generated parser sources contain all appropriate initialization and
     /// the actual execution of this parse function.
     ///
-    pub fn parse<'u, F: Fn(char) -> Option<usize>>(
+    pub fn parse<'u, F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         stream: TokenStream<'t, F>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
@@ -328,7 +328,7 @@ impl<'t> LLKParser<'t> {
     /// The generated parser sources contain all appropriate initialization and
     /// the actual execution of this parse function.
     ///
-    pub fn parse_into<'u, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize>>(
+    pub fn parse_into<'u, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         tree_builder: &mut T,
         stream: TokenStream<'t, F>,
@@ -422,7 +422,7 @@ impl<'t> LLKParser<'t> {
         }
     }
 
-    fn handle_token_mismatch<F: Fn(char) -> Option<usize>>(
+    fn handle_token_mismatch<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         t: u16,
         token: crate::Token<'_>,
@@ -454,7 +454,7 @@ impl<'t> LLKParser<'t> {
         self.recover_from_token_mismatch(stream.clone())
     }
 
-    fn handle_prediction_error<F: Fn(char) -> Option<usize>>(
+    fn handle_prediction_error<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         non_terminal: NonTerminalIndex,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
@@ -487,7 +487,7 @@ impl<'t> LLKParser<'t> {
         self.recover_from_prediction_error(non_terminal, stream.clone())
     }
 
-    fn recover_from_prediction_error<F: Fn(char) -> Option<usize>>(
+    fn recover_from_prediction_error<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         non_terminal: NonTerminalIndex,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
@@ -558,7 +558,7 @@ impl<'t> LLKParser<'t> {
     }
 
     // Sync input tokens with expected tokens if possible
-    fn recover_from_token_mismatch<F: Fn(char) -> Option<usize>>(
+    fn recover_from_token_mismatch<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<()> {
@@ -575,7 +575,7 @@ impl<'t> LLKParser<'t> {
         self.adjust_token_stream(scanned_token_types, expected_token_types, stream.clone())
     }
 
-    fn adjust_token_stream<F: Fn(char) -> Option<usize>>(
+    fn adjust_token_stream<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         scanned_token_types: Vec<TerminalIndex>,
         expected_token_types: Vec<TerminalIndex>,
@@ -617,7 +617,7 @@ impl<'t> LLKParser<'t> {
         self.sync_token_stream(scanned_token_types, expected_token_types, stream.clone())
     }
 
-    fn sync_token_stream<F: Fn(char) -> Option<usize>>(
+    fn sync_token_stream<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         scanned_token_types: Vec<TerminalIndex>,
         expected_token_types: Vec<TerminalIndex>,
@@ -643,7 +643,7 @@ impl<'t> LLKParser<'t> {
         }
     }
 
-    fn handle_additional_tokens<'u, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize>>(
+    fn handle_additional_tokens<'u, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize> + Clone>(
         &self,
         tree_builder: &mut T,
         stream: Rc<RefCell<TokenStream<'t, F>>>,

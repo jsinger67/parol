@@ -72,7 +72,7 @@ impl LookaheadDFA {
     /// consuming any of them.
     ///
     #[inline(always)]
-    pub fn eval<F: Fn(char) -> Option<usize>>(
+    pub fn eval<F: Fn(char) -> Option<usize> + Clone>(
         &self,
         token_stream: &mut TokenStream<'_, F>,
         non_terminal: NonTerminalIndex,
@@ -180,7 +180,7 @@ impl LookaheadDFA {
     ///
     /// Returns all terminals that lead from state 0 to a valid next state
     ///
-    pub fn build_error<F: Fn(char) -> Option<usize>>(
+    pub fn build_error<F: Fn(char) -> Option<usize> + Clone>(
         &self,
         terminal_names: &'static [&'static str],
         token_stream: &TokenStream<'_, F>,

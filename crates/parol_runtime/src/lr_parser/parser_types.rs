@@ -298,7 +298,7 @@ impl<'t> LRParser<'t> {
         Ok(n)
     }
 
-    fn handle_additional_tokens<'u, F: Fn(char) -> Option<usize>>(
+    fn handle_additional_tokens<'u, F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
@@ -319,7 +319,7 @@ impl<'t> LRParser<'t> {
     }
 
     /// Parses the input text to a parse tree using the default tree builder.
-    pub fn parse<'u, F: Fn(char) -> Option<usize>>(
+    pub fn parse<'u, F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         stream: TokenStream<'t, F>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
@@ -332,7 +332,7 @@ impl<'t> LRParser<'t> {
     ///
     /// Parses the input text.
     ///
-    pub fn parse_into<'u, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize>>(
+    pub fn parse_into<'u, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         tree_builder: &mut T,
         stream: TokenStream<'t, F>,
@@ -447,7 +447,7 @@ impl<'t> LRParser<'t> {
         Ok(())
     }
 
-    fn handle_parse_error<F: Fn(char) -> Option<usize>>(
+    fn handle_parse_error<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         stream: &Rc<RefCell<TokenStream<'t, F>>>,
         current_state: usize,

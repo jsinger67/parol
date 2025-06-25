@@ -8,9 +8,9 @@ use parol_runtime::{
     parser::{
         parse_tree_type::TreeConstruct, LLKParser, LookaheadDFA, ParseType, Production, Trans,
     },
-    scnr2::scanner,
     ParolError, ParseTree, TokenStream,
 };
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::keywords_grammar::KeywordsGrammar;

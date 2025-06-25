@@ -127,7 +127,9 @@ fn lexer_token_production() {
     );
 }
 
-fn print_skip_tokens<F: Fn(char) -> Option<usize>>(token_stream: &RefCell<TokenStream<'_, F>>) {
+fn print_skip_tokens<F: Fn(char) -> Option<usize> + Clone>(
+    token_stream: &RefCell<TokenStream<'_, F>>,
+) {
     // Print the skip tokens
     token_stream
         .borrow_mut()

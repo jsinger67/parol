@@ -302,9 +302,9 @@ impl std::fmt::Display for ParserData<'_> {
                 parser::{
                     parse_tree_type::TreeConstruct, LLKParser, LookaheadDFA, ParseType, Production, Trans,
                 },
-                scnr2::scanner,
                 ParolError, ParseTree, TokenStream,
             };
+            use scnr2::scanner;
             use std::path::Path;
         })?;
 
@@ -465,11 +465,11 @@ impl std::fmt::Display for LRParserData<'_> {
         )?;
 
         f.write_fmt(ume::ume! {
-            use parol_runtime::{ParolError, ParseTree, TokenStream};
-            use parol_runtime::parser::parse_tree_type::TreeConstruct;
-            #[allow(unused_imports)]
-            use parol_runtime::parser::{Trans, ParseType, Production};
-            use parol_runtime::lr_parser::{LRParseTable, LRParser, LRProduction, LR1State, LRAction};
+            use parol_runtime::{
+                ParolError, ParseTree, TokenStream,
+                lr_parser::{LR1State, LRAction, LRParseTable, LRParser, LRProduction},
+                parser::parse_tree_type::TreeConstruct,
+            };
             use scnr2::scanner;
             use std::path::Path;
         })?;
@@ -537,9 +537,10 @@ impl std::fmt::Display for LRParserData<'_> {
                 file_name: T,
                 user_actions: #user_actions,
             ) -> Result<ParseTree, ParolError> where T: AsRef<Path> {
-                use parol_runtime::parser::parse_tree_type::SynTree;
-                use parol_runtime::parser::parser_types::SynTreeFlavor;
-                use parol_runtime::syntree::Builder;
+                use parol_runtime::{
+                    parser::{parse_tree_type::SynTree, parser_types::SynTreeFlavor},
+                    syntree::Builder,
+                };
                 let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
                 parse_into(input, &mut builder, file_name, user_actions)?;
                 Ok(builder.build()?)

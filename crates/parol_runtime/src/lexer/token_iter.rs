@@ -13,7 +13,7 @@ use std::{path::PathBuf, sync::Arc};
 ///
 pub struct TokenIter<'t, F>
 where
-    F: Fn(char) -> Option<usize> + 'static,
+    F: Fn(char) -> Option<usize> + 'static + Clone,
 {
     /// An iterator over token matches
     pub(crate) find_iter: FindMatchesWithPosition<'t, F>,
@@ -34,7 +34,7 @@ where
 
 impl<'t, F> TokenIter<'t, F>
 where
-    F: Fn(char) -> Option<usize> + 'static,
+    F: Fn(char) -> Option<usize> + 'static + Clone,
 {
     ///
     /// This function creates a token iterator from a tokenizer and an input.
@@ -104,7 +104,7 @@ where
 
 impl<'t, F> Iterator for TokenIter<'t, F>
 where
-    F: Fn(char) -> Option<usize> + 'static,
+    F: Fn(char) -> Option<usize> + 'static + Clone,
 {
     type Item = Token<'t>;
     fn next(&mut self) -> Option<Token<'t>> {
