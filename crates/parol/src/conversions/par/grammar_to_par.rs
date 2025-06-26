@@ -162,7 +162,7 @@ fn render_scanner_config_string(
             .collect::<Vec<_>>();
         primary_nts.sort();
         transitions.push(format!(
-            "{}%on {} {}\n",
+            "{}%on {} %{}\n",
             indent,
             primary_nts.join(", "),
             scanner_switch

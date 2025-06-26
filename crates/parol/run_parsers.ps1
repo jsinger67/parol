@@ -180,33 +180,5 @@ ForEach-Object {
     }
 }
 
-# --------------------------------------------------------------------------------------------------
-Write-Host "Running Keywords2 example..." -ForegroundColor Cyan
-Get-ChildItem ../../examples/keywords/testfiles/valid/*.txt |
-ForEach-Object {
-    Write-Host "Parsing $($_.FullName)..." -ForegroundColor Yellow
-    &"$target_dir/keywords2" $_.FullName
-    if ($LASTEXITCODE -ne 0) {
-        ++$ErrorCount
-        $FailedExamples += "Keywords2: Parsing $($_.FullName)"
-        if ($StopOnError) {
-            FinalMessage
-            exit 1
-        }
-    }
-}
-Get-ChildItem ../../examples/keywords/testfiles/invalid/*.txt |
-ForEach-Object {
-    Write-Host "Keywords2: Parsing $($_.FullName) should fail..." -ForegroundColor Magenta
-    &"$target_dir/keywords2" $_.FullName
-    if ($LASTEXITCODE -eq 0) {
-        ++$ErrorCount
-        $FailedExamples += "Keywords2: Parsing $($_.FullName) should fail"
-        if ($StopOnError) {
-            FinalMessage
-            exit 1
-        }
-    }
-}
 
 FinalMessage

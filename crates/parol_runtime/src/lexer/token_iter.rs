@@ -66,35 +66,31 @@ where
         self.find_iter.current_mode()
     }
 
+    #[inline(always)]
     pub(crate) fn token_from_match(&mut self, matched: Match) -> Option<Token<'t>> {
-        let positions = matched.positions.unwrap_or_default();
-        if let Ok(location) = LocationBuilder::default()
+        let positions = matched.positions?;
+        let location = LocationBuilder::default()
             .start_line(positions.start_position.line as u32)
             .start_column(positions.start_position.column as u32)
             .end_line(positions.end_position.line as u32)
             .end_column(positions.end_position.column as u32)
             .start(matched.span.start as u32)
             .end(matched.span.end as u32)
-            .file_name(self.file_name.clone())
+            .file_name(Arc::clone(&self.file_name))
             .build()
-        {
-            self.last_location = Some(location.clone());
+            .ok()?;
 
-            // The token's text is taken from the match
-            let text = &self.input[matched.span];
-            let token = Token::with(text, matched.token_type as u16, location, self.token_number);
+        self.last_location = Some(location.clone());
 
-            if !token.is_skip_token() || token.is_comment_token() {
-                self.token_number += 1;
-            }
-            Some(token)
-        } else {
-            // Error
-            trace!("Error: Runtime builder error");
-            None
+        let text = &self.input[matched.span];
+        let token = Token::with(text, matched.token_type as u16, location, self.token_number);
+
+        // Only increment for non-skip or comment tokens
+        if !token.is_skip_token() || token.is_comment_token() {
+            self.token_number += 1;
         }
+        Some(token)
     }
-
     #[inline]
     pub(crate) fn next_token_number(&mut self) -> TokenNumber {
         self.token_number += 1;

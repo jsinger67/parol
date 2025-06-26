@@ -4,10 +4,12 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::parser::parse_tree_type::TreeConstruct;
-#[allow(unused_imports)]
-use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TokenStream};
+use parol_runtime::{
+    parser::{
+        parse_tree_type::TreeConstruct, LLKParser, LookaheadDFA, ParseType, Production, Trans,
+    },
+    ParolError, ParseTree, TokenStream,
+};
 use scnr2::scanner;
 use std::path::Path;
 
@@ -1128,9 +1130,10 @@ pub fn parse<'t, T>(
 where
     T: AsRef<Path>,
 {
-    use parol_runtime::parser::parse_tree_type::SynTree;
-    use parol_runtime::parser::parser_types::SynTreeFlavor;
-    use parol_runtime::syntree::Builder;
+    use parol_runtime::{
+        parser::{parse_tree_type::SynTree, parser_types::SynTreeFlavor},
+        syntree::Builder,
+    };
     let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
     parse_into(input, &mut builder, file_name, user_actions)?;
     Ok(builder.build()?)

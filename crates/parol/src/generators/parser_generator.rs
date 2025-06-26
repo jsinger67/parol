@@ -374,9 +374,10 @@ impl std::fmt::Display for ParserData<'_> {
                 file_name: T,
                 user_actions: #user_actions,
             ) -> Result<ParseTree, ParolError> where T: AsRef<Path> {
-                use parol_runtime::parser::parse_tree_type::SynTree;
-                use parol_runtime::parser::parser_types::SynTreeFlavor;
-                use parol_runtime::syntree::Builder;
+                use parol_runtime::{
+                    parser::{parse_tree_type::SynTree, parser_types::SynTreeFlavor},
+                    syntree::Builder,
+                };
                 let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
                 parse_into(input, &mut builder, file_name, user_actions)?;
                 Ok(builder.build()?)
