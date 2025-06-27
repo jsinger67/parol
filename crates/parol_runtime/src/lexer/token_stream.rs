@@ -12,10 +12,6 @@ use super::TokenBuffer;
 ///
 /// The TokenStream<'t> type is the interface the parser actually uses.
 /// It provides the lookahead functionality by maintaining a lookahead buffer.
-/// Also it provides the ability to switch scanner states. This is handled by
-/// the used scanner implementation.
-///
-/// It also maintains the line and column numbers and propagates them to the tokens.
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
@@ -38,15 +34,6 @@ where
 
     /// Lookahead token buffer, maximum size is k
     pub tokens: TokenBuffer<'t>,
-
-    /// Line number of last consumed token. Needed for scanner switching. Is initially 1.
-    line: u32,
-
-    /// Columns after last consumed token. Needed for scanner switching. Is initially 1.
-    column: u32,
-
-    /// Absolute position from start of input to the end of the last consumed token.
-    last_consumed_token_end_pos: usize,
 
     /// Flag to indicate if the parser is in error recovery mode
     pub(crate) recovering: bool,
@@ -94,9 +81,6 @@ where
             file_name,
             token_iter,
             tokens: TokenBuffer::new(),
-            line: 1,
-            column: 1,
-            last_consumed_token_end_pos: 0,
             recovering: false,
         };
         token_stream.read_tokens(k)?;
@@ -164,17 +148,7 @@ where
     /// The tokens are removed from the buffer and the line and column numbers are updated.
     #[inline]
     pub fn take_skip_tokens(&mut self) -> Vec<Token<'t>> {
-        let tokens = self.tokens.take_skip_tokens();
-        if let Some(token) = tokens.last() {
-            self.line = token.location.end_line;
-            self.column = token.location.end_column;
-            self.last_consumed_token_end_pos = token.location.end();
-            trace!(
-                "Updated line: {}, column: {}, last consumed token end position: {} in take_skip_tokens",
-                self.line, self.column, self.last_consumed_token_end_pos
-            );
-        }
-        tokens
+        self.tokens.take_skip_tokens()
     }
 
     ///
@@ -193,25 +167,10 @@ where
         } else {
             // We consume token LA(1) with buffer index 0.
             trace!("Consuming {}", &self.tokens.non_skip_token_at(0).unwrap());
-            // We store the position of the lookahead token to support scanner switching.
-            self.update_position();
             token = self.tokens.consume()?;
             self.ensure_buffer()?;
         }
         Ok(token)
-    }
-
-    // Update the line and column numbers from the token at index 0 in the token buffer.
-    fn update_position(&mut self) {
-        if let Some(token) = &self.tokens.non_skip_token_at(0) {
-            self.line = token.location.start_line;
-            self.column = token.location.start_column + token.location.len() as u32;
-            self.last_consumed_token_end_pos = token.location.end();
-            trace!(
-                "Updated line: {}, column: {}, last consumed token end position: {}",
-                self.line, self.column, self.last_consumed_token_end_pos
-            );
-        }
     }
 
     ///
@@ -333,6 +292,7 @@ where
         }
     }
 
+    /// Used in recovery mode to insert a token at a specific index in the token buffer.
     pub(crate) fn insert_token_at(
         &mut self,
         index: usize,
@@ -348,10 +308,6 @@ where
                     .clone()
             } else {
                 LocationBuilder::default()
-                    .start_line(self.line)
-                    .start_column(self.column)
-                    .end_line(self.line)
-                    .end_column(self.column)
                     .file_name(self.file_name.clone())
                     .build()
                     .unwrap()

@@ -1,5 +1,5 @@
 use crate::{
-    Location, TokenNumber,
+    TokenNumber,
     lexer::{Token, location},
 };
 use location::LocationBuilder;
@@ -28,8 +28,6 @@ where
     pub file_name: Arc<PathBuf>,
 
     token_number: TokenNumber,
-
-    last_location: Option<Location>,
 }
 
 impl<'t, F> TokenIter<'t, F>
@@ -52,7 +50,6 @@ where
             k,
             file_name: file_name.clone(),
             token_number: 0,
-            last_location: None,
         }
     }
 
@@ -79,8 +76,6 @@ where
             .file_name(Arc::clone(&self.file_name))
             .build()
             .ok()?;
-
-        self.last_location = Some(location.clone());
 
         let text = &self.input[matched.span];
         let token = Token::with(text, matched.token_type as u16, location, self.token_number);
@@ -110,13 +105,7 @@ where
             // Return at most k EOI tokens
             self.k -= 1;
             trace!("EOI");
-            let mut eoi = Token::eoi(self.next_token_number());
-            if let Some(mut location) = self.last_location.clone() {
-                location.start = self.input.len() as u32;
-                location.end = self.input.len() as u32;
-                eoi = eoi.with_location(location);
-            }
-            Some(eoi)
+            Some(Token::eoi(self.next_token_number()))
         } else {
             trace!("Normal end of iteration");
             None
