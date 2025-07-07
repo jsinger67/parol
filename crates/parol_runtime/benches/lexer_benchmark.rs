@@ -1,7 +1,6 @@
 use std::{borrow::Cow, cell::RefCell, path::Path};
 
 use criterion::{Criterion, Throughput, criterion_group, criterion_main};
-use criterion::{Criterion, Throughput, criterion_group, criterion_main};
 use parol_runtime::{
     TerminalIndex, TokenStream,
     lexer::{ERROR_TOKEN, UNMATCHABLE_TOKEN},
