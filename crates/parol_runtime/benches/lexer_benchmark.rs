@@ -241,7 +241,7 @@ fn throughput_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("throughput");
     group.throughput(Throughput::Bytes(LEXER_INPUT.len() as u64));
     let file_name: Cow<Path> = Path::new("./input_1.txt").to_owned().into();
-    group.bench_function("throughput", |b| {
+    group.bench_function("scanner", |b| {
         b.iter(|| {
             let scanner = ParolScanner::new();
             let token_stream = RefCell::new(
