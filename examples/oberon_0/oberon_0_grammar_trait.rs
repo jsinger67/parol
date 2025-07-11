@@ -308,7 +308,7 @@ pub struct SelectorListSelectorListEmpty {}
 #[derive(Debug, Clone)]
 pub struct FactorIdentSelector<'t> {
     pub ident: Ident<'t>,
-    pub selector: Box<Selector<'t>>,
+    pub selector: Selector<'t>,
 }
 
 ///
@@ -368,7 +368,7 @@ pub struct FactorUnaryOpFactor<'t> {
 #[derive(Debug, Clone)]
 pub struct MulExpressionMulOperatorFactorMulExpression<'t> {
     pub mul_operator: MulOperator<'t>,
-    pub factor: Box<Factor<'t>>,
+    pub factor: Factor<'t>,
     pub mul_expression: Box<MulExpression<'t>>,
 }
 
@@ -390,7 +390,7 @@ pub struct MulExpressionMulExpressionEmpty {}
 #[derive(Debug, Clone)]
 pub struct AddExpressionAddOperatorTermAddExpression<'t> {
     pub add_operator: AddOperator<'t>,
-    pub term: Box<Term<'t>>,
+    pub term: Term<'t>,
     pub add_expression: Box<AddExpression<'t>>,
 }
 
@@ -456,7 +456,7 @@ pub struct AssignOpEqu<'t> {
 #[derive(Debug, Clone)]
 pub struct ExpressionSuffixRelationOpSimpleExpression<'t> {
     pub relation_op: RelationOp<'t>,
-    pub simple_expression: Box<SimpleExpression<'t>>,
+    pub simple_expression: SimpleExpression<'t>,
 }
 
 ///
@@ -655,7 +655,7 @@ pub struct StatementStatementEmpty {}
 #[derive(Debug, Clone)]
 pub struct StatementSequenceRestSemicolonStatementStatementSequenceRest<'t> {
     pub semicolon: Token<'t>, /* ; */
-    pub statement: Box<Statement<'t>>,
+    pub statement: Statement<'t>,
     pub statement_sequence_rest: Box<StatementSequenceRest<'t>>,
 }
 
@@ -764,7 +764,7 @@ pub struct TypeArrayType<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct TypeRecordType<'t> {
-    pub record_type: Box<RecordType<'t>>,
+    pub record_type: RecordType<'t>,
 }
 
 ///
@@ -961,7 +961,7 @@ pub struct DeclarationsCONSTConstDeclsDeclarationsSuffix0<'t> {
 pub struct DeclarationsSuffix1VARVarDeclsProcedureDeclarationList<'t> {
     pub v_a_r: Token<'t>, /* VAR */
     pub var_decls: VarDecls<'t>,
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
 }
 
 ///
@@ -1009,7 +1009,7 @@ pub struct DeclarationsProcedureDeclarationList<'t> {
 pub struct DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t> {
     pub t_y_p_e: Token<'t>, /* TYPE */
     pub type_decls: TypeDecls<'t>,
-    pub declarations_suffix: Box<DeclarationsSuffix<'t>>,
+    pub declarations_suffix: DeclarationsSuffix<'t>,
 }
 
 ///
@@ -1022,7 +1022,7 @@ pub struct DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t> {
 pub struct DeclarationsSuffix0VARVarDeclsProcedureDeclarationList<'t> {
     pub v_a_r: Token<'t>, /* VAR */
     pub var_decls: VarDecls<'t>,
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
 }
 
 ///
@@ -1046,7 +1046,7 @@ pub struct DeclarationsSuffix0ProcedureDeclarationList<'t> {
 pub struct DeclarationsSuffixVARVarDeclsProcedureDeclarationList<'t> {
     pub v_a_r: Token<'t>, /* VAR */
     pub var_decls: VarDecls<'t>,
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
 }
 
 ///
@@ -1215,7 +1215,7 @@ pub enum ActualParametersSuffix<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum AddExpression<'t> {
-    AddOperatorTermAddExpression(Box<AddExpressionAddOperatorTermAddExpression<'t>>),
+    AddOperatorTermAddExpression(AddExpressionAddOperatorTermAddExpression<'t>),
     AddExpressionEmpty(AddExpressionAddExpressionEmpty),
 }
 
@@ -1324,7 +1324,7 @@ pub enum DeclarationsSuffix1<'t> {
 #[derive(Debug, Clone)]
 pub enum ElseIfList<'t> {
     ELSIFExpressionTHENStatementSequenceElseIfList(
-        Box<ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t>>,
+        ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t>,
     ),
     ElseIfListEmpty(ElseIfListElseIfListEmpty),
 }
@@ -1335,8 +1335,8 @@ pub enum ElseIfList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Expression<'t> {
-    pub simple_expression: Box<SimpleExpression<'t>>,
-    pub expression_suffix: Box<ExpressionSuffix<'t>>,
+    pub simple_expression: SimpleExpression<'t>,
+    pub expression_suffix: ExpressionSuffix<'t>,
 }
 
 ///
@@ -1355,7 +1355,7 @@ pub enum ExpressionListRest<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ExpressionSuffix<'t> {
-    RelationOpSimpleExpression(Box<ExpressionSuffixRelationOpSimpleExpression<'t>>),
+    RelationOpSimpleExpression(ExpressionSuffixRelationOpSimpleExpression<'t>),
     ExpressionSuffixEmpty(ExpressionSuffixExpressionSuffixEmpty),
 }
 
@@ -1385,9 +1385,9 @@ pub enum FPSectionRest<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Factor<'t> {
-    IdentSelector(Box<FactorIdentSelector<'t>>),
+    IdentSelector(FactorIdentSelector<'t>),
     Integer(FactorInteger<'t>),
-    LParenExpressionRParen(Box<FactorLParenExpressionRParen<'t>>),
+    LParenExpressionRParen(FactorLParenExpressionRParen<'t>),
     TildeFactor(FactorTildeFactor<'t>),
     UnaryOpFactor(FactorUnaryOpFactor<'t>),
 }
@@ -1470,7 +1470,7 @@ pub struct IfPrefix<'t> {
     pub i_f: Token<'t>, /* IF */
     pub expression: Expression<'t>,
     pub t_h_e_n: Token<'t>, /* THEN */
-    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub statement_sequence: StatementSequence<'t>,
     pub else_if_list: ElseIfList<'t>,
 }
 
@@ -1532,7 +1532,7 @@ pub enum ModuleSuffix<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum MulExpression<'t> {
-    MulOperatorFactorMulExpression(Box<MulExpressionMulOperatorFactorMulExpression<'t>>),
+    MulOperatorFactorMulExpression(MulExpressionMulOperatorFactorMulExpression<'t>),
     MulExpressionEmpty(MulExpressionMulExpressionEmpty),
 }
 
@@ -1680,7 +1680,7 @@ pub struct RelationalOps<'t> {
 #[derive(Debug, Clone)]
 pub struct RepeatStatement<'t> {
     pub r_e_p_e_a_t: Token<'t>, /* REPEAT */
-    pub statement_sequence: Box<StatementSequence<'t>>,
+    pub statement_sequence: StatementSequence<'t>,
     pub u_n_t_i_l: Token<'t>, /* UNTIL */
     pub expression: Expression<'t>,
 }
@@ -1691,7 +1691,7 @@ pub struct RepeatStatement<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Selector<'t> {
-    pub selector_list: Box<SelectorList<'t>>,
+    pub selector_list: SelectorList<'t>,
 }
 
 ///
@@ -1701,9 +1701,7 @@ pub struct Selector<'t> {
 #[derive(Debug, Clone)]
 pub enum SelectorList<'t> {
     DotIdentSelectorList(SelectorListDotIdentSelectorList<'t>),
-    LBracketExpressionRBracketSelectorList(
-        Box<SelectorListLBracketExpressionRBracketSelectorList<'t>>,
-    ),
+    LBracketExpressionRBracketSelectorList(SelectorListLBracketExpressionRBracketSelectorList<'t>),
     SelectorListEmpty(SelectorListSelectorListEmpty),
 }
 
@@ -1713,7 +1711,7 @@ pub enum SelectorList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct SimpleExpression<'t> {
-    pub term: Box<Term<'t>>,
+    pub term: Term<'t>,
     pub add_expression: AddExpression<'t>,
 }
 
@@ -1726,7 +1724,7 @@ pub enum Statement<'t> {
     Assignment(StatementAssignment<'t>),
     ProcedureCall(StatementProcedureCall<'t>),
     IfStatement(StatementIfStatement<'t>),
-    WhileStatement(Box<StatementWhileStatement<'t>>),
+    WhileStatement(StatementWhileStatement<'t>),
     RepeatStatement(StatementRepeatStatement<'t>),
     StatementEmpty(StatementStatementEmpty),
 }
@@ -1955,9 +1953,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let selector_list = pop_item!(self, selector_list, SelectorList, context);
-        let selector_built = Selector {
-            selector_list: Box::new(selector_list),
-        };
+        let selector_built = Selector { selector_list };
         // Calling user action here
         self.user_grammar.selector(&selector_built)?;
         self.push(ASTType::Selector(selector_built), context);
@@ -2017,7 +2013,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
             selector_list: Box::new(selector_list),
         };
         let selector_list_1_built =
-            SelectorList::LBracketExpressionRBracketSelectorList(Box::new(selector_list_1_built));
+            SelectorList::LBracketExpressionRBracketSelectorList(selector_list_1_built);
         // Calling user action here
         self.user_grammar.selector_list(&selector_list_1_built)?;
         self.push(ASTType::SelectorList(selector_list_1_built), context);
@@ -2054,11 +2050,8 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let selector = pop_item!(self, selector, Selector, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let factor_0_built = FactorIdentSelector {
-            ident,
-            selector: Box::new(selector),
-        };
-        let factor_0_built = Factor::IdentSelector(Box::new(factor_0_built));
+        let factor_0_built = FactorIdentSelector { ident, selector };
+        let factor_0_built = Factor::IdentSelector(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
         self.push(ASTType::Factor(factor_0_built), context);
@@ -2103,7 +2096,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
             expression: Box::new(expression),
             r_paren,
         };
-        let factor_2_built = Factor::LParenExpressionRParen(Box::new(factor_2_built));
+        let factor_2_built = Factor::LParenExpressionRParen(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
         self.push(ASTType::Factor(factor_2_built), context);
@@ -2198,11 +2191,11 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let mul_operator = pop_item!(self, mul_operator, MulOperator, context);
         let mul_expression_0_built = MulExpressionMulOperatorFactorMulExpression {
             mul_operator,
-            factor: Box::new(factor),
+            factor,
             mul_expression: Box::new(mul_expression),
         };
         let mul_expression_0_built =
-            MulExpression::MulOperatorFactorMulExpression(Box::new(mul_expression_0_built));
+            MulExpression::MulOperatorFactorMulExpression(mul_expression_0_built);
         // Calling user action here
         self.user_grammar.mul_expression(&mul_expression_0_built)?;
         self.push(ASTType::MulExpression(mul_expression_0_built), context);
@@ -2240,7 +2233,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let add_expression = pop_item!(self, add_expression, AddExpression, context);
         let term = pop_item!(self, term, Term, context);
         let simple_expression_built = SimpleExpression {
-            term: Box::new(term),
+            term,
             add_expression,
         };
         // Calling user action here
@@ -2268,11 +2261,11 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let add_operator = pop_item!(self, add_operator, AddOperator, context);
         let add_expression_0_built = AddExpressionAddOperatorTermAddExpression {
             add_operator,
-            term: Box::new(term),
+            term,
             add_expression: Box::new(add_expression),
         };
         let add_expression_0_built =
-            AddExpression::AddOperatorTermAddExpression(Box::new(add_expression_0_built));
+            AddExpression::AddOperatorTermAddExpression(add_expression_0_built);
         // Calling user action here
         self.user_grammar.add_expression(&add_expression_0_built)?;
         self.push(ASTType::AddExpression(add_expression_0_built), context);
@@ -2394,8 +2387,8 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let expression_suffix = pop_item!(self, expression_suffix, ExpressionSuffix, context);
         let simple_expression = pop_item!(self, simple_expression, SimpleExpression, context);
         let expression_built = Expression {
-            simple_expression: Box::new(simple_expression),
-            expression_suffix: Box::new(expression_suffix),
+            simple_expression,
+            expression_suffix,
         };
         // Calling user action here
         self.user_grammar.expression(&expression_built)?;
@@ -2419,10 +2412,10 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let relation_op = pop_item!(self, relation_op, RelationOp, context);
         let expression_suffix_0_built = ExpressionSuffixRelationOpSimpleExpression {
             relation_op,
-            simple_expression: Box::new(simple_expression),
+            simple_expression,
         };
         let expression_suffix_0_built =
-            ExpressionSuffix::RelationOpSimpleExpression(Box::new(expression_suffix_0_built));
+            ExpressionSuffix::RelationOpSimpleExpression(expression_suffix_0_built);
         self.push(
             ASTType::ExpressionSuffix(expression_suffix_0_built),
             context,
@@ -2775,7 +2768,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
             i_f,
             expression,
             t_h_e_n,
-            statement_sequence: Box::new(statement_sequence),
+            statement_sequence,
             else_if_list,
         };
         // Calling user action here
@@ -2811,9 +2804,8 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
             statement_sequence: Box::new(statement_sequence),
             else_if_list: Box::new(else_if_list),
         };
-        let else_if_list_0_built = ElseIfList::ELSIFExpressionTHENStatementSequenceElseIfList(
-            Box::new(else_if_list_0_built),
-        );
+        let else_if_list_0_built =
+            ElseIfList::ELSIFExpressionTHENStatementSequenceElseIfList(else_if_list_0_built);
         // Calling user action here
         self.user_grammar.else_if_list(&else_if_list_0_built)?;
         self.push(ASTType::ElseIfList(else_if_list_0_built), context);
@@ -2889,7 +2881,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
         let repeat_statement_built = RepeatStatement {
             r_e_p_e_a_t,
-            statement_sequence: Box::new(statement_sequence),
+            statement_sequence,
             u_n_t_i_l,
             expression,
         };
@@ -2965,7 +2957,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let statement_3_built = StatementWhileStatement {
             while_statement: Box::new(while_statement),
         };
-        let statement_3_built = Statement::WhileStatement(Box::new(statement_3_built));
+        let statement_3_built = Statement::WhileStatement(statement_3_built);
         // Calling user action here
         self.user_grammar.statement(&statement_3_built)?;
         self.push(ASTType::Statement(statement_3_built), context);
@@ -3064,7 +3056,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let statement_sequence_rest_0_built =
             StatementSequenceRestSemicolonStatementStatementSequenceRest {
                 semicolon,
-                statement: Box::new(statement),
+                statement,
                 statement_sequence_rest: Box::new(statement_sequence_rest),
             };
         let statement_sequence_rest_0_built =
@@ -3369,9 +3361,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let record_type = pop_item!(self, record_type, RecordType, context);
-        let type_2_built = TypeRecordType {
-            record_type: Box::new(record_type),
-        };
+        let type_2_built = TypeRecordType { record_type };
         let type_2_built = Type::RecordType(type_2_built);
         // Calling user action here
         self.user_grammar.r#type(&type_2_built)?;
@@ -3923,7 +3913,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let declarations_suffix1_0_built = DeclarationsSuffix1VARVarDeclsProcedureDeclarationList {
             v_a_r,
             var_decls,
-            procedure_declaration_list: Box::new(procedure_declaration_list),
+            procedure_declaration_list,
         };
         let declarations_suffix1_0_built =
             DeclarationsSuffix1::VARVarDeclsProcedureDeclarationList(declarations_suffix1_0_built);
@@ -4040,7 +4030,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let declarations_suffix0_0_built = DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix {
             t_y_p_e,
             type_decls,
-            declarations_suffix: Box::new(declarations_suffix),
+            declarations_suffix,
         };
         let declarations_suffix0_0_built =
             DeclarationsSuffix0::TYPETypeDeclsDeclarationsSuffix(declarations_suffix0_0_built);
@@ -4075,7 +4065,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let declarations_suffix0_1_built = DeclarationsSuffix0VARVarDeclsProcedureDeclarationList {
             v_a_r,
             var_decls,
-            procedure_declaration_list: Box::new(procedure_declaration_list),
+            procedure_declaration_list,
         };
         let declarations_suffix0_1_built =
             DeclarationsSuffix0::VARVarDeclsProcedureDeclarationList(declarations_suffix0_1_built);
@@ -4139,7 +4129,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         let declarations_suffix_0_built = DeclarationsSuffixVARVarDeclsProcedureDeclarationList {
             v_a_r,
             var_decls,
-            procedure_declaration_list: Box::new(procedure_declaration_list),
+            procedure_declaration_list,
         };
         let declarations_suffix_0_built =
             DeclarationsSuffix::VARVarDeclsProcedureDeclarationList(declarations_suffix_0_built);

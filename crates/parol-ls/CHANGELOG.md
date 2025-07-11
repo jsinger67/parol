@@ -5,9 +5,9 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## 3.0.2 - Not released yet
+## 3.1.0 - 2025-07-11
 
-* Using `parol` v3.0.2 now to provide the following fixes
+* Using `parol` v3.1.0 now to provide the following fixes
   * Change handling of token aliases when lookahead expressions are used
   * Fix generation of lookahead regex in parser source
 

@@ -1,6 +1,6 @@
 [package]
 name = "parol-ls"
-version = "3.0.2"
+version = "3.1.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "Language server for parol parser generator"
 documentation = "https://docs.rs/parol-ls"
