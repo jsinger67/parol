@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.0 - Not released yet
+
+* Official start of version 4 development.
+* Switch to scnr2 scanner crate
+* Stop support of parser based scanner switching in favor of scanner based scanner switching
+
 ## 3.1.0 - 2025-07-11
 
 * Generate untransformed grammar with production index comments
@@ -24,8 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - Added `node_kind_enums` and `node_kind_enums_output_file` to the `Builder`
 
   For more details please have a look at the conversation at the PR and visit ryo's
-  [swon](https://github.com/Hihaheho/swon/tree/main) project and here especially to the crate
-  [swon-tree](https://github.com/Hihaheho/swon/tree/main) to find out more about his approach of
+  [eure](https://github.com/Hihaheho/eure/tree/main) project and here especially to the crate
+  [eure-tree](https://github.com/Hihaheho/eure/tree/main) to find out more about his approach of
   constructing customized trees from parol's parse trees.
 
   *Thanks a lot, ryo!*

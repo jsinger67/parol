@@ -5,6 +5,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 4.0.0 - Not released yet
+
+* Official start of version 4 development.
+* Switch to scnr2 scanner crate
+
 ## 3.1.0 - 2025-07-11
 
 * Using `parol` v3.1.0 now to provide the following fixes
