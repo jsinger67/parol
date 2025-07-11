@@ -1,3 +1,12 @@
+//! This module provides a buffer for tokens, allowing to collect and manage tokens
+//! from a lexer.
+//! It handles both skip tokens and non-skip tokens, providing methods to manipulate
+//! the token stream, such as adding tokens, consuming them, and iterating over them.
+//!
+//! Skip tokens are tokens that are not relevant for the parsing process, such as whitespace
+//! or comments. They are typically ignored by the parser, but they are built into the
+//! so called lossless parse tree, which can be used by users to understand the structure
+//! of the input text.
 use super::Token;
 use crate::LexerError;
 
@@ -100,7 +109,8 @@ impl<'t> TokenBuffer<'t> {
 
     /// Removes the first non-skip token from the buffer.
     /// Fails if the buffer is empty or if there are skip tokens at the beginning of the buffer.
-    /// They should have been removed before calling this function.
+    /// They should have been removed and inserted into the lossless parse tree before calling this
+    /// function.
     pub fn consume(&mut self) -> Result<Token<'t>, LexerError> {
         if self.tokens.is_empty() {
             return Err(LexerError::InternalError(

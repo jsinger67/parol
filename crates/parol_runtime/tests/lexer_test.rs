@@ -1,10 +1,7 @@
 use log::trace;
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::{LocationBuilder, ScannerConfig};
-use parol_runtime::{Token, TokenStream, Tokenizer};
+use parol_runtime::LocationBuilder;
+use parol_runtime::{Token, TokenStream};
+use scnr2::scanner;
 use std::borrow::Cow;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
@@ -32,47 +29,25 @@ const PAROL_CFG_1: &str = r#"%start Grammar
 
 "#;
 
-const TERMINALS: &[(&str, Option<(bool, &str)>); 12] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None), // token::EOI
-    /*  1 */ (UNMATCHABLE_TOKEN, None), // token::NEW_LINE
-    /*  2 */ (UNMATCHABLE_TOKEN, None), // token::WHITESPACE
-    /*  3 */ (UNMATCHABLE_TOKEN, None), // token::LINE_COMMENT
-    /*  4 */ (UNMATCHABLE_TOKEN, None), // token::BLOCK_COMMENT
-    /*  5 */ (r###"%start"###, None), // token::FIRST_USER_TOKEN
-    /*  6 */ (r###"%%"###, None),
-    /*  7 */ (r###":"###, None),
-    /*  8 */ (r###";"###, None),
-    /*  9 */ (r"[a-zA-Z_]\w*", None),
-    /* 10 */ (r#""(\\.|[^"])*""#, None),
-    /* 11 */ (ERROR_TOKEN, None),
-];
-
-const SCANNER_0: &[&str; 5] = &[
-    /*  0 */ UNMATCHABLE_TOKEN, // token::EOI
-    /*  1 */ NEW_LINE_TOKEN, // token::NEW_LINE
-    /*  2 */ WHITESPACE_TOKEN, // token::WHITESPACE
-    /*  3 */ r###"//.*"###, // token::LINE_COMMENT
-    /*  4 */ r###"/\*([.--*]|\*[^/])*\*/"###, // token::BLOCK_COMMENT
-];
-
-static TOKENIZERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig {
-        name: "INITIAL",
-        tokenizer: Tokenizer::build(TERMINALS, SCANNER_0, &[5, 6, 7, 8, 9, 10]).unwrap(),
-        transitions: &[],
-    }]
-});
-
+scanner!(
+    ParolScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1; // token::NEW_LINE
+            token r"[\s--\r\n]+" => 2; // token::WHITESPACE
+            token r"//.*" => 3; // token::LINE_COMMENT
+            token r"/\*([^*]|\*[^/])*\*/" => 4; // token::BLOCK_COMMENT
+            token r"%start" => 5; // token::FIRST_USER_TOKEN
+            token r"%%" => 6;
+            token r":" => 7;
+            token r";" => 8;
+            token r"[a-zA-Z_]\w*" => 9; // Identifier
+            token r#""(\\.|[^"])*""# => 10; // String
+            token r"." => 11; // token::ERROR_TOKEN
+        }
+    }
+);
 fn init() {
     let _ = env_logger::builder().is_test(true).try_init();
-}
-
-#[test]
-fn tokenizer_test() {
-    assert_eq!(
-        11, TOKENIZERS[0].tokenizer.error_token_type,
-        "Error token index is wrong"
-    );
 }
 
 #[test]
@@ -80,8 +55,17 @@ fn lexer_token_production() {
     init();
     let k = 3;
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
-    let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k).unwrap());
+    let scanner = parol_scanner::ParolScanner::new();
+    let token_stream = RefCell::new(
+        TokenStream::new(
+            PAROL_CFG_1,
+            file_name,
+            &scanner.scanner_impl,
+            &parol_scanner::ParolScanner::match_function,
+            k,
+        )
+        .unwrap(),
+    );
     let mut tok = Token::default();
     let mut token_count = 0;
     while !token_stream.borrow().all_input_consumed() {
@@ -114,12 +98,6 @@ fn lexer_token_production() {
     assert_eq!(
         Token::eoi(81).with_location(
             LocationBuilder::default()
-                .start_line(21)
-                .start_column(1)
-                .end_line(21)
-                .end_column(2)
-                .start(545)
-                .end(545)
                 .file_name(token_stream.borrow().file_name.clone())
                 .build()
                 .unwrap()
@@ -129,12 +107,6 @@ fn lexer_token_production() {
     assert_eq!(
         Token::eoi(82).with_location(
             LocationBuilder::default()
-                .start_line(21)
-                .start_column(1)
-                .end_line(21)
-                .end_column(2)
-                .start(545)
-                .end(545)
                 .file_name(token_stream.borrow().file_name.clone())
                 .build()
                 .unwrap()
@@ -143,28 +115,47 @@ fn lexer_token_production() {
     );
 }
 
-fn print_skip_tokens(token_stream: &RefCell<TokenStream<'_>>) {
+fn print_skip_tokens<F: Fn(char) -> Option<usize> + Clone>(
+    token_stream: &RefCell<TokenStream<'_, F>>,
+) {
     // Print the skip tokens
     token_stream
         .borrow_mut()
         .take_skip_tokens()
         .into_iter()
-        .for_each(|t| println!("{:?}", t));
+        .for_each(|t| println!("Skipped: {:?}", t));
 }
 
 #[test]
 #[should_panic(expected = "LookaheadExceedsMaximum")]
 fn lookahead_must_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
-    let mut token_stream = TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap();
+    let scanner = parol_scanner::ParolScanner::new();
+    let mut token_stream = TokenStream::new(
+        PAROL_CFG_1,
+        file_name,
+        &scanner.scanner_impl,
+        &parol_scanner::ParolScanner::match_function,
+        1,
+    )
+    .unwrap();
     let _tok = token_stream.lookahead(1).unwrap();
 }
 
 #[test]
 fn lookahead_beyond_buffer_must_not_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
-    let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap());
+    let scanner = parol_scanner::ParolScanner::new();
+    let token_stream = RefCell::new(
+        TokenStream::new(
+            PAROL_CFG_1,
+            file_name,
+            &scanner.scanner_impl,
+            &parol_scanner::ParolScanner::match_function,
+            1,
+        )
+        .unwrap(),
+    );
     while !token_stream.borrow().all_input_consumed() {
         print_skip_tokens(&token_stream);
         if token_stream.borrow_mut().consume().is_ok() {

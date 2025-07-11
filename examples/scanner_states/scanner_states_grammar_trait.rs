@@ -87,7 +87,7 @@ pub struct ContentIdentifier<'t> {
 ///
 /// Type derived for production 4
 ///
-/// `Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();`
+/// `Content: StringDelimiter StringContent StringDelimiter;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -394,7 +394,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// `Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();`
+    /// `Content: StringDelimiter StringContent StringDelimiter;`
     ///
     #[parol_runtime::function_name::named]
     fn content_1(

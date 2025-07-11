@@ -27,11 +27,10 @@ pub enum ParserError {
         last_token: Box<Location>,
     },
 
-    #[error("{context}Tried to pop from an empty scanner stack")]
-    PopOnEmptyScannerStateStack {
+    #[error("Unsupported language feature: {context}")]
+    Unsupported {
         context: String,
-        input: FileSource,
-        source: LexerError,
+        error_location: Box<Location>,
     },
 
     #[error("Too many errors: {count}")]
@@ -63,9 +62,6 @@ pub enum LexerError {
 
     #[error("{0}")]
     RecoveryError(String),
-
-    #[error(transparent)]
-    RegexError(#[from] scnr::ScnrError),
 }
 
 #[derive(Error, Debug)]
@@ -180,7 +176,7 @@ impl FileSource {
         Ok(Self { file_name, input })
     }
 
-    pub fn from_stream(token_stream: &TokenStream<'_>) -> Self {
+    pub fn from_stream<F: Fn(char) -> Option<usize> + Clone>(token_stream: &TokenStream<'_, F>) -> Self {
         let file_name = token_stream.file_name.clone();
         let input = token_stream.input.to_string();
         Self { file_name, input }

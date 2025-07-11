@@ -16,22 +16,26 @@ use derive_builder::Builder;
 /// We don't use std::ops::Range<usize> for the span information because we need to implement Ord
 /// and PartialOrd for Location.
 ///
-#[derive(Builder, Debug, Default, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Builder, Debug, Default, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Location {
     /// Position information: line number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
+    #[builder(default)]
     pub start_line: u32,
 
     /// Position information: column number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
+    #[builder(default)]
     pub start_column: u32,
 
     /// Position information: line number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
+    #[builder(default)]
     pub end_line: u32,
 
     /// Position information: column number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
+    #[builder(default)]
     pub end_column: u32,
 
     /// The start of the span of the token in the input text

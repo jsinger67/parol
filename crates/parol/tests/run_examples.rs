@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use std::process::{Command, ExitStatus};
 
 macro_rules! binary_path {
@@ -93,9 +93,6 @@ fn run_examples_test() -> Result<()> {
     println!("Running Keywords examples...");
     run_keywords_examples()?;
 
-    println!("Running Keywords2 examples...");
-    run_keywords2_examples()?;
-
     println!("Running Basic Interpreter examples...");
     run_basic_interpreter_examples()?;
 
@@ -156,37 +153,6 @@ fn run_parol_examples() -> Result<()> {
 
 fn run_keywords_examples() -> Result<()> {
     let parser = example_path!("keywords");
-    for entry in std::path::Path::new(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../examples/keywords/testfiles/valid"
-    ))
-    .read_dir()?
-    .flatten()
-    {
-        if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
-            println!("Parsing {}...", entry.path().display());
-            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-            assert!(exit_status.success());
-        }
-    }
-    for entry in std::path::Path::new(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../examples/keywords/testfiles/invalid"
-    ))
-    .read_dir()?
-    .flatten()
-    {
-        if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
-            println!("Parsing {} should fail...", entry.path().display());
-            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-            assert!(!exit_status.success());
-        }
-    }
-    Ok(())
-}
-
-fn run_keywords2_examples() -> Result<()> {
-    let parser = example_path!("keywords2");
     for entry in std::path::Path::new(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../examples/keywords/testfiles/valid"

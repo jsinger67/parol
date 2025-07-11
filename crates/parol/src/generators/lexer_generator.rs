@@ -1,55 +1,34 @@
-use crate::generate_name;
-use crate::generators::{GrammarConfig, generate_terminal_name};
+use crate::generators::{GrammarConfig, NamingHelper, generate_terminal_name};
+use crate::parser::parol_grammar::ScannerStateSwitch;
+use crate::{CommonGeneratorConfig, generate_name};
 use anyhow::Result;
 use parol_runtime::TerminalIndex;
 
 use crate::StrVec;
 use std::fmt::Debug;
 
+// Regular expression + terminal index + optional lookahead expression + generated token name
+type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>, String);
+// Scanner transition is a tuple of terminal index and the name of the next scanner mode
+type ScannerTransition = (TerminalIndex, ScannerStateSwitch);
+
 #[derive(Debug, Default)]
 struct ScannerBuildInfo {
-    scanner_index: usize,
     scanner_name: String,
-    terminal_index_count: usize,
-    special_tokens: StrVec,
-    terminal_indices: StrVec,
+    terminal_mappings: Vec<TerminalMapping>,
+    transitions: Vec<ScannerTransition>,
 }
 
 impl ScannerBuildInfo {
     fn from_scanner_build_info(
-        scanner_index: usize,
+        terminal_mappings: Vec<TerminalMapping>,
+        transitions: Vec<ScannerTransition>,
         scanner_name: String,
-        terminal_names: &[String],
-        width: usize,
-        special_tokens: &[String],
-        terminal_indices: &[TerminalIndex],
     ) -> Self {
-        let special_tokens =
-            special_tokens
-                .iter()
-                .enumerate()
-                .fold(StrVec::new(0), |mut acc, (i, e)| {
-                    let e = match e.as_str() {
-                        "UNMATCHABLE_TOKEN" | "NEW_LINE_TOKEN" | "WHITESPACE_TOKEN"
-                        | "ERROR_TOKEN" => e.to_owned(),
-                        _ => {
-                            let hashes = determine_hashes_for_raw_string(e);
-                            format!(r#"r{}"{}"{}"#, hashes, e, hashes)
-                        }
-                    };
-                    acc.push(format!("/* {:w$} */ {},", i, e, w = width));
-                    acc
-                });
-        let terminal_indices = terminal_indices.iter().fold(StrVec::new(8), |mut acc, e| {
-            acc.push(format!(r#"{}, /* {} */"#, e, terminal_names[*e as usize]));
-            acc
-        });
         Self {
-            scanner_index,
             scanner_name,
-            terminal_index_count: terminal_indices.len(),
-            special_tokens,
-            terminal_indices,
+            terminal_mappings,
+            transitions,
         }
     }
 }
@@ -66,11 +45,9 @@ fn determine_hashes_for_raw_string(e: &str) -> String {
 
 #[derive(Debug, Default)]
 struct LexerData {
-    augmented_terminals: StrVec,
-    used_token_constants: String,
     terminal_names: StrVec,
     terminal_count: usize,
-    scanner_build_configs: StrVec,
+    scanner_macro: StrVec,
 }
 
 // ---------------------------------------------------
@@ -80,67 +57,14 @@ struct LexerData {
 ///
 /// Generates the lexer part of the parser output file.
 ///
-pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
+pub fn generate_lexer_source<C: CommonGeneratorConfig>(
+    grammar_config: &GrammarConfig,
+    config: &C,
+) -> Result<String> {
     let original_augmented_terminals = grammar_config.generate_augmented_terminals();
 
     let terminal_count = original_augmented_terminals.len();
     let width = (terminal_count as f32).log10() as usize + 1;
-
-    let augmented_terminals = original_augmented_terminals.iter().enumerate().fold(
-        StrVec::new(4),
-        |mut acc, (i, (e, l))| {
-            let e = match e.as_str() {
-                "UNMATCHABLE_TOKEN" | "NEW_LINE_TOKEN" | "WHITESPACE_TOKEN" | "ERROR_TOKEN" => {
-                    format!("({}, None)", e)
-                }
-                _ => {
-                    let lookahead_expression = l.as_ref().map_or("None".to_string(), |l| {
-                        let pattern = l.kind.expand(&l.pattern);
-                        let hashes = determine_hashes_for_raw_string(&pattern);
-                        format!(
-                            r#"Some(({}, r{}"{}"{}))"#,
-                            l.is_positive, hashes, pattern, hashes
-                        )
-                    });
-                    let hashes = determine_hashes_for_raw_string(e);
-                    format!(
-                        r#"(r{}"{}"{}, {})"#,
-                        hashes, e, hashes, lookahead_expression
-                    )
-                }
-            };
-            acc.push(format!("/* {:w$} */ {},", i, e, w = width));
-            acc
-        },
-    );
-
-    let token_constants: Vec<(&str, bool)> = vec![
-        (
-            "NEW_LINE_TOKEN,",
-            grammar_config
-                .scanner_configurations
-                .iter()
-                .any(|sc| sc.auto_newline),
-        ),
-        ("UNMATCHABLE_TOKEN,", true),
-        (
-            "WHITESPACE_TOKEN,",
-            grammar_config
-                .scanner_configurations
-                .iter()
-                .any(|sc| sc.auto_ws),
-        ),
-        ("ERROR_TOKEN,", true),
-    ];
-
-    let used_token_constants = token_constants
-        .iter()
-        .fold(String::new(), |mut acc, (c, u)| {
-            if *u {
-                acc.push_str(c);
-            }
-            acc
-        });
 
     let terminal_names =
         original_augmented_terminals
@@ -155,24 +79,32 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
                 acc
             });
 
-    let scanner_build_configs = grammar_config
+    let macro_start =
+        StrVec::from_iter(vec![format!("\n    {} {{", get_scanner_type_name(config))]);
+    let mut scanner_macro = grammar_config
         .scanner_configurations
         .iter()
-        .enumerate()
-        .map(|(i, sc)| {
-            sc.generate_build_information(&grammar_config.cfg)
-                .map(|info| (i, info))
+        .map(|sc| {
+            sc.generate_build_information(grammar_config, &terminal_names)
+                .map(|(r, t)| (r, t, sc.scanner_name.clone()))
         })
-        .collect::<Result<Vec<(usize, (Vec<String>, Vec<TerminalIndex>, String))>, anyhow::Error>>(
-        )?
+        .collect::<Result<
+            Vec<(
+                Vec<TerminalMapping>,
+                Vec<ScannerTransition>,
+                String,
+            )>,
+            anyhow::Error,
+        >>()?
         .into_iter()
-        .map(|(i, (sp, ti, n))| {
-            ScannerBuildInfo::from_scanner_build_info(i, n, &terminal_names, width, &sp, &ti)
+        .map(|(terminal_mappings, transitions, scanner_name)| {
+            ScannerBuildInfo::from_scanner_build_info(terminal_mappings, transitions, scanner_name)
         })
-        .fold(StrVec::new(0), |mut acc, e| {
+        .fold(macro_start, |mut acc, e| {
             acc.push(format!("{}", e));
             acc
         });
+    scanner_macro.push("    }".to_string());
 
     let terminal_names =
         terminal_names
@@ -184,11 +116,9 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
             });
 
     let lexer_data = LexerData {
-        augmented_terminals,
-        used_token_constants,
         terminal_names,
         terminal_count,
-        scanner_build_configs,
+        scanner_macro,
     };
 
     Ok(format!("{}", lexer_data))
@@ -210,50 +140,89 @@ pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
         })
 }
 
+fn get_scanner_type_name<C: CommonGeneratorConfig>(config: &C) -> String {
+    let scanner_type_name = NamingHelper::to_upper_camel_case(config.user_type_name());
+    scanner_type_name + "Scanner"
+}
+
 impl std::fmt::Display for LexerData {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let LexerData {
-            augmented_terminals,
-            used_token_constants,
             terminal_names,
             terminal_count,
-            scanner_build_configs,
+            scanner_macro,
         } = self;
 
         let blank_line = "\n\n";
-        let scanner_build_configs = scanner_build_configs.join("\n\n");
         f.write_fmt(ume::ume! {
-        use parol_runtime::lexer::tokenizer::{
-            #used_token_constants
-        };
         #blank_line
-        pub const TERMINALS: &[(&str, Option<(bool, &str)>); #terminal_count] = &[
-        #augmented_terminals];
+        // pub const TERMINALS: &[(&str, Option<(bool, &str)>); #terminal_count] = &[
+        // #augmented_terminals];
         #blank_line
         pub const TERMINAL_NAMES: &[&str; #terminal_count] = &[
         #terminal_names];
         #blank_line
-        #scanner_build_configs
-        })
+        })?;
+        f.write_fmt(format_args!("scanner! {{{}}}", scanner_macro))
     }
 }
 
 impl std::fmt::Display for ScannerBuildInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let ScannerBuildInfo {
-            scanner_index,
             scanner_name,
-            terminal_index_count,
-            special_tokens,
-            terminal_indices,
+            terminal_mappings,
+            transitions,
         } = self;
 
-        writeln!(f, r#"/* SCANNER_{scanner_index}: "{scanner_name}" */"#)?;
-        let scanner_name = format!("SCANNER_{}", scanner_index);
-        f.write_fmt(ume::ume! {
-            const #scanner_name: (&[&str; 5], &[TerminalIndex; #terminal_index_count]) = (
-                &[#special_tokens], &[#terminal_indices],
-            );
-        })
+        let tokens = terminal_mappings
+            .iter()
+            .fold(StrVec::new(12), |mut acc, (rx, i, l, tn)| {
+                // Generate the token definition
+                //   No lookahead expression
+                //     token r"World" => 10;
+                //   With positive lookahead expression
+                //     token r"World" followed by r"!" => 11;
+                //   With negative lookahead expression
+                //     token r"!" not followed by r"!" => 12;
+
+                let hashes = determine_hashes_for_raw_string(rx);
+                let terminal_name_comment = if tn.is_empty() {
+                    String::new()
+                } else {
+                    format!(r#" // "{}""#, tn)
+                };
+                let lookahead = if let Some((is_positive, pattern)) = l {
+                    let hashes = determine_hashes_for_raw_string(pattern);
+                    if *is_positive {
+                        format!(" followed by r{}\"{}\"{}", hashes, pattern, hashes)
+                    } else {
+                        format!(" not followed by r{}\"{}\"{}", hashes, pattern, hashes)
+                    }
+                } else {
+                    String::new()
+                };
+
+                let token = format!(
+                    r#"token r{}"{}"{} {}=> {};{}"#,
+                    hashes, rx, hashes, lookahead, i, terminal_name_comment
+                );
+
+                acc.push(token);
+                acc
+            });
+
+        let transitions = transitions.iter().fold(StrVec::new(12), |mut acc, (i, e)| {
+            // Generate the transition definition
+            //   on 10 enter World;
+            acc.push(format!(r#"on {} {};"#, i, e));
+            acc
+        });
+
+        // Generate the scanner's part of the macro code
+        f.write_fmt(format_args!("        mode {} {{\n", scanner_name))?;
+        f.write_fmt(format_args!("{}", tokens))?;
+        f.write_fmt(format_args!("{}", transitions))?;
+        f.write_str("        }")
     }
 }

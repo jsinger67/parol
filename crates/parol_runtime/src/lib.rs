@@ -14,8 +14,8 @@ module [errors].
 ///
 pub mod lexer;
 pub use lexer::{
-    FormatToken, Location, LocationBuilder, ScannerConfig, Span, TerminalIndex, ToSpan, Token,
-    TokenIter, TokenNumber, TokenStream, Tokenizer,
+    FormatToken, Location, LocationBuilder, Span, TerminalIndex, ToSpan, Token, TokenIter,
+    TokenNumber, TokenStream,
 };
 
 pub mod parser_common;

@@ -4,44 +4,17 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::parser::parse_tree_type::TreeConstruct;
-#[allow(unused_imports)]
-use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{
+    parser::{
+        parse_tree_type::TreeConstruct, LLKParser, LookaheadDFA, ParseType, Production, Trans,
+    },
+    ParolError, ParseTree, TokenStream,
+};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::json_grammar::JsonGrammar;
 use crate::json_grammar_trait::JsonGrammarAuto;
-
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 17] = &[
-    /*  0 */ (UNMATCHABLE_TOKEN, None),
-    /*  1 */ (UNMATCHABLE_TOKEN, None),
-    /*  2 */ (UNMATCHABLE_TOKEN, None),
-    /*  3 */ (UNMATCHABLE_TOKEN, None),
-    /*  4 */ (UNMATCHABLE_TOKEN, None),
-    /*  5 */ (r"\{", None),
-    /*  6 */ (r"\}", None),
-    /*  7 */ (r",", None),
-    /*  8 */ (r":", None),
-    /*  9 */ (r"\[", None),
-    /* 10 */ (r"\]", None),
-    /* 11 */ (r"true", None),
-    /* 12 */ (r"false", None),
-    /* 13 */ (r"null", None),
-    /* 14 */ (r#""(\\.|[^"])*""#, None),
-    /* 15 */
-    (
-        r"-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?",
-        None,
-    ),
-    /* 16 */ (ERROR_TOKEN, None),
-];
 
 pub const TERMINAL_NAMES: &[&str; 17] = &[
     /*  0 */ "EndOfInput",
@@ -63,29 +36,25 @@ pub const TERMINAL_NAMES: &[&str; 17] = &[
     /* 16 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 11]) = (
-    &[
-        /*  0 */ UNMATCHABLE_TOKEN,
-        /*  1 */ NEW_LINE_TOKEN,
-        /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ UNMATCHABLE_TOKEN,
-        /*  4 */ UNMATCHABLE_TOKEN,
-    ],
-    &[
-        5,  /* LBrace */
-        6,  /* RBrace */
-        7,  /* Comma */
-        8,  /* Colon */
-        9,  /* LBracket */
-        10, /* RBracket */
-        11, /* True */
-        12, /* False */
-        13, /* Null */
-        14, /* String */
-        15, /* Number */
-    ],
-);
+scanner! {
+    JsonGrammarScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"\{" => 5; // "LBrace"
+            token r"\}" => 6; // "RBrace"
+            token r"," => 7; // "Comma"
+            token r":" => 8; // "Colon"
+            token r"\[" => 9; // "LBracket"
+            token r"\]" => 10; // "RBracket"
+            token r"true" => 11; // "True"
+            token r"false" => 12; // "False"
+            token r"null" => 13; // "Null"
+            token r#""(\\.|[^"])*""# => 14; // "String"
+            token r"-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?" => 15; // "Number"
+        }
+    }
+}
 
 const MAX_K: usize = 1;
 
@@ -297,14 +266,6 @@ pub const PRODUCTIONS: &[Production; 21] = &[
     },
 ];
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig::new(
-        "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-        &[],
-    )]
-});
-
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
@@ -313,9 +274,10 @@ pub fn parse<'t, T>(
 where
     T: AsRef<Path>,
 {
-    use parol_runtime::parser::parse_tree_type::SynTree;
-    use parol_runtime::parser::parser_types::SynTreeFlavor;
-    use parol_runtime::syntree::Builder;
+    use parol_runtime::{
+        parser::{parse_tree_type::SynTree, parser_types::SynTreeFlavor},
+        syntree::Builder,
+    };
     let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
     parse_into(input, &mut builder, file_name, user_actions)?;
     Ok(builder.build()?)
@@ -330,6 +292,7 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use json_grammar_scanner::JsonGrammarScanner;
     let mut llk_parser = LLKParser::new(
         3,
         LOOKAHEAD_AUTOMATA,
@@ -338,12 +301,19 @@ where
         NON_TERMINALS,
     );
     llk_parser.trim_parse_tree();
-
+    let scanner = JsonGrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = JsonGrammarAuto::new(user_actions);
-    llk_parser.parse_into::<T>(
+    llk_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &JsonGrammarScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

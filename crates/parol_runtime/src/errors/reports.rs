@@ -122,14 +122,6 @@ pub trait Report {
                         .with_message(format!("Lexer recovery error: {e}"))
                         .with_code("parol_runtime::lexer::recovery"),
                 )?),
-                LexerError::RegexError(e) => Ok(term::emit(
-                    &mut writer.lock(),
-                    &config,
-                    &files,
-                    &Diagnostic::bug()
-                        .with_message(format!("Regex error: {e}"))
-                        .with_code("parol_runtime::lexer::regex_error"),
-                )?),
             }
         };
 
@@ -200,7 +192,7 @@ pub trait Report {
                                     .with_message("Syntax error")
                                     .with_code("parol_runtime::parser::syntax_error")
                                     .with_labels(vec![
-                                        Label::primary(file_id, range).with_message("Found")
+                                        Label::primary(file_id, range).with_message("Found"),
                                     ])
                                     .with_labels(unexpected_tokens_labels)
                                     .with_notes(vec![
@@ -228,26 +220,29 @@ pub trait Report {
                             .with_message("Unprocessed input is left after parsing has finished")
                             .with_code("parol_runtime::parser::unprocessed_input")
                             .with_labels(vec![
-                                Label::primary(file_id, un_span).with_message("Unprocessed")
+                                Label::primary(file_id, un_span).with_message("Unprocessed"),
                             ])
                             .with_notes(vec![
                                 "Unprocessed input could be a problem in your grammar.".to_string(),
                             ]),
                     )?)
                 }
-                ParserError::PopOnEmptyScannerStateStack {
-                    context, source, ..
+                ParserError::Unsupported {
+                    context,
+                    error_location,
                 } => {
-                    report_lexer_error(source)?;
+                    let range: Range<usize> = (&**error_location).into();
                     Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
                         &Diagnostic::error()
-                            .with_message(format!(
-                                "{context}Tried to pop from an empty scanner stack"
-                            ))
-                            .with_code("parol_runtime::parser::pop_on_empty_scanner_stack"),
+                            .with_message("Unsupported language feature")
+                            .with_code("parol_runtime::parser::unsupported")
+                            .with_labels(vec![
+                                Label::primary(file_id, range).with_message("Unsupported"),
+                            ])
+                            .with_notes(vec![format!("Context: {context}")]),
                     )?)
                 }
                 ParserError::InternalError(e) => Ok(term::emit(

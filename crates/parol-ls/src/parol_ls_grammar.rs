@@ -2,8 +2,9 @@ use crate::{
     formatting::Comments,
     parol_ls_grammar_trait::{
         self, ASTControl, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production,
-        ProductionLHS, Prolog, ScannerDirectives, ScannerState, SimpleToken, StartDeclaration,
-        TokenLiteral, TokenWithStates, UserTypeDeclaration, UserTypeName,
+        ProductionLHS, Prolog, ScannerDirectives, ScannerState, ScannerStateDirectives,
+        SimpleToken, StartDeclaration, TokenLiteral, TokenWithStates, UserTypeDeclaration,
+        UserTypeName,
     },
     rng::Rng,
     symbol_def::SymbolDefs,
@@ -17,9 +18,9 @@ use lsp_types::{
     WorkspaceEdit,
 };
 use parol::TerminalKind;
-use parol_runtime::lexer::Token;
 #[allow(unused_imports)]
 use parol_runtime::Result;
+use parol_runtime::lexer::Token;
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write as _};
 
@@ -258,7 +259,7 @@ impl ParolLsGrammar {
                     children: None,
                 });
             }
-            ScannerDirectives::PercentOnIdentifierListPercentEnterIdentifier(trans) => {
+            ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(trans) => {
                 // Add the reference to the non-terminal for hover and rename support
                 // This is the first non-terminal in the struct `identifier_list`
                 self.add_non_terminal_ref(&trans.identifier_list.identifier.identifier);
@@ -281,23 +282,86 @@ impl ParolLsGrammar {
                         acc.push(id_sym);
                         acc
                     });
-                let mut target_state: DocumentSymbol = (&trans.identifier.identifier).into();
-                target_state.detail = Some("Target state".to_string());
+                match &trans.scanner_state_directives {
+                    ScannerStateDirectives::PercentEnterIdentifier(
+                        scanner_state_directives_percent_enter_identifier,
+                    ) => {
+                        // Add the reference to the scanner state for hover and rename support
+                        self.add_scanner_state_ref(
+                            &scanner_state_directives_percent_enter_identifier
+                                .identifier
+                                .identifier,
+                        );
 
-                // Add the reference to the scanner state for hover and rename support
-                self.add_scanner_state_ref(&trans.identifier.identifier);
+                        let mut target_state: DocumentSymbol =
+                            (&scanner_state_directives_percent_enter_identifier
+                                .identifier
+                                .identifier)
+                                .into();
+                        target_state.detail = Some("Target state".to_string());
+                        target_state.kind = SymbolKind::STRUCT;
+                        target_state.range = Into::<Rng>::into(arg).0;
+                        target_state.selection_range = Into::<Rng>::into(&trans.percent_on).0;
 
-                children.push(target_state);
+                        children.push(target_state);
 
-                let mut on_enter_directive: DocumentSymbol = (&trans.percent_on).into();
-                on_enter_directive.detail = Some("Scanner state transition".to_string());
-                // Extend the range to include the target state
-                on_enter_directive.range = Into::<Rng>::into(arg).0;
-                on_enter_directive.selection_range = Into::<Rng>::into(&trans.percent_on).0;
-                on_enter_directive.kind = SymbolKind::STRUCT;
-                on_enter_directive.children = Some(children);
+                        let mut on_enter_directive: DocumentSymbol = (&trans.percent_on).into();
+                        on_enter_directive.detail = Some("Scanner state transition".to_string());
+                        // Extend the range to include the target state
+                        on_enter_directive.range = Into::<Rng>::into(arg).0;
+                        on_enter_directive.selection_range = Into::<Rng>::into(&trans.percent_on).0;
+                        on_enter_directive.kind = SymbolKind::STRUCT;
+                        on_enter_directive.children = Some(children);
 
-                symbols.push(on_enter_directive);
+                        symbols.push(on_enter_directive);
+                    }
+                    ScannerStateDirectives::PercentPushIdentifier(
+                        scanner_state_directives_percent_push_identifier,
+                    ) => {
+                        // Add the reference to the scanner state for hover and rename support
+                        self.add_scanner_state_ref(
+                            &scanner_state_directives_percent_push_identifier
+                                .identifier
+                                .identifier,
+                        );
+
+                        let mut target_state: DocumentSymbol =
+                            (&scanner_state_directives_percent_push_identifier
+                                .identifier
+                                .identifier)
+                                .into();
+                        target_state.detail = Some("Target state".to_string());
+                        target_state.kind = SymbolKind::STRUCT;
+                        target_state.range = Into::<Rng>::into(arg).0;
+                        target_state.selection_range = Into::<Rng>::into(&trans.percent_on).0;
+
+                        children.push(target_state);
+
+                        let mut on_push_directive: DocumentSymbol = (&trans.percent_on).into();
+                        on_push_directive.detail =
+                            Some("Scanner state transition with push".to_string());
+                        // Extend the range to include the target state
+                        on_push_directive.range = Into::<Rng>::into(arg).0;
+                        on_push_directive.selection_range = Into::<Rng>::into(&trans.percent_on).0;
+                        on_push_directive.kind = SymbolKind::STRUCT;
+                        on_push_directive.children = Some(children);
+
+                        symbols.push(on_push_directive);
+                    }
+                    ScannerStateDirectives::PercentPop(scanner_state_directives_percent_pop) => {
+                        let mut on_pop_directive: DocumentSymbol =
+                            (&scanner_state_directives_percent_pop.percent_pop).into();
+                        on_pop_directive.detail =
+                            Some("Scanner state transition with pop".to_string());
+                        // Extend the range to include the target state
+                        on_pop_directive.range = Into::<Rng>::into(arg).0;
+                        on_pop_directive.selection_range = Into::<Rng>::into(&trans.percent_on).0;
+                        on_pop_directive.kind = SymbolKind::STRUCT;
+                        on_pop_directive.children = Some(children);
+
+                        symbols.push(on_pop_directive);
+                    }
+                }
             }
         }
     }

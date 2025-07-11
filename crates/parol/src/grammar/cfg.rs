@@ -201,7 +201,7 @@ impl Cfg {
         self.pr.iter().fold(Vec::new(), |mut acc, p| {
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
                 if let Symbol::T(Terminal::Trm(t, k, s, _, _, _, l)) = s {
-                    // Unite the scanner states of all terminals withe the same 'behavior'
+                    // Unite the scanner states of all terminals with the the same 'behavior'
                     // The terminals are considered different if they have different lookahead
                     // expressions.
                     if let Some(pos) = acc

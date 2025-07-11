@@ -43,9 +43,6 @@ impl Production {
             .map(|s| match s {
                 ParseType::N(n) => non_terminal_names[*n].to_owned(),
                 ParseType::T(t) => format!(r#""{}""#, terminal_names[*t as usize]),
-                ParseType::S(s) => format!("%sc({})", s),
-                ParseType::Push(s) => format!("%push({})", s),
-                ParseType::Pop => "%pop".to_string(),
                 _ => "?".to_owned(),
             })
             .collect::<Vec<String>>()
@@ -258,11 +255,7 @@ impl<'t> LLKParser<'t> {
     where
         ParolError: From<T::Error>,
     {
-        let l = self.productions[prod_num]
-            .production
-            .iter()
-            .filter(|s| !s.is_switch())
-            .count();
+        let l = self.productions[prod_num].production.len();
         // We remove the last n entries from the parse tree stack and insert them as
         // children under the node laying below on the stack
         let children = self
@@ -280,16 +273,20 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-    fn predict_production(
+    fn predict_production<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         non_terminal: NonTerminalIndex,
-        stream: Rc<RefCell<TokenStream<'t>>>,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<ProductionIndex> {
         let lookahead_dfa = &self.lookahead_automata[non_terminal];
         lookahead_dfa.eval(&mut stream.borrow_mut(), non_terminal)
     }
 
-    fn diagnostic_message(&self, msg: &str, stream: Rc<RefCell<TokenStream<'t>>>) -> String {
+    fn diagnostic_message<F: Fn(char) -> Option<usize> + Clone>(
+        &self,
+        msg: &str,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
+    ) -> String {
         trace!(
             "\nParser stack:\n{}\n{}",
             self.parser_stack,
@@ -315,9 +312,9 @@ impl<'t> LLKParser<'t> {
     /// The generated parser sources contain all appropriate initialization and
     /// the actual execution of this parse function.
     ///
-    pub fn parse<'u>(
+    pub fn parse<'u, F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
-        stream: TokenStream<'t>,
+        stream: TokenStream<'t, F>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<ParseTree> {
         let mut builder = TreeBuilder::new_with();
@@ -331,10 +328,10 @@ impl<'t> LLKParser<'t> {
     /// The generated parser sources contain all appropriate initialization and
     /// the actual execution of this parse function.
     ///
-    pub fn parse_into<'u, T: TreeConstruct<'t>>(
+    pub fn parse_into<'u, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         tree_builder: &mut T,
-        stream: TokenStream<'t>,
+        stream: TokenStream<'t, F>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()>
     where
@@ -394,35 +391,6 @@ impl<'t> LLKParser<'t> {
                             }
                         }
                     },
-                    ParseType::S(s) => {
-                        stream.borrow_mut().switch_scanner(s)?;
-                        self.parser_stack.stack.pop();
-                    }
-                    ParseType::Push(s) => {
-                        trace!("%push({}) at production {:?}", s, self.current_production());
-                        stream.borrow_mut().push_scanner(s)?;
-                        self.parser_stack.stack.pop();
-                    }
-                    ParseType::Pop => {
-                        trace!("%pop() at production {:?}", self.current_production());
-                        let result = stream.borrow_mut().pop_scanner();
-                        if let Err(source) = result {
-                            return Err(ParserError::PopOnEmptyScannerStateStack {
-                                context: self.diagnostic_message(
-                                    format!(
-                                        "Current scanner is {}",
-                                        &stream.borrow().current_scanner(),
-                                    )
-                                    .as_str(),
-                                    stream.clone(),
-                                ),
-                                input: FileSource::from_stream(&stream.borrow()),
-                                source,
-                            }
-                            .into());
-                        }
-                        self.parser_stack.stack.pop();
-                    }
                     ParseType::E(p) => {
                         self.production_depth -= 1;
                         trace!("Popped production {} -> depth {}", p, self.production_depth);
@@ -454,11 +422,11 @@ impl<'t> LLKParser<'t> {
         }
     }
 
-    fn handle_token_mismatch(
+    fn handle_token_mismatch<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         t: u16,
         token: crate::Token<'_>,
-        stream: Rc<RefCell<TokenStream<'t>>>,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<()> {
         let mut expected_tokens = TokenVec::default();
         expected_tokens.push(self.terminal_names[t as usize].to_string());
@@ -486,10 +454,10 @@ impl<'t> LLKParser<'t> {
         self.recover_from_token_mismatch(stream.clone())
     }
 
-    fn handle_prediction_error(
+    fn handle_prediction_error<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         non_terminal: NonTerminalIndex,
-        stream: Rc<RefCell<TokenStream<'t>>>,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
         source: crate::ParolError,
     ) -> Result<ProductionIndex> {
         let nt_name = self.non_terminal_names[non_terminal];
@@ -519,10 +487,10 @@ impl<'t> LLKParser<'t> {
         self.recover_from_prediction_error(non_terminal, stream.clone())
     }
 
-    fn recover_from_prediction_error(
+    fn recover_from_prediction_error<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         non_terminal: NonTerminalIndex,
-        stream: Rc<RefCell<TokenStream<'t>>>,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<ProductionIndex> {
         if !self.enable_recovery {
             return Err(ParserError::RecoveryFailed.into());
@@ -590,7 +558,10 @@ impl<'t> LLKParser<'t> {
     }
 
     // Sync input tokens with expected tokens if possible
-    fn recover_from_token_mismatch(&mut self, stream: Rc<RefCell<TokenStream<'t>>>) -> Result<()> {
+    fn recover_from_token_mismatch<F: Fn(char) -> Option<usize> + Clone>(
+        &mut self,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
+    ) -> Result<()> {
         if !self.enable_recovery {
             return Err(ParserError::RecoveryFailed.into());
         }
@@ -604,11 +575,11 @@ impl<'t> LLKParser<'t> {
         self.adjust_token_stream(scanned_token_types, expected_token_types, stream.clone())
     }
 
-    fn adjust_token_stream(
+    fn adjust_token_stream<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         scanned_token_types: Vec<TerminalIndex>,
         expected_token_types: Vec<TerminalIndex>,
-        stream: Rc<RefCell<TokenStream<'t>>>,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<()> {
         if let Some((act, exp)) =
             Recovery::calculate_match_ranges(&scanned_token_types, &expected_token_types)
@@ -646,11 +617,11 @@ impl<'t> LLKParser<'t> {
         self.sync_token_stream(scanned_token_types, expected_token_types, stream.clone())
     }
 
-    fn sync_token_stream(
+    fn sync_token_stream<F: Fn(char) -> Option<usize> + Clone>(
         &mut self,
         scanned_token_types: Vec<TerminalIndex>,
         expected_token_types: Vec<TerminalIndex>,
-        stream: Rc<RefCell<TokenStream<'t>>>,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<()> {
         let mut replaced = false;
         scanned_token_types
@@ -672,10 +643,10 @@ impl<'t> LLKParser<'t> {
         }
     }
 
-    fn handle_additional_tokens<'u, T: TreeConstruct<'t>>(
+    fn handle_additional_tokens<'u, T: TreeConstruct<'t>, F: Fn(char) -> Option<usize> + Clone>(
         &self,
         tree_builder: &mut T,
-        stream: Rc<RefCell<TokenStream<'t>>>,
+        stream: Rc<RefCell<TokenStream<'t, F>>>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()>
     where

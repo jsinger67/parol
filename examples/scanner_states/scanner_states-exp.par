@@ -3,10 +3,12 @@
 %comment "Tests correct handling of scanner states"
 %line_comment "//"
 %block_comment "/\*" "\*/"
+%on StringDelimiter enter String
 
 %scanner String {
     %auto_newline_off
     %auto_ws_off
+    %on StringDelimiter enter INITIAL
 }
 
 %%
@@ -15,7 +17,7 @@
 /*  1 */ StartList /* Vec<T>::Push */: Content StartList;
 /*  2 */ StartList /* Vec<T>::New */: ;
 /*  3 */ Content: Identifier;
-/*  4 */ Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();
+/*  4 */ Content: StringDelimiter StringContent StringDelimiter;
 /*  5 */ StringContent: StringContentList /* Vec */;
 /*  6 */ StringContentList /* Vec<T>::Push */: StringElement StringContentList;
 /*  7 */ StringContentList /* Vec<T>::New */: ;

@@ -662,7 +662,7 @@ impl GrammarGenerator<'_> {
     pub fn write_output(&mut self) -> Result<()> {
         assert_eq!(self.state, Some(State::PostProcessed));
         let grammar_config = self.grammar_config.as_mut().unwrap();
-        let lexer_source = crate::generate_lexer_source(grammar_config)
+        let lexer_source = crate::generate_lexer_source(grammar_config, &self.builder)
             .map_err(|e| parol!("Failed to generate lexer source!: {}", e))?;
 
         let user_trait_generator = UserTraitGenerator::new(grammar_config);

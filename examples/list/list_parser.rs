@@ -4,31 +4,17 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::parser::parse_tree_type::TreeConstruct;
-#[allow(unused_imports)]
-use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree, TerminalIndex};
-use parol_runtime::{ScannerConfig, TokenStream, Tokenizer};
+use parol_runtime::{
+    parser::{
+        parse_tree_type::TreeConstruct, LLKParser, LookaheadDFA, ParseType, Production, Trans,
+    },
+    ParolError, ParseTree, TokenStream,
+};
+use scnr2::scanner;
 use std::path::Path;
 
 use crate::list_grammar::ListGrammar;
 use crate::list_grammar_trait::ListGrammarAuto;
-
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
-
-pub const TERMINALS: &[(&str, Option<(bool, &str)>); 8] = &[
-    /* 0 */ (UNMATCHABLE_TOKEN, None),
-    /* 1 */ (UNMATCHABLE_TOKEN, None),
-    /* 2 */ (UNMATCHABLE_TOKEN, None),
-    /* 3 */ (UNMATCHABLE_TOKEN, None),
-    /* 4 */ (UNMATCHABLE_TOKEN, None),
-    /* 5 */ (r",", None),
-    /* 6 */ (r"0|[1-9][0-9]*", None),
-    /* 7 */ (ERROR_TOKEN, None),
-];
 
 pub const TERMINAL_NAMES: &[&str; 8] = &[
     /* 0 */ "EndOfInput",
@@ -41,17 +27,17 @@ pub const TERMINAL_NAMES: &[&str; 8] = &[
     /* 7 */ "Error",
 ];
 
-/* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
-    &[
-        /* 0 */ UNMATCHABLE_TOKEN,
-        /* 1 */ NEW_LINE_TOKEN,
-        /* 2 */ WHITESPACE_TOKEN,
-        /* 3 */ r"//.*(\r\n|\r|\n)?",
-        /* 4 */ UNMATCHABLE_TOKEN,
-    ],
-    &[5 /* Comma */, 6 /* Num */],
-);
+scanner! {
+    ListGrammarScanner {
+        mode INITIAL {
+            token r"\r\n|\r|\n" => 1; // "Newline"
+            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
+            token r"," => 5; // "Comma"
+            token r"0|[1-9][0-9]*" => 6; // "Num"
+        }
+    }
+}
 
 const MAX_K: usize = 2;
 
@@ -168,14 +154,6 @@ pub const PRODUCTIONS: &[Production; 10] = &[
     },
 ];
 
-static SCANNERS: Lazy<Vec<ScannerConfig>> = Lazy::new(|| {
-    vec![ScannerConfig::new(
-        "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
-        &[],
-    )]
-});
-
 pub fn parse<T>(
     input: &str,
     file_name: T,
@@ -184,9 +162,10 @@ pub fn parse<T>(
 where
     T: AsRef<Path>,
 {
-    use parol_runtime::parser::parse_tree_type::SynTree;
-    use parol_runtime::parser::parser_types::SynTreeFlavor;
-    use parol_runtime::syntree::Builder;
+    use parol_runtime::{
+        parser::{parse_tree_type::SynTree, parser_types::SynTreeFlavor},
+        syntree::Builder,
+    };
     let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
     parse_into(input, &mut builder, file_name, user_actions)?;
     Ok(builder.build()?)
@@ -201,6 +180,7 @@ pub fn parse_into<'t, T: TreeConstruct<'t>>(
 where
     ParolError: From<T::Error>,
 {
+    use list_grammar_scanner::ListGrammarScanner;
     let mut llk_parser = LLKParser::new(
         2,
         LOOKAHEAD_AUTOMATA,
@@ -208,11 +188,19 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
+    let scanner = ListGrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = ListGrammarAuto::new(user_actions);
-    llk_parser.parse_into::<T>(
+    llk_parser.parse_into(
         tree_builder,
-        TokenStream::new(input, file_name, &SCANNERS, MAX_K).unwrap(),
+        TokenStream::new(
+            input,
+            file_name,
+            &scanner.scanner_impl,
+            &ListGrammarScanner::match_function,
+            MAX_K,
+        )
+        .unwrap(),
         &mut user_actions,
     )
 }

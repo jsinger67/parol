@@ -2,8 +2,8 @@
 //! The module contains the conversion to a the PAR format.
 //!
 use crate::{
-    generators::grammar_config::FnScannerStateResolver, grammar::cfg::FnPrimaryNonTerminalFinder,
-    group_by, parser::parol_grammar::GrammarType, GrammarConfig, ScannerConfig, StrVec,
+    GrammarConfig, ScannerConfig, StrVec, grammar::cfg::FnPrimaryNonTerminalFinder, group_by,
+    parser::parol_grammar::GrammarType,
 };
 use anyhow::Result;
 
@@ -43,7 +43,6 @@ pub fn render_par_string(
     let initial_scanner_state = render_scanner_config_string(
         0,
         &grammar_config.scanner_configurations[0],
-        &scanner_state_resolver,
         &primary_non_terminal_finder,
     );
 
@@ -99,7 +98,6 @@ pub fn render_par_string(
             acc.push_str(&render_scanner_config_string(
                 i,
                 e,
-                &scanner_state_resolver,
                 &primary_non_terminal_finder,
             ));
             acc.push('\n');
@@ -128,7 +126,6 @@ pub fn render_par_string(
 fn render_scanner_config_string(
     index: usize,
     scanner_config: &ScannerConfig,
-    scanner_state_resolver: &FnScannerStateResolver,
     primary_non_terminal_finder: &FnPrimaryNonTerminalFinder,
 ) -> String {
     let scanner_name = &scanner_config.scanner_name;
@@ -158,17 +155,17 @@ fn render_scanner_config_string(
 
     let mut transitions = Vec::new();
 
-    for (scanner, primary_nts) in group_by(&scanner_config.transitions, |(_, v)| *v) {
+    for (scanner_switch, primary_nts) in group_by(&scanner_config.transitions, |(_, v)| v.clone()) {
         let mut primary_nts = primary_nts
             .iter()
             .map(|(k, _)| primary_non_terminal_finder(*k).unwrap_or(format!("{}", k)))
             .collect::<Vec<_>>();
         primary_nts.sort();
         transitions.push(format!(
-            "{}%on {} %enter {}\n",
+            "{}%on {} %{}\n",
             indent,
             primary_nts.join(", "),
-            scanner_state_resolver(&[scanner])
+            scanner_switch
         ));
     }
 

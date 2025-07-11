@@ -72,9 +72,9 @@ impl LookaheadDFA {
     /// consuming any of them.
     ///
     #[inline(always)]
-    pub fn eval(
+    pub fn eval<F: Fn(char) -> Option<usize> + Clone>(
         &self,
-        token_stream: &mut TokenStream<'_>,
+        token_stream: &mut TokenStream<'_, F>,
         non_terminal: NonTerminalIndex,
     ) -> Result<ProductionIndex, ParolError> {
         let mut state: StateIndex = 0;
@@ -124,9 +124,7 @@ impl LookaheadDFA {
                         // to read the next lookahead token if available.
                         trace!(
                             "{}, {} => {}",
-                            state,
-                            current_lookahead_token,
-                            current_transition.2
+                            state, current_lookahead_token, current_transition.2
                         );
                         // Set the state to the to-state
                         state = current_transition.2;
@@ -160,8 +158,7 @@ impl LookaheadDFA {
             debug_assert!(last_prod_num > INVALID_PROD);
             trace!(
                 "Predict production {:?} from last accepting state {}",
-                last_prod_num,
-                last_state
+                last_prod_num, last_state
             );
             Ok(last_prod_num as ProductionIndex)
         } else {
@@ -183,10 +180,10 @@ impl LookaheadDFA {
     ///
     /// Returns all terminals that lead from state 0 to a valid next state
     ///
-    pub fn build_error(
+    pub fn build_error<F: Fn(char) -> Option<usize> + Clone>(
         &self,
         terminal_names: &'static [&'static str],
-        token_stream: &TokenStream<'_>,
+        token_stream: &TokenStream<'_, F>,
     ) -> Result<(String, Vec<UnexpectedToken>, TokenVec), LexerError> {
         let mut state = 0;
         let mut diag_msg = String::new();

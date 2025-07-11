@@ -14,12 +14,12 @@ pub(crate) static RX_NEW_LINE: Lazy<Regex> =
 pub(crate) fn location_to_range(location: &Location) -> Range {
     Range {
         start: Position {
-            line: location.start_line - 1,
-            character: location.start_column - 1,
+            line: location.start_line.saturating_sub(1),
+            character: location.start_column.saturating_sub(1),
         },
         end: Position {
-            line: location.end_line - 1,
-            character: location.end_column - 1,
+            line: location.end_line.saturating_sub(1),
+            character: location.end_column.saturating_sub(1),
         },
     }
 }

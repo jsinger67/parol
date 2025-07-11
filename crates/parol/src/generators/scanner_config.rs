@@ -1,7 +1,20 @@
-use crate::Cfg;
-use anyhow::{bail, Result};
-use parol_runtime::{lexer::FIRST_USER_TOKEN, TerminalIndex};
+use crate::{GrammarConfig, parser::parol_grammar::ScannerStateSwitch};
+use anyhow::{Result, bail};
+use parol_runtime::{
+    TerminalIndex,
+    lexer::{
+        BLOCK_COMMENT, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, NEW_LINE_TOKEN, WHITESPACE,
+        WHITESPACE_TOKEN,
+    },
+};
 use std::fmt::{Debug, Display, Error, Formatter};
+
+// Regular expression + terminal index + optional lookahead expression + generated token name
+type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>, String);
+// Scanner transition is a tuple of terminal index and the name of the next scanner mode
+type ScannerTransition = (TerminalIndex, ScannerStateSwitch);
+// The build information is a tuple of terminal mappings and scanner transitions
+type BuildInformation = (Vec<TerminalMapping>, Vec<ScannerTransition>);
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -49,7 +62,7 @@ pub struct ScannerConfig {
     /// Scanner state transitions
     /// Maps from token to scanner state, where the token is identified by its TerminalIndex
     /// The scanner state is identified by its index.
-    pub transitions: Vec<(TerminalIndex, usize)>,
+    pub transitions: Vec<(TerminalIndex, ScannerStateSwitch)>,
 }
 
 impl ScannerConfig {
@@ -92,27 +105,32 @@ impl ScannerConfig {
 
     ///
     /// Generates the data needed by the lexer generator.
-    /// The tuple contains of the specific internal tokens of the scanner (ws,
-    /// comments etc.) and the indices of the terminals that are valid in this
-    /// scanner.
+    /// The tuple contains the mapping of terminal strings to their indices plus an optional
+    /// lookahead pattern and the transitions, i.e. a mapping of terminal indices to scanner names.
     ///
     pub fn generate_build_information(
         &self,
-        cfg: &Cfg,
-    ) -> Result<(Vec<String>, Vec<TerminalIndex>, String)> {
-        let mut scanner_specific = vec![
-            "UNMATCHABLE_TOKEN".to_owned(),
-            if self.auto_newline {
-                "NEW_LINE_TOKEN".to_owned()
-            } else {
-                "UNMATCHABLE_TOKEN".to_owned()
-            },
-            if self.auto_ws {
-                "WHITESPACE_TOKEN".to_owned()
-            } else {
-                "UNMATCHABLE_TOKEN".to_owned()
-            },
-        ];
+        grammar_config: &GrammarConfig,
+        terminal_names: &[String],
+    ) -> Result<BuildInformation> {
+        let cfg = &grammar_config.cfg;
+        let mut terminal_mappings = Vec::new();
+        if self.auto_newline {
+            terminal_mappings.push((
+                NEW_LINE_TOKEN.to_owned(),
+                NEW_LINE,
+                None,
+                terminal_names[NEW_LINE as usize].clone(),
+            ));
+        }
+        if self.auto_ws {
+            terminal_mappings.push((
+                WHITESPACE_TOKEN.to_owned(),
+                WHITESPACE,
+                None,
+                terminal_names[WHITESPACE as usize].clone(),
+            ));
+        }
         if !self.line_comments.is_empty() {
             let line_comments_rx = self
                 .line_comments
@@ -120,9 +138,12 @@ impl ScannerConfig {
                 .map(|s| format!(r###"{}.*(\r\n|\r|\n)?"###, s))
                 .collect::<Vec<String>>()
                 .join("|");
-            scanner_specific.push(line_comments_rx);
-        } else {
-            scanner_specific.push("UNMATCHABLE_TOKEN".to_owned());
+            terminal_mappings.push((
+                line_comments_rx,
+                LINE_COMMENT,
+                None,
+                terminal_names[LINE_COMMENT as usize].clone(),
+            ));
         }
         if !self.block_comments.is_empty() {
             let block_comments_rx = self
@@ -131,25 +152,30 @@ impl ScannerConfig {
                 .map(|(s, e)| Self::format_block_comment(s, e))
                 .collect::<Result<Vec<String>>>()?
                 .join("|");
-            scanner_specific.push(block_comments_rx);
-        } else {
-            scanner_specific.push("UNMATCHABLE_TOKEN".to_owned());
+            terminal_mappings.push((
+                block_comments_rx,
+                BLOCK_COMMENT,
+                None,
+                terminal_names[BLOCK_COMMENT as usize].clone(),
+            ));
         }
 
-        let terminals = cfg.get_ordered_terminals();
+        let terminal_mappings = cfg.get_ordered_terminals().iter().enumerate().fold(
+            terminal_mappings,
+            |mut acc, (i, (t, k, l, s))| {
+                if s.contains(&self.scanner_state) {
+                    acc.push((
+                        k.expand(t),
+                        i as TerminalIndex + FIRST_USER_TOKEN,
+                        l.as_ref().map(|l| (l.is_positive, l.pattern.clone())),
+                        terminal_names[i + FIRST_USER_TOKEN as usize].clone(),
+                    ));
+                }
+                acc
+            },
+        );
 
-        let term_indices =
-            terminals
-                .iter()
-                .enumerate()
-                .fold(Vec::new(), |mut acc, (i, (_, _, _, s))| {
-                    if s.contains(&self.scanner_state) {
-                        acc.push(i as TerminalIndex + FIRST_USER_TOKEN);
-                    }
-                    acc
-                });
-
-        Ok((scanner_specific, term_indices, self.scanner_name.clone()))
+        Ok((terminal_mappings, self.transitions.clone()))
     }
 
     /// Formats a block comment
