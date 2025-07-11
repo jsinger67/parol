@@ -3,12 +3,12 @@
 %comment "Tests correct handling of scanner states"
 %line_comment "//"
 %block_comment "/\*" "\*/"
-%on StringDelimiter enter String
+%on StringDelimiter %enter String
 
 %scanner String {
     %auto_newline_off
     %auto_ws_off
-    %on StringDelimiter enter INITIAL
+    %on StringDelimiter %enter INITIAL
 }
 
 %%
