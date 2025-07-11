@@ -1132,7 +1132,7 @@ dependencies = [
 [[package]]
 name = "scnr2"
 version = "0.2.0"
-source = "git+https://github.com/jsinger67/scnr2.git#9d012006f5350f398d692e04f39bb147248234c4"
+source = "git+https://github.com/jsinger67/scnr2.git#1c3f4713b60a643baf66bbc383cf135b8210940f"
 dependencies = [
  "log",
  "scnr2_macro",
@@ -1141,7 +1141,7 @@ dependencies = [
 [[package]]
 name = "scnr2_generate"
 version = "0.2.0"
-source = "git+https://github.com/jsinger67/scnr2.git#9d012006f5350f398d692e04f39bb147248234c4"
+source = "git+https://github.com/jsinger67/scnr2.git#1c3f4713b60a643baf66bbc383cf135b8210940f"
 dependencies = [
  "log",
  "proc-macro2",
@@ -1154,7 +1154,7 @@ dependencies = [
 [[package]]
 name = "scnr2_macro"
 version = "0.2.0"
-source = "git+https://github.com/jsinger67/scnr2.git#9d012006f5350f398d692e04f39bb147248234c4"
+source = "git+https://github.com/jsinger67/scnr2.git#1c3f4713b60a643baf66bbc383cf135b8210940f"
 dependencies = [
  "scnr2_generate",
 ]
