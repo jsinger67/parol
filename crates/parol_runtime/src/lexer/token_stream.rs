@@ -4,7 +4,9 @@ use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter, TokenN
 use log::trace;
 use scnr2::ScannerImpl;
 
+use std::cell::RefCell;
 use std::path::{Path, PathBuf};
+use std::rc::Rc;
 use std::sync::Arc;
 
 use super::TokenBuffer;
@@ -50,10 +52,10 @@ where
     ///
     /// Currently this never return LexerError but it could be changed in the future.
     ///
-    pub fn new<'s, T>(
+    pub fn new<T>(
         input: &'t str,
         file_name: T,
-        scanner: &'s ScannerImpl,
+        scanner_impl: Rc<RefCell<ScannerImpl>>,
         match_function: &'static F,
         k: usize,
     ) -> Result<Self, LexerError>
@@ -65,7 +67,7 @@ where
         // const TARGET_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../target");
         // let _ = scanner.generate_compiled_automata_as_dot("Parol", Path::new(TARGET_FOLDER));
         let token_iter = TokenIter::new(
-            scanner.find_matches_with_position(input, 0, match_function),
+            ScannerImpl::find_matches_with_position(scanner_impl, input, 0, match_function),
             input,
             file_name.clone(),
             k,

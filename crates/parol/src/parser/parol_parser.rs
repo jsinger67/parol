@@ -1164,7 +1164,7 @@ where
         TokenStream::new(
             input,
             file_name,
-            &scanner.scanner_impl,
+            scanner.scanner_impl.clone(),
             &ParolGrammarScanner::match_function,
             MAX_K,
         )

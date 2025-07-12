@@ -60,7 +60,7 @@ fn lexer_token_production() {
         TokenStream::new(
             PAROL_CFG_1,
             file_name,
-            &scanner.scanner_impl,
+            scanner.scanner_impl.clone(),
             &parol_scanner::ParolScanner::match_function,
             k,
         )
@@ -134,7 +134,7 @@ fn lookahead_must_fail() {
     let mut token_stream = TokenStream::new(
         PAROL_CFG_1,
         file_name,
-        &scanner.scanner_impl,
+        scanner.scanner_impl.clone(),
         &parol_scanner::ParolScanner::match_function,
         1,
     )
@@ -150,7 +150,7 @@ fn lookahead_beyond_buffer_must_not_fail() {
         TokenStream::new(
             PAROL_CFG_1,
             file_name,
-            &scanner.scanner_impl,
+            scanner.scanner_impl.clone(),
             &parol_scanner::ParolScanner::match_function,
             1,
         )

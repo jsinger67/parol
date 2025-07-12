@@ -1480,7 +1480,7 @@ where
         TokenStream::new(
             input,
             file_name,
-            &scanner.scanner_impl,
+            scanner.scanner_impl.clone(),
             &CalcGrammarScanner::match_function,
             1,
         )

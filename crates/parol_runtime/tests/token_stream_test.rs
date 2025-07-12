@@ -153,7 +153,7 @@ fn scanner_switch_and_named_source() {
         TokenStream::new(
             INPUT,
             file_name,
-            &scanner.scanner_impl,
+            scanner.scanner_impl.clone(),
             &string_scanner::StringScanner::match_function,
             MAX_K,
         )

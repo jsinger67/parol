@@ -209,7 +209,7 @@ fn tokenize() {
         TokenStream::new(
             LEXER_INPUT,
             file_name,
-            &scanner.scanner_impl,
+            scanner.scanner_impl.clone(),
             &ParolScanner::match_function,
             MAX_K,
         )
@@ -248,7 +248,7 @@ fn throughput_benchmark(c: &mut Criterion) {
                 TokenStream::new(
                     LEXER_INPUT,
                     file_name.clone(),
-                    &scanner.scanner_impl,
+                    scanner.scanner_impl.clone(),
                     &ParolScanner::match_function,
                     MAX_K,
                 )

@@ -2823,7 +2823,7 @@ where
         TokenStream::new(
             input,
             file_name,
-            &scanner.scanner_impl,
+            scanner.scanner_impl.clone(),
             &Oberon2GrammarScanner::match_function,
             MAX_K,
         )
