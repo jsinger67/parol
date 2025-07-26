@@ -1137,8 +1137,9 @@ dependencies = [
 
 [[package]]
 name = "scnr2"
-version = "0.2.0"
-source = "git+https://github.com/jsinger67/scnr2.git#dfe2a0e75679b7051ca46b38fe01f5b2644e79d5"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2930f7bd5cbe25a3cb01318fa91ac64b10681181d215d4d28c19e0f6b0562242"
 dependencies = [
  "log",
  "scnr2_macro",
@@ -1146,8 +1147,9 @@ dependencies = [
 
 [[package]]
 name = "scnr2_generate"
-version = "0.2.0"
-source = "git+https://github.com/jsinger67/scnr2.git#dfe2a0e75679b7051ca46b38fe01f5b2644e79d5"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5629f9816637dde778b45aba9d00962ae7c42a1ba6d759178e465a0c119e4705"
 dependencies = [
  "log",
  "proc-macro2",
@@ -1159,8 +1161,9 @@ dependencies = [
 
 [[package]]
 name = "scnr2_macro"
-version = "0.2.0"
-source = "git+https://github.com/jsinger67/scnr2.git#dfe2a0e75679b7051ca46b38fe01f5b2644e79d5"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b8a786bcf92dcd1c0b27d6a995e5a2743a77b05377ad411ea5bfbe559c138c6"
 dependencies = [
  "scnr2_generate",
 ]
