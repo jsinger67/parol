@@ -165,7 +165,7 @@ fn main_loop(connection: Arc<Connection>, config: Config) -> Result<(), Box<dyn 
     for msg in &connection.receiver {
         match msg {
             Message::Request(req) => {
-                eprintln!("got request: {:?}", req);
+                eprintln!("got request: {req:?}");
                 if connection.handle_shutdown(&req)? {
                     return Ok(());
                 }
@@ -194,7 +194,7 @@ fn main_loop(connection: Arc<Connection>, config: Config) -> Result<(), Box<dyn 
                 }
             }
             Message::Response(resp) => {
-                eprintln!("got response: {:?}", resp);
+                eprintln!("got response: {resp:?}");
             }
             Message::Notification(not) => {
                 process_notification(not, connection.clone(), &server)?;
@@ -209,7 +209,7 @@ fn process_notification(
     connection: Arc<Connection>,
     server: &RefCell<Server>,
 ) -> Result<(), Box<dyn Error>> {
-    eprintln!("got notification: {:?}", not);
+    eprintln!("got notification: {not:?}");
     match not.method.as_str() {
         DidOpenTextDocument::METHOD => server.borrow_mut().handle_open_document(connection, not)?,
         DidChangeTextDocument::METHOD => server

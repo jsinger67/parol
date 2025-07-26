@@ -43,7 +43,7 @@ impl NamingHelper {
     /// ```
     pub fn escape_rust_keyword(name: String) -> String {
         if Self::is_rust_keyword(&name) {
-            format!("r#{}", name)
+            format!("r#{name}")
         } else {
             name
         }
@@ -65,7 +65,7 @@ impl NamingHelper {
     /// ```
     pub fn add_unused_indicator(used: bool, name: &str) -> String {
         if !used && !Self::is_raw_identifier(name) {
-            format!("_{}", name)
+            format!("_{name}")
         } else if !used {
             name.to_string().replace("r#", "_")
         } else {

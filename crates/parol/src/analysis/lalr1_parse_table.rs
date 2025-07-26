@@ -66,7 +66,7 @@ impl From<&Cfg> for GrammarLalr {
                     .collect(),
                 act: i,
             };
-            trace!("LALR(1) rule: {} -> {:?}", lhs, rhs);
+            trace!("LALR(1) rule: {lhs} -> {rhs:?}");
             grammar.rules.entry(lhs).or_default().push(rhs);
         }
 
@@ -221,25 +221,21 @@ impl Display for LRConflict {
             } => {
                 writeln!(
                     f,
-                    "Reduce-reduce conflict in state {:?} on token {:?}",
-                    state, token
+                    "Reduce-reduce conflict in state {state:?} on token {token:?}"
                 )?;
                 write!(
                     f,
-                    "Decission between reducing with production {} or {} on token {}",
-                    r1, r2, token
+                    "Decission between reducing with production {r1} or {r2} on token {token}"
                 )
             }
             LRConflict::ShiftReduce { state, token, rule } => {
                 writeln!(
                     f,
-                    "Shift-reduce conflict in state {:?} on token {:?}",
-                    state, token
+                    "Shift-reduce conflict in state {state:?} on token {token:?}"
                 )?;
                 write!(
                     f,
-                    "Decission between shifting the token {} or reducing with production {}",
-                    token, rule
+                    "Decission between shifting the token {token} or reducing with production {rule}"
                 )
             }
         }
@@ -290,7 +286,7 @@ impl Display for LRConflictError {
                         "{}{}",
                         terminals[(ti - FIRST_USER_TOKEN) as usize].0,
                         if let Some(ref la) = terminals[(ti - FIRST_USER_TOKEN) as usize].1 {
-                            format!(" {}", la)
+                            format!(" {la}")
                         } else {
                             "".to_owned()
                         }
@@ -344,9 +340,9 @@ impl Display for LRConflictError {
                             .enumerate()
                             .map(|(i, s)| {
                                 if i == item.pos {
-                                    format!("•{}", s)
+                                    format!("•{s}")
                                 } else {
-                                    format!("{}", s)
+                                    format!("{s}")
                                 }
                             })
                             .collect::<Vec<_>>()
@@ -365,8 +361,7 @@ impl Display for LRConflictError {
                 } else {
                     writeln!(
                         f,
-                        "Shift-reduce conflict in state {:?} on token {:?}",
-                        state, token
+                        "Shift-reduce conflict in state {state:?} on token {token:?}"
                     )?;
                 }
                 Ok(())
@@ -452,7 +447,7 @@ impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRCo
         conflict: LR1ResolvedConflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>,
     ) {
         let conflict: LRResolvedConflict = conflict.into();
-        println!("{}", conflict);
+        println!("{conflict}");
         self.calls.borrow_mut().push(conflict);
     }
 
@@ -474,7 +469,7 @@ pub fn calculate_lalr1_parse_table(
     trace!("CFG: \n{}", render_par_string(grammar_config, true)?);
     let cfg = &grammar_config.cfg;
     let grammar = GrammarLalr::from(cfg);
-    trace!("{:#?}", grammar);
+    trace!("{grammar:#?}");
     let config = LALRConfig::new();
     let parse_table = grammar.lalr1(&config).map_err(|e| {
         let conflict: LRConflict = e.into();
@@ -482,8 +477,8 @@ pub fn calculate_lalr1_parse_table(
         conflict.set_cfg(cfg.clone());
         anyhow!(GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict })
     })?;
-    trace!("LALR(1) parse table: {:#?}", parse_table);
+    trace!("LALR(1) parse table: {parse_table:#?}");
     let parse_table = LRParseTable::from(parse_table);
-    trace!("Converted LALR(1) parse table: {:#?}", parse_table);
+    trace!("Converted LALR(1) parse table: {parse_table:#?}");
     Ok((parse_table, config.calls.into_inner()))
 }

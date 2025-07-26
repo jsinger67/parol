@@ -121,7 +121,7 @@ impl GrammarConfig {
 
     /// Sets the grammar type
     pub fn with_grammar_type(mut self, grammar_type: GrammarType) -> Self {
-        trace!("GrammarConfig::with_grammar_type({:?})", grammar_type);
+        trace!("GrammarConfig::with_grammar_type({grammar_type:?})");
         self.grammar_type = grammar_type;
         self
     }
@@ -270,7 +270,7 @@ impl Display for GrammarConfig {
         writeln!(f, "title: {:?}", self.title)?;
         writeln!(f, "comment: {:?}", self.comment)?;
         for sc in &self.scanner_configurations {
-            writeln!(f, "{}", sc)?;
+            writeln!(f, "{sc}")?;
         }
         writeln!(f, "cfg: {:?}", self.cfg)
     }

@@ -152,13 +152,12 @@ impl LookaheadDFA {
         }
         if prod_num > INVALID_PROD {
             // The state is accepting, we can return the associated production number
-            trace!("Predict production {} at state {}", prod_num, state);
+            trace!("Predict production {prod_num} at state {state}");
             Ok(prod_num as ProductionIndex)
         } else if let Some(last_state) = last_accepting_state {
             debug_assert!(last_prod_num > INVALID_PROD);
             trace!(
-                "Predict production {:?} from last accepting state {}",
-                last_prod_num, last_state
+                "Predict production {last_prod_num:?} from last accepting state {last_state}"
             );
             Ok(last_prod_num as ProductionIndex)
         } else {
@@ -169,8 +168,7 @@ impl LookaheadDFA {
             );
             return Err(ParserError::PredictionError {
                 cause: format!(
-                    "Production prediction failed for non-terminal {}",
-                    non_terminal,
+                    "Production prediction failed for non-terminal {non_terminal}",
                 ),
             }
             .into());

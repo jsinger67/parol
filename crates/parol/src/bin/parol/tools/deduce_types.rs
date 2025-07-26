@@ -69,7 +69,7 @@ pub fn main(args: &Args) -> Result<()> {
     }
     println!();
     println!("Type information:");
-    println!("{}", type_info);
+    println!("{type_info}");
 
     if let Some(output_file) = &args.json_output_file {
         let json = serde_json::to_string(type_info.symbol_table())?;

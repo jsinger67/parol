@@ -132,14 +132,14 @@ impl Production {
                         Symbol::T(Terminal::Trm(t, ..)) => {
                             acc.push(format!("ParseType::T({}),", get_terminal_index(t)))
                         }
-                        Symbol::S(s) => acc.push(format!("ParseType::S({}),", s)),
-                        Symbol::Push(s) => acc.push(format!("ParseType::Push({}),", s)),
+                        Symbol::S(s) => acc.push(format!("ParseType::S({s}),")),
+                        Symbol::Push(s) => acc.push(format!("ParseType::Push({s}),")),
                         Symbol::Pop => acc.push("ParseType::Pop,".to_string()),
                         _ => panic!("Unexpected symbol type in production!"),
                     }
                     acc
                 });
-        let prod_string = format!("{}", pr);
+        let prod_string = format!("{pr}");
         Self {
             lhs,
             production,
@@ -182,7 +182,7 @@ impl LRProduction {
             |nt: &str| non_terminals.iter().position(|n| *n == nt).unwrap();
         let lhs = get_non_terminal_index(pr.get_n_str());
         let len = pr.get_r().iter().count();
-        let prod_string = format!("{}", pr);
+        let prod_string = format!("{pr}");
         Self {
             lhs,
             len,
@@ -309,15 +309,15 @@ impl std::fmt::Display for ParserData<'_> {
         })?;
 
         writeln!(f, "\n")?;
-        let auto_name = format!("{}Auto", user_type_name);
-        let trait_module_name = format!("{}_trait", module_name);
+        let auto_name = format!("{user_type_name}Auto");
+        let trait_module_name = format!("{module_name}_trait");
         f.write_fmt(ume::ume! {
             use crate::#module_name::#user_type_name;
             use crate::#trait_module_name::#auto_name;
         })?;
         writeln!(f, "\n")?;
 
-        writeln!(f, "{}\n", lexer_source)?;
+        writeln!(f, "{lexer_source}\n")?;
 
         f.write_fmt(ume::ume! {
             const MAX_K: usize = #max_k;
@@ -327,8 +327,8 @@ impl std::fmt::Display for ParserData<'_> {
             pub const NON_TERMINALS: &[&str; #non_terminal_count] = &[#non_terminals];
         })?;
 
-        writeln!(f, "\n\n{}", dfa_source)?;
-        writeln!(f, "\n{}\n", productions)?;
+        writeln!(f, "\n\n{dfa_source}")?;
+        writeln!(f, "\n{productions}\n")?;
 
         writeln!(f, "\n")?;
 
@@ -476,15 +476,15 @@ impl std::fmt::Display for LRParserData<'_> {
         })?;
 
         writeln!(f, "\n")?;
-        let auto_name = format!("{}Auto", user_type_name);
-        let trait_module_name = format!("{}_trait", module_name);
+        let auto_name = format!("{user_type_name}Auto");
+        let trait_module_name = format!("{module_name}_trait");
         f.write_fmt(ume::ume! {
             use crate::#module_name::#user_type_name;
             use crate::#trait_module_name::#auto_name;
         })?;
         writeln!(f, "\n")?;
 
-        writeln!(f, "{}\n", lexer_source)?;
+        writeln!(f, "{lexer_source}\n")?;
 
         writeln!(f, "\n\n")?;
         f.write_fmt(ume::ume! {
@@ -493,10 +493,9 @@ impl std::fmt::Display for LRParserData<'_> {
 
         writeln!(
             f,
-            "\n\nstatic PARSE_TABLE: LRParseTable  = {};\n",
-            parse_table_source
+            "\n\nstatic PARSE_TABLE: LRParseTable  = {parse_table_source};\n"
         )?;
-        writeln!(f, "\n{}\n", productions)?;
+        writeln!(f, "\n{productions}\n")?;
 
         writeln!(f, "\n")?;
 
@@ -610,7 +609,7 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
         .iter()
         .enumerate()
         .fold(StrVec::new(4), |mut acc, (i, n)| {
-            acc.push(format!(r#"/* {:w$} */ "{}","#, i, n, w = width));
+            acc.push(format!(r#"/* {i:width$} */ "{n}","#));
             acc
         });
 
@@ -639,7 +638,7 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
         disable_recovery: config.recovery_disabled(),
     };
 
-    Ok(format!("{}", parser_data))
+    Ok(format!("{parser_data}"))
 }
 
 fn get_terminals(grammar_config: &GrammarConfig) -> Vec<&str> {
@@ -703,7 +702,7 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
             .iter()
             .enumerate()
             .fold(StrVec::new(4), |mut acc, (i, n)| {
-                acc.push(format!(r#"/* {:w$} */ "{}","#, i, n, w = width));
+                acc.push(format!(r#"/* {i:width$} */ "{n}","#));
                 acc
             });
     let productions = generate_lr_productions(grammar_config, &original_non_terminals);
@@ -727,7 +726,7 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
         parse_table_source,
     };
 
-    Ok(format!("{}", parser_data))
+    Ok(format!("{parser_data}"))
 }
 
 fn generate_parse_table_source(
@@ -786,8 +785,7 @@ fn generate_parse_table_source(
         });
 
     format!(
-        "LRParseTable {{ actions: &[{}], states: &[{}] }}",
-        actions, states,
+        "LRParseTable {{ actions: &[{actions}], states: &[{states}] }}",
     )
 }
 
@@ -868,7 +866,7 @@ fn generate_source_for_action<'a>(
     nr: impl Fn(NonTerminalIndex) -> &'a str,
 ) -> String {
     match action {
-        LRAction::Shift(s) => format!("LRAction::Shift({})", s),
+        LRAction::Shift(s) => format!("LRAction::Shift({s})"),
         LRAction::Reduce(n, p) => format!("LRAction::Reduce({} /* {} */, {})", n, nr(*n), p),
         LRAction::Accept => "LRAction::Accept".to_string(),
     }
@@ -876,7 +874,7 @@ fn generate_source_for_action<'a>(
 
 fn generate_source_for_action_ref(action: &LRAction, actions_array: &[LRAction]) -> String {
     let index = actions_array.iter().position(|a| a == action).unwrap();
-    format!("{}", index)
+    format!("{index}")
 }
 
 fn generate_action_comment<'a>(
@@ -884,7 +882,7 @@ fn generate_action_comment<'a>(
     nr: impl Fn(NonTerminalIndex) -> &'a str,
 ) -> String {
     match action {
-        LRAction::Shift(s) => format!("LRAction::Shift({})", s),
+        LRAction::Shift(s) => format!("LRAction::Shift({s})"),
         LRAction::Reduce(n, p) => format!("LRAction::Reduce({}, {})", nr(*n), p),
         LRAction::Accept => "LRAction::Accept".to_string(),
     }
@@ -895,20 +893,20 @@ fn generate_dfa_source(la_dfa: &BTreeMap<String, LookaheadDFA>) -> String {
         .iter()
         .enumerate()
         .fold(StrVec::new(0), |mut acc, (i, (n, d))| {
-            trace!("{}", d);
+            trace!("{d}");
             trace!("{}", render_dfa_dot_string(d, n));
             let dfa = Dfa::from_la_dfa(d, i, n.clone());
-            acc.push(format!("{}", dfa));
+            acc.push(format!("{dfa}"));
             acc
         });
     let dfa_count = la_dfa.len();
 
     let dfas = Dfas {
         dfa_count,
-        lookahead_dfa_s: format!("{}", lookahead_dfa_s),
+        lookahead_dfa_s: format!("{lookahead_dfa_s}"),
     };
 
-    format!("{}", dfas)
+    format!("{dfas}")
 }
 
 fn generate_productions(
@@ -929,7 +927,7 @@ fn generate_productions(
             .enumerate()
             .fold(String::new(), |mut acc, (i, p)| {
                 let production = Production::from_cfg_production(p, i, &non_terminals, terminals);
-                acc.push_str(format!("{}", production).as_str());
+                acc.push_str(format!("{production}").as_str());
                 acc
             });
 
@@ -938,7 +936,7 @@ fn generate_productions(
         productions,
     };
 
-    format!("{}", productions)
+    format!("{productions}")
 }
 
 fn generate_lr_productions(
@@ -958,7 +956,7 @@ fn generate_lr_productions(
             .enumerate()
             .fold(String::new(), |mut acc, (i, p)| {
                 let production = LRProduction::from_cfg_production(p, i, &non_terminals);
-                acc.push_str(format!("{}", production).as_str());
+                acc.push_str(format!("{production}").as_str());
                 acc
             });
 
@@ -967,5 +965,5 @@ fn generate_lr_productions(
         productions,
     };
 
-    format!("{}", productions)
+    format!("{productions}")
 }

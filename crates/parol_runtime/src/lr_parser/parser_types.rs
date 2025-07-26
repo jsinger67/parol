@@ -293,7 +293,7 @@ impl<'t> LRParser<'t> {
         self.parse_tree_stack.push(non_terminal);
 
         // With the argument built from children we can call the user's semantic action
-        trace!("Call semantic action for production {}", prod_num);
+        trace!("Call semantic action for production {prod_num}");
         user_actions.call_semantic_action_for_production_number(prod_num, &arguments)?;
         Ok(n)
     }
@@ -364,7 +364,7 @@ impl<'t> LRParser<'t> {
                         LRAction::Shift(next_state) => {
                             // Consume the token
                             let token = stream.borrow_mut().consume()?;
-                            trace!("Shift to state {}", next_state);
+                            trace!("Shift to state {next_state}");
                             self.parser_stack.push(*next_state);
                             trace!(
                                 "Push token {} ({})",
@@ -374,7 +374,7 @@ impl<'t> LRParser<'t> {
                             self.parse_tree_stack.push(token);
                         }
                         LRAction::Reduce(nt_index, prod_index) => {
-                            trace!("Reduce by production {}", prod_index);
+                            trace!("Reduce by production {prod_index}");
                             let nt_index = *nt_index;
                             let n = self.call_action(*prod_index, user_actions)?;
                             for _ in 0..n {
@@ -389,19 +389,18 @@ impl<'t> LRParser<'t> {
                             }
                             // The new state is the one on top of the stack
                             let state = self.parser_stack.current_state();
-                            trace!("Current state after removing {} states is {}", n, state);
+                            trace!("Current state after removing {n} states is {state}");
                             let goto = match self.parse_table.goto(state, nt_index) {
                                 Some(goto) => goto,
                                 None => {
                                     return Err(ParserError::InternalError(format!(
-                                        "No goto for non-terminal '{}' in state {}",
-                                        nt_index, state
+                                        "No goto for non-terminal '{nt_index}' in state {state}"
                                     ))
                                     .into());
                                 }
                             };
                             // Push the new state onto the stack
-                            trace!("Push goto state {}", goto);
+                            trace!("Push goto state {goto}");
                             self.parser_stack.push(goto);
                         }
                         LRAction::Accept => {
@@ -454,7 +453,7 @@ impl<'t> LRParser<'t> {
         terminal_index: u16,
     ) -> Result<()> {
         let token = stream.borrow_mut().lookahead(0)?;
-        trace!("No action for token '{}' in state {}", token, current_state);
+        trace!("No action for token '{token}' in state {current_state}");
         trace!("Current scanner is '{}'", stream.borrow().current_scanner());
         trace!("Parse stack: {:?}", self.parser_stack.stack);
         trace!("Parse tree stack:\n{}", self.parse_tree_stack);

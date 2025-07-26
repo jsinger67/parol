@@ -36,7 +36,7 @@ pub fn main(args: &Args) -> Result<()> {
     let follow_cache = FollowCache::new();
     let result = calculate_k_tuples(&grammar_config, max_k, &first_cache, &follow_cache);
     match result {
-        Err(err) => println!("Error: {}", err),
+        Err(err) => println!("Error: {err}"),
         Ok(tuples) => tuples.iter().for_each(|(prod_num, k_tuples)| {
             println!("/* {} */ {}", prod_num, grammar_config.cfg.pr[*prod_num]);
             println!("    {}", k_tuples.to_string(&terminals));

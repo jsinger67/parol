@@ -23,7 +23,7 @@ pub fn main(args: &Args) -> Result<()> {
     } else {
         println!("Non-productive non-terminals:");
         for nt in non_productive_non_terminals {
-            println!("  {}", nt);
+            println!("  {nt}");
         }
     }
     Ok(())

@@ -102,7 +102,7 @@ where
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
                 if self.tokens.is_empty() && self.recovering {
-                    trace!("lookahead LA({}): EOI for recovery", n);
+                    trace!("lookahead LA({n}): EOI for recovery");
                     Ok(Token::eoi(TokenNumber::MAX))
                 } else {
                     trace!("{} in {}", n, self.tokens);
@@ -129,7 +129,7 @@ where
             self.ensure_buffer()?;
             if n >= self.tokens.len() {
                 if self.tokens.is_empty() && self.recovering {
-                    trace!("lookahead_token_type LA({}): EOI for recovery", n);
+                    trace!("lookahead_token_type LA({n}): EOI for recovery");
                     Ok(EOI)
                 } else {
                     trace!("{} in {}", n, self.tokens);
@@ -301,7 +301,7 @@ where
         token_type: TerminalIndex,
     ) -> Result<(), LexerError> {
         if self.tokens.len() >= index {
-            trace!("inserting token {} at index {}", token_type, index);
+            trace!("inserting token {token_type} at index {index}");
             let location = if self.tokens.len() > index {
                 self.tokens
                     .non_skip_token_at(index)

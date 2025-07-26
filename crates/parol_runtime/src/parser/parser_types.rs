@@ -302,7 +302,7 @@ impl<'t> LLKParser<'t> {
                 self.productions[prod_num].to_string(self.terminal_names, self.non_terminal_names),
             )
         } else {
-            format!("{}\n", msg,)
+            format!("{msg}\n",)
         }
     }
 
@@ -357,7 +357,7 @@ impl<'t> LLKParser<'t> {
                     ParseType::T(t) => {
                         let token = stream.borrow_mut().lookahead(0)?;
                         if token.token_type == t {
-                            trace!("Consuming token {}", token);
+                            trace!("Consuming token {token}");
                             self.handle_additional_tokens(
                                 tree_builder,
                                 stream.clone(),
@@ -504,16 +504,16 @@ impl<'t> LLKParser<'t> {
         if let Some(expected_token_types) =
             Recovery::minimal_token_difference(&scanned_token_types, &mut possible_terminal_strings)
         {
-            trace!("Sync with {:?}", expected_token_types);
+            trace!("Sync with {expected_token_types:?}");
             self.adjust_token_stream(scanned_token_types, expected_token_types, stream.clone())?;
             let result = self.predict_production(non_terminal, stream);
             match result {
                 Ok(prod_num) => {
-                    trace!("recovering with production {}", prod_num);
+                    trace!("recovering with production {prod_num}");
                     return Ok(prod_num);
                 }
                 Err(source) => {
-                    trace!("predict_production failed {:?}", source);
+                    trace!("predict_production failed {source:?}");
                     return Err(source);
                 }
             }
@@ -522,7 +522,7 @@ impl<'t> LLKParser<'t> {
         if !possible_terminal_strings.is_empty() {
             // Steamroller tactics: sync with the first possible token string
             let first_token_string = possible_terminal_strings.iter().next().unwrap();
-            trace!("Force sync with {:?}", first_token_string);
+            trace!("Force sync with {first_token_string:?}");
             self.sync_token_stream(
                 scanned_token_types,
                 first_token_string.clone(),
@@ -531,11 +531,11 @@ impl<'t> LLKParser<'t> {
             let result = self.predict_production(non_terminal, stream);
             match result {
                 Ok(prod_num) => {
-                    trace!("recovering with production {}", prod_num);
+                    trace!("recovering with production {prod_num}");
                     return Ok(prod_num);
                 }
                 Err(source) => {
-                    trace!("predict_production failed {:?}", source);
+                    trace!("predict_production failed {source:?}");
                     return Err(source);
                 }
             }
@@ -613,7 +613,7 @@ impl<'t> LLKParser<'t> {
         }
 
         // Steamroller tactics: sync with the expected token string
-        trace!("Force sync with {:?}", expected_token_types);
+        trace!("Force sync with {expected_token_types:?}");
         self.sync_token_stream(scanned_token_types, expected_token_types, stream.clone())
     }
 

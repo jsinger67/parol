@@ -205,8 +205,7 @@ impl LookaheadDFA {
                                 let message = format!(
                                     r#"Conflict in union operation detected:
 Ambiguous production number prediction
-{} <--> {}"#,
-                                    result_state_prod_num, other_to_state_prod_num
+{result_state_prod_num} <--> {other_to_state_prod_num}"#
                                 );
                                 bail!(message);
                             }
@@ -270,7 +269,7 @@ impl Display for LookaheadDFA {
         let states = self
             .states
             .iter()
-            .map(|s| format!("  {}", s))
+            .map(|s| format!("  {s}"))
             .collect::<Vec<String>>()
             .join("\n");
         let transitions = self
@@ -279,10 +278,10 @@ impl Display for LookaheadDFA {
             .map(|(s, t)| {
                 let ts = t
                     .iter()
-                    .map(|(terminal, to_state)| format!("  => {} => {}", terminal, to_state))
+                    .map(|(terminal, to_state)| format!("  => {terminal} => {to_state}"))
                     .collect::<Vec<String>>()
                     .join("\n");
-                format!("  {}\n{}", s, ts)
+                format!("  {s}\n{ts}")
             })
             .collect::<Vec<String>>()
             .join("\n");

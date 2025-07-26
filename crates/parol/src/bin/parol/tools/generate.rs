@@ -33,7 +33,7 @@ pub fn main(args: &Args) -> Result<()> {
     if let Some(output_file) = &args.output_file {
         std::fs::write(output_file, result.as_bytes())?;
     } else {
-        println!("{}", result);
+        println!("{result}");
     }
     Ok(())
 }

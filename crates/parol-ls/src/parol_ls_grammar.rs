@@ -381,7 +381,7 @@ impl ParolLsGrammar {
                     );
                 }
             } else {
-                value = format!("## {}", item);
+                value = format!("## {item}");
                 if let Some(productions) = self.productions.get(item) {
                     for p in productions {
                         let rng: Rng = p.into();

@@ -18,7 +18,7 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
 
     let mut terminals = StrVec::new(4);
     cfg.get_terminal_positions().iter().for_each(|(p, t)| {
-        let t_string = format!("{}", t);
+        let t_string = format!("{t}");
         terminals.push(format!(
             "\"t{}_{}\" [label=\"{}\"];",
             p.pr_index(),
@@ -39,7 +39,7 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
 
     let mut non_terminal_types = StrVec::new(4);
     cfg.get_non_terminal_set().iter().for_each(|n| {
-        non_terminal_types.push(format!("\"{}\";", n));
+        non_terminal_types.push(format!("\"{n}\";"));
     });
 
     let mut productions = StrVec::new(4);
@@ -48,7 +48,7 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
     let mut instances_to_types_edges = StrVec::new(4);
     cfg.pr.iter().enumerate().for_each(|(pi, p)| {
         // Add nodes for every production
-        let p_string = format!("{}", p);
+        let p_string = format!("{p}");
         productions.push(format!(
             "\"{}\" [label=\"{}: {}\"];",
             pi,
@@ -57,27 +57,27 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
         ));
 
         // Add edges from LHS non-terminals to their productions
-        non_terminal_to_production_edges.push(format!("edge [label=\"{}\"];", pi));
-        non_terminal_to_production_edges.push(format!("\"n{}_0\"->\"{}\";", pi, pi));
+        non_terminal_to_production_edges.push(format!("edge [label=\"{pi}\"];"));
+        non_terminal_to_production_edges.push(format!("\"n{pi}_0\"->\"{pi}\";"));
 
         // Add edges from LHS non-terminal type to their instance
         instances_to_types_edges.push(format!("\"{}\"->\"n{}_0\";", p.get_n(), pi));
 
         // Add edges within right-hand-sides of productions
-        let mut from_node = format!("{}", pi);
-        inside_production_edges.push(format!("edge [label=\"{}\"];", pi));
+        let mut from_node = format!("{pi}");
+        inside_production_edges.push(format!("edge [label=\"{pi}\"];"));
         p.get_r().iter().enumerate().for_each(|(si, s)| match s {
             Symbol::N(n, ..) => {
                 let to_node = format!("n{}_{}", pi, si + 1);
-                inside_production_edges.push(format!("\"{}\"->\"{}\";", from_node, to_node));
+                inside_production_edges.push(format!("\"{from_node}\"->\"{to_node}\";"));
 
                 // Add edge from RHS non-terminal instance to its type
-                instances_to_types_edges.push(format!("\"{}\"->\"{}\";", to_node, n));
+                instances_to_types_edges.push(format!("\"{to_node}\"->\"{n}\";"));
                 from_node = to_node;
             }
             Symbol::T(Terminal::Trm(..)) | Symbol::T(Terminal::End) => {
                 let to_node = format!("t{}_{}", pi, si + 1);
-                inside_production_edges.push(format!("\"{}\"->\"{}\";", from_node, to_node));
+                inside_production_edges.push(format!("\"{from_node}\"->\"{to_node}\";"));
                 from_node = to_node;
             }
             _ => panic!("Invalid symbol type on RHS of production"),

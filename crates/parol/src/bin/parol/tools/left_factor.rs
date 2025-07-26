@@ -34,7 +34,7 @@ pub fn main(args: &Args) -> Result<()> {
     if let Some(output_file) = &args.output_file {
         std::fs::write(output_file, par_string)?;
     } else {
-        println!("{}", par_string);
+        println!("{par_string}");
     }
     Ok(())
 }

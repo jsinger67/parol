@@ -136,17 +136,17 @@ impl FmtOptions {
         if !line.is_empty() {
             match self.padding {
                 Padding::None => line,
-                Padding::Left => format!(" {}", line),
+                Padding::Left => format!(" {line}"),
                 Padding::Right => {
                     // Don't add a space character if the line already ends with a newline
                     // TODO: Maybe we should expand this to all whitespace characters
                     if Line::ends_with_nl(&line) {
                         line
                     } else {
-                        format!("{} ", line)
+                        format!("{line} ")
                     }
                 }
-                Padding::Both => format!(" {} ", line),
+                Padding::Both => format!(" {line} "),
             }
         } else {
             line

@@ -75,7 +75,7 @@ pub fn acceptor_test<T>(
             .generate(generated_max_length)
             .expect("Error generating random source");
         let mut file = NamedTempFile::new().expect("Couldn't create temporary file");
-        write!(file, "{}", generated_source).expect("Error writing generated source");
+        write!(file, "{generated_source}").expect("Error writing generated source");
         Command::new("cargo")
             .current_dir(&generated_crate_dir)
             .arg("run")

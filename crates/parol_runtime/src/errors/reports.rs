@@ -132,7 +132,7 @@ pub trait Report {
                     &config,
                     &files,
                     &Diagnostic::bug()
-                        .with_message(format!("Error from syntree crate: {}", source))
+                        .with_message(format!("Error from syntree crate: {source}"))
                         .with_code("parol_runtime::parser::syntree_error")
                         .with_notes(vec!["Internal error".to_string()]),
                 )?),

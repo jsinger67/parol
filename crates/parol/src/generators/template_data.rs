@@ -176,7 +176,7 @@ impl std::fmt::Display for UserTraitData<'_> {
             use parol_runtime::{ParserError, Result, Token};
         })?;
 
-        let trait_name = format!("{}Trait", user_type_name);
+        let trait_name = format!("{user_type_name}Trait");
         let blank_line = "\n\n";
         let call_semantic_action_for_production_number_doc = format!(
             "
@@ -192,7 +192,7 @@ impl std::fmt::Display for UserTraitData<'_> {
         } else {
             "<'_>"
         };
-        let auto_name = format!("{}Auto", user_type_name);
+        let auto_name = format!("{user_type_name}Auto");
         writeln!(
             f,
             "
@@ -305,7 +305,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                 #blank_line
                 #[allow(dead_code)]
                 fn push(&mut self, item: ASTType #lifetime, context: &str) {
-                    trace!("push    {}: {:?}", context, item);
+                    trace!("push    {context}: {item:?}");
                     self.item_stack.push(item)
                 }
                 #blank_line
@@ -313,7 +313,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                 fn pop(&mut self, context: &str) -> Option<ASTType #lifetime> {
                     let item = self.item_stack.pop();
                     if let Some(ref item) = item {
-                        trace!("pop     {}: {:?}", context, item);
+                        trace!("pop     {context}: {item:?}");
                     }
                     item
                 }
@@ -327,7 +327,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                         self.item_stack
                             .iter()
                             .rev()
-                            .map(|s| format!("  {:?}", s))
+                            .map(|s| format!("  {s:?}"))
                             .collect::<Vec<std::string::String>>()
                             .join("\n")
                     )
@@ -348,7 +348,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                         children: &[ParseTreeType<'t>]) -> Result<()> {
                         match prod_num {
                             #trait_caller
-                            _ => Err(ParserError::InternalError(format!("Unhandled production number: {}", prod_num)).into()),
+                            _ => Err(ParserError::InternalError(format!("Unhandled production number: {prod_num}")).into()),
                         }
                     }
                     #blank_line
@@ -379,7 +379,7 @@ impl std::fmt::Display for NonTerminalTypeStruct {
             members,
         } = self;
         for comment in comment {
-            writeln!(f, "/// {}", comment)?
+            writeln!(f, "/// {comment}")?
         }
         let members = members.iter().fold(String::new(), |mut output, member| {
             let _ = writeln!(output, "pub {member}");
@@ -412,7 +412,7 @@ impl std::fmt::Display for NonTerminalTypeEnum {
             members,
         } = self;
         for comment in comment {
-            writeln!(f, "/// {}", comment)?
+            writeln!(f, "/// {comment}")?
         }
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
@@ -471,7 +471,7 @@ pub(crate) struct NameToNonTerminalVariant {
 impl std::fmt::Display for NameToNonTerminalVariant {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let NameToNonTerminalVariant { variant, name } = self;
-        let name = format!("\"{}\"", name);
+        let name = format!("\"{name}\"");
         f.write_fmt(ume::ume!(#name => Self::#variant,))
     }
 }

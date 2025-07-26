@@ -44,8 +44,7 @@ impl<'a> LanguageGenerator<'a> {
         let mut result = String::new();
         let termination_threshold = max_result_length.unwrap_or(MAX_RESULT_SIZE) / 2;
         trace!(
-            "Try to terminate at result length {}",
-            termination_threshold
+            "Try to terminate at result length {termination_threshold}"
         );
         self.process_non_terminal(self.cfg.get_start_symbol(), false)?;
         while let Some(symbol) = self.generator_stack.pop() {
@@ -95,7 +94,7 @@ impl<'a> LanguageGenerator<'a> {
         let mut rng = rand::rng();
         let utf8_gen = self.get_regex(terminal)?;
         let generated = rng.sample::<String, _>(utf8_gen);
-        trace!("gen: {}", generated);
+        trace!("gen: {generated}");
         result.push_str(&generated);
         result.push(' ');
         let len = result.len();
@@ -114,14 +113,14 @@ impl<'a> LanguageGenerator<'a> {
 
         if exist {
             let regex = self.cache.get(&terminal).unwrap();
-            trace!("Reusing cached regex for: {}", terminal);
+            trace!("Reusing cached regex for: {terminal}");
             return Ok(regex);
         }
 
         match regex_syntax::ParserBuilder::new().build().parse(&terminal) {
             Ok(utf8_hir) => match rand_regex::Regex::with_hir(utf8_hir, MAX_REPEAT) {
                 Ok(utf8_gen) => {
-                    trace!("Caching regex for: {}", terminal);
+                    trace!("Caching regex for: {terminal}");
                     self.cache.insert(terminal.clone(), utf8_gen);
                     self.get_regex(terminal)
                 }

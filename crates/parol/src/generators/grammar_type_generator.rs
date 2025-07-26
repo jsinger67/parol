@@ -157,7 +157,7 @@ impl GrammarTypeInfo {
 
     /// Set the grammar type
     pub fn set_grammar_type(&mut self, grammar_type: GrammarType) {
-        trace!("Setting grammar type to {:?}", grammar_type);
+        trace!("Setting grammar type to {grammar_type:?}");
         self.grammar_type = grammar_type;
     }
 
@@ -208,8 +208,7 @@ impl GrammarTypeInfo {
             InstanceEntrailsBuilder::default().build()?,
             SymbolAttribute::None,
             &format!(
-                "Argument of the user action for non-terminal '{}'",
-                non_terminal
+                "Argument of the user action for non-terminal '{non_terminal}'"
             ),
         )?;
         Ok(action_fn)
@@ -266,7 +265,7 @@ impl GrammarTypeInfo {
             .insert(non_terminal.to_owned(), nt_type)
             .map_or_else(
                 || {
-                    trace!("Setting type for non-terminal {}", non_terminal);
+                    trace!("Setting type for non-terminal {non_terminal}");
                     Ok(())
                 },
                 |_| {
@@ -394,7 +393,7 @@ impl GrammarTypeInfo {
         let mut vector_typed_non_terminal_opt = None;
         let mut option_typed_non_terminal_opt = None;
 
-        trace!("Finishing non-terminal type for {}", nt);
+        trace!("Finishing non-terminal type for {nt}");
 
         let actions = self.matching_actions(nt).iter().try_fold(
             Vec::new(),
@@ -570,7 +569,7 @@ impl GrammarTypeInfo {
                 t.to_string(),
                 String::default(),
             ),
-            _ => panic!("Invalid symbol type {}", s),
+            _ => panic!("Invalid symbol type {s}"),
         }
     }
 
@@ -730,7 +729,7 @@ impl GrammarTypeInfo {
             .symbol_as_function(function_id)?
             .non_terminal;
         let rhs_name = self.generate_production_rhs_name(prod_num, cfg);
-        let struct_name = NmHlp::to_upper_camel_case(&format!("{}_{}", non_terminal, rhs_name));
+        let struct_name = NmHlp::to_upper_camel_case(&format!("{non_terminal}_{rhs_name}"));
         let production_type = self
             .symbol_table
             .insert_global_type(&struct_name, TypeEntrails::Struct)?;
@@ -922,11 +921,11 @@ impl Display for GrammarTypeInfo {
         })?;
         writeln!(f, "// Vector non-terminals:")?;
         for nt in &self.vector_typed_non_terminals {
-            writeln!(f, "{}", nt)?;
+            writeln!(f, "{nt}")?;
         }
         writeln!(f, "// Option non-terminals:")?;
         for nt in &self.option_typed_non_terminals {
-            writeln!(f, "{}", nt)?;
+            writeln!(f, "{nt}")?;
         }
         Ok(())
     }

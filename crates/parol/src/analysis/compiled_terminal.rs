@@ -37,7 +37,7 @@ impl CompiledTerminal {
                 Self(terminal_index_resolver.as_ref().terminal_index(t, *k, l))
             }
             Symbol::T(Terminal::End) => Self(EOI),
-            _ => panic!("Unexpected symbol type: {:?}", s),
+            _ => panic!("Unexpected symbol type: {s:?}"),
         }
     }
 }

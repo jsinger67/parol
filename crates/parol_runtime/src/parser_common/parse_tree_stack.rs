@@ -17,7 +17,7 @@ impl<T: Display> ParseTreeStack<T> {
 
     /// Pushes a node onto the stack.
     pub fn push(&mut self, node: T) {
-        trace!("ParseTreeStack: Pushing node: {}", node);
+        trace!("ParseTreeStack: Pushing node: {node}");
         self.stack.push(node);
     }
 
@@ -25,7 +25,7 @@ impl<T: Display> ParseTreeStack<T> {
     pub fn pop(&mut self) -> Option<T> {
         let node = self.stack.pop();
         node.inspect(|n| {
-            trace!("LRParseTreeStack: Popping node: {}", n);
+            trace!("LRParseTreeStack: Popping node: {n}");
         })
     }
 
@@ -91,7 +91,7 @@ impl<T: Display> Display for ParseTreeStack<T> {
             .iter()
             .rev()
             .enumerate()
-            .try_for_each(|(i, e)| writeln!(f, "{} - {}", i, e))
+            .try_for_each(|(i, e)| writeln!(f, "{i} - {e}"))
     }
 }
 

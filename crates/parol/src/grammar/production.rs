@@ -58,7 +58,7 @@ impl Display for Pr {
             self.1
                 .iter()
                 .fold(Vec::new(), |mut acc, s| {
-                    acc.push(format!("{}", s));
+                    acc.push(format!("{s}"));
                     acc
                 })
                 .join(" ")

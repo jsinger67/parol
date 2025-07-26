@@ -21,13 +21,13 @@ pub fn render_par_string(
     let title = grammar_config
         .title
         .as_ref()
-        .map_or("".to_owned(), |title| format!("%title \"{}\"\n", title));
+        .map_or("".to_owned(), |title| format!("%title \"{title}\"\n"));
 
     let comment = grammar_config
         .comment
         .as_ref()
         .map_or("".to_owned(), |comment| {
-            format!("%comment \"{}\"\n", comment)
+            format!("%comment \"{comment}\"\n")
         });
 
     let grammar_type = match grammar_config.grammar_type {
@@ -50,19 +50,19 @@ pub fn render_par_string(
         .user_type_defs
         .iter()
         .fold(String::new(), |mut acc, (a, u)| {
-            acc.push_str(&format!("%user_type {} = {}\n", a, u));
+            acc.push_str(&format!("%user_type {a} = {u}\n"));
             acc
         });
     let mut user_types = grammar_config
         .nt_type_defs
         .iter()
         .fold(user_types, |mut acc, (a, u)| {
-            acc.push_str(&format!("%nt_type {} = {}\n", a, u));
+            acc.push_str(&format!("%nt_type {a} = {u}\n"));
             acc
         });
 
     if let Some(t) = &grammar_config.t_type_def {
-        user_types.push_str(&format!("%t_type {}\n", t));
+        user_types.push_str(&format!("%t_type {t}\n"));
     }
 
     let user_type_resolver = grammar_config.get_user_type_resolver();
@@ -85,7 +85,7 @@ pub fn render_par_string(
         productions = productions
             .drain(..)
             .enumerate()
-            .map(|(i, p)| format!("/* {:w$} */ {}", i, p, w = width))
+            .map(|(i, p)| format!("/* {i:width$} */ {p}"))
             .collect();
     }
 
@@ -138,19 +138,19 @@ fn render_scanner_config_string(
     };
 
     for c in &scanner_config.line_comments {
-        scanner_directives.push_str(&format!("{}%line_comment \"{}\"\n", indent, c));
+        scanner_directives.push_str(&format!("{indent}%line_comment \"{c}\"\n"));
     }
 
     for (s, e) in &scanner_config.block_comments {
-        scanner_directives.push_str(&format!("{}%block_comment \"{}\" \"{}\"\n", indent, s, e));
+        scanner_directives.push_str(&format!("{indent}%block_comment \"{s}\" \"{e}\"\n"));
     }
 
     if !scanner_config.auto_newline {
-        scanner_directives.push_str(&format!("{}%auto_newline_off\n", indent));
+        scanner_directives.push_str(&format!("{indent}%auto_newline_off\n"));
     }
 
     if !scanner_config.auto_ws {
-        scanner_directives.push_str(&format!("{}%auto_ws_off\n", indent));
+        scanner_directives.push_str(&format!("{indent}%auto_ws_off\n"));
     }
 
     let mut transitions = Vec::new();
@@ -158,7 +158,7 @@ fn render_scanner_config_string(
     for (scanner_switch, primary_nts) in group_by(&scanner_config.transitions, |(_, v)| v.clone()) {
         let mut primary_nts = primary_nts
             .iter()
-            .map(|(k, _)| primary_non_terminal_finder(*k).unwrap_or(format!("{}", k)))
+            .map(|(k, _)| primary_non_terminal_finder(*k).unwrap_or(format!("{k}")))
             .collect::<Vec<_>>();
         primary_nts.sort();
         transitions.push(format!(
@@ -181,7 +181,7 @@ fn render_scanner_config_string(
         if !scanner_directives.is_empty() {
             scanner_directives.insert(0, '\n');
         }
-        format!("%scanner {} {{{}}}", scanner_name, scanner_directives)
+        format!("%scanner {scanner_name} {{{scanner_directives}}}")
     }
 }
 

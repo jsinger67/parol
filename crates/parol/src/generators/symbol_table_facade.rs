@@ -288,7 +288,7 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
                         }
                         acc
                     });
-                Ok(format!("{}", enum_data))
+                Ok(format!("{enum_data}"))
             }
             _ => bail!("Unexpected type for range calculation!"),
         }

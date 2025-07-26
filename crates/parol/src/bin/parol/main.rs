@@ -124,11 +124,11 @@ impl BuildListener for CLIListener<'_> {
         parol_grammar: &ParolGrammar,
     ) -> Result<()> {
         if self.verbose() {
-            println!("{}", parol_grammar);
+            println!("{parol_grammar}");
         }
 
         if let Some(file_name) = self.config.write_internal.as_ref() {
-            let serialized = format!("{}", parol_grammar);
+            let serialized = format!("{parol_grammar}");
             fs::write(file_name, serialized).context("Error writing left-factored grammar!")?;
         }
 
@@ -163,7 +163,7 @@ impl BuildListener for CLIListener<'_> {
                     let lf_source =
                         render_par_string(grammar_config, true).map_err(|e| parol!(e))?;
                     if *file_name == OsStr::new("--") {
-                        print!("{}", lf_source);
+                        print!("{lf_source}");
                     } else {
                         // Should be handled by the builder
                     }

@@ -46,10 +46,10 @@ impl FirstCache {
     pub fn get(&self, k: usize, grammar_config: &GrammarConfig) -> Rc<RefCell<FirstSet>> {
         let exists = !self.0[k].borrow().is_empty();
         if exists {
-            trace!("FirstCache::get: reusing first set for k={}", k);
+            trace!("FirstCache::get: reusing first set for k={k}");
             self.0[k].clone()
         } else {
-            trace!("FirstCache::get: calculating first set for k={}...", k);
+            trace!("FirstCache::get: calculating first set for k={k}...");
             let entry = first_k(grammar_config, k, self);
             trace!(
                 "finished, k:{} prod: {}, nt: {}",
@@ -77,10 +77,10 @@ impl FollowCache {
     ) -> Rc<RefCell<CacheEntry>> {
         let exists = !self.0[k].borrow().is_empty();
         if exists {
-            trace!("FollowCache::get: reusing follow set for k={}", k);
+            trace!("FollowCache::get: reusing follow set for k={k}");
             self.0[k].clone()
         } else {
-            trace!("FollowCache::get: calculating follow set for k={}...", k);
+            trace!("FollowCache::get: calculating follow set for k={k}...");
             let (r, f) = follow_k(grammar_config, k, first_cache, self);
             trace!(
                 "finished, k:{} res vec: {}, nt: {}",

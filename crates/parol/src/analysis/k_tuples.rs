@@ -312,7 +312,7 @@ impl Debug for KTuples {
             "{{{}}}(k={})",
             self.sorted()
                 .iter()
-                .map(|e| format!("{:?}", e))
+                .map(|e| format!("{e:?}"))
                 .collect::<Vec<String>>()
                 .join(", "),
             self.k
@@ -327,7 +327,7 @@ impl Display for KTuples {
             "{{{}}}(k={})",
             self.set
                 .iter()
-                .map(|e| format!("{}", e))
+                .map(|e| format!("{e}"))
                 .collect::<Vec<String>>()
                 .join(", "),
             self.k

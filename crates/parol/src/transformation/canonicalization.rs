@@ -163,7 +163,7 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
                     let preferred_name = if RX_OPT_WITH_NUM_SUFFIX.is_match(&non_terminal) {
                         non_terminal
                     } else {
-                        format!("{}Opt", non_terminal)
+                        format!("{non_terminal}Opt")
                     };
                     let new_opt_production_name = generate_name(exclusions.iter(), preferred_name);
                     *factor = Factor::NonTerminal(

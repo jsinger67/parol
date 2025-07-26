@@ -129,7 +129,7 @@ impl Display for MetaSymbolKind {
         match self {
             MetaSymbolKind::Module => write!(f, "Module"),
             MetaSymbolKind::Token => write!(f, "Tok"),
-            MetaSymbolKind::NonTerminal(t) => write!(f, "Nt({})", t),
+            MetaSymbolKind::NonTerminal(t) => write!(f, "Nt({t})"),
         }
     }
 }
@@ -232,7 +232,7 @@ impl Type {
         let lifetime = symbol_table.lifetime(my_symbol.my_id);
         match &self.entrails {
             TypeEntrails::None => "*TypeError*".to_string(),
-            TypeEntrails::Token => format!("Token{}", lifetime),
+            TypeEntrails::Token => format!("Token{lifetime}"),
             TypeEntrails::Box(r) => {
                 format!("Box<{}>", symbol_table.symbol(*r).to_rust())
             }
@@ -240,8 +240,8 @@ impl Type {
                 let inner_type = symbol_table.symbol(*r);
                 format!("&{}", inner_type.to_rust())
             }
-            TypeEntrails::Struct => format!("{}{}", my_type_name, lifetime),
-            TypeEntrails::Enum => format!("{}{}", my_type_name, lifetime),
+            TypeEntrails::Struct => format!("{my_type_name}{lifetime}"),
+            TypeEntrails::Enum => format!("{my_type_name}{lifetime}"),
             TypeEntrails::EnumVariant(t) => {
                 format!(
                     "{}({}),",
@@ -254,10 +254,10 @@ impl Type {
                 symbol_table.symbol(*r).name(),
                 symbol_table.lifetime(*r)
             ),
-            TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
+            TypeEntrails::Trait => format!("trait {my_type_name}{lifetime}"),
             TypeEntrails::Function(f) => f.to_rust(my_type_name),
             TypeEntrails::Option(o) => format!("Option<{}>", symbol_table.symbol(*o).to_rust()),
-            TypeEntrails::Clipped(k) => format!("Clipped({})", k),
+            TypeEntrails::Clipped(k) => format!("Clipped({k})"),
             TypeEntrails::UserDefinedType(_, u) => u.get_module_scoped_name(),
             TypeEntrails::Surrogate(s) => format!(
                 "{}{}",
@@ -593,7 +593,7 @@ impl Display for Scope {
             "// Scope: my_id: {}, parent: {}\n//   Symbols:\n{}\n//   Names:\n{}",
             self.my_id,
             self.parent
-                .map_or("No parent".to_string(), |i| format!("{}", i)),
+                .map_or("No parent".to_string(), |i| format!("{i}")),
             self.symbols
                 .iter()
                 .map(|s| s.to_string())
@@ -1024,8 +1024,7 @@ impl SymbolTable {
             SymbolKind::Type(_) => panic!("Ain't no instance!"),
             SymbolKind::Instance(i) => {
                 trace!(
-                    "Replacing type of instance {} with type {}",
-                    inst_symbol_id, new_type_id
+                    "Replacing type of instance {inst_symbol_id} with type {new_type_id}"
                 );
                 i.type_id = new_type_id
             }
@@ -1328,7 +1327,7 @@ impl Display for SymbolTable {
         }
         writeln!(f, "// Scopes:")?;
         for scope in &self.scopes {
-            writeln!(f, "{}", scope)?;
+            writeln!(f, "{scope}")?;
         }
         writeln!(f, "// Scope hierarchy:")?;
         write!(f, "{}", self.scope(Self::GLOBAL_SCOPE).to_rust(self))

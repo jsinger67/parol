@@ -12,7 +12,7 @@ pub(crate) trait RequestHandler: Request {
 
 impl RequestHandler for GotoDefinition {
     fn handle(server: &mut Server, id: RequestId, params: Self::Params) -> Response {
-        eprintln!("got gotoDefinition request #{}: {:?}", id, params);
+        eprintln!("got gotoDefinition request #{id}: {params:?}");
         let result = server.handle_goto_definition(params);
         let result = serde_json::to_value(result).unwrap();
         Response {
@@ -25,7 +25,7 @@ impl RequestHandler for GotoDefinition {
 
 impl RequestHandler for HoverRequest {
     fn handle(server: &mut Server, id: RequestId, params: Self::Params) -> Response {
-        eprintln!("got hover request #{}: {:?}", id, params);
+        eprintln!("got hover request #{id}: {params:?}");
         let result = server.handle_hover(params);
         let result = serde_json::to_value(result).unwrap();
         Response {
@@ -38,7 +38,7 @@ impl RequestHandler for HoverRequest {
 
 impl RequestHandler for DocumentSymbolRequest {
     fn handle(server: &mut Server, id: RequestId, params: Self::Params) -> Response {
-        eprintln!("got document symbols request #{}: {:?}", id, params);
+        eprintln!("got document symbols request #{id}: {params:?}");
         let result = server.handle_document_symbols(params);
         let result = serde_json::to_value(result).unwrap();
         Response {
@@ -51,7 +51,7 @@ impl RequestHandler for DocumentSymbolRequest {
 
 impl RequestHandler for PrepareRenameRequest {
     fn handle(server: &mut Server, id: RequestId, params: Self::Params) -> Response {
-        eprintln!("got prepare rename request #{}: {:?}", id, params);
+        eprintln!("got prepare rename request #{id}: {params:?}");
         let result = server.handle_prepare_rename(params);
         let result = serde_json::to_value(result).unwrap();
         Response {
@@ -64,7 +64,7 @@ impl RequestHandler for PrepareRenameRequest {
 
 impl RequestHandler for Rename {
     fn handle(server: &mut Server, id: RequestId, params: Self::Params) -> Response {
-        eprintln!("got rename request #{}: {:?}", id, params);
+        eprintln!("got rename request #{id}: {params:?}");
         let result = server.handle_rename(params);
         let result = serde_json::to_value(result).unwrap();
         Response {
@@ -77,7 +77,7 @@ impl RequestHandler for Rename {
 
 impl RequestHandler for Formatting {
     fn handle(server: &mut Server, id: RequestId, params: Self::Params) -> Response {
-        eprintln!("got formatting request #{}: {:?}", id, params);
+        eprintln!("got formatting request #{id}: {params:?}");
         let result = server.handle_formatting(params);
         let result = serde_json::to_value(result).unwrap();
         Response {

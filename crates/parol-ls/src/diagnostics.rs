@@ -131,7 +131,7 @@ fn extract_syntax_errors(entries: &[SyntaxError], diagnostics: &mut Vec<Diagnost
         for u in &e.unexpected_tokens {
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(&u.token, uri),
-                message: format!("Unexpected token {}", u),
+                message: format!("Unexpected token {u}"),
             })
         }
         related_information.push(DiagnosticRelatedInformation {
@@ -234,7 +234,7 @@ fn extract_grammar_analysis_error(
                                     uri: uri.clone(),
                                     range,
                                 },
-                                message: format!("{} non-terminals are not allowed", error_spec),
+                                message: format!("{error_spec} non-terminals are not allowed"),
                             }]),
                             data: None,
                             tags: None,
@@ -255,7 +255,7 @@ fn extract_grammar_analysis_error(
                 )),
                 code_description: None,
                 source: error.source().map(|s| s.to_string()),
-                message: format!("{:?}", conflict),
+                message: format!("{conflict:?}"),
                 related_information: Some(vec![DiagnosticRelatedInformation {
                     location: Location {
                         uri: uri.clone(),

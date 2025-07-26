@@ -135,7 +135,7 @@ impl ScannerConfig {
             let line_comments_rx = self
                 .line_comments
                 .iter()
-                .map(|s| format!(r###"{}.*(\r\n|\r|\n)?"###, s))
+                .map(|s| format!(r###"{s}.*(\r\n|\r|\n)?"###))
                 .collect::<Vec<String>>()
                 .join("|");
             terminal_mappings.push((
@@ -288,7 +288,7 @@ impl Display for ScannerConfig {
         writeln!(f, "auto_ws: {:?}", self.auto_ws)?;
         self.transitions
             .iter()
-            .try_for_each(|(k, v)| write!(f, "on {} enter {};", k, v))
+            .try_for_each(|(k, v)| write!(f, "on {k} enter {v};"))
     }
 }
 

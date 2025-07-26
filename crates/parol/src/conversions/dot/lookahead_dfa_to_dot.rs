@@ -17,7 +17,7 @@ pub fn render_dfa_dot_string(dfa: &LookaheadDFA, title: &str) -> String {
         .enumerate()
         .skip(1)
         .fold(StrVec::new(4), |mut acc, (i, s)| {
-            acc.push(format!("{} [label = \"{}\"];", i, s));
+            acc.push(format!("{i} [label = \"{s}\"];"));
             acc
         });
 
@@ -26,7 +26,7 @@ pub fn render_dfa_dot_string(dfa: &LookaheadDFA, title: &str) -> String {
             .iter()
             .fold(StrVec::new(4), |mut acc, (from_state, trans)| {
                 for (term, to_state) in trans {
-                    let terminal_string = format!("{}", term);
+                    let terminal_string = format!("{term}");
                     acc.push(
                         format!(
                             "{} -> {} [label = \"{}\"];",

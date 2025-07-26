@@ -26,9 +26,9 @@ pub enum ParseType {
 impl Display for ParseType {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::N(n) => write!(f, "N({})", n),
-            Self::T(t) => write!(f, "T({})", t),
-            Self::E(e) => write!(f, "E({})", e),
+            Self::N(n) => write!(f, "N({n})"),
+            Self::T(t) => write!(f, "T({t})"),
+            Self::E(e) => write!(f, "E({e})"),
         }
     }
 }
@@ -95,7 +95,7 @@ impl Display for ParseStack {
             .try_for_each(|(i, e)| match e {
                 ParseType::T(t) => writeln!(f, "{} - T({})", i, self.decode_terminal(*t)),
                 ParseType::N(n) => writeln!(f, "{} - N({})", i, self.decode_non_terminal(*n)),
-                _ => writeln!(f, "{} - {}", i, e),
+                _ => writeln!(f, "{i} - {e}"),
             })
     }
 }

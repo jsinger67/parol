@@ -169,7 +169,7 @@ impl Terminal {
                 l.clone(),
             ),
             Symbol::T(Terminal::End) => Terminal::End,
-            _ => panic!("Unexpected symbol type: {:?}", s),
+            _ => panic!("Unexpected symbol type: {s:?}"),
         }
     }
 
@@ -182,7 +182,7 @@ impl Terminal {
                     s.sort_unstable();
                 }
             }
-            _ => panic!("Unexpected symbol type: {:?}", self),
+            _ => panic!("Unexpected symbol type: {self:?}"),
         }
     }
 
@@ -198,7 +198,7 @@ impl Terminal {
             Self::Trm(t, k, s, a, u, m, l) => {
                 let mut d = String::new();
                 let delimiter = k.delimiter();
-                a.decorate(&mut d, &format!("{}{}{}", delimiter, t, delimiter))
+                a.decorate(&mut d, &format!("{delimiter}{t}{delimiter}"))
                     .map_err(|e| anyhow!("Decorate error!: {}", e))?;
                 if let Some(la) = l {
                     write!(d, " {}", la.to_par()).map_err(|e| anyhow!(e))?;
@@ -208,7 +208,7 @@ impl Terminal {
                         // Add space between lookahead expression and member
                         write!(d, " ").map_err(|e| anyhow!(e))?;
                     }
-                    write!(d, "@{}", member).map_err(|e| anyhow!(e))?;
+                    write!(d, "@{member}").map_err(|e| anyhow!(e))?;
                 }
                 if let Some(user_type) = u {
                     let user_type =
@@ -219,7 +219,7 @@ impl Terminal {
                         };
                     if user_type != "%t_type" {
                         // Don't print user type if it is the globally defined type
-                        write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
+                        write!(d, " : {user_type}").map_err(|e| anyhow!(e))?;
                     }
                 }
                 if *s == vec![0] {
@@ -240,7 +240,7 @@ impl Display for Terminal {
         match self {
             Self::Trm(t, k, ..) => {
                 let delimiter = k.delimiter();
-                write!(f, "{}{}{}", delimiter, t, delimiter)
+                write!(f, "{delimiter}{t}{delimiter}")
             }
             Self::Eps => write!(f, "\u{03B5}"), // Lower creek letter Epsilon (ε)
             Self::End => write!(f, "$"),
@@ -400,7 +400,7 @@ impl Symbol {
                 a.decorate(&mut s, n)
                     .map_err(|e| anyhow!("Decorate error!: {}", e))?;
                 if let Some(member) = m {
-                    write!(s, "@{}", member).map_err(|e| anyhow!("IO error!: {}", e))?;
+                    write!(s, "@{member}").map_err(|e| anyhow!("IO error!: {}", e))?;
                 }
                 if let Some(user_type) = u {
                     let alias =
@@ -414,7 +414,7 @@ impl Symbol {
                         };
                     if alias != "%nt_type" && alias != "%t_type" {
                         // Don't print user type if it is the globally defined type
-                        write!(s, " : {}", alias).map_err(|e| anyhow!("IO error!: {}", e))?;
+                        write!(s, " : {alias}").map_err(|e| anyhow!("IO error!: {}", e))?;
                     }
                 }
                 Ok(s)
@@ -440,20 +440,20 @@ impl Display for Symbol {
                 let mut s = String::new();
                 a.decorate(&mut s, n)?;
                 if let Some(member) = m {
-                    write!(s, "@{}", member)?;
+                    write!(s, "@{member}")?;
                 }
                 if let Some(user_type) = u {
-                    write!(s, " : {} ", user_type)?;
+                    write!(s, " : {user_type} ")?;
                 }
-                write!(f, "{}", s)
+                write!(f, "{s}")
             }
             Self::T(t) => {
                 let mut d = String::new();
-                self.attribute().decorate(&mut d, &format!("{}", t))?;
-                write!(f, "{}", d)
+                self.attribute().decorate(&mut d, &format!("{t}"))?;
+                write!(f, "{d}")
             }
-            Self::S(s) => write!(f, "S({})", s),
-            Self::Push(s) => write!(f, "Push({})", s),
+            Self::S(s) => write!(f, "S({s})"),
+            Self::Push(s) => write!(f, "Push({s})"),
             Self::Pop => write!(f, "Pop"),
         }
     }

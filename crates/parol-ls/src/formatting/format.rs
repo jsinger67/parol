@@ -115,7 +115,7 @@ impl Fmt for ASTControl {
                 } else {
                     (String::default(), comments)
                 };
-                (format!("@{}{}", member_name, ast_control_opt), comments)
+                (format!("@{member_name}{ast_control_opt}"), comments)
             }
         }
     }
@@ -186,7 +186,7 @@ impl Fmt for Alternations {
             },
         );
         let delimiter = ""; //if options.nesting_depth == 0 { "" } else { " " };
-        (format!("{}{}", delimiter, all_alternations_str), comments)
+        (format!("{delimiter}{all_alternations_str}"), comments)
     }
 }
 impl Fmt for AlternationsList {
@@ -467,7 +467,7 @@ impl Fmt for LookAhead {
         let (look_ahead_group_str, comments) = self.look_ahead_group.txt(options, comments);
         let (token_literal_str, comments) = self.token_literal.txt(options, comments);
         (
-            format!("{}{}", look_ahead_group_str, token_literal_str),
+            format!("{look_ahead_group_str}{token_literal_str}"),
             comments,
         )
     }
@@ -550,7 +550,7 @@ impl Fmt for ParolLs {
         };
         let (grammar_definition, comments) = self.grammar_definition.txt(options, comments);
         (
-            format!("{}{}{}", prolog, nl_opt, grammar_definition),
+            format!("{prolog}{nl_opt}{grammar_definition}"),
             comments,
         )
     }
@@ -653,7 +653,7 @@ impl Fmt for Prolog {
                     (acc, comments)
                 });
         (
-            format!("{}{}\n{}", start_declaration, prolog_list, prolog_list0),
+            format!("{start_declaration}{prolog_list}\n{prolog_list0}"),
             comments,
         )
     }
@@ -787,7 +787,7 @@ impl Fmt for SimpleToken {
             } else {
                 (String::default(), comments)
             };
-        (format!("{}{}", token_literal, simple_token_opt), comments)
+        (format!("{token_literal}{simple_token_opt}"), comments)
     }
 }
 impl Fmt for SimpleTokenOpt {
@@ -824,7 +824,7 @@ impl Fmt for IdentifierList {
                 (acc, comments)
             },
         );
-        (format!("{}{}", identifier, state_list_list,), comments)
+        (format!("{identifier}{state_list_list}",), comments)
     }
 }
 impl Fmt for IdentifierListList {
@@ -861,7 +861,7 @@ impl Fmt for TokenExpression {
                 (String::default(), comments)
             };
         (
-            format!("{}{}", token_literal, token_expression_opt),
+            format!("{token_literal}{token_expression_opt}"),
             comments,
         )
     }
@@ -923,7 +923,7 @@ impl Fmt for UserTypeName {
                 (acc, comments)
             },
         );
-        (format!("{}{}", identifier, user_type_name_list,), comments)
+        (format!("{identifier}{user_type_name_list}",), comments)
     }
 }
 
@@ -1106,7 +1106,7 @@ fn handle_scanner_directives(
                     let (ident, comments) = scanner_state_directives_percent_enter_identifier
                         .identifier
                         .txt(options, comments);
-                    (format!("%enter {};", ident,), comments)
+                    (format!("%enter {ident};",), comments)
                 }
                 ScannerStateDirectives::PercentPushIdentifier(
                     scanner_state_directives_percent_push_identifier,
@@ -1114,7 +1114,7 @@ fn handle_scanner_directives(
                     let (ident, comments) = scanner_state_directives_percent_push_identifier
                         .identifier
                         .txt(options, comments);
-                    (format!("%push {}", ident,), comments)
+                    (format!("%push {ident}",), comments)
                 }
                 ScannerStateDirectives::PercentPop(_) => ("%pop".to_string(), comments),
             };

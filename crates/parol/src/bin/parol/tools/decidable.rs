@@ -59,18 +59,18 @@ pub fn main(args: &Args) -> Result<()> {
     if errors > 0 {
         let terminals = generate_terminal_names(&grammar_config);
         for nt in &non_terminals_with_conflicts {
-            println!("Conflicts for non-terminal '{}':", nt);
+            println!("Conflicts for non-terminal '{nt}':");
             let conflicts =
                 explain_conflicts(&grammar_config, nt, max_k, &first_cache, &follow_cache)?;
             for (p1, t1, p2, t2) in conflicts {
-                println!("  Conflict in productions {} and {}:", p1, p2);
+                println!("  Conflict in productions {p1} and {p2}:");
                 println!("    {}: {}", p1, t1.to_string(&terminals));
                 println!("    {}: {}", p2, t2.to_string(&terminals));
                 let intersection = t1.intersection(&t2);
                 println!("    ∩: {}\n", intersection.to_string(&terminals));
             }
         }
-        println!("{} undecidable non-terminal(s):", errors);
+        println!("{errors} undecidable non-terminal(s):");
         println!("{}", non_terminals_with_conflicts.join(","));
     } else {
         println!("Grammar is LL{}", actual_k.unwrap());

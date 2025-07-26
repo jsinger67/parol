@@ -227,7 +227,7 @@ pub fn follow_k(
         }
         result_map = Rc::new(new_result_vector);
         iterations += 1;
-        trace!("Iteration number {} completed", iterations);
+        trace!("Iteration number {iterations} completed");
     }
 
     (

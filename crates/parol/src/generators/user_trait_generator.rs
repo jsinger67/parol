@@ -71,14 +71,13 @@ impl<'a> UserTraitGenerator<'a> {
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
             if matches!(arg_type.entrails(), TypeEntrails::Token) {
                 let arg_name = symbol_table.name(arg_inst.my_id());
-                code.push(format!("let {} = {}.token()?.clone();", arg_name, arg_name))
+                code.push(format!("let {arg_name} = {arg_name}.token()?.clone();"))
             } else if let TypeEntrails::UserDefinedType(MetaSymbolKind::Token, _) =
                 arg_type.entrails()
             {
                 let arg_name = symbol_table.name(arg_inst.my_id());
                 code.push(format!(
-                    "let {} = {}.token()?.try_into().map_err(parol_runtime::ParolError::UserError)?;",
-                    arg_name, arg_name,
+                    "let {arg_name} = {arg_name}.token()?.try_into().map_err(parol_runtime::ParolError::UserError)?;",
                 ))
             }
         }
@@ -131,7 +130,7 @@ impl<'a> UserTraitGenerator<'a> {
                     .build()
                     .unwrap();
                 // code.push(format!("// Type of popped value is {}", arg_type.my_id()));
-                code.push(format!("{}", stack_pop_data));
+                code.push(format!("{stack_pop_data}"));
             }
         }
         Ok(())
@@ -158,7 +157,7 @@ impl<'a> UserTraitGenerator<'a> {
                     let arg_inst = symbol_table.symbol_as_instance(*last_arg);
                     let arg_name = symbol_table.name(arg_inst.my_id());
                     code.push("// Add an element to the vector".to_string());
-                    code.push(format!(" {}.push({}_built);", arg_name, fn_name,));
+                    code.push(format!(" {arg_name}.push({fn_name}_built);",));
                 }
                 GrammarType::LALR1 => {
                     let first_arg = symbol_table
@@ -169,7 +168,7 @@ impl<'a> UserTraitGenerator<'a> {
                     let arg_inst = symbol_table.symbol_as_instance(*first_arg);
                     let arg_name = symbol_table.name(arg_inst.my_id());
                     code.push("// Add an element to the vector".to_string());
-                    code.push(format!(" {}.push({}_built);", arg_name, fn_name,));
+                    code.push(format!(" {arg_name}.push({fn_name}_built);",));
                 }
             }
         }
@@ -194,7 +193,7 @@ impl<'a> UserTraitGenerator<'a> {
                 // If the production is AddToCollection then instance semantic must not be RepetitionAnchor
                 (sem != ProductionAttribute::AddToCollection || arg_inst.sem() != SymbolAttribute::RepetitionAnchor)
             {
-                let mut result = format!("Box::new({})", arg_name);
+                let mut result = format!("Box::new({arg_name})");
                 if let TypeEntrails::Box(inner_type) = arg_type.entrails() {
                     let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
                     if matches!(
@@ -203,8 +202,7 @@ impl<'a> UserTraitGenerator<'a> {
                     ) {
                         // The inner type is a user-defined type, so we need to convert it
                         result = format!(
-                            r#"Box::new((&{}).try_into().map_err(parol_runtime::ParolError::UserError)?)"#,
-                            arg_name
+                            r#"Box::new((&{arg_name}).try_into().map_err(parol_runtime::ParolError::UserError)?)"#
                         );
                     }
                 }
@@ -214,13 +212,12 @@ impl<'a> UserTraitGenerator<'a> {
                 TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _)
             ) {
                 format!(
-                    r#"(&{}).try_into().map_err(parol_runtime::ParolError::UserError)?"#,
-                    arg_name
+                    r#"(&{arg_name}).try_into().map_err(parol_runtime::ParolError::UserError)?"#
                 )
             } else if let TypeEntrails::Option(t) = arg_type.entrails() {
                 let inner_type = symbol_table.symbol_as_type(*t);
                 if let TypeEntrails::Box(_) = inner_type.entrails() {
-                    format!("{}.map(Box::new)", arg_name)
+                    format!("{arg_name}.map(Box::new)")
                 } else {
                     arg_name.to_string()
                 }
@@ -229,9 +226,9 @@ impl<'a> UserTraitGenerator<'a> {
             };
             if *setter_name == arg_name {
                 // Avoid clippy warning "Redundant field names in struct initialization"
-                code.push(format!("    {},", setter_name));
+                code.push(format!("    {setter_name},"));
             } else {
-                code.push(format!("    {}: {},", setter_name, arg_name));
+                code.push(format!("    {setter_name}: {arg_name},"));
             }
         }
         Ok(())
@@ -261,7 +258,7 @@ impl<'a> UserTraitGenerator<'a> {
         );
 
         if function.sem == ProductionAttribute::CollectionStart {
-            code.push(format!("let {}_built = Vec::new();", fn_name));
+            code.push(format!("let {fn_name}_built = Vec::new();"));
         } else if function.sem == ProductionAttribute::AddToCollection {
             match self.grammar_config.grammar_type {
                 GrammarType::LLK => {
@@ -293,7 +290,7 @@ impl<'a> UserTraitGenerator<'a> {
             } else {
                 (fn_out_type.name(), &fn_out_type)
             };
-            code.push(format!("let {}_built = {} {{", fn_name, builder_prefix));
+            code.push(format!("let {fn_name}_built = {builder_prefix} {{"));
             for member_id in fn_type.members() {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
@@ -383,8 +380,7 @@ impl<'a> UserTraitGenerator<'a> {
             let user_action_name = symbol_table.type_name(user_action_id)?;
             code.push("// Calling user action here".to_string());
             code.push(format!(
-                "self.user_grammar.{}(&{}_built)?;",
-                user_action_name, fn_name
+                "self.user_grammar.{user_action_name}(&{fn_name}_built)?;"
             ));
         }
         Ok(())
@@ -511,7 +507,7 @@ impl<'a> UserTraitGenerator<'a> {
             .iter()
             .filter(|s| !s.is_switch())
             .enumerate()
-            .map(|(i, _)| format!("&children[{}]", i))
+            .map(|(i, _)| format!("&children[{i}]"))
             .collect::<Vec<String>>();
         arguments.join(", ")
     }
@@ -542,7 +538,7 @@ impl<'a> UserTraitGenerator<'a> {
                         acc
                     }),
                 };
-                Ok(Some(format!("{}", struct_data)))
+                Ok(Some(format!("{struct_data}")))
             }
             TypeEntrails::Enum => {
                 let struct_data = NonTerminalTypeEnum {
@@ -554,7 +550,7 @@ impl<'a> UserTraitGenerator<'a> {
                         acc
                     }),
                 };
-                Ok(Some(format!("{}", struct_data)))
+                Ok(Some(format!("{struct_data}")))
             }
             _ => bail!("Unexpected type {:?}!", type_symbol.entrails()),
         }
@@ -572,7 +568,7 @@ impl<'a> UserTraitGenerator<'a> {
         range_calc
             .code
             .push(type_symbol.generate_range_calculation()?);
-        Ok(format!("{}", range_calc))
+        Ok(format!("{range_calc}"))
     }
 
     // ---------------------------------------------------
@@ -662,7 +658,7 @@ impl<'a> UserTraitGenerator<'a> {
                 Self::generate_single_user_trait_function(type_info, fn_id, acc)
             })?;
 
-        trace!("user_trait_functions:\n{}", user_trait_functions);
+        trace!("user_trait_functions:\n{user_trait_functions}");
 
         let trait_caller = self
             .grammar_config
@@ -675,7 +671,7 @@ impl<'a> UserTraitGenerator<'a> {
             })?;
         // $env:RUST_LOG="parol::generators::user_trait_generator=trace"
         trace!("// Type information:");
-        trace!("{}", type_info);
+        trace!("{type_info}");
 
         let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
         let user_trait_data = UserTraitDataBuilder::default()
@@ -698,7 +694,7 @@ impl<'a> UserTraitGenerator<'a> {
             .build()
             .unwrap();
 
-        Ok(format!("{}", user_trait_data))
+        Ok(format!("{user_trait_data}"))
     }
 
     fn generate_single_adapter_function(
@@ -734,7 +730,7 @@ impl<'a> UserTraitGenerator<'a> {
             .inner(true)
             .build()
             .unwrap();
-        acc.push(format!("{}", user_trait_function_data));
+        acc.push(format!("{user_trait_function_data}"));
         Ok(acc)
     }
 
@@ -758,7 +754,7 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> std::result::Result<StrVec, anyhow::Error> {
         let mut comment = StrVec::new(0);
         comment.push(String::default());
-        comment.push(format!("Type derived for non-terminal {}", s));
+        comment.push(format!("Type derived for non-terminal {s}"));
         comment.push(String::default());
         Self::format_type(*t, &type_info.symbol_table, comment)?
             .into_iter()
@@ -817,7 +813,7 @@ impl<'a> UserTraitGenerator<'a> {
             .fn_arguments(fn_arguments)
             .build()
             .unwrap();
-        acc.push(format!("{}", user_trait_function_data));
+        acc.push(format!("{user_trait_function_data}"));
         Ok(acc)
     }
 
@@ -837,7 +833,7 @@ impl<'a> UserTraitGenerator<'a> {
             .fn_arguments(fn_arguments)
             .build()
             .unwrap();
-        acc.push(format!("{}", user_trait_function_data));
+        acc.push(format!("{user_trait_function_data}"));
         Ok(acc)
     }
 }

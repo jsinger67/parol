@@ -101,7 +101,7 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
             ScannerBuildInfo::from_scanner_build_info(terminal_mappings, transitions, scanner_name)
         })
         .fold(macro_start, |mut acc, e| {
-            acc.push(format!("{}", e));
+            acc.push(format!("{e}"));
             acc
         });
     scanner_macro.push("    }".to_string());
@@ -111,7 +111,7 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
             .iter()
             .enumerate()
             .fold(StrVec::new(4), |mut acc, (i, e)| {
-                acc.push(format!(r#"/* {:w$} */ "{}","#, i, e, w = width));
+                acc.push(format!(r#"/* {i:width$} */ "{e}","#));
                 acc
             });
 
@@ -121,7 +121,7 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
         scanner_macro,
     };
 
-    Ok(format!("{}", lexer_data))
+    Ok(format!("{lexer_data}"))
 }
 
 /// Generates all terminal names of a given grammar
@@ -163,7 +163,7 @@ impl std::fmt::Display for LexerData {
         #terminal_names];
         #blank_line
         })?;
-        f.write_fmt(format_args!("scanner! {{{}}}", scanner_macro))
+        f.write_fmt(format_args!("scanner! {{{scanner_macro}}}"))
     }
 }
 
@@ -190,22 +190,21 @@ impl std::fmt::Display for ScannerBuildInfo {
                 let terminal_name_comment = if tn.is_empty() {
                     String::new()
                 } else {
-                    format!(r#" // "{}""#, tn)
+                    format!(r#" // "{tn}""#)
                 };
                 let lookahead = if let Some((is_positive, pattern)) = l {
                     let hashes = determine_hashes_for_raw_string(pattern);
                     if *is_positive {
-                        format!(" followed by r{}\"{}\"{}", hashes, pattern, hashes)
+                        format!(" followed by r{hashes}\"{pattern}\"{hashes}")
                     } else {
-                        format!(" not followed by r{}\"{}\"{}", hashes, pattern, hashes)
+                        format!(" not followed by r{hashes}\"{pattern}\"{hashes}")
                     }
                 } else {
                     String::new()
                 };
 
                 let token = format!(
-                    r#"token r{}"{}"{} {}=> {};{}"#,
-                    hashes, rx, hashes, lookahead, i, terminal_name_comment
+                    r#"token r{hashes}"{rx}"{hashes} {lookahead}=> {i};{terminal_name_comment}"#
                 );
 
                 acc.push(token);
@@ -215,14 +214,14 @@ impl std::fmt::Display for ScannerBuildInfo {
         let transitions = transitions.iter().fold(StrVec::new(12), |mut acc, (i, e)| {
             // Generate the transition definition
             //   on 10 enter World;
-            acc.push(format!(r#"on {} {};"#, i, e));
+            acc.push(format!(r#"on {i} {e};"#));
             acc
         });
 
         // Generate the scanner's part of the macro code
-        f.write_fmt(format_args!("        mode {} {{\n", scanner_name))?;
-        f.write_fmt(format_args!("{}", tokens))?;
-        f.write_fmt(format_args!("{}", transitions))?;
+        f.write_fmt(format_args!("        mode {scanner_name} {{\n"))?;
+        f.write_fmt(format_args!("{tokens}"))?;
+        f.write_fmt(format_args!("{transitions}"))?;
         f.write_str("        }")
     }
 }

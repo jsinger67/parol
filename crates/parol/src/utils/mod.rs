@@ -59,10 +59,10 @@ where
         T: AsRef<str>,
     {
         let mut num = start_num;
-        let mut new_name = format!("{}{}", prefix, num);
+        let mut new_name = format!("{prefix}{num}");
         while exclusions.clone().any(|n| n.as_ref() == new_name) {
             num += 1;
-            new_name = format!("{}{}", prefix, num);
+            new_name = format!("{prefix}{num}");
         }
         new_name
     }
@@ -140,14 +140,14 @@ where
     T: AsRef<Path> + Debug,
 {
     let input = fs::read_to_string(&file_name)
-        .with_context(|| format!("Can't read file {:?}", file_name))?;
+        .with_context(|| format!("Can't read file {file_name:?}"))?;
 
     let mut parol_grammar = ParolGrammar::new();
     let _syntax_tree = parse(&input, file_name.as_ref(), &mut parol_grammar)
         .with_context(|| format!("Failed parsing file {}", file_name.as_ref().display()))?;
 
     if verbose {
-        println!("{}", parol_grammar);
+        println!("{parol_grammar}");
     }
 
     GrammarConfig::try_from(parol_grammar)
@@ -166,7 +166,7 @@ pub fn obtain_grammar_config_from_string(input: &str, verbose: bool) -> Result<G
         .with_context(|| format!("Failed parsing text {}", input.escape_default()))?;
 
     if verbose {
-        println!("{}", parol_grammar);
+        println!("{parol_grammar}");
     }
 
     GrammarConfig::try_from(parol_grammar)

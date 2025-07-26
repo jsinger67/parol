@@ -20,7 +20,7 @@ impl Display for StrVec {
             } else {
                 &self.indent
             };
-            writeln!(f, "{}{}", indent, s)?
+            writeln!(f, "{indent}{s}")?
         }
         Ok(())
     }

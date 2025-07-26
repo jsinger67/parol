@@ -39,7 +39,7 @@ impl Display for SymbolString {
             "{}",
             self.0
                 .iter()
-                .map(|e| format!("{}", e))
+                .map(|e| format!("{e}"))
                 .collect::<Vec<String>>()
                 .join(", ")
         )

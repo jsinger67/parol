@@ -63,16 +63,16 @@ where
 {
     fn decorate(&self, out: &mut W, decoratee: &T) -> std::result::Result<(), Error> {
         match self {
-            Self::None => out.write_fmt(format_args!("{}", decoratee)),
-            Self::CollectionStart => out.write_fmt(format_args!("{} /* Vec<T>::New */", decoratee)),
+            Self::None => out.write_fmt(format_args!("{decoratee}")),
+            Self::CollectionStart => out.write_fmt(format_args!("{decoratee} /* Vec<T>::New */")),
             Self::AddToCollection => {
-                out.write_fmt(format_args!("{} /* Vec<T>::Push */", decoratee))
+                out.write_fmt(format_args!("{decoratee} /* Vec<T>::Push */"))
             }
             Self::OptionalSome => {
-                out.write_fmt(format_args!("{} /* Option<T>::Some */", decoratee))
+                out.write_fmt(format_args!("{decoratee} /* Option<T>::Some */"))
             }
             Self::OptionalNone => {
-                out.write_fmt(format_args!("{} /* Option<T>::None */", decoratee))
+                out.write_fmt(format_args!("{decoratee} /* Option<T>::None */"))
             }
         }
     }
@@ -124,10 +124,10 @@ where
 {
     fn decorate(&self, out: &mut W, decoratee: &T) -> std::result::Result<(), Error> {
         match self {
-            Self::None => out.write_fmt(format_args!("{}", decoratee)),
-            Self::RepetitionAnchor => out.write_fmt(format_args!("{} /* Vec */", decoratee)),
-            Self::Option => out.write_fmt(format_args!("{} /* Option */", decoratee)),
-            Self::Clipped => out.write_fmt(format_args!("{}^ /* Clipped */", decoratee)),
+            Self::None => out.write_fmt(format_args!("{decoratee}")),
+            Self::RepetitionAnchor => out.write_fmt(format_args!("{decoratee} /* Vec */")),
+            Self::Option => out.write_fmt(format_args!("{decoratee} /* Option */")),
+            Self::Clipped => out.write_fmt(format_args!("{decoratee}^ /* Clipped */")),
         }
     }
 }

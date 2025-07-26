@@ -263,9 +263,7 @@ impl Terminals {
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         debug_assert!(
             other.bits() == self.bits(),
-            "Bits must be the same, self:({:?}) != other:({:?})",
-            self,
-            other
+            "Bits must be the same, self:({self:?}) != other:({other:?})"
         );
         debug_assert_ne!(self.bits(), 0, "Bits must not be 0");
 
@@ -292,8 +290,7 @@ impl Terminals {
             // We can't take any more terminals
             debug_assert!(
                 false,
-                "to_take == 0, self:({:?}), other:({:?})",
-                self, other
+                "to_take == 0, self:({self:?}), other:({other:?})"
             );
             return self;
         };
@@ -603,8 +600,8 @@ impl TerminalString {
 impl Display for TerminalString {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::Incomplete(v) => write!(f, "Incomplete({})", v),
-            Self::Complete(v) => write!(f, "Complete  ({})", v),
+            Self::Incomplete(v) => write!(f, "Incomplete({v})"),
+            Self::Complete(v) => write!(f, "Complete  ({v})"),
         }
     }
 }
@@ -612,8 +609,8 @@ impl Display for TerminalString {
 impl Debug for TerminalString {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::Incomplete(v) => write!(f, "Incomplete({:?})", v),
-            Self::Complete(v) => write!(f, "Complete  ({:?})", v),
+            Self::Incomplete(v) => write!(f, "Incomplete({v:?})"),
+            Self::Complete(v) => write!(f, "Complete  ({v:?})"),
         }
     }
 }

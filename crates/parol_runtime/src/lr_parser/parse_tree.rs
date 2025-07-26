@@ -29,22 +29,22 @@ impl LRParseTree<'_> {
 impl Display for LRParseTree<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            LRParseTree::Terminal(token) => write!(f, "{}", token),
+            LRParseTree::Terminal(token) => write!(f, "{token}"),
             LRParseTree::NonTerminal(name, Some(children)) => {
-                write!(f, "{}", name)?;
+                write!(f, "{name}")?;
                 if !children.is_empty() {
                     write!(f, "(")?;
                     for (i, child) in children.iter().enumerate() {
                         if i > 0 {
                             write!(f, ", ")?;
                         }
-                        write!(f, "{}", child)?;
+                        write!(f, "{child}")?;
                     }
                     write!(f, ")")?;
                 }
                 Ok(())
             }
-            LRParseTree::NonTerminal(name, None) => write!(f, "{}", name),
+            LRParseTree::NonTerminal(name, None) => write!(f, "{name}"),
         }
     }
 }

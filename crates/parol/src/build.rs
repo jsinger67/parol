@@ -653,7 +653,7 @@ impl GrammarGenerator<'_> {
         }
 
         if self.builder.debug_verbose {
-            print!("\nGrammar config:\n{:?}", grammar_config);
+            print!("\nGrammar config:\n{grammar_config:?}");
         }
         self.state = Some(State::PostProcessed);
         Ok(())
@@ -678,7 +678,7 @@ impl GrammarGenerator<'_> {
                 .map_err(|e| parol!("Error writing generated user trait source!: {}", e))?;
             crate::try_format(user_trait_file_out)?;
         } else if self.builder.debug_verbose {
-            println!("\nSource for semantic actions:\n{}", user_trait_source);
+            println!("\nSource for semantic actions:\n{user_trait_source}");
         }
 
         let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
@@ -705,7 +705,7 @@ impl GrammarGenerator<'_> {
                 .map_err(|e| parol!("Error writing generated lexer source!: {}", e))?;
             crate::try_format(parser_file_out)?;
         } else if self.builder.debug_verbose {
-            println!("\nParser source:\n{}", parser_source);
+            println!("\nParser source:\n{parser_source}");
         }
 
         if let Some(ref syntree_node_wrappers_output_file) = self.builder.node_kind_enum_output_file

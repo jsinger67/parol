@@ -120,7 +120,7 @@ impl NodeTypesExporter<'_> {
     ) -> (ChildrenType, Vec<Child>) {
         let alts = self.grammar_config.cfg.matching_productions(pr);
         if alts.is_empty() {
-            panic!("Not supported: no productions for {}", pr);
+            panic!("Not supported: no productions for {pr}");
         }
 
         if alts.len() == 2 {

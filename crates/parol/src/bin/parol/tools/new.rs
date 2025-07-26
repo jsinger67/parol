@@ -189,7 +189,7 @@ fn generate_build_rs(creation_data: &CreationData) -> Result<()> {
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
         .tree_gen(creation_data.tree_gen)
         .build()?;
-    let build_source = format!("{}", build_data);
+    let build_source = format!("{build_data}");
     fs::write(build_file_out, build_source)
         .context("Error writing generated user trait source!")?;
 
@@ -250,7 +250,7 @@ fn generate_main_rs(creation_data: &CreationData) -> Result<()> {
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
         .tree_gen(creation_data.tree_gen)
         .build()?;
-    let main_source = format!("{}", main_data);
+    let main_source = format!("{main_data}");
     fs::write(&main_file_out, main_source).context("Error writing generated user trait source!")?;
     fmt(&main_file_out)?;
 
@@ -266,7 +266,7 @@ fn generate_lib_rs(creation_data: &CreationData) -> Result<()> {
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
         .tree_gen(creation_data.tree_gen)
         .build()?;
-    let lib_source = format!("{}", lib_data);
+    let lib_source = format!("{lib_data}");
     fs::write(&lib_file_out, lib_source).context("Error writing generated user trait source!")?;
     fmt(&lib_file_out)?;
 
@@ -281,7 +281,7 @@ fn generate_grammar_rs(creation_data: &CreationData) -> Result<()> {
         .crate_name(creation_data.crate_name)
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
         .build()?;
-    let grammar_source = format!("{}", grammar_data);
+    let grammar_source = format!("{grammar_data}");
     fs::write(&grammar_file_out, grammar_source)
         .context("Error writing generated user trait source!")?;
     fmt(&grammar_file_out)?;

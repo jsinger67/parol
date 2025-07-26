@@ -174,7 +174,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
         }
         result_vector = new_result_vector;
         iterations += 1;
-        trace!("Iteration number {} completed", iterations);
+        trace!("Iteration number {iterations} completed");
     }
 
     let (r, k_tuples_of_nt) = result_vector.split_at(pr_count);

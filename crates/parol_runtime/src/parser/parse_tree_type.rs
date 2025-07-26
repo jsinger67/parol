@@ -32,7 +32,7 @@ impl<'t> ParseTreeType<'t> {
     pub fn token(&self) -> Result<&Token<'t>, ParserError> {
         match self {
             Self::T(t) => Ok(t),
-            _ => Err(ParserError::InternalError(format!("{} is no token!", self))),
+            _ => Err(ParserError::InternalError(format!("{self} is no token!"))),
         }
     }
 
@@ -43,7 +43,7 @@ impl<'t> ParseTreeType<'t> {
     pub fn text(&self) -> Result<&str, ParserError> {
         match self {
             Self::T(t) => Ok(t.text()),
-            _ => Err(ParserError::InternalError(format!("{} is no token!", self))),
+            _ => Err(ParserError::InternalError(format!("{self} is no token!"))),
         }
     }
 }
@@ -55,8 +55,8 @@ impl<'t> ParseTreeType<'t> {
 impl Visualize for ParseTreeType<'_> {
     fn visualize(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ParseTreeType::T(t) => write!(f, "{}", t),
-            ParseTreeType::N(n) => write!(f, "{}", n),
+            ParseTreeType::T(t) => write!(f, "{t}"),
+            ParseTreeType::N(n) => write!(f, "{n}"),
         }
     }
     fn emphasize(&self) -> bool {
@@ -67,8 +67,8 @@ impl Visualize for ParseTreeType<'_> {
 impl Display for ParseTreeType<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         match self {
-            Self::T(t) => write!(f, "T({})", t),
-            Self::N(n) => write!(f, "N({})", n),
+            Self::T(t) => write!(f, "T({t})"),
+            Self::N(n) => write!(f, "N({n})"),
         }
     }
 }
@@ -86,8 +86,8 @@ pub enum SynTree {
 impl Display for SynTree {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         match self {
-            SynTree::Terminal(t) => write!(f, "{}", t),
-            SynTree::NonTerminal(n) => write!(f, "{}", n),
+            SynTree::Terminal(t) => write!(f, "{t}"),
+            SynTree::NonTerminal(n) => write!(f, "{n}"),
         }
     }
 }

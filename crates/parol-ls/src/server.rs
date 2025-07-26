@@ -356,7 +356,7 @@ impl Server {
         if let Some(text_at_position) =
             document_state.ident_at_position(params.text_document_position_params.position)
         {
-            eprintln!("text_at_position: {}", text_at_position);
+            eprintln!("text_at_position: {text_at_position}");
 
             // Handle non-terminals here
             Self::add_non_terminal_definitions(

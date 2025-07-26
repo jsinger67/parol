@@ -230,13 +230,13 @@ impl Factor {
                 a.decorate(&mut d, &format!("T({})", m.as_ref().unwrap_or(t)))
                     .expect("Failed to decorate terminal!");
                 if let Some(user_type) = u {
-                    let _ = write!(d, " /* : {} */", user_type);
+                    let _ = write!(d, " /* : {user_type} */");
                 }
                 let delimiter = k.delimiter();
                 format!(
                     "<{}>{}{}{}{}",
                     s.iter()
-                        .map(|s| format!("{}", s))
+                        .map(|s| format!("{s}"))
                         .collect::<Vec<String>>()
                         .join(", "),
                     delimiter,
@@ -254,13 +254,13 @@ impl Factor {
                 a.decorate(&mut buf, &m.as_ref().unwrap_or(n))
                     .expect("Failed to decorate non-terminal!");
                 if let Some(user_type) = u {
-                    let _ = write!(buf, " /* : {} */", user_type);
+                    let _ = write!(buf, " /* : {user_type} */");
                 }
                 buf
             }
-            Factor::Identifier(i) => format!("\"{}\"", i),
-            Self::ScannerSwitch(n, _) => format!("%sc({})", n),
-            Self::ScannerSwitchPush(n, _) => format!("%push({})", n),
+            Factor::Identifier(i) => format!("\"{i}\""),
+            Self::ScannerSwitch(n, _) => format!("%sc({n})"),
+            Self::ScannerSwitchPush(n, _) => format!("%push({n})"),
             Self::ScannerSwitchPop(_) => "%pop()".to_string(),
         }
     }
@@ -279,24 +279,24 @@ impl Factor {
 impl Display for Factor {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            Self::Group(g) => write!(f, "G({})", g),
-            Self::Repeat(r) => write!(f, "R{{{}}}", r),
-            Self::Optional(o) => write!(f, "O[{}]", o),
+            Self::Group(g) => write!(f, "G({g})"),
+            Self::Repeat(r) => write!(f, "R{{{r}}}"),
+            Self::Optional(o) => write!(f, "O[{o}]"),
             Self::Terminal(t, k, s, a, u, m, l) => {
                 let mut d = String::new();
                 let delimiter = k.delimiter();
-                a.decorate(&mut d, &format!("T({}{}{})", delimiter, t, delimiter))?;
+                a.decorate(&mut d, &format!("T({delimiter}{t}{delimiter})"))?;
                 if let Some(member_name) = m {
-                    write!(d, "@{}", member_name)?;
+                    write!(d, "@{member_name}")?;
                 }
                 if let Some(user_type) = u {
-                    write!(d, " : {}", user_type)?;
+                    write!(d, " : {user_type}")?;
                 }
                 write!(
                     f,
                     "<{}>{}{}",
                     s.iter()
-                        .map(|s| format!("{}", s))
+                        .map(|s| format!("{s}"))
                         .collect::<Vec<String>>()
                         .join(", "),
                     d,
@@ -309,18 +309,18 @@ impl Display for Factor {
             }
             Self::NonTerminal(n, a, u, m) => {
                 let mut s = String::new();
-                a.decorate(&mut s, &format!("N({})", n))?;
+                a.decorate(&mut s, &format!("N({n})"))?;
                 if let Some(member_name) = m {
-                    write!(s, "@{}", member_name)?;
+                    write!(s, "@{member_name}")?;
                 }
                 if let Some(user_type) = u {
-                    write!(s, " : {}", user_type)?;
+                    write!(s, " : {user_type}")?;
                 }
-                write!(f, "{}", s)
+                write!(f, "{s}")
             }
-            Self::Identifier(n) => write!(f, "Id({})", n),
-            Self::ScannerSwitch(n, _) => write!(f, "S({})", n),
-            Self::ScannerSwitchPush(n, _) => write!(f, "Push({})", n),
+            Self::Identifier(n) => write!(f, "Id({n})"),
+            Self::ScannerSwitch(n, _) => write!(f, "S({n})"),
+            Self::ScannerSwitchPush(n, _) => write!(f, "Push({n})"),
             Self::ScannerSwitchPop(_) => write!(f, "Pop"),
         }
     }
@@ -401,7 +401,7 @@ impl Display for Alternation {
             "Alt({}",
             self.0
                 .iter()
-                .map(|f| format!("{}", f))
+                .map(|f| format!("{f}"))
                 .collect::<Vec<String>>()
                 .join(", ")
         )?;
@@ -453,7 +453,7 @@ impl Display for Alternations {
             "Alts({})",
             self.0
                 .iter()
-                .map(|a| format!("{}", a))
+                .map(|a| format!("{a}"))
                 .collect::<Vec<String>>()
                 .join(" | ")
         )
@@ -514,7 +514,7 @@ impl ParolGrammarItem {
             Self::Fac(fac) => fac.to_par(),
             Self::StateList(sl) => sl
                 .iter()
-                .map(|e| format!("<{}>", e))
+                .map(|e| format!("<{e}>"))
                 .collect::<Vec<String>>()
                 .join(", "),
         }
@@ -524,15 +524,15 @@ impl ParolGrammarItem {
 impl Display for ParolGrammarItem {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            Self::Prod(p) => write!(f, "{}", p),
-            Self::Alts(a) => write!(f, "{}", a),
-            Self::Alt(a) => write!(f, "{}", a),
-            Self::Fac(t) => write!(f, "{}", t),
+            Self::Prod(p) => write!(f, "{p}"),
+            Self::Alts(a) => write!(f, "{a}"),
+            Self::Alt(a) => write!(f, "{a}"),
+            Self::Fac(t) => write!(f, "{t}"),
             Self::StateList(s) => write!(
                 f,
                 "SL<{}>",
                 s.iter()
-                    .map(|e| format!("{}", e))
+                    .map(|e| format!("{e}"))
                     .collect::<Vec<String>>()
                     .join(", ")
             ),
@@ -580,8 +580,8 @@ impl TryFrom<&parol_grammar_trait::ScannerStateDirectives<'_>> for ScannerStateS
 impl Display for ScannerStateSwitch {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            ScannerStateSwitch::Switch(s, _) => write!(f, "enter {}", s),
-            ScannerStateSwitch::SwitchPush(s, _) => write!(f, "push {}", s),
+            ScannerStateSwitch::Switch(s, _) => write!(f, "enter {s}"),
+            ScannerStateSwitch::SwitchPush(s, _) => write!(f, "push {s}"),
             ScannerStateSwitch::SwitchPop(_) => write!(f, "pop"),
         }
     }
@@ -641,7 +641,7 @@ impl Display for ScannerConfig {
         write!(f, "auto_ws_off: {};", self.auto_ws_off)?;
         self.transitions
             .iter()
-            .try_for_each(|(k, v)| write!(f, "on {} {};", k, v))
+            .try_for_each(|(k, v)| write!(f, "on {k} {v};"))
     }
 }
 
@@ -1426,7 +1426,7 @@ impl Display for ParolGrammar<'_> {
             "{}",
             self.scanner_configurations
                 .iter()
-                .map(|s| format!("{}", s))
+                .map(|s| format!("{s}"))
                 .collect::<Vec<String>>()
                 .join("\n")
         )?;
@@ -1435,7 +1435,7 @@ impl Display for ParolGrammar<'_> {
             "{}",
             self.productions
                 .iter()
-                .map(|e| format!("{}", e))
+                .map(|e| format!("{e}"))
                 .collect::<Vec<String>>()
                 .join("\n")
         )

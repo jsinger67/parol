@@ -41,7 +41,7 @@ where
             .take()
             .expect("StrIter cannot be displayed more than once");
         for item in iter {
-            f.write_fmt(format_args!("{}", item))?;
+            f.write_fmt(format_args!("{item}"))?;
         }
         Ok(())
     }

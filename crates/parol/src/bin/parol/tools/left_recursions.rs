@@ -22,7 +22,7 @@ pub fn main(args: &Args) -> Result<()> {
     } else {
         println!("Found {} left recursive non-terminals:\n", recursions.len());
         recursions.iter().for_each(|n| {
-            println!("{}", n);
+            println!("{n}");
         });
     }
     Ok(())
