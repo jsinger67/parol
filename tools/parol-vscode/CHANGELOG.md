@@ -4,10 +4,11 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## v0.4.0 - Not released yet
+## v0.4.0 - 2025-07-27
 
 * Support for syntax extension 'named members'
-* Support for directive `%production_type`
+* Support for directives `%nt_type`, `%t_type`
+* Support extended scanner state switching in scanner declarations
 
 ## v0.3.2 - 2024-12-27
 
