@@ -141,7 +141,7 @@ fn print_skip_tokens<F: Fn(char) -> Option<usize> + Clone>(
         .borrow_mut()
         .take_skip_tokens()
         .into_iter()
-        .for_each(|t| println!("Skipping {:?}", t));
+        .for_each(|t| println!("Skipping {t:?}"));
 }
 
 #[test]

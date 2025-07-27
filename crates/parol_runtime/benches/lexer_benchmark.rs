@@ -219,8 +219,7 @@ fn tokenize() {
         let tok = token_stream.borrow_mut().lookahead(0).unwrap();
         assert_ne!(
             tok.token_type, ERROR_TOKEN_INDEX,
-            "Error token found: {:?}",
-            tok
+            "Error token found: {tok:?}"
         );
         // Drop the skip tokens
         let _ = token_stream
@@ -258,8 +257,7 @@ fn throughput_benchmark(c: &mut Criterion) {
                 let tok = token_stream.borrow_mut().lookahead(0).unwrap();
                 assert_ne!(
                     tok.token_type, ERROR_TOKEN_INDEX,
-                    "Error token found: {:?}",
-                    tok
+                    "Error token found: {tok:?}"
                 );
                 // Drop the skip tokens
                 let _ = token_stream

@@ -118,7 +118,7 @@ fn run_parol(args: &[&str]) -> Result<ExitStatus> {
 }
 
 fn run(command: &str, args: &[&str]) -> Result<ExitStatus> {
-    println!("Running command {}, {:?}", command, args);
+    println!("Running command {command}, {args:?}");
     Command::new(command)
         .args(args)
         .status()

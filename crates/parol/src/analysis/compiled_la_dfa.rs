@@ -1,14 +1,14 @@
 use std::collections::BTreeMap;
 
-use parol_runtime::log::trace;
 use parol_runtime::TerminalIndex;
+use parol_runtime::log::trace;
 
-use super::lookahead_dfa::{CompiledProductionIndex, StateIndex, INVALID_PROD};
 use super::LookaheadDFA;
+use super::lookahead_dfa::{CompiledProductionIndex, INVALID_PROD, StateIndex};
 
 mod adjacency_list {
-    use parol_runtime::log::trace;
     use parol_runtime::TerminalIndex;
+    use parol_runtime::log::trace;
 
     use crate::analysis::lookahead_dfa::{CompiledProductionIndex, INVALID_PROD};
     use crate::group_by;
@@ -330,8 +330,7 @@ mod adjacency_list {
                 assert_eq!(
                     p,
                     adjacency_list.productions.get(s).unwrap(),
-                    "at index {}",
-                    i
+                    "at index {i}"
                 );
             }
             let adj_list = &adjacency_list.list;
@@ -372,10 +371,11 @@ mod adjacency_list {
             assert_eq!(4, dfa.transitions.len());
 
             assert!(dfa.transitions.iter().any(|t| { *t == trans!(0, 0, 3, 5) }));
-            assert!(dfa
-                .transitions
-                .iter()
-                .any(|t| { *t == trans!(0, 5, 1, -1) }));
+            assert!(
+                dfa.transitions
+                    .iter()
+                    .any(|t| { *t == trans!(0, 5, 1, -1) })
+            );
             assert!(dfa.transitions.iter().any(|t| { *t == trans!(1, 0, 3, 5) }));
             assert!(dfa.transitions.iter().any(|t| { *t == trans!(1, 6, 2, 4) }));
         }

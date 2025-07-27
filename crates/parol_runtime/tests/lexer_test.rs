@@ -123,7 +123,7 @@ fn print_skip_tokens<F: Fn(char) -> Option<usize> + Clone>(
         .borrow_mut()
         .take_skip_tokens()
         .into_iter()
-        .for_each(|t| println!("Skipped: {:?}", t));
+        .for_each(|t| println!("Skipped: {t:?}"));
 }
 
 #[test]
@@ -160,7 +160,7 @@ fn lookahead_beyond_buffer_must_not_fail() {
         print_skip_tokens(&token_stream);
         if token_stream.borrow_mut().consume().is_ok() {
             let tok = token_stream.borrow_mut().lookahead(0).unwrap();
-            println!("{:?}", tok);
+            println!("{tok:?}");
         }
     }
     print_skip_tokens(&token_stream);

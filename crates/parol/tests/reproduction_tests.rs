@@ -20,7 +20,7 @@ fn reproduction_test() -> Result<()> {
             let input = fs::read_to_string(&file_path)?;
             let mut parol_grammar = ParolGrammar::new();
             parse(&input, &file_path, &mut parol_grammar)?;
-            let representation = format!("{}", parol_grammar);
+            let representation = format!("{parol_grammar}");
             file_path.set_extension("expected");
             let expected = fs::read_to_string(&file_path)?;
             assert_eq!(
