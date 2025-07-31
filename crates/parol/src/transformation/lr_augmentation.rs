@@ -1,4 +1,4 @@
-use crate::{generate_name, Cfg, Pr, Symbol, SymbolAttribute};
+use crate::{Cfg, Pr, Symbol, SymbolAttribute, generate_name};
 
 /// Augment the grammar with a new start symbol if the current start symbol has more than one
 /// production.

@@ -1,11 +1,11 @@
 use std::{convert::TryFrom, fmt::Display};
 
 use crate::{
+    ParseTreeType, Token,
     parser::{
         parse_tree_type::{SynTree, TreeConstruct},
         parser_types::{SynTreeFlavor, TreeBuilder},
     },
-    ParseTreeType, Token,
 };
 use syntree::{Builder, Tree};
 

@@ -1,5 +1,5 @@
 use anyhow::Result;
-use parol::parser::{parse, ParolGrammar};
+use parol::parser::{ParolGrammar, parse};
 use regex::Regex;
 
 use std::fs;

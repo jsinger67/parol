@@ -1,6 +1,6 @@
 use crate::grammar::SymbolAttribute;
 use crate::utils::str_vec::StrVec;
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 
 use super::symbol_table::{
     Instance, MetaSymbolKind, ScopeId, ScopedNameId, Symbol, SymbolId, SymbolKind, SymbolTable,
@@ -354,6 +354,7 @@ mod tests {
         let enum_type = symbol_table.symbol_as_type(enum_type_id);
         assert_eq!(
             enum_type.generate_range_calculation().unwrap(),
-            "match self {         MyEnum::VariantA(v) => v.span(),\n        MyEnum::VariantB(v) => v.span(),\n }");
+            "match self {         MyEnum::VariantA(v) => v.span(),\n        MyEnum::VariantB(v) => v.span(),\n }"
+        );
     }
 }

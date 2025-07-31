@@ -65,15 +65,9 @@ where
         match self {
             Self::None => out.write_fmt(format_args!("{decoratee}")),
             Self::CollectionStart => out.write_fmt(format_args!("{decoratee} /* Vec<T>::New */")),
-            Self::AddToCollection => {
-                out.write_fmt(format_args!("{decoratee} /* Vec<T>::Push */"))
-            }
-            Self::OptionalSome => {
-                out.write_fmt(format_args!("{decoratee} /* Option<T>::Some */"))
-            }
-            Self::OptionalNone => {
-                out.write_fmt(format_args!("{decoratee} /* Option<T>::None */"))
-            }
+            Self::AddToCollection => out.write_fmt(format_args!("{decoratee} /* Vec<T>::Push */")),
+            Self::OptionalSome => out.write_fmt(format_args!("{decoratee} /* Option<T>::Some */")),
+            Self::OptionalNone => out.write_fmt(format_args!("{decoratee} /* Option<T>::None */")),
         }
     }
 }

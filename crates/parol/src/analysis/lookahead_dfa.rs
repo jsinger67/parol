@@ -1,7 +1,7 @@
 use crate::KTuples;
-use anyhow::{bail, Result};
-use parol_runtime::log::trace;
+use anyhow::{Result, bail};
 use parol_runtime::TerminalIndex;
+use parol_runtime::log::trace;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::{Display, Error, Formatter};

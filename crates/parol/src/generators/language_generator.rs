@@ -1,5 +1,5 @@
 use crate::{Cfg, Pr, Symbol, Terminal};
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use parol_runtime::log::trace;
 use rand::Rng;
 use std::collections::HashMap;
@@ -43,9 +43,7 @@ impl<'a> LanguageGenerator<'a> {
     pub fn generate(&mut self, max_result_length: Option<usize>) -> Result<String> {
         let mut result = String::new();
         let termination_threshold = max_result_length.unwrap_or(MAX_RESULT_SIZE) / 2;
-        trace!(
-            "Try to terminate at result length {termination_threshold}"
-        );
+        trace!("Try to terminate at result length {termination_threshold}");
         self.process_non_terminal(self.cfg.get_start_symbol(), false)?;
         while let Some(symbol) = self.generator_stack.pop() {
             match symbol {

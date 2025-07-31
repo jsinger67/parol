@@ -1,8 +1,8 @@
 use crate::analysis::k_tuple::TerminalMappings;
 use crate::grammar::cfg::TerminalIndexFn;
 use crate::{Symbol, Terminal};
-use parol_runtime::lexer::EOI;
 use parol_runtime::TerminalIndex;
+use parol_runtime::lexer::EOI;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///

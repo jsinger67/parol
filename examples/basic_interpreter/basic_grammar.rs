@@ -4,12 +4,12 @@ use crate::{
     operators::{BinaryOperator, UnaryOperator},
 };
 #[allow(unused_imports)]
-use anyhow::{anyhow, bail, Context};
+use anyhow::{Context, anyhow, bail};
+use parol_runtime::{ParolError, Result, log::trace};
 use parol_runtime::{
     errors::FileSource,
     lexer::{Location, Token},
 };
-use parol_runtime::{log::trace, ParolError, Result};
 use std::{
     collections::BTreeMap,
     fmt::{Debug, Display, Error, Formatter},

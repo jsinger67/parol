@@ -1,5 +1,5 @@
-use crate::analysis::LookaheadDFA;
 use crate::StrVec;
+use crate::analysis::LookaheadDFA;
 
 // ---------------------------------------------------
 // Part of the Public API

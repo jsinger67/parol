@@ -26,23 +26,23 @@ pub use k_tuples::{KTuples, KTuplesBuilder};
 
 /// Module with FIRST set calculations
 pub mod first;
-pub use first::{first_k, FirstSet};
+pub use first::{FirstSet, first_k};
 
 /// Module with FOLLOW set calculations
 pub mod follow;
-pub use follow::{follow_k, FollowSet};
+pub use follow::{FollowSet, follow_k};
 
 /// Module with conflict calculations
 pub mod k_decision;
 pub use k_decision::{
-    calculate_k, calculate_k_tuples, calculate_lookahead_dfas, decidable, explain_conflicts,
-    FirstCache, FollowCache,
+    FirstCache, FollowCache, calculate_k, calculate_k_tuples, calculate_lookahead_dfas, decidable,
+    explain_conflicts,
 };
 
 /// Module with calculations for the LALR(1) parse table
 pub mod lalr1_parse_table;
 pub use lalr1_parse_table::{
-    calculate_lalr1_parse_table, LR1State, LRAction, LRConflict, LRConflictError, LRParseTable,
+    LR1State, LRAction, LRConflict, LRConflictError, LRParseTable, calculate_lalr1_parse_table,
 };
 
 /// Module with types for production selection

@@ -1,7 +1,7 @@
+use crate::GrammarConfig;
 use crate::grammar::cfg::RX_NUM_SUFFIX;
 use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_parser::parse;
-use crate::GrammarConfig;
 use anyhow::{Context, Result};
 use parol_runtime::ParseTree;
 use std::collections::HashMap;
@@ -103,11 +103,7 @@ where
 {
     move |x| {
         let r = f(x);
-        if r {
-            r
-        } else {
-            g(x)
-        }
+        if r { r } else { g(x) }
     }
 }
 
@@ -120,11 +116,7 @@ where
 {
     move |x| {
         let r = f(x);
-        if !r {
-            r
-        } else {
-            g(x)
-        }
+        if !r { r } else { g(x) }
     }
 }
 
@@ -139,8 +131,8 @@ pub fn obtain_grammar_config<T>(file_name: T, verbose: bool) -> Result<GrammarCo
 where
     T: AsRef<Path> + Debug,
 {
-    let input = fs::read_to_string(&file_name)
-        .with_context(|| format!("Can't read file {file_name:?}"))?;
+    let input =
+        fs::read_to_string(&file_name).with_context(|| format!("Can't read file {file_name:?}"))?;
 
     let mut parol_grammar = ParolGrammar::new();
     let _syntax_tree = parse(&input, file_name.as_ref(), &mut parol_grammar)

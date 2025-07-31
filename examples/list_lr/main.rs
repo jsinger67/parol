@@ -5,9 +5,9 @@ mod list_grammar_trait;
 mod list_parser;
 
 use crate::{list_grammar::ListGrammar, list_parser::parse};
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use parol::generate_tree_layout;
-use parol_runtime::{log::debug, Report};
+use parol_runtime::{Report, log::debug};
 use std::{env, fs, time::Instant};
 
 // To generate:

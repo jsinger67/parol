@@ -14,15 +14,16 @@ use std::{
 };
 
 use crate::{
+    Cfg, GrammarAnalysisError, GrammarConfig, Pr, Terminal,
     grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn},
-    render_par_string, Cfg, GrammarAnalysisError, GrammarConfig, Pr, Terminal,
+    render_par_string,
 };
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use lalry::{Config, LR1ResolvedConflict, LRConflictResolution};
 use parol_runtime::{
+    NonTerminalIndex, ProductionIndex, TerminalIndex,
     lexer::{BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE},
     log::trace,
-    NonTerminalIndex, ProductionIndex, TerminalIndex,
 };
 
 /// Type aliases for the LALR(1) parse table construction.

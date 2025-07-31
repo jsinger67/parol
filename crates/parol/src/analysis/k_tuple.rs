@@ -288,10 +288,7 @@ impl Terminals {
         let to_take = std::cmp::min(k - my_k_len, other_len);
         if to_take == 0 {
             // We can't take any more terminals
-            debug_assert!(
-                false,
-                "to_take == 0, self:({self:?}), other:({other:?})"
-            );
+            debug_assert!(false, "to_take == 0, self:({self:?}), other:({other:?})");
             return self;
         };
 

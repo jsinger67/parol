@@ -6,7 +6,7 @@ mod boolean_parser;
 
 use crate::boolean_grammar::BooleanGrammar;
 use crate::boolean_parser::parse;
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use parol::generate_tree_layout;
 use parol_runtime::log::debug;
 use std::env;

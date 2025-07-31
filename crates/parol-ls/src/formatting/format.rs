@@ -549,10 +549,7 @@ impl Fmt for ParolLs {
             "\n"
         };
         let (grammar_definition, comments) = self.grammar_definition.txt(options, comments);
-        (
-            format!("{prolog}{nl_opt}{grammar_definition}"),
-            comments,
-        )
+        (format!("{prolog}{nl_opt}{grammar_definition}"), comments)
     }
 }
 impl Fmt for Production {
@@ -860,10 +857,7 @@ impl Fmt for TokenExpression {
             } else {
                 (String::default(), comments)
             };
-        (
-            format!("{token_literal}{token_expression_opt}"),
-            comments,
-        )
+        (format!("{token_literal}{token_expression_opt}"), comments)
     }
 }
 impl Fmt for TokenExpressionOpt {

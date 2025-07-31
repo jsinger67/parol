@@ -207,9 +207,7 @@ impl GrammarTypeInfo {
             argument_type_id,
             InstanceEntrailsBuilder::default().build()?,
             SymbolAttribute::None,
-            &format!(
-                "Argument of the user action for non-terminal '{non_terminal}'"
-            ),
+            &format!("Argument of the user action for non-terminal '{non_terminal}'"),
         )?;
         Ok(action_fn)
     }

@@ -9,9 +9,9 @@ use crate::analysis::FirstCache;
 use crate::grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn};
 use crate::grammar::symbol_string::SymbolString;
 use crate::{CompiledTerminal, GrammarConfig, KTuples, Pr, Symbol};
+use parol_runtime::TerminalIndex;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
-use parol_runtime::TerminalIndex;
 
 use super::k_tuples::KTuplesBuilder;
 

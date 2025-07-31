@@ -2,7 +2,7 @@ use crate::scanner_states_grammar_trait::{
     Escaped, Identifier, NoneQuote, ScannerStatesGrammarTrait, StringDelimiter,
 };
 use parol_macros::{bail, parol};
-use parol_runtime::{log::trace, Result};
+use parol_runtime::{Result, log::trace};
 use std::{
     fmt::{Debug, Display, Error, Formatter},
     marker::PhantomData,

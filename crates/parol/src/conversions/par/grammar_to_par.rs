@@ -26,9 +26,7 @@ pub fn render_par_string(
     let comment = grammar_config
         .comment
         .as_ref()
-        .map_or("".to_owned(), |comment| {
-            format!("%comment \"{comment}\"\n")
-        });
+        .map_or("".to_owned(), |comment| format!("%comment \"{comment}\"\n"));
 
     let grammar_type = match grammar_config.grammar_type {
         // For compatibility reasons we do not output the grammar type for LLK grammars

@@ -7,8 +7,8 @@ mod json_parser;
 
 use crate::json_grammar::JsonGrammar;
 use crate::json_parser::parse;
-use parol_runtime::log::debug;
 use parol_runtime::Report;
+use parol_runtime::log::debug;
 use std::env;
 use std::fs;
 use std::process::ExitCode;

@@ -2,13 +2,13 @@ use std::fs;
 use std::ops::Range;
 
 use parol_runtime::{
+    FileSource, Location, Report,
     codespan_reporting::{
         self,
         diagnostic::{Diagnostic, Label},
         files::SimpleFiles,
         term::{self, termcolor::StandardStream},
     },
-    FileSource, Location, Report,
 };
 use thiserror::Error;
 
@@ -77,11 +77,10 @@ impl Report for BasicErrorReporter {
                         &Diagnostic::error()
                             .with_message(format!("{context}: value parse error"))
                             .with_code("basic::parse_float")
-                            .with_labels(vec![Label::primary(
-                                file_id,
-                                Into::<Range<usize>>::into(token),
-                            )
-                            .with_message("Wrong f32 value")]),
+                            .with_labels(vec![
+                                Label::primary(file_id, Into::<Range<usize>>::into(token))
+                                    .with_message("Wrong f32 value"),
+                            ]),
                     )?)
                 }
                 BasicError::ParseLineNumber {
@@ -100,13 +99,12 @@ impl Report for BasicErrorReporter {
                         &Diagnostic::error()
                             .with_message(format!("{context}: line number parse error"))
                             .with_code("basic::parse_line_number")
-                            .with_labels(vec![Label::primary(
-                                file_id,
-                                Into::<Range<usize>>::into(token),
-                            )
-                            .with_message("Wrong i16 value")])
+                            .with_labels(vec![
+                                Label::primary(file_id, Into::<Range<usize>>::into(token))
+                                    .with_message("Wrong i16 value"),
+                            ])
                             .with_notes(vec![
-                                "Error parsing line number token as valid u16".to_string()
+                                "Error parsing line number token as valid u16".to_string(),
                             ]),
                     )?)
                 }
@@ -126,11 +124,10 @@ impl Report for BasicErrorReporter {
                         &Diagnostic::error()
                             .with_message(format!("{context}: line number too large"))
                             .with_code("basic::line_number_too_large")
-                            .with_labels(vec![Label::primary(
-                                file_id,
-                                Into::<Range<usize>>::into(token),
-                            )
-                            .with_message("Line number too large")])
+                            .with_labels(vec![
+                                Label::primary(file_id, Into::<Range<usize>>::into(token))
+                                    .with_message("Line number too large"),
+                            ])
                             .with_notes(vec!["Line number exceeds maximum of 63999".to_string()]),
                     )?)
                 }
@@ -150,11 +147,10 @@ impl Report for BasicErrorReporter {
                         &Diagnostic::error()
                             .with_message(format!("{context}: line number already defined"))
                             .with_code("basic::line_number_already_defined")
-                            .with_labels(vec![Label::primary(
-                                file_id,
-                                Into::<Range<usize>>::into(token),
-                            )
-                            .with_message("Line number is already defined")])
+                            .with_labels(vec![
+                                Label::primary(file_id, Into::<Range<usize>>::into(token))
+                                    .with_message("Line number is already defined"),
+                            ])
                             .with_notes(vec!["Define a new line number".to_string()]),
                     )?)
                 }
@@ -174,13 +170,12 @@ impl Report for BasicErrorReporter {
                         &Diagnostic::error()
                             .with_message(format!("{context}: line not accessible"))
                             .with_code("basic::line_number_beyond_last_line")
-                            .with_labels(vec![Label::primary(
-                                file_id,
-                                Into::<Range<usize>>::into(token),
-                            )
-                            .with_message("Line number is beyond last line")])
+                            .with_labels(vec![
+                                Label::primary(file_id, Into::<Range<usize>>::into(token))
+                                    .with_message("Line number is beyond last line"),
+                            ])
                             .with_notes(vec![
-                                "Check the jump destination's line number".to_string()
+                                "Check the jump destination's line number".to_string(),
                             ]),
                     )?)
                 }

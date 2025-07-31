@@ -1,6 +1,6 @@
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute};
 use crate::{Symbol, Terminal};
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::Hash;
 
