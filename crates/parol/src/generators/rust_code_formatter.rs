@@ -11,6 +11,7 @@ use std::process::Command;
 pub fn try_format(path_to_file: &Path) -> Result<()> {
     Command::new("rustfmt")
         .args([path_to_file])
+        .args(["--edition", "2024"])
         .status()
         .map(|_| ())
         .map_err(|e| anyhow!("Error during source formatting!: {}", e))
