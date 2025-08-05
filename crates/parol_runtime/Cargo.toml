@@ -20,9 +20,6 @@ log = { workspace = true }
 once_cell = { workspace = true }
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
 petgraph = { workspace = true }
-# The default feature is disabled to allow the use of the `regex_automata` feature.
-# The `regex_automata` feature can be enabled by users of this crate and it will be propagated to
-# the `scnr` crate.
 scnr2 = { workspace = true }
 serde_json = "1.0"
 syntree = { workspace = true }
