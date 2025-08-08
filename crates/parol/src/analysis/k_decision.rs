@@ -1,10 +1,10 @@
-use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::analysis::LookaheadDFA;
-use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
+use crate::analysis::lookahead_dfa::ProductionIndex;
+use crate::analysis::{FirstSet, FollowSet, first_k, follow_k};
 use crate::grammar::cfg::NonTerminalIndexFn;
 use crate::{GrammarAnalysisError, MAX_K};
 use crate::{GrammarConfig, KTuples};
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use parol_runtime::log::trace;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -347,7 +347,7 @@ pub fn explain_conflicts(
 
 #[cfg(test)]
 mod test {
-    use super::{calculate_k, decidable, FirstCache, FollowCache};
+    use super::{FirstCache, FollowCache, calculate_k, decidable};
     use crate::grammar::SymbolAttribute;
     use crate::{Cfg, GrammarConfig, Pr, Symbol, Terminal, TerminalKind};
 

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.1 - 2025-08-05
+
+* Fix for issue [#734](https://github.com/jsinger67/parol/issues/734)
+
+  This fix adds the option `--edition 2024` to the call to rustfmt during writing the generated
+  parser sources.
+  
+  A user should be able to (re-)configure the process of code formatting by
+  leveraging a `rustfmt.toml` or `.rustfmt.toml` configuration file in her crate anyway.
+
 ## 4.0.0 - 2025-07-27
 
 * Official start of version 4 development.

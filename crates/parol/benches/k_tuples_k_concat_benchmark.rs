@@ -1,5 +1,5 @@
-use criterion::{criterion_group, criterion_main, Criterion};
-use parol::{analysis::k_tuples::KTuplesBuilder, KTuples};
+use criterion::{Criterion, criterion_group, criterion_main};
+use parol::{KTuples, analysis::k_tuples::KTuplesBuilder};
 use parol_runtime::once_cell::sync::Lazy;
 
 static K_TUPLES_1: Lazy<KTuples> = Lazy::new(|| {

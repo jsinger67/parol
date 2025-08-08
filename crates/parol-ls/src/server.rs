@@ -8,19 +8,19 @@ use std::{
 
 use lsp_server::Message;
 use lsp_types::{
-    notification::{
-        DidChangeConfiguration, DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument,
-        Notification, PublishDiagnostics,
-    },
     DidChangeConfigurationParams, DidChangeTextDocumentParams, DidCloseTextDocumentParams,
     DidOpenTextDocumentParams, DocumentFormattingParams, DocumentSymbolParams,
     DocumentSymbolResponse, GotoDefinitionParams, GotoDefinitionResponse, Hover, HoverParams,
     Location, PrepareRenameResponse, PublishDiagnosticsParams, Range, RenameParams,
     TextDocumentContentChangeEvent, TextDocumentPositionParams, TextEdit, Uri, WorkspaceEdit,
+    notification::{
+        DidChangeConfiguration, DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument,
+        Notification, PublishDiagnostics,
+    },
 };
 use parol::{
-    analysis::lalr1_parse_table::calculate_lalr1_parse_table, calculate_lookahead_dfas,
-    check_and_transform_grammar, parser::parol_grammar::GrammarType, GrammarConfig, ParolGrammar,
+    GrammarConfig, ParolGrammar, analysis::lalr1_parse_table::calculate_lalr1_parse_table,
+    calculate_lookahead_dfas, check_and_transform_grammar, parser::parol_grammar::GrammarType,
 };
 
 use crate::{

@@ -1,7 +1,7 @@
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use parol_runtime::log::trace;
 
 use crate::basic_grammar::DefinitionRange;
@@ -32,10 +32,7 @@ impl BinaryOperator {
     ) -> Result<DefinitionRange> {
         trace!(
             "apply_binary_operation: {}: {} {} {}",
-            context,
-            lhs,
-            op,
-            rhs
+            context, lhs, op, rhs
         );
         let result = match op {
             Self::Add => lhs + rhs,

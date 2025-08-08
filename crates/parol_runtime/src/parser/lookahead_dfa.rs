@@ -156,9 +156,7 @@ impl LookaheadDFA {
             Ok(prod_num as ProductionIndex)
         } else if let Some(last_state) = last_accepting_state {
             debug_assert!(last_prod_num > INVALID_PROD);
-            trace!(
-                "Predict production {last_prod_num:?} from last accepting state {last_state}"
-            );
+            trace!("Predict production {last_prod_num:?} from last accepting state {last_state}");
             Ok(last_prod_num as ProductionIndex)
         } else {
             trace!(
@@ -167,9 +165,7 @@ impl LookaheadDFA {
                 token_stream.token_types()
             );
             return Err(ParserError::PredictionError {
-                cause: format!(
-                    "Production prediction failed for non-terminal {non_terminal}",
-                ),
+                cause: format!("Production prediction failed for non-terminal {non_terminal}",),
             }
             .into());
         }

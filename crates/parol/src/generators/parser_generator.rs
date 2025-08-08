@@ -784,9 +784,7 @@ fn generate_parse_table_source(
             acc
         });
 
-    format!(
-        "LRParseTable {{ actions: &[{actions}], states: &[{states}] }}",
-    )
+    format!("LRParseTable {{ actions: &[{actions}], states: &[{states}] }}",)
 }
 
 fn generate_source_for_lrstate<'a>(

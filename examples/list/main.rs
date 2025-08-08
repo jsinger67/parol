@@ -6,10 +6,10 @@ mod list_parser;
 
 use crate::list_grammar::ListGrammar;
 use crate::list_parser::parse;
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use parol::generate_tree_layout;
-use parol_runtime::log::debug;
 use parol_runtime::Report;
+use parol_runtime::log::debug;
 use std::env;
 use std::fs;
 

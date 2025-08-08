@@ -1023,9 +1023,7 @@ impl SymbolTable {
         match &mut self[inst_symbol_id].kind {
             SymbolKind::Type(_) => panic!("Ain't no instance!"),
             SymbolKind::Instance(i) => {
-                trace!(
-                    "Replacing type of instance {inst_symbol_id} with type {new_type_id}"
-                );
+                trace!("Replacing type of instance {inst_symbol_id} with type {new_type_id}");
                 i.type_id = new_type_id
             }
         };

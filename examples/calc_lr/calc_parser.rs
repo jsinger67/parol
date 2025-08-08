@@ -5,9 +5,9 @@
 // ---------------------------------------------------------
 
 use parol_runtime::{
+    ParolError, ParseTree, TokenStream,
     lr_parser::{LR1State, LRAction, LRParseTable, LRParser, LRProduction},
     parser::parse_tree_type::TreeConstruct,
-    ParolError, ParseTree, TokenStream,
 };
 use scnr2::scanner;
 use std::path::Path;

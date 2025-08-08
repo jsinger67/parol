@@ -1,5 +1,5 @@
 use crate::generators::grammar_config::{FnScannerStateResolver, FnUserTypeResolver};
-use crate::{generate_name, group_by, Cfg, GrammarConfig, Pr, Rhs, Symbol};
+use crate::{Cfg, GrammarConfig, Pr, Rhs, Symbol, generate_name, group_by};
 use anyhow::Result;
 use parol_runtime::log::trace;
 use std::collections::hash_map::HashMap;
@@ -98,11 +98,7 @@ where
             (_, &[]) => p1,
             (_, _) => {
                 let p3 = find_longest_prefix(candidates, n + 2);
-                if p3.is_empty() {
-                    p2
-                } else {
-                    p3
-                }
+                if p3.is_empty() { p2 } else { p3 }
             }
         }
     }
@@ -214,8 +210,10 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         // where A' is a new production of the form:
         // A' -> suffix1|suffix2|... i.e. A' -> suffix1;  A' -> suffix2;  ...
         let first_rule = &rules[0];
-        let suffix_rule_name =
-            generate_name(exclusions.iter(), first_rule.get_n_str().to_owned() + "Suffix");
+        let suffix_rule_name = generate_name(
+            exclusions.iter(),
+            first_rule.get_n_str().to_owned() + "Suffix",
+        );
         let mut prod = prefix.to_owned();
         prod.push(Symbol::n(&suffix_rule_name));
         let prefix_rule = Pr::new(first_rule.get_n_str(), prod);

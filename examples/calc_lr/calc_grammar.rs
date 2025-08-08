@@ -3,9 +3,9 @@ use crate::{
     errors::CalcError,
 };
 use parol_runtime::{
+    FileSource, ParolError, Result, Token,
     log::trace,
     parol_macros::{bail, parol},
-    FileSource, ParolError, Result, Token,
 };
 use std::{
     collections::BTreeMap,
@@ -90,10 +90,7 @@ impl<'t> CalcGrammar<'t> {
     ) -> Result<DefinitionRange> {
         trace!(
             "apply_binary_operation: {}: {} {} {}",
-            context,
-            lhs,
-            op,
-            rhs
+            context, lhs, op, rhs
         );
         let result = match op {
             BinaryOperator::Add => lhs + rhs,

@@ -1,4 +1,4 @@
-use crate::{generators::NamingHelper as NmHlp, obtain_grammar_config, LanguageGenerator};
+use crate::{LanguageGenerator, generators::NamingHelper as NmHlp, obtain_grammar_config};
 use assert_cmd::Command;
 use std::io::Write;
 use std::path::Path;

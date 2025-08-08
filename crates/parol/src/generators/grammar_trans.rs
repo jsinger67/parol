@@ -1,6 +1,6 @@
 use crate::analysis::{non_productive_non_terminals, unreachable_non_terminals};
 use crate::parser::parol_grammar::GrammarType;
-use crate::{augment_grammar, detect_left_recursive_non_terminals, left_factor, Cfg};
+use crate::{Cfg, augment_grammar, detect_left_recursive_non_terminals, left_factor};
 use crate::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
 use parol_macros::bail;
 use parol_runtime::Result;
