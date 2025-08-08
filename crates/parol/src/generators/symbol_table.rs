@@ -746,7 +746,7 @@ impl SymbolTable {
     }
 
     /// Returns a type facade of the symbol with the given id
-    pub(crate) fn symbol_as_type(&self, symbol_id: SymbolId) -> impl TypeFacade {
+    pub(crate) fn symbol_as_type(&self, symbol_id: SymbolId) -> impl TypeFacade<'_> {
         let symbol_type = match &self[symbol_id].kind {
             SymbolKind::Type(t) => t,
             SymbolKind::Instance(_) => panic!("Ain't no type!"),

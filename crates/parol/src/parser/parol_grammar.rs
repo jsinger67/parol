@@ -1296,14 +1296,14 @@ impl ParolGrammar<'_> {
     }
 
     fn check_transitions(&self, index: usize, s: &ScannerConfig) -> Result<()> {
-        if !s.transitions.is_empty() {
-            if let Some(location) = self.parser_based_scanner_switching_used() {
-                bail!(ParolParserError::MixedScannerSwitching {
-                    context: "check_transitions".to_string(),
-                    input: location.file_name.to_path_buf(),
-                    location,
-                });
-            }
+        if !s.transitions.is_empty()
+            && let Some(location) = self.parser_based_scanner_switching_used()
+        {
+            bail!(ParolParserError::MixedScannerSwitching {
+                context: "check_transitions".to_string(),
+                input: location.file_name.to_path_buf(),
+                location,
+            });
         }
         s.transitions.iter().try_for_each(|(k, v)| {
             if !self.is_primary_non_terminal(k) {

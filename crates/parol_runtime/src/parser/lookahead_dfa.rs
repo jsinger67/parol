@@ -164,10 +164,10 @@ impl LookaheadDFA {
                 state,
                 token_stream.token_types()
             );
-            return Err(ParserError::PredictionError {
+            Err(ParserError::PredictionError {
                 cause: format!("Production prediction failed for non-terminal {non_terminal}",),
             }
-            .into());
+            .into())
         }
     }
 

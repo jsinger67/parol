@@ -228,12 +228,11 @@ mod adjacency_list {
                     .iter()
                     .enumerate()
                     .find_map(|(i, (p, _))| if *p != i { Some(*p) } else { None })
+                    && let Some(new) = find_first_free_state_number(&self.productions)
                 {
-                    if let Some(new) = find_first_free_state_number(&self.productions) {
-                        trace!("renumber_states: {state_to_rename} -> {new}");
-                        self.rename_state(state_to_rename, new);
-                        changed = true;
-                    }
+                    trace!("renumber_states: {state_to_rename} -> {new}");
+                    self.rename_state(state_to_rename, new);
+                    changed = true;
                 }
             }
         }

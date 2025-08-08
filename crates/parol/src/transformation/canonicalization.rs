@@ -755,8 +755,12 @@ mod test {
             ])]),
         };
 
-        let productions =
-            eliminate_single_rep(&[production.lhs.clone()], 0, GrammarType::LALR1, production);
+        let productions = eliminate_single_rep(
+            std::slice::from_ref(&production.lhs.clone()),
+            0,
+            GrammarType::LALR1,
+            production,
+        );
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -822,8 +826,12 @@ mod test {
             ])]),
         };
 
-        let productions =
-            eliminate_single_rep(&[production.lhs.clone()], 0, GrammarType::LLK, production);
+        let productions = eliminate_single_rep(
+            std::slice::from_ref(&production.lhs.clone()),
+            0,
+            GrammarType::LLK,
+            production,
+        );
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -890,8 +898,12 @@ mod test {
             ])]),
         };
 
-        let productions =
-            eliminate_single_rep(&[production.lhs.clone()], 0, GrammarType::LLK, production);
+        let productions = eliminate_single_rep(
+            std::slice::from_ref(&production.lhs.clone()),
+            0,
+            GrammarType::LLK,
+            production,
+        );
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -960,8 +972,12 @@ mod test {
             ])]),
         };
 
-        let productions =
-            eliminate_single_rep(&[production.lhs.clone()], 0, GrammarType::LALR1, production);
+        let productions = eliminate_single_rep(
+            std::slice::from_ref(&production.lhs.clone()),
+            0,
+            GrammarType::LALR1,
+            production,
+        );
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -1028,7 +1044,8 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_opt(&[production.lhs.clone()], 0, production);
+        let productions =
+            eliminate_single_opt(std::slice::from_ref(&production.lhs.clone()), 0, production);
         assert_eq!(2, productions.len());
         // Start: x o1 o2 y;
         assert_eq!(
@@ -1075,7 +1092,8 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_opt(&[production.lhs.clone()], 0, production);
+        let productions =
+            eliminate_single_opt(std::slice::from_ref(&production.lhs.clone()), 0, production);
         assert_eq!(3, productions.len());
         // Start: x StartOpt y;
         assert_eq!(
@@ -1129,7 +1147,8 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_grp(&[production.lhs.clone()], 0, production);
+        let productions =
+            eliminate_single_grp(std::slice::from_ref(&production.lhs.clone()), 0, production);
         assert_eq!(1, productions.len());
         // Start: x g1 g2 y;
         assert_eq!(
@@ -1165,7 +1184,8 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_grp(&[production.lhs.clone()], 0, production);
+        let productions =
+            eliminate_single_grp(std::slice::from_ref(&production.lhs.clone()), 0, production);
         assert_eq!(2, productions.len());
         // Start: x StartGroup y;
         assert_eq!(

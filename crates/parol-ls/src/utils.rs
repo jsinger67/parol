@@ -53,13 +53,13 @@ pub(crate) fn pos_to_offset(input: &str, pos: Position) -> usize {
             offset += 1; // Linux, Mac
         }
     }
-    if let Some(last_line) = input.lines().nth(pos.line as usize) {
-        if !last_line.is_empty() {
-            if let Some((p, _)) = last_line.char_indices().nth(pos.character as usize) {
-                offset += p
-            } else {
-                offset += last_line.char_indices().last().unwrap().0 + 1
-            }
+    if let Some(last_line) = input.lines().nth(pos.line as usize)
+        && !last_line.is_empty()
+    {
+        if let Some((p, _)) = last_line.char_indices().nth(pos.character as usize) {
+            offset += p
+        } else {
+            offset += last_line.char_indices().last().unwrap().0 + 1
         }
     }
     offset

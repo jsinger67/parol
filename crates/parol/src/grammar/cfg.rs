@@ -180,11 +180,11 @@ impl Cfg {
             self.pr
                 .iter()
                 .fold(HashMap::<TerminalIndex, String>::new(), |mut acc, p| {
-                    if p.1.len() == 1 {
-                        if let crate::Symbol::T(Terminal::Trm(s, k, _, _, _, _, l)) = &p.1[0] {
-                            let t = terminal_index_finder.terminal_index(s, *k, l);
-                            acc.insert(t, p.0.get_n().unwrap());
-                        }
+                    if p.1.len() == 1
+                        && let crate::Symbol::T(Terminal::Trm(s, k, _, _, _, _, l)) = &p.1[0]
+                    {
+                        let t = terminal_index_finder.terminal_index(s, *k, l);
+                        acc.insert(t, p.0.get_n().unwrap());
                     }
                     acc
                 });

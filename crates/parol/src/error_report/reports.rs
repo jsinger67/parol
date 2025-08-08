@@ -408,7 +408,7 @@ impl Report for ParolErrorReporter {
                             .map_or("No details".to_string(), |s| s.to_string()),
                     ]),
             );
-            return result.map_err(|e| anyhow::anyhow!(e));
+            result.map_err(|e| anyhow::anyhow!(e))
         }
     }
 }
