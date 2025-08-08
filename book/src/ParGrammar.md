@@ -275,6 +275,10 @@ will result in
 Terminals without explicitly associated scanner state are implicitly associated with scanner state
 INITIAL.
 
+> **Note for Parol v4:**
+> Parser-based scanner switching is no longer supported. All scanner switching must now be handled by the scanner itself using scanner-based switching.
+> Please update your grammars accordingly. See [Changes in version 4](./ParolVersion4.md) for migration details.
+
 ### Parser-bases scanner switching
 
 The first way to control scanner states is to define switching directives within your productions.
@@ -318,7 +322,11 @@ formulation. If this is not possible consider to use `Scanner-bases scanner swit
 
 You may have look at example `scanner_states` that demonstrates the handling of scanner states.
 
-### Scanner-bases scanner switching
+### Scanner-based scanner switching
+
+> **Note for Parol v4:**
+> Scanner-based switching is now the only supported method for scanner state transitions.
+> All features and examples referring to parser-based switching are deprecated as of v4.
 
 LR grammars reduce the parser stack from the right side and thus you can't decide the scanner state
 switching from the perspective of the parser. The tokens are already read and pushed on the parse

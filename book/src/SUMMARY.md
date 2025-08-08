@@ -18,3 +18,6 @@
 
 # Version 3
 - [Changes in version 3](./ParolVersion3.md)
+
+# Version 4
+- [Changes in version 4](./ParolVersion4.md)
