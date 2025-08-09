@@ -83,9 +83,32 @@ type EquationSystem = FxHashMap<Pos, TransferFunction>;
 /// The `StepFunction` returns a `ResultMap` struct that was extended in each iteration step.
 type StepFunction = Box<dyn Fn(Rc<ResultMap>, Rc<RefCell<FollowSet>>) -> ResultMap>;
 
-///
 /// Calculates the FOLLOW k sets for all non-terminals of the given grammar.
 ///
+/// This function implements the FOLLOW set algorithm for LR parser generation,
+/// computing the set of k-length terminal strings that can follow each non-terminal.
+///
+/// # Arguments
+///
+/// * `grammar_config` - Configuration containing the context-free grammar
+/// * `k` - The lookahead length (0 <= k <= MAX_K)
+/// * `first_cache` - Cached FIRST sets for efficiency
+/// * `follow_cache` - Cached FOLLOW sets from previous k values
+///
+/// # Returns
+///
+/// A tuple containing:
+/// * `ResultMap` - Position-based mapping of FOLLOW sets
+/// * `FollowSet` - Non-terminal-based FOLLOW sets
+///
+/// # Panics
+///
+/// Panics if the grammar configuration is invalid or if caches are inconsistent.
+///
+/// # Performance Notes
+///
+/// This function is performance-critical and uses inline optimization.
+/// The algorithm complexity is O(n²) where n is the grammar size.
 #[inline(always)]
 pub fn follow_k(
     grammar_config: &GrammarConfig,
