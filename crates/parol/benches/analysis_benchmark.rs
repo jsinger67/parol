@@ -1,4 +1,4 @@
-use std::{fs, time::Duration};
+use std::time::Duration;
 
 use criterion::{Criterion, criterion_group, criterion_main};
 use parol::analysis::{FirstCache, FollowCache};
@@ -28,16 +28,13 @@ fn create_complex_grammar() -> parol::GrammarConfig {
     // * 542 equations in equation system for FOLLOW(k)
     // The calculation of FIRST(k) and FOLLOW(k) sets takes usually about 5 seconds.
 
-    let grammar_path = "modelica.par";
-    if !std::path::Path::new(grammar_path).exists() {
+    let grammar_content = {
         let url = "https://raw.githubusercontent.com/CogniPilot/rumoca/e83e5d3/modelica.par";
         let response = reqwest::blocking::get(url).expect("Failed to download grammar file");
-        let content = response
+        response
             .text()
-            .expect("Failed to read grammar file content");
-        fs::write(grammar_path, &content).expect("Failed to write grammar file");
-    }
-    let grammar_content = fs::read_to_string(grammar_path).expect("Failed to read grammar file");
+            .expect("Failed to read grammar file content")
+    };
     parol::obtain_grammar_config_from_string(&grammar_content, false)
         .expect("Failed to parse grammar")
 }
