@@ -10,12 +10,6 @@ use std::fmt::{Display, Error, Formatter};
 #[derive(Debug, Clone, Default, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub(crate) struct SymbolString(pub Vec<Symbol>);
 
-impl SymbolString {
-    pub fn len(&self) -> usize {
-        self.0.len()
-    }
-}
-
 impl From<&Pr> for SymbolString {
     fn from(pr: &Pr) -> Self {
         Self(
