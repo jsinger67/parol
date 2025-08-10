@@ -38,6 +38,7 @@ scanner! {
             token r"/\*([^*]|\*[^/])*\*/" => 4; // "BlockComment"
             token r"[a-zA-Z_]\w*" => 5; // "Identifier"
             token r"\u{22}" => 9; // "StringDelimiter"
+            token r"." => 11; // "EscapedLineEnd"
             on 9 enter String;
         }
         mode String {
@@ -45,6 +46,7 @@ scanner! {
             token r"\u{5c}[\s^\n\r]*\r?\n" => 7; // "EscapedLineEnd"
             token r"[^\u{22}\u{5c}]+" => 8; // "NoneQuote"
             token r"\u{22}" => 9; // "StringDelimiter"
+            token r"." => 9; // "Identifier"
             on 9 enter INITIAL;
         }
     }

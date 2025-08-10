@@ -163,6 +163,7 @@ scanner! {
             token r"[a-zA-Z_]\w*" => 68; // "Ident"
             token r"\u{0022}[^\u{0022}]*\u{0022}|'[^']*'" => 69; // "String"
             token r"IN" => 70; // "InOp"
+            token r"." => 74; // "InOp"
         }
     }
 }

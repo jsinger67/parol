@@ -112,6 +112,7 @@ scanner! {
             token r"\^" => 42; // "CutOperator"
             token r"\?=" => 43; // "PositiveLookahead"
             token r"\?!" => 44; // "NegativeLookahead"
+            token r"." => 49; // "Error"
         }
     }
 }

@@ -103,6 +103,7 @@ scanner! {
             token r"\+|-" => 38; // "UnaryOp"
             token r"[a-zA-Z][a-zA-Z0-9]*" => 39; // "Ident"
             token r"[0-9]+" => 40; // "Integer"
+            token r"." => 44; // "Integer"
         }
     }
 }

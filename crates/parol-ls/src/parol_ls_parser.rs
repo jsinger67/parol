@@ -116,6 +116,7 @@ scanner! {
             token r"/(\\.|[^\/])*/" => 44; // "Regex"
             token r"\?=" => 45; // "PositiveLookahead"
             token r"\?!" => 46; // "NegativeLookahead"
+            token r"." => 51; // "Error"
         }
     }
 }

@@ -68,6 +68,7 @@ scanner! {
             token r"END" => 18; // "End"
             token r"=" => 19; // "AssignOp"
             token r"[A-Z][0-9A-Z]*" => 30; // "Variable"
+            token r"." => 19; // "Goto"
             on 12 enter Cmnt;
             on 13 enter Expr;
             on 17 enter Expr;
@@ -77,6 +78,7 @@ scanner! {
             token r"[\s--\r\n]+" => 2; // "Whitespace"
             token r"(?:\r?\n|\r)+" => 8; // "EndOfLine"
             token r"[^\r\n]+" => 29; // "Comment"
+            token r"." => 8; // "BlockComment"
             on 8 enter INITIAL;
         }
         mode Expr {
@@ -99,6 +101,7 @@ scanner! {
             token r"\(" => 27; // "LParen"
             token r"\)" => 28; // "RParen"
             token r"[A-Z][0-9A-Z]*" => 30; // "Variable"
+            token r"." => 24; // "LogicalOrOp"
             on 8 enter INITIAL;
             on 14 enter INITIAL;
             on 15 enter INITIAL;

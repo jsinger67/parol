@@ -35,6 +35,7 @@ scanner! {
             token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
             token r"," => 5; // "Comma"
             token r"0|[1-9][0-9]*" => 6; // "Num"
+            token r"." => 10; // "Num"
         }
     }
 }
