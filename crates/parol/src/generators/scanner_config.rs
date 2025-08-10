@@ -3,8 +3,8 @@ use anyhow::{Result, bail};
 use parol_runtime::{
     TerminalIndex,
     lexer::{
-        BLOCK_COMMENT, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, NEW_LINE_TOKEN, WHITESPACE,
-        WHITESPACE_TOKEN,
+        BLOCK_COMMENT, ERROR_TOKEN, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, NEW_LINE_TOKEN,
+        WHITESPACE, WHITESPACE_TOKEN,
     },
 };
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -160,7 +160,7 @@ impl ScannerConfig {
             ));
         }
 
-        let terminal_mappings = cfg.get_ordered_terminals().iter().enumerate().fold(
+        let mut terminal_mappings = cfg.get_ordered_terminals().iter().enumerate().fold(
             terminal_mappings,
             |mut acc, (i, (t, k, l, s))| {
                 if s.contains(&self.scanner_state) {
@@ -174,6 +174,13 @@ impl ScannerConfig {
                 acc
             },
         );
+        // Add the error token as last terminal of the mode
+        terminal_mappings.push((
+            ERROR_TOKEN.to_owned(),
+            terminal_mappings.len() as TerminalIndex + FIRST_USER_TOKEN,
+            None,
+            terminal_names[terminal_mappings.len() + 1].clone(),
+        ));
 
         Ok((terminal_mappings, self.transitions.clone()))
     }
