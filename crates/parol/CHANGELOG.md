@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.2 - Not released yet
+
+* Reintroduce the generation of an explicit error token, as was done in version 3. This change
+should not affect existing parsers, except that unknown tokens will now reliably trigger an error
+instead of being silently ignored.
+
+  However, there may be scenarios where explicit error tokens are not desired. To support these
+  cases, it could be useful to allow disabling automatic error token generation in specific scanner
+  modes. Possible scanner directives for this purpose might include `%allow_unmatched`, `%no_error`,
+  or similar options.
+
 ## 4.0.1 - 2025-08-05
 
 * Fix for issue [#734](https://github.com/jsinger67/parol/issues/734)
