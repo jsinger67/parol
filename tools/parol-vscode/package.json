@@ -9,7 +9,7 @@
     "license": "SEE LICENSE IN LICENSE",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "repository": {
         "url": "https://github.com/jsinger67/parol.git",
         "type": "git",
@@ -89,14 +89,13 @@
         "@types/node": "^18.0.5",
         "@types/vscode": "^1.69.0",
         "@vscode/test-electron": "^2.1.5",
-        "esbuild": "0.14.54",
+        "esbuild": "^0.14.54",
         "eslint": "^8.20.0",
         "prettier": "^2.7.1",
         "vsce": "^2.9.3"
     },
     "main": "./out/extension",
-    "activationEvents": [
-    ],
+    "activationEvents": [],
     "scripts": {
         "vscode:prepublish": "npm run build-base -- --minify",
         "package": "vsce package -o parol-vscode.vsix",

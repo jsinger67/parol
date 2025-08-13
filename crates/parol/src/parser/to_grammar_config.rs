@@ -31,13 +31,15 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
         .clone();
     let auto_newline = !parol_grammar.scanner_configurations[0].auto_newline_off;
     let auto_ws = !parol_grammar.scanner_configurations[0].auto_ws_off;
+    let allow_unmatched = parol_grammar.scanner_configurations[0].allow_unmatched;
     let lookahead_size = 1; // Updated later
 
     let scanner_config = ScannerConfig::default()
         .with_line_comments(line_comments)
         .with_block_comments(block_comments)
         .with_auto_newline(auto_newline)
-        .with_auto_ws(auto_ws);
+        .with_auto_ws(auto_ws)
+        .with_allow_unmatched(allow_unmatched);
 
     let mut grammar_config = GrammarConfig::new(cfg, lookahead_size)
         .with_title(title)
@@ -174,7 +176,8 @@ fn try_from_scanner_config(
         .with_line_comments(sc.line_comments.clone())
         .with_block_comments(sc.block_comments.clone())
         .with_auto_newline(!sc.auto_newline_off)
-        .with_auto_ws(!sc.auto_ws_off);
+        .with_auto_ws(!sc.auto_ws_off)
+        .with_allow_unmatched(sc.allow_unmatched);
     Ok(scanner_config)
 }
 

@@ -36,6 +36,7 @@ ScannerDirectives
     | "%auto_newline_off"
     | "%auto_ws_off"
     | '%on' IdentifierList ScannerStateDirectives
+    | "%allow_unmatched"
     ;
 
 ScannerStateDirectives

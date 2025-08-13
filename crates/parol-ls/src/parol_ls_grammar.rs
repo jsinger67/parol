@@ -179,6 +179,25 @@ impl ParolLsGrammar {
                     }]),
                 });
             }
+            ScannerDirectives::PercentAllowUnderscoreUnmatched(allow_unmatched) => {
+                #[allow(deprecated)]
+                symbols.push(DocumentSymbol {
+                    name: allow_unmatched
+                        .percent_allow_underscore_unmatched
+                        .text()
+                        .to_string(),
+                    detail: Some("Allow unmatched tokens".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(
+                        &allow_unmatched.percent_allow_underscore_unmatched,
+                    )
+                    .0,
+                    children: None,
+                });
+            }
             ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(
                 block_comment,
             ) => {

@@ -59,6 +59,9 @@ pub struct ScannerConfig {
     ///
     pub auto_ws: bool,
 
+    /// If true, unmatched input is allowed without error.
+    pub allow_unmatched: bool,
+
     /// Scanner state transitions
     /// Maps from token to scanner state, where the token is identified by its TerminalIndex
     /// The scanner state is identified by its index.
@@ -75,6 +78,7 @@ impl ScannerConfig {
             block_comments: Vec::new(),
             auto_newline: true,
             auto_ws: true,
+            allow_unmatched: false,
             transitions: Vec::new(),
         }
     }
@@ -103,7 +107,12 @@ impl ScannerConfig {
         self
     }
 
-    ///
+    /// Sets allow unmatched behavior
+    pub fn with_allow_unmatched(mut self, allow_unmatched: bool) -> Self {
+        self.allow_unmatched = allow_unmatched;
+        self
+    }
+
     /// Generates the data needed by the lexer generator.
     /// The tuple contains the mapping of terminal strings to their indices plus an optional
     /// lookahead pattern and the transitions, i.e. a mapping of terminal indices to scanner names.
@@ -174,13 +183,16 @@ impl ScannerConfig {
                 acc
             },
         );
-        // Add the error token as last terminal of the mode
-        terminal_mappings.push((
-            ERROR_TOKEN.to_owned(),
-            terminal_mappings.len() as TerminalIndex + FIRST_USER_TOKEN,
-            None,
-            terminal_names[terminal_mappings.len() + 1].clone(),
-        ));
+        // Add the error token as last terminal of the mode, unless allow_unmatched is set
+        if !self.allow_unmatched {
+            let error_index = terminal_names.len() - 1;
+            terminal_mappings.push((
+                ERROR_TOKEN.to_owned(),
+                error_index as TerminalIndex,
+                None,
+                terminal_names[error_index].clone(),
+            ));
+        }
 
         Ok((terminal_mappings, self.transitions.clone()))
     }
@@ -280,6 +292,7 @@ impl Default for ScannerConfig {
             block_comments: Vec::new(),
             auto_newline: true,
             auto_ws: true,
+            allow_unmatched: false,
             transitions: Vec::new(),
         }
     }

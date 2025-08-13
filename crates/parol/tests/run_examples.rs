@@ -99,6 +99,9 @@ fn run_examples_test() -> Result<()> {
     println!("Running JSON Parser examples...");
     run_json_examples()?;
 
+    println!("Running Allow Unmatched examples...");
+    run_allow_unmatched_examples()?;
+
     Ok(())
 }
 
@@ -225,5 +228,52 @@ fn run_json_examples() -> Result<()> {
             assert!(exit_status.success());
         }
     }
+    Ok(())
+}
+
+///
+/// Tests the `allow_unmatched` example with various input files.
+///
+/// This example demonstrates the `%allow_unmatched` scanner directive in Parol.
+/// With this directive, unmatched input is skipped and parsing continues.
+/// The test covers the following files:
+/// - `matched.txt`: All input is matched.
+/// - `unmatched_start.txt`: Unmatched input at the start.
+/// - `unmatched_middle.txt`: Unmatched input in the middle.
+/// - `unmatched_end.txt`: Unmatched input at the end.
+///   All files above should be parsed successfully with `%allow_unmatched`.
+/// - `whitespace_only.txt`: Contains only whitespace and should fail to parse.
+///
+fn run_allow_unmatched_examples() -> Result<()> {
+    let parser = example_path!("allow_unmatched");
+    let base = concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/allow_unmatched/"
+    );
+    let files = [
+        "matched.txt",
+        "unmatched_start.txt",
+        "unmatched_middle.txt",
+        "unmatched_end.txt",
+    ];
+    for file in files.iter() {
+        let path = format!("{base}{file}");
+        println!("Parsing {}...", path);
+        let exit_status = run(&parser, &[&path])?;
+        assert!(
+            exit_status.success(),
+            "Parsing {} failed (should succeed with %allow_unmatched)",
+            path
+        );
+    }
+    // Test whitespace_only.txt, which should fail to parse
+    let whitespace_path = format!("{base}whitespace_only.txt");
+    println!("Parsing {} (should fail)...", whitespace_path);
+    let exit_status = run(&parser, &[&whitespace_path])?;
+    assert!(
+        !exit_status.success(),
+        "Parsing {} succeeded (should fail to parse whitespace-only input)",
+        whitespace_path
+    );
     Ok(())
 }

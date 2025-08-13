@@ -52,7 +52,7 @@ scanner! {
             token r"null" => 13; // "Null"
             token r#""(\\.|[^"])*""# => 14; // "String"
             token r"-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?" => 15; // "Number"
-            token r"." => 18; // "String"
+            token r"." => 16; // "Error"
         }
     }
 }

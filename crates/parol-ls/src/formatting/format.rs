@@ -968,6 +968,34 @@ fn handle_scanner_directives(
                 comments,
             )
         }
+        ScannerDirectives::PercentAllowUnderscoreUnmatched(a) => {
+            let (comments_before_token, comments) = Comments::format_comments_before(
+                comments,
+                &a.percent_allow_underscore_unmatched,
+                &options.clone().with_padding(Padding::Left),
+            );
+            if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                indent.insert(0, '\n');
+            };
+            let (following_comment, comments) = Comments::formatted_immediately_following_comment(
+                comments,
+                &a.percent_allow_underscore_unmatched,
+                &options
+                    .clone()
+                    .with_padding(Padding::Left)
+                    .with_line_end(LineEnd::ForceRemove),
+            );
+            (
+                format!(
+                    "{}{}{}{}",
+                    comments_before_token,
+                    indent,
+                    a.percent_allow_underscore_unmatched,
+                    following_comment
+                ),
+                comments,
+            )
+        }
         ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(b) => {
             let (comments_before_token, comments) = Comments::format_comments_before(
                 comments,

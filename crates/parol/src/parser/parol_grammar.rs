@@ -602,6 +602,8 @@ pub struct ScannerConfig {
     pub auto_newline_off: bool,
     /// Defines whether to handle whitespace automatically in scanner
     pub auto_ws_off: bool,
+    /// Allow unmatched input without error
+    pub allow_unmatched: bool,
     /// Scanner state transitions
     /// Maps from (token, terminal kind) to scanner state, where the token is identified by its
     /// primary non-terminal name. The scanner state is identified by its name.
@@ -653,6 +655,7 @@ impl Default for ScannerConfig {
             block_comments: Vec::default(),
             auto_newline_off: false,
             auto_ws_off: false,
+            allow_unmatched: false,
             transitions: BTreeMap::default(),
         }
     }
@@ -692,6 +695,9 @@ impl TryFrom<&parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
                     me.add_transitions(
                         scanner_directives_percent_on_identifier_list_scanner_state_directives,
                     );
+                }
+                ScannerDirectives::PercentAllowUnderscoreUnmatched(_) => {
+                    me.allow_unmatched = true;
                 }
             }
         }
@@ -839,6 +845,9 @@ impl ParolGrammar<'_> {
             }
             ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(transitions) => {
                 self.scanner_configurations[INITIAL_STATE].add_transitions(transitions)
+            }
+            ScannerDirectives::PercentAllowUnderscoreUnmatched(_) => {
+                self.scanner_configurations[INITIAL_STATE].allow_unmatched = true
             }
         }
         Ok(())

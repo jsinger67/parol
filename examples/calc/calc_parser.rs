@@ -66,7 +66,7 @@ scanner! {
             token r"\)" => 19; // "RParen"
             token r"0|[1-9][0-9]*" => 20; // "Number"
             token r"[a-zA-Z_][a-zA-Z0-9_]*" => 21; // "Id"
-            token r"." => 26; // "Error"
+            token r"." => 22; // "Error"
         }
     }
 }

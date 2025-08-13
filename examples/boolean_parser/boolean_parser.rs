@@ -56,7 +56,7 @@ scanner! {
             token r";" => 14; // "Semicolon"
             token r"\(" => 15; // "LeftParenthesis"
             token r"\)" => 16; // "RightParenthesis"
-            token r"." => 21; // "Error"
+            token r"." => 17; // "Error"
         }
     }
 }

@@ -1,0 +1,14 @@
+%start Expr
+%allow_unmatched
+
+%%
+
+NUMBER
+    : /[0-9]+/
+    ;
+
+PLUS: /\+/
+    ;
+
+Expr: NUMBER { PLUS NUMBER }
+    ;

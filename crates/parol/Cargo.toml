@@ -59,6 +59,10 @@ name = "parol"
 required-features = ["build"]
 
 [[example]]
+name = "allow_unmatched"
+path = "../../examples/allow_unmatched/main.rs"
+
+[[example]]
 name = "basic"
 path = "../../examples/basic_interpreter/main.rs"
 

@@ -1,0 +1,9 @@
+%start Expr
+
+%%
+
+/* 0 */ NUMBER: /[0-9]+/;
+/* 1 */ PLUS: /\+/;
+/* 2 */ Expr: NUMBER ExprList /* Vec */;
+/* 3 */ ExprList /* Vec<T>::Push */: PLUS NUMBER ExprList;
+/* 4 */ ExprList /* Vec<T>::New */: ;

@@ -41,7 +41,7 @@ scanner! {
             token r"[eE][nN][dD]" => 7; // "End"
             token r"[vV][aA][rR]" => 8; // "Var"
             token r"[a-zA-Z_][a-zA-Z0-9_]*" => 9; // "Identifier"
-            token r"." => 13; // "Identifier"
+            token r"." => 10; // "Error"
         }
     }
 }

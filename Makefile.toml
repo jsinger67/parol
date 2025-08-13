@@ -32,6 +32,7 @@ args = ["build", "--bin", "parol"]
 workspace = false
 dependencies = ["build_parol"]
 run_task = { name = [
+    "generate_allow_unmatched",
     "generate_basic",
     "generate_boolean_parser",
     "generate_calc",
@@ -66,6 +67,15 @@ output = [
 [tasks.generate_and_build_parol]
 workspace = false
 dependencies = ["generate_parol", "build_parol"]
+
+[tasks.generate_allow_unmatched]
+workspace = false
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/examples/allow_unmatched"
+script_runner = "@shell"
+script = '''
+echo "Building parser sources of example 'allow_unmatched'..."
+${PAROL_TARGET} -f ./allow_unmatched.par -e ./allow_unmatched-exp.par -p ./allow_unmatched_parser.rs -a ./allow_unmatched_grammar_trait.rs -t AllowUnmatchedGrammar -m allow_unmatched_grammar -b
+'''
 
 [tasks.generate_basic]
 workspace = false

@@ -242,6 +242,9 @@ impl From<&ScannerDirectives> for Rng {
             ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(trans) => {
                 Self::from(&trans.percent_on).extend(Self::from(&trans.scanner_state_directives))
             }
+            ScannerDirectives::PercentAllowUnderscoreUnmatched(allow_unmatched) => {
+                Self::from(&allow_unmatched.percent_allow_underscore_unmatched)
+            }
         }
     }
 }
