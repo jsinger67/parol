@@ -1,108 +1,108 @@
 {
-    "name": "parol-vscode",
-    "displayName": "parol-vscode",
-    "author": {
-        "name": "Jörg Singer",
-        "email": "singer.joerg@gmx.de"
-    },
-    "homepage": "https://github.com/jsinger67/parol/blob/main/tools/parol-vscode/README.md",
-    "license": "SEE LICENSE IN LICENSE",
-    "publisher": "jsinger67",
-    "description": "Language extension for `parol`",
-    "version": "0.4.1",
-    "repository": {
-        "url": "https://github.com/jsinger67/parol.git",
-        "type": "git",
-        "directory": "tools/parol-vscode"
-    },
-    "icon": "icons/parol-vscode.png",
-    "engines": {
-        "vscode": "^1.75.0"
-    },
-    "keywords": [
-        "Parol",
-        "Parser generator",
-        "Rust",
-        "Language tool"
-    ],
-    "categories": [
-        "Programming Languages"
-    ],
-    "contributes": {
-        "configuration": {
-            "title": "Parol Language Server",
-            "properties": {
-                "parol-vscode.max_k": {
-                    "type": "integer",
-                    "markdownDescription": "#### Maximum lookahead size\n\nused for language analysis\n\n* Keep in mind that large *numbers can slow down language analysis significantly*",
-                    "default": 3,
-                    "minimum": 1,
-                    "maximum": 10
-                },
-                "parol-vscode.formatting.empty_line_after_prod": {
-                    "type": "boolean",
-                    "markdownDescription": "#### Add an empty line after each production\n\nused for code formatting",
-                    "default": true
-                },
-                "parol-vscode.formatting.prod_semicolon_on_nl": {
-                    "type": "boolean",
-                    "markdownDescription": "#### Place the semicolon after each production on a new line\n\nused for code formatting",
-                    "default": true
-                },
-                "parol-vscode.formatting.max_line_length": {
-                    "type": "integer",
-                    "markdownDescription": "#### Maximum number of characters per line\n\nused for code formatting",
-                    "default": 100
-                }
-            }
+  "name": "parol-vscode",
+  "displayName": "parol-vscode",
+  "author": {
+    "name": "Jörg Singer",
+    "email": "singer.joerg@gmx.de"
+  },
+  "homepage": "https://github.com/jsinger67/parol/blob/main/tools/parol-vscode/README.md",
+  "license": "SEE LICENSE IN LICENSE",
+  "publisher": "jsinger67",
+  "description": "Language extension for `parol`",
+  "version": "0.5.0",
+  "repository": {
+    "url": "https://github.com/jsinger67/parol.git",
+    "type": "git",
+    "directory": "tools/parol-vscode"
+  },
+  "icon": "icons/parol-vscode.png",
+  "engines": {
+    "vscode": "^1.103.0"
+  },
+  "keywords": [
+    "Parol",
+    "Parser generator",
+    "Rust",
+    "Language tool"
+  ],
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Parol Language Server",
+      "properties": {
+        "parol-vscode.max_k": {
+          "type": "integer",
+          "markdownDescription": "#### Maximum lookahead size\n\nused for language analysis\n\n* Keep in mind that large *numbers can slow down language analysis significantly*",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 10
         },
-        "languages": [
-            {
-                "id": "parol",
-                "extensions": [
-                    ".par"
-                ],
-                "aliases": [
-                    "Parol",
-                    "par"
-                ],
-                "configuration": "./language-configuration.json",
-                "icon": {
-                    "light": "./icons/parol-light.png",
-                    "dark": "./icons/parol-dark.png"
-                }
-            }
+        "parol-vscode.formatting.empty_line_after_prod": {
+          "type": "boolean",
+          "markdownDescription": "#### Add an empty line after each production\n\nused for code formatting",
+          "default": true
+        },
+        "parol-vscode.formatting.prod_semicolon_on_nl": {
+          "type": "boolean",
+          "markdownDescription": "#### Place the semicolon after each production on a new line\n\nused for code formatting",
+          "default": true
+        },
+        "parol-vscode.formatting.max_line_length": {
+          "type": "integer",
+          "markdownDescription": "#### Maximum number of characters per line\n\nused for code formatting",
+          "default": 100
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "parol",
+        "extensions": [
+          ".par"
         ],
-        "grammars": [
-            {
-                "language": "parol",
-                "scopeName": "source.parol",
-                "path": "./syntaxes/parol.tmLanguage.json"
-            }
-        ]
-    },
-    "dependencies": {
-        "systemjs": "6.12.1",
-        "vscode-languageclient": "^8.0.0"
-    },
-    "devDependencies": {
-        "@types/node": "^18.0.5",
-        "@types/vscode": "^1.69.0",
-        "@vscode/test-electron": "^2.1.5",
-        "esbuild": "^0.25.0",
-        "eslint": "^8.20.0",
-        "prettier": "^2.7.1",
-        "vsce": "^2.9.3"
-    },
-    "main": "./out/extension",
-    "activationEvents": [],
-    "scripts": {
-        "vscode:prepublish": "npm run build-base -- --minify",
-        "package": "vsce package -o parol-vscode.vsix",
-        "build-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --target=node16",
-        "build": "npm run build-base -- --sourcemap",
-        "watch": "npm run build-base -- --sourcemap --watch",
-        "lint": "prettier --check . && eslint -c .eslintrc.js --ext ts ./src ./tests",
-        "fix": "prettier --write . && eslint -c .eslintrc.js --ext ts ./src ./tests --fix"
-    }
+        "aliases": [
+          "Parol",
+          "par"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/parol-light.png",
+          "dark": "./icons/parol-dark.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "parol",
+        "scopeName": "source.parol",
+        "path": "./syntaxes/parol.tmLanguage.json"
+      }
+    ]
+  },
+  "dependencies": {
+    "systemjs": "6.15.1",
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/vscode": "^1.103.0",
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.25.9",
+    "eslint": "^9.33.0",
+    "prettier": "^3.6.2",
+    "@vscode/vsce": "3.6.0"
+  },
+  "main": "./out/extension",
+  "activationEvents": [],
+  "scripts": {
+    "vscode:prepublish": "npm run build-base -- --minify",
+    "package": "vsce package -o parol-vscode.vsix",
+    "build-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --target=node16",
+    "build": "npm run build-base -- --sourcemap",
+    "watch": "npm run build-base -- --sourcemap --watch",
+    "lint": "prettier --check . && eslint -c .eslintrc.js --ext ts ./src ./tests",
+    "fix": "prettier --write . && eslint -c .eslintrc.js --ext ts ./src ./tests --fix"
+  }
 }
