@@ -4,6 +4,17 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.5.0 - Not released yet
+
+### feat: add %allow_unmatched scanner directive support
+
+- Implemented the %allow_unmatched directive in the Parol grammar, allowing unmatched input to be skipped during parsing.
+- Updated the grammar configuration to include the new directive.
+- Added tests for various scenarios involving unmatched input, ensuring correct behavior with both matched and unmatched cases.
+- Created example files demonstrating the usage of %allow_unmatched, including README documentation.
+- Enhanced existing examples and parsers to accommodate the new functionality.
+- Updated the VSCode extension to recognize the new directive in syntax highlighting.
+
 ## v0.4.0 - 2025-07-27
 
 * Support for syntax extension 'named members'
