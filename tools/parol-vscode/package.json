@@ -89,7 +89,7 @@
         "@types/node": "^18.0.5",
         "@types/vscode": "^1.69.0",
         "@vscode/test-electron": "^2.1.5",
-        "esbuild": "^0.14.54",
+        "esbuild": "^0.25.0",
         "eslint": "^8.20.0",
         "prettier": "^2.7.1",
         "vsce": "^2.9.3"
