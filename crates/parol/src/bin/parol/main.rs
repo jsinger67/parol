@@ -228,6 +228,7 @@ fn extract_file_name(args: &CliArgs) -> Option<PathBuf> {
             tools::ToolsSubcommands::left_factor(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::left_recursions(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::productivity(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::acceptor_test(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::new(_) => None,
         }
     } else {

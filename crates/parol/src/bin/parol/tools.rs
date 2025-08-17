@@ -44,5 +44,6 @@ declare_tools!(
     left_factor,
     left_recursions,
     new,
-    productivity
+    productivity,
+    acceptor_test
 );

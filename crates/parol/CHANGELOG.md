@@ -33,6 +33,18 @@ instead of being silently ignored.
 
   See also the new example `allow_unmatched`.
 
+* New subcommand: `acceptor_test`
+  The CLI now includes the `acceptor_test` subcommand, which allows users to run and verify acceptor functions directly from the command line. This is useful for testing grammar acceptors in isolation, facilitating rapid development and debugging of grammar rules.
+
+  **Usage example:**
+  ```shell
+  parol acceptor_test --grammar <path-to-grammar-file> --input <input-file>
+  ```
+
+  The subcommand reports whether the input is accepted by the grammar's acceptor, providing detailed feedback for grammar development.
+
+* Fix: Update generated dependencies for subcommand `parol new`
+
 ## 4.0.1 - 2025-08-05
 
 * Fix for issue [#734](https://github.com/jsinger67/parol/issues/734)

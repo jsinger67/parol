@@ -67,7 +67,7 @@ pub fn acceptor_test<T>(
         .success();
 
     let grammar_config =
-        obtain_grammar_config(input, false).expect("Error compiling input grammar");
+        obtain_grammar_config(input, false).expect("Error compiling input grammar\n{input}\n");
     let mut generator = LanguageGenerator::new(&grammar_config.cfg);
 
     (0..test_count).for_each(|_| {
