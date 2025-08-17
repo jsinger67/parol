@@ -30,9 +30,3 @@ Cargo.lock
 
 # mdbook
 /book/book/**
-
-# kilocode
-/.kilocode/**
-
-# context_portal
-/context_portal/**
