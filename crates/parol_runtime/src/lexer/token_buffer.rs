@@ -8,22 +8,50 @@
 //! so called lossless parse tree, which can be used by users to understand the structure
 //! of the input text.
 use super::Token;
-use crate::LexerError;
+use crate::{LexerError, TokenNumber};
 
 /// Buffer for tokens
 #[derive(Debug, Default)]
 pub struct TokenBuffer<'t> {
     tokens: Vec<Token<'t>>,
+    last_token_location: u32,
+    last_token_number: TokenNumber,
 }
 
 impl<'t> TokenBuffer<'t> {
     /// Creates a new instance
     pub fn new() -> TokenBuffer<'t> {
-        TokenBuffer { tokens: Vec::new() }
+        TokenBuffer {
+            tokens: Vec::new(),
+            last_token_location: 0,
+            last_token_number: 0,
+        }
     }
 
     /// Adds a token to the buffer
-    pub fn add(&mut self, token: Token<'t>) {
+    pub fn add(&mut self, token: Token<'t>, input: &'t str) {
+        let new_start = token.location.start;
+        if self.last_token_location < new_start {
+            use crate::lexer::location::Location;
+            use crate::lexer::token::INVALID_TOKEN;
+            let gap_location = Location {
+                start: self.last_token_location,
+                end: new_start,
+                file_name: token.location.file_name.clone(),
+                ..Location::default()
+            };
+            let invalid_token = Token::with(
+                std::convert::Into::<std::borrow::Cow<'t, str>>::into(
+                    &input[gap_location.start as usize..gap_location.end as usize],
+                ),
+                INVALID_TOKEN,
+                gap_location,
+                self.last_token_number + 1,
+            );
+            self.tokens.push(invalid_token);
+        }
+        self.last_token_location = token.location.end;
+        self.last_token_number = token.token_number;
         self.tokens.push(token);
     }
 

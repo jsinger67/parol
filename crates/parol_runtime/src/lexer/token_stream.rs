@@ -224,14 +224,14 @@ where
             if !token.is_skip_token() {
                 tokens_read += 1;
             }
-            self.tokens.add(token);
+            self.tokens.add(token, self.input);
             if tokens_read >= n {
                 break;
             }
         }
         while tokens_read < n {
             trace!("read_tokens: Filling with EOI at end of input");
-            self.tokens.add(Token::eoi(TokenNumber::MAX));
+            self.tokens.add(Token::eoi(TokenNumber::MAX), self.input);
             tokens_read += 1;
         }
         Ok(tokens_read)

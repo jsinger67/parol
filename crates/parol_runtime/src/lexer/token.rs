@@ -23,6 +23,9 @@ pub const BLOCK_COMMENT: TerminalIndex = 4;
 /// Index of the first user token.
 pub const FIRST_USER_TOKEN: TerminalIndex = 5;
 
+/// Invalid token constant
+pub const INVALID_TOKEN: TerminalIndex = TerminalIndex::MAX - 1;
+
 /// End of input token text
 const EOI_TOKEN: &str = "$";
 
@@ -100,6 +103,7 @@ impl<'t> Token<'t> {
     #[inline]
     pub fn is_skip_token(&self) -> bool {
         self.token_type > EOI && self.token_type < FIRST_USER_TOKEN
+            || self.token_type == INVALID_TOKEN
     }
 
     ///
