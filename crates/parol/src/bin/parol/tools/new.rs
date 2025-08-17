@@ -95,9 +95,10 @@ pub fn main(args: &Args) -> Result<()> {
 
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "env_logger@0.11"],
-    &["add", "parol_runtime@3.0"],
+    &["add", "parol_runtime@4.0"],
     &["add", "thiserror@2.0"],
     &["add", "anyhow@1.0"],
+    &["add", "scnr2@0.3.2"],
     &[
         "add",
         concat!("parol@", env!("CARGO_PKG_VERSION")),
