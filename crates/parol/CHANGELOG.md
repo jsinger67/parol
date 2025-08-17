@@ -34,14 +34,33 @@ instead of being silently ignored.
   See also the new example `allow_unmatched`.
 
 * New subcommand: `acceptor_test`
-  The CLI now includes the `acceptor_test` subcommand, which allows users to run and verify acceptor functions directly from the command line. This is useful for testing grammar acceptors in isolation, facilitating rapid development and debugging of grammar rules.
+  The CLI now includes the `acceptor_test` subcommand, which allows users to run and verify acceptor
+  functions directly from the command line.
+  
+  It automatically generates random input which adheres to the given grammar description and applies
+  it frequently to a freshly generated acceptor of this grammar. This is useful for testing grammar
+  acceptors in isolation, facilitating rapid development and debugging of grammar rules.
 
-  **Usage example:**
+  **Usage:**
   ```shell
-  parol acceptor_test --grammar <path-to-grammar-file> --input <input-file>
+  parol acceptor_test --grammar-file <path-to-grammar-file> --test-count <test-count> --max-length <max-length-of-generated-input>
+  ```
+  concrete example:
+  ```
+  parol acceptor-test -f .\examples\json_parser\json.par -c 1000 -l 1000
   ```
 
-  The subcommand reports whether the input is accepted by the grammar's acceptor, providing detailed feedback for grammar development.
+  The subcommand fails when a certain random the input is not accepted by the grammar's acceptor,
+  providing detailed feedback for grammar development.
+
+  Call
+  ```
+  parol acceptor-test --help
+  ```
+  for details on execution.
+
+  > Please note, that the command will fail if the grammar description contains references to the
+  implementation, e.g. `%nt_type`. You might consider to temporarily comment them out.
 
 * Fix: Update generated dependencies for subcommand `parol new`
 
