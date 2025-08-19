@@ -34,12 +34,16 @@ instead of being silently ignored.
   See also the new example `allow_unmatched`.
 
 * New subcommand: `acceptor_test`
+
   The CLI now includes the `acceptor_test` subcommand, which allows users to run and verify acceptor
-  functions directly from the command line.
+  functionality directly from the command line.
+
+  It first generates a new acceptor binary crate with the given grammar description facilitating the
+  `parol new` subcommand.
   
-  It automatically generates random input which adheres to the given grammar description and applies
-  it frequently to a freshly generated acceptor of this grammar. This is useful for testing grammar
-  acceptors in isolation, facilitating rapid development and debugging of grammar rules.
+  Then it automatically generates random input which adheres to the given grammar description and
+  applies it frequently to the freshly generated acceptor of this grammar. This is useful for
+  testing grammar acceptors in isolation, facilitating rapid development.
 
   **Usage:**
   ```shell
@@ -50,7 +54,7 @@ instead of being silently ignored.
   parol acceptor-test -f .\examples\json_parser\json.par -c 1000 -l 1000
   ```
 
-  The subcommand fails when a certain random the input is not accepted by the grammar's acceptor,
+  The subcommand fails when a certain random input is not accepted by the grammar's acceptor,
   providing detailed feedback for grammar development.
 
   Call
