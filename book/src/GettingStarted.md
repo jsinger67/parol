@@ -20,7 +20,7 @@ To confirm a correct installation invoke this command:
 
 ```shell
 $ parol -V
-parol 0.10.6
+parol 4.0.1
 ```
 
 If you see an error saying the tool couldn't be found please check your PATH variable. It should

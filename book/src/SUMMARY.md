@@ -1,23 +1,13 @@
 # Summary
 
-# Version 1
 - [Introduction](./Introduction.md)
 - [History](./History.md)
-- [Getting started](./GettingStarted.md)
-- [Grammar description syntax](./ParGrammar.md)
-- [Operator precedence](./OperatorPrecedence.md)
-- [Operator associativity](./OperatorAssociativity.md)
-- [AST generation](./AstGeneration.md)
-- [Vanilla mode](./VanillaMode.md)
-- [Semantic actions](./SemanticActions.md)
-- [Useful tips](./UsefulTips.md)
+- [Getting Started](./GettingStarted.md)
+- [Grammar Description Syntax](./ParGrammar.md)
+- [Operator Precedence](./OperatorPrecedence.md)
+- [Operator Associativity](./OperatorAssociativity.md)
+- [AST Generation](./AstGeneration.md)
+- [Semantic Actions](./SemanticActions.md)
+- [Useful Tips](./UsefulTips.md)
 - [Q&A](./QnA.md)
-
-# Version 2
-- [Changes in version 2](./ParolVersion2.md)
-
-# Version 3
-- [Changes in version 3](./ParolVersion3.md)
-
-# Version 4
-- [Changes in version 4](./ParolVersion4.md)
+- [Changes in Version 4](./ParolVersion4.md)

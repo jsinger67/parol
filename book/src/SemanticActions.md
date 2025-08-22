@@ -24,8 +24,8 @@ its functions have default implementations.
 
 `parol` provides two different modes with different properties of semantic actions:
 
-* [Vanilla mode](SemanticActions.html#semantic-actions-in-vanilla-mode)
-* [Auto-gen mode](SemanticActions.html#semantic-actions-in-auto-generation-mode)
+* [Vanilla mode](SemanticActions.md#semantic-actions-in-vanilla-mode)
+* [Auto-gen mode](SemanticActions.md#semantic-actions-in-auto-generation-mode)
 
 ![Parol's Modes](ParolModes.svg)Overview of the two modes
 
@@ -174,13 +174,10 @@ That's why you know the non-terminals are collected and lay on top of your own p
 
 ## Semantic actions in Auto-generation mode
 
->Note that this mode is the default mode in versions greater 1. Actually, it is the only generation
-mode in `parol` then and has no specific name. If you encounter the terms `auto-generation mode` or
-`auto-gen mode` in versions greater 1 you can think of them as the normal way `parol` works.
+This is the default and only mode in Parol version 4 and later. All semantic actions are generated for non-terminals of your input grammar, and are typed accordingly.
 
 The auto-gen mode abstracts away the [expanded version](AstGeneration.html#the-expanded-grammar) of
-your grammar. As in [vanilla mode](SemanticActions.html#semantic-actions-in-vanilla-mode) the
-`parol` parser generator creates a trait with functions that represent semantic actions. But here
+your grammar. The `parol` parser generator creates a trait with functions that represent semantic actions. Here,
 the semantic actions are typed and they are generated for the *non-terminals of your input grammar*
 instead of for *productions of the [expanded grammar](AstGeneration.html#the-expanded-grammar)*.
 
@@ -263,7 +260,7 @@ right-hand side of the production (`{ instruction ";"^ }`).
 
 The elements of the vector are of type `CalcList` that is defined this way:
 > The reason why boxed types are needed is explained
-[here](AstGeneration.html#recursive-structure-of-a-grammar).
+[here](AstGeneration.md#recursive-structure-of-a-grammar).
 >
 > Also note that in the meantime the very `Box` here could be optimized away by `parol`. This is a great example of the evolution of it.
 
