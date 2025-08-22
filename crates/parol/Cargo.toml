@@ -16,7 +16,7 @@ exclude = ["/tests", "/data", "/bindings"]
 [dependencies]
 anyhow = { workspace = true }
 assert_cmd = "2.0"
-bitflags = "2.9.2"
+bitflags = "2.9.3"
 cfg-if = "1.0.3"
 clap = { workspace = true }
 derive_builder = { version = "0.20.2" }
