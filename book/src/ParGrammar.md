@@ -22,22 +22,15 @@ As opposed to EBNF you use C-like line comments starting with two slashes (//) a
 (/\* ... \*/) in PAR files. This is a result of the close relationship between PAR grammar and
 bison's grammar.
 
->As of version 0.22.0 `parol` doesn't simply discard language comments. They are provided during
-parse process via a new method `<UserType>GrammarTrait::on_comment_parsed` which is called for each
+`parol` doesn't simply discard language comments. They are provided during
+parse process via a new method `<UserType>GrammarTrait::on_comment` which is called for each
 single comment in order of their appearance each time before the parser consumes a normal token from
 token stream.
->
-> The method is default implemented and the user have to provide an own implementation if she is
+The method is default implemented and the user have to provide an own implementation if she is
 interested in language comments.
->
->This is a minimal support but can greatly improve the usability. Also note that this comment
-handling is currently only supported in `parols`'s auto-generation mode.
->
->Any feedback is appreciated.
----
->In version 2 `<UserType>GrammarTrait::on_comment_parsed` has been renamed to
-`<UserType>GrammarTrait::on_comment` for clarity
----
+
+This is a minimal support but can greatly improve the usability.
+
 ## Defining the grammar type
 
 In the global header section you can define the grammar type you want to use in your grammar
@@ -49,7 +42,7 @@ The default grammar type is LL(k) and can be omitted.
 %grammar_type 'LL(k)'
 ```
 
-You have to option to use LALR(1) grammar type this way.
+You have the option to use LALR(1) grammar type this way.
 
 ```parol
 %grammar_type 'LALR(1)'
@@ -114,18 +107,19 @@ that instructs the name generation to name the terminal "Assign".
 
 ### Terminal representation
 
-As of version 0.14.0 `parol` supports three different styles of terminal representations, all of
-them being valid and allowed.
+`parol` supports three different styles of terminal representations, all of them being valid and
+allowed.
 
-* The legacy syntax (`"..."`). These terminals are treated as if they were regular expressions.
-* New single quoted string literals (`'..'`) are literal or raw strings. The user doesn't need to
-escape any regex meta character. This is used when you don't want to deal with regexes and only use
-plain text. E.g.: `BlockBegin: '{'`
-* New regular expression strings (`/../`), behaves exactly like the old double quoted string but
-better conveys the intent. E.g.: `Digits: /[\d]+/`
+* The **string syntax** (`"..."`). These terminals are treated as if they were **regular expressions.**
+* The **single quoted** string literals (`'..'`) are **literals or raw strings**. The user doesn't
+need to escape any regex meta character. This is used when you don't want to deal with regexes and
+only use plain text. E.g.: `BlockBegin: '{'`
+* The **regular expression strings** (`/../`), behaves exactly like the double quoted string, i.e.
+they are treated as **regular expressions** but this style better conveys the intent. E.g.:
+`Digits: /[\d]+/;`
 
-Internally `parol` creates scanners on the basis of the Rust regex crate and all terminals are
-embedded in a regular expression eventually. You should be aware of this if you get strange errors
+Internally `parol` creates scanners on the basis of the `scnr2` crate and all terminals are
+expressed as regular expressions eventually. You should be aware of this if you get strange errors
 from regex generation and want to understand the problem.
 
 Here is an example for a terminal in regular expression form:
@@ -136,45 +130,58 @@ AddOperator: /\+|-/;
 
 ### Terminal conflicts
 
-* In case of conflicts between different terminals _the first seen will win_
+* Parol's scanner follows the longest match rule
+* Conflicts can only occur, if the matched tokens have the same length and are accepted by more than
+one terminal type. In case of such a conflict between different terminals, terminals defined earlier
+in the grammar have higher priority than those defined later. This allows you to influence the
+priority of tokens with equal length. In all other cases, tokens with the longest match are
+preferred.
 
-The last point needs a more detailed explanation.
-It's best to show an example for such a situation.
-Say you have two terminals "-" and "--", _minus_ and _decrement_. The generated scanner is then
-based on the following regular expression:
-
-```regexp
-/-|--/
-```
-
-The Rust regex will now match two times _minus_ when actually a _decrement_ operator should be
-detected.
-It behaves here differently than a classic scanner/lexer like Lex that obeys the _longest match_
-strategy.
-
-Fortunately there is a simple way to achieve what we want. We just need a resulting regular
-expression with a different order:
-
-```regexp
-/--|-/
-```
-
-This will perfectly do the job.
-
-To get such an order the _decrement_ terminal has to be defined __before__ the _minus_ terminal as
-in the following snippet.
+For example, if you have two terminals "-" and "--", _Minus_ and _Decr_, the scanner will match
+based on the longest match basis:
 
 ```parol
-decrement: /--/
-;
-...
-minus: /-/
-;
+Decr: /--/
+    ;
+
+Minus
+    : /-/
+    ;
+
+```
+An input string `-----` will match the decrement operator twice and then the minus operator once.
+
+As an example for tokens with the same length consider following terminal definitions:
+
+```parol
+// ❌
+Ident: /[a-zA-Z_][a-zA-Z0-9_]*/
+    ;
+
+If: 'if'
+    ;
 ```
 
-Thats all.
+In case of same length, the scanner will match based on the order of definition:
 
-With this simple but effective means you have the control over terminal conflicts.
+On input `if` it will match the `Ident` first. To make this work you have to move the terminal `If`
+before the more general `Ident`:
+
+```parol
+// ✅
+If: 'if'
+    ;
+
+Ident: /[a-zA-Z_][a-zA-Z0-9_]*/
+    ;
+```
+
+Defining _If_ before _Ident_ ensures the correct priority.
+
+#### Conclusion
+
+❗ These two mechanisms, **longest match rule** and **priority by order**, gives you control over
+terminal conflicts.
 
 ### Terminals that matches an empty string
 
@@ -182,7 +189,7 @@ Please note that terminals should always match non-empty text portions. This mea
 avoid terminals like this:
 
 ```parol
-/a?/, /a*/, /\b/
+/a?/, /a*/
 ```
 
 Internally the tokenizer will enter a loop and match the empty string over and over again without
@@ -275,72 +282,21 @@ will result in
 Terminals without explicitly associated scanner state are implicitly associated with scanner state
 INITIAL.
 
-> **Note for Parol v4:**
-> Parser-based scanner switching is no longer supported. All scanner switching must now be handled by the scanner itself using scanner-based switching.
-> Please update your grammars accordingly. See [Changes in version 4](./ParolVersion4.md) for migration details.
 
-### Parser-bases scanner switching
+### Scanner switching
 
-The first way to control scanner states is to define switching directives within your productions.
-This way can only be used for LL(k) grammars because the parser has full knowledge about which
-production to handle next when certain input has been encountered from left to right.
+Scanner-based scanner switching in Parol is managed by the scanner using the `%enter`, `%push`, and
+`%pop` directives within the scanner specification:
 
-Parser-bases scanner state switching is initiated within your productions like in the following two
-examples:
+- `%enter`: Switches the scanner to a specific mode, replacing the current mode.
+- `%push`: Pushes the current mode onto a stack and enters a new mode.
+- `%pop`: Returns to the previous mode by popping the mode stack.
 
-```parol
-String: StringDelimiter %sc(String) StringContent StringDelimiter %sc();
+These directives ensure that scanner mode switching is handled consistently and reliably, preventing
+token buffer desynchronization in LL(k) grammars with k > 1. All scanner-related features are based
+on the [`scnr2`](https://crates.io/crates/scnr2) crate.
 
-```
-
-or
-
-```parol
-String: StringDelimiter %push(String) StringContent StringDelimiter %pop();
-
-```
-
-The `%sc` instruction is used to switch directly to the state named in the parentheses. The INITIAL
-state can be omitted as seen in the second occurrence of the first example, i.e. `%sc()` and
-`%sc(INITIAL)` are equivalent.
-
-The `%push` instruction is used to push the index of the current scanner on the internal scanner
-stack and to switch to a scanner configuration with the given index in parentheses.
-
-The `%pop` instruction is used to pop the index of the scanner pushed before and to switch to the
-scanner configuration with that index.
-
-> Note, that `%push` and `%pop` instructions should be balanced. This means that in one context use
-**only one** of the combinations `%push(S1)`/`%pop` and `%sc(<S1>)`/`%sc(<S2>)`. `%push`/`%pop`
-provides a (call) stack semantics over scanner states whereas `%sc`/`%sc` can be used to represent
-scanner state graphs semantics. Mixing both semantics should be avoided or should at least be
-carefully considered.
-
-> Note, that the provision of lookahead tokens will be made with the current active scanner and may
-fail if a token is not known by it. In most cases this can be circumvented by an appropriate grammar
-formulation. If this is not possible consider to use `Scanner-bases scanner switching` instead.
-
-You may have look at example `scanner_states` that demonstrates the handling of scanner states.
-
-### Scanner-based scanner switching
-
-> **Note for Parol v4:**
-> Scanner-based switching is now the only supported method for scanner state transitions.
-> All features and examples referring to parser-based switching are deprecated as of v4.
-
-LR grammars reduce the parser stack from the right side and thus you can't decide the scanner state
-switching from the perspective of the parser. The tokens are already read and pushed on the parse
-stack before it can be decided what production to reduce on them. This means scanner state switching
-must work different here.
-When incorporating the scanner state switching into the scanner itself the state can be chosen as
-early as possible solely from the current state the scanner is in and the token read next.
-The good new is that this kind of scanner switching works for LL parsers too and most LL(k) grammars
-can be adopted to use scanner-based scanner switching.
-
-Scanner-based scanner switching is defined solely in the header of the grammar file right where the
-scanners are defined.
-
-You use the `%on` and `%enter` directives to control it (snippets taken from the `basic` example):
+Example usage:
 
 ```parol
 %on Rem %enter Cmnt
@@ -356,20 +312,14 @@ You use the `%on` and `%enter` directives to control it (snippets taken from the
 }
 ```
 
-After the `%on` directive you can name a list of primary non-terminals which only contain the
-terminal like this:
+After the `%on` directive, specify a list of primary non-terminals. After the `%enter` directive,
+specify the target scanner state. `%push` and `%pop` provide stack-based mode management.
 
-```parol
-Rem : 'REM'^;
-```
+Mixing parser-based and scanner-based switching in one grammar file is not allowed and will result
+in errors.
 
-After the `%enter` directive you name the target scanner state.
-
-You also may have look at examples `scanner_states_lr` for a simple demonstration and at example
-`basic` for a more advanced one.
-
->_Be aware that mixing of both parser-bases and scanner-based scanner state switching in one grammar
-file is not allowed and will result in errors._
+Parol generates all data required by `scnr2` to construct valid and efficient scanners. Users do not
+need to understand the internal configuration of `scnr2`.
 
 ## Controlling the AST generation
 
@@ -517,6 +467,11 @@ for UserTypeName will receive the name `nt_type` in the generated struct type fo
 ## Semantic actions
 
 Semantic actions are strictly separated from your grammar description.
-You will use a generated trait with default implementations for each production of your grammar. You
-can implement this trait in your grammar processing item and provide concrete implementations for
-those productions you are interested in.
+You will use a generated trait with default implementations for each non-terminal of your grammar.
+You can implement this trait in your grammar processing item and provide concrete implementations
+for those non-terminals you are interested in.
+
+In the chapter [Operator Precedence](./OperatorPrecedence.md) there are some examples on how to
+implement simple semantic actions.
+
+A separate chapter [Semantic Actions](./SemanticActions.md) deals more deeply with this topic.

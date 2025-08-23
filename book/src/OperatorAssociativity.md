@@ -1,14 +1,14 @@
-# Operator associativity
+# Operator Associativity
 
-Operator associativity describes the "direction" in which ***operators of the same precedence*** are
+Operator associativity defines the direction in which **operators of the same precedence** are
 evaluated.
 
-## Left associativity
+## Left Associativity
 
-First let's have a look at left associativity.
+Left associativity means operators are grouped from the left. For example, `x * y * z` is evaluated
+as `(x * y) * z`.
 
-We'll demonstrate this with a small example grammar that only supports multiplication which is left
-associative, i.e. `x * y * z` is evaluated as `(x * y) * z`.
+Consider this example grammar, which supports left-associative multiplication:
 
 ```parol
 %start LeftAssociativity
@@ -17,60 +17,47 @@ associative, i.e. `x * y * z` is evaluated as `(x * y) * z`.
 
 %%
 
-Literal : /[0-9]+/
-        ;
+Literal : /[0-9]+/ ;
 
 // ---------------------------------------------------------
 // OPERATOR SYMBOLS
-MulOp   : '*'
-        ;
+MulOp   : '*' ;
 
 // ---------------------------------------------------------
 // EXPRESSIONS
-LeftAssociativity
-        : Multiplication
-        ;
+LeftAssociativity : Multiplication ;
 
-Multiplication
-        : Literal { MulOp Literal }
-        ;
+Multiplication : Literal { MulOp Literal } ;
 ```
 
-You can try this grammar by calling
+To try this grammar:
 
 ```shell
 parol new --bin --path .\left_associativity --tree
 ```
 
-Open the generated crate and substitute the generated dummy grammar by the one above.
-Also change the `test.txt` to the content
+Replace the generated dummy grammar with the example above. Set `test.txt` to:
 
 ```text
 5 * 6 * 2
 ```
 
-Now you can parse this text by calling
+Parse the text by running:
 
 ```shell
 cargo run ./test.txt
 ```
 
-from the generated crate's root folder.
+from the root of the generated crate.
 
-Parsing the string `5 * 6 * 2` with the generated parser will create the following parse tree:
+Parsing `5 * 6 * 2` produces this parse tree:
 
 ![Parse Tree](./left_associativity/test.svg)
-> Hint: If the picture is too small please open it in a separate tab via context menu.
 
-Now you would say "Stop, this parse tree imposes right associativity! The expression is evaluated
-from right to left".
+At first glance, the parse tree may appear to impose right associativity (evaluated right to left).
+However, in `parol`, **all repetitive grammar constructs are represented as vectors in AST types**.
 
-This is right at the first glance but there is one thing you have to know about `parol`'s internals:
-
-***If you use `parol` with auto-generation mode (flag -g) all repetitive grammar constructs are
-provided as vectors in your AST types.***
-
-Snippet from the generated types in `src/left_associativity_grammar_trait.rs`:
+Example from the generated types in `src/left_associativity_grammar_trait.rs`:
 
 ```rust
 /// Type derived for non-terminal Multiplication
@@ -86,28 +73,25 @@ pub struct MultiplicationList<'t> {
 }
 ```
 
-This means that items of a repetition (`{...}`) are stored in a vector and can be processed later in
-the desired direction. I defined this behavior for all repetitions of grammar items.
+Items in repetitions (`{...}`) are stored in vectors and can be processed in the desired direction.
+This behavior applies to all grammar repetitions.
 
-With this explained you can figure out that it is up to your grammar processing to chose the right
-direction of evaluation.
+It is up to your grammar processing to choose the evaluation direction. To implement left
+associativity, apply these changes to `src/left_associativity_grammar.rs`:
 
-We will complete this explanation by implementing our example that way.
-
-Therefore apply the following changes to `src/left_associativity_grammar.rs`.
-
-Replace the use statements at the top of the file with the following lines:
+Replace the use statements at the top of the file:
 
 ```rust
 use crate::left_associativity_grammar_trait::{
     LeftAssociativity, LeftAssociativityGrammarTrait, Literal,
 };
-use parol_runtime::parol_macros::{bail, parol};
 use parol_runtime::Result;
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{bail, parol};
 use std::fmt::{Debug, Display, Error, Formatter};
 ```
 
-Add a result member to the struct `LeftAssociativityGrammar`:
+Add a `result` member to the struct:
 
 ```rust
 pub struct LeftAssociativityGrammar<'t> {
@@ -116,39 +100,35 @@ pub struct LeftAssociativityGrammar<'t> {
 }
 ```
 
-Add the following two functions to the impl block of the struct `LeftAssociativityGrammar`:
+Add these functions to the `impl LeftAssociativityGrammar<'_>` block:
 
 ```rust
-    fn number(literal: &Literal) -> Result<u32> {
-        literal
-            .literal
-            .text()
-            .parse::<u32>()
-            .map_err(|e| parol!("'{}': {e}", literal.literal.text()))
-    }
+fn number(literal: &Literal) -> Result<u32> {
+    literal
+        .literal
+        .text()
+        .parse::<u32>()
+        .map_err(|e| parol!("'{}': {e}", literal.literal.text()))
+}
 
-    fn process_operation(&mut self) -> Result<()> {
-        if let Some(grammar) = &self.left_associativity {
-            let init = Self::number(&grammar.multiplication.literal)?;
-            self.result = grammar.multiplication.multiplication_list.iter().fold(
-                Ok(init),
-                |acc: Result<u32>, mul| {
-                    if let Ok(mut acc) = acc {
-                        acc *= Self::number(&mul.literal)?;
-                        Ok(acc)
-                    } else {
-                        acc
-                    }
-                },
-            )?;
-            Ok(())
-        } else {
-            bail!("No valid parse result!")
-        }
+fn process_operation(&mut self) -> Result<()> {
+    if let Some(grammar) = &self.left_associativity {
+        let init = Self::number(&grammar.multiplication.literal)?;
+        self.result = grammar
+            .multiplication
+            .multiplication_list
+            .iter()
+            .try_fold(init, |acc, mul| -> Result<u32> {
+                Ok(acc * Self::number(&mul.literal)?)
+            })?;
+        Ok(())
+    } else {
+        bail!("No valid parse result!")
     }
+}
 ```
 
-Change the Display implementation in this way:
+Update the `Display` implementation:
 
 ```rust
 impl Display for LeftAssociativityGrammar<'_> {
@@ -161,60 +141,48 @@ impl Display for LeftAssociativityGrammar<'_> {
 }
 ```
 
-And finally change the last line of the function `left_associativity` at the end of the file from
+Change the last line of the `left_associativity` function from:
 
 ```rust
-        Ok(())
+    Ok(())
 ```
 
-to
+to:
 
 ```rust
-        self.process_operation()
+    self.process_operation()
 ```
 
-And now run the parser again:
+Run the parser again:
 
 ```shell
-$ cargo run ./test.txt
-   Compiling left_associativity v0.1.0 (C:\Users\joerg\Source\temp\left_associativity)
-    Finished dev [unoptimized + debuginfo] target(s) in 1.77s
-     Running `target\debug\left_associativity.exe .\test.txt`
-Parsing took 3 milliseconds.
+cargo run ./test.txt
+```
+
+Sample output:
+
+```
+Parsing took 0 milliseconds.
 Success!
 60
 ```
 
-Great! The parser processed the input correctly and calculated the right result: ***60***.
+The parser correctly calculates the result: **60**.
 
-The interesting part of the solution can be found in the function `process_operation`.
-Here we simply fold the multiplication results into the `result` member. The start value of the fold
-operation is the first element of the list which is represented by the member `literal` of the
-struct `Multiplication`.
-
-```rust
-/// Type derived for non-terminal Multiplication
-pub struct Multiplication<'t> {
-    pub literal: Box<Literal<'t>>,
-    pub multiplication_list: Vec<MultiplicationList<'t>>,
-}
-```
-
-The struct `Multiplication` is constructed this way because of the structure of our grammar:
+The key part is the `process_operation` function, which folds the multiplication results into
+`result`. The initial value is the first element (`literal`) of the `Multiplication` struct,
+matching the grammar structure:
 
 ```parol
-Multiplication
-        : Literal { MulOp Literal }
-        ;
+Multiplication : Literal { MulOp Literal } ;
 ```
 
-Do you see the structural equivalence?
+## Right Associativity
 
-## Right associativity
+Right associativity means operators are grouped from the right. For example, `x ^ y ^ z` is
+evaluated as `x ^ (y ^ z)`.
 
-Let's continue with a simple example grammar that only supports potentiation which is right
-associative, i.e. `x ^ y ^ z` is evaluated as `x ^ (y ^ z)`. It becomes obvious if you look at this
-mathematical notation: \\\( {x^{y}}^{z} \\\)
+Here is a grammar for right-associative potentiation:
 
 ```parol
 %start RightAssociativity
@@ -223,101 +191,86 @@ mathematical notation: \\\( {x^{y}}^{z} \\\)
 
 %%
 
-Literal : /[0-9]+/
-        ;
+Literal : /[0-9]+/ ;
 
 // ---------------------------------------------------------
 // OPERATOR SYMBOLS
-PowOp   : '^'
-        ;
+PowOp   : '^' ;
 
 // ---------------------------------------------------------
 // EXPRESSIONS
-RightAssociativity
-        : Potentiation
-        ;
+RightAssociativity : Potentiation ;
 
-Potentiation
-        : Literal { PowOp Literal }
-        ;
+Potentiation : Literal { PowOp Literal } ;
 ```
 
-You can try this grammar by calling
+To try this grammar:
 
 ```shell
 parol new --bin --path .\right_associativity --tree
 ```
 
-Open the generated crate and substitute the generated dummy grammar by the one above.
-Also change the `test.txt` to the content
+Replace the generated dummy grammar with the example above. Set `test.txt` to:
 
 ```text
 4 ^ 3 ^ 2
 ```
 
-Now you can parse this text by calling
+Parse the text by running:
 
 ```shell
 cargo run ./test.txt
 ```
 
-from the generated crate's root folder.
+from the root of the generated crate.
 
-Parsing the string `4 ^ 3 ^ 2` with the generated parser will create the following parse tree:
+Parsing `4 ^ 3 ^ 2` produces this parse tree:
 
 ![Parse Tree](./right_associativity/test.svg)
-> Hint: If the picture is too small please open it in a separate tab via context menu.
 
-You'll see that the parse tree is structural identical to the one we saw above when we examined left
-associativity. And you may know now that `parol` handles all repetitive constructs identical as
-vectors.
+The parse tree structure is identical to the left-associative example. `parol` handles all
+repetitive constructs as vectors.
 
-As done before, we will complete this explanation by implementing our example.
+To implement right associativity, modify `src/right_associativity_grammar.rs` as in the
+left-associativity example, changing prefixes from `Left`/`left_` to `Right`/`right_`.
 
-So, first please make all the modification to the file `src/right_associativity_grammar.rs` as
-made in our upper example. Thereby modify prefixes `Left` and `left_` to `Right` and `right_` resp.
-
-Replace the function `process_operation` with this implementation.
+Replace the `process_operation` function with:
 
 ```rust
-    fn process_operation(&mut self) -> Result<()> {
-        if let Some(grammar) = &self.right_associativity {
-            self.result = grammar.potentiation.potentiation_list.iter().rev().fold(
-                Ok(1),
-                |acc: Result<u32>, mul| {
-                    if let Ok(mut acc) = acc {
-                        acc =  Self::number(&mul.literal)?.pow(acc);
-                        Ok(acc)
-                    } else {
-                        acc
-                    }
-                },
-            )?;
-            let last = Self::number(&grammar.potentiation.literal)?;
-            self.result = last.pow(self.result);
-            Ok(())
-        } else {
-            bail!("No valid parse result!")
-        }
+fn process_operation(&mut self) -> Result<()> {
+    if let Some(grammar) = &self.right_associativity {
+        self.result = grammar
+            .potentiation
+            .potentiation_list
+            .iter()
+            .rev()
+            .try_fold(1, |acc, mul| -> Result<u32> {
+                Ok(Self::number(&mul.literal)?.pow(acc))
+            })?;
+        let last = Self::number(&grammar.potentiation.literal)?;
+        self.result = last.pow(self.result);
+        Ok(())
+    } else {
+        bail!("No valid parse result!")
     }
+}
 ```
 
-Basically we also fold over the list of operation parts. But this time in reverse order (see
-`.rev()` in the initialization of the iteration).
-The start operand is this time the number `1` and the last operand is the single literal in the
-struct `Potentiation`.
+Here, the fold is performed in reverse order (`.rev()`), starting with `1`, and the last operand is
+the single literal in the `Potentiation` struct.
 
-That's all.
-
-And now run the parser again:
+Run the parser again:
 
 ```shell
-$ cargo run ./test.txt
-    Finished dev [unoptimized + debuginfo] target(s) in 0.20s
-     Running `target\debug\right_associativity.exe .\test.txt`
-Parsing took 3 milliseconds.
+cargo run ./test.txt
+```
+
+Sample output:
+
+```
+Parsing took 0 milliseconds.
 Success!
 262144
 ```
 
-Great! The parser processed the input correctly and calculated the right result: ***262144***.
+The parser correctly calculates the result: **262144**.

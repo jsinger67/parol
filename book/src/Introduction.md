@@ -1,48 +1,49 @@
 <!-- markdownlint-disable first-line-h1 -->
 <!-- markdownlint-disable Inline HTML -->
+
 <br>
-<img src="./Parol.svg" alt="Logo" height=150 with=150>
+<img src="./Parol.svg" alt="Logo" height="150" width="150">
 <br><br><br>
+
 <!-- markdownlint-enable Inline HTML -->
 <!-- markdownlint-enable first-line-h1 -->
 
 # The `parol` Parser Generator
 
-[`parol`](https://github.com/jsinger67/parol) is a parser generator with some unique characteristics.
+[`parol`](https://github.com/jsinger67/parol) is a parser generator with unique features.
 
-It is an installable command line tool that can generate complete parsers from a single grammar
-description file. `parol` is also a library that you can use in your own crates.
+It is available as a command-line tool that generates complete parsers from a single grammar
+description file. `parol` is also a library you can use in your own crates.
 
-Using a builder API it is easy to integrate the code generation process into your crate's build
-process via a cargo build script (`build.rs`).
+With its builder API, you can easily integrate code generation into your crate's build process via a
+Cargo build script (`build.rs`).
 
-`parol` infers and generates all AST data types that you would otherwise have to design yourself.
-`parol` does this simply by analyzing your language's grammar description.
+`parol` automatically infers and generates all AST data types by analyzing your language's grammar
+description.
 
-You can control the process of AST type generation in several ways. First, you can mark elements to
-be omitted from your AST. Second, you can specify your own types for language elements, which are
-then inserted into the resulting AST type at the correct position. Third, for each symbol on the
-right-hand side of a production, you can specify how its corresponding member should be named in the
-generated structure.
+You can control AST type generation in several ways:
+- Mark elements to omit from your AST.
+- Specify custom types for language elements, which are inserted at the correct position in the
+resulting AST type.
+- Define how each symbol on the right-hand side of a production is named in the generated structure.
 
-Language description and language implementation is strictly separated in `parol`. Thus, you can
-design your language's grammar without any need to process anything because generated parsers
-function by default as acceptors. This allows you to do **real rapid prototyping** of your grammar.
+Language description and implementation are strictly separated in `parol`. You can design your
+grammar without processing anything, as generated parsers function by default as acceptors. This
+enables **rapid prototyping** of your grammar.
 
-`parol` generates a trait as interface between the generated parser and your language processing.
-The trait contains functions for each non-terminal of your grammar which you can implement for
-non-terminals you need to process. In the simplest case you only implement the trait function for
-the start symbol of your grammar which is called after the whole input string is parsed. This
-function then is called with a parameter that comprises the complete structure of the parsed
-document.
+`parol` generates a trait that serves as the interface between the generated parser and your
+language processing. The trait contains functions for each non-terminal in your grammar, which you
+can implement as needed. In the simplest case, you implement the trait function for the start symbol,
+which is called after the entire input string is parsed. This function receives a parameter
+representing the complete structure of the parsed document.
 
-The parser calls the interface trait's functions via a separately generated adapter automatically
-during the process of parsing.
+The parser automatically calls the interface trait's functions via a separately generated adapter
+during parsing.
 
-`parol` now provides a whole ecosystem of tools including an
-[Extension](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode) for Visual Studio Code
-and a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls).
+`parol` provides an ecosystem of tools, including a
+[Visual Studio Code Extension](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode) and
+a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls).
 
-As of version 0.24.0 generated parsers can recover from syntax errors automatically. This means that
-the parser usually doesn't stop parsing the input after the first syntax error occurs, and instead
-tries to synchronize with the input in order to continue the analysis accordingly.
+Generated parsers can recover from syntax errors automatically. This means the parser does not stop
+parsing after the first syntax error, but instead tries to synchronize with the input and continue
+analysis.

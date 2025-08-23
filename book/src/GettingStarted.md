@@ -1,88 +1,92 @@
-# Getting started
+# Getting Started
 
 ## Installation
 
-Before you can use `parol` you have to install it.
+Before you can use `parol`, you need to install it.
 
-Since `parol` generates Rust code it is assumed that you have a Rust toolchain installed. Otherwise
-head over to [Rustup](https://rustup.rs/) or [Install Rust](https://www.rust-lang.org/tools/install)
-first.
+Since `parol` generates Rust code, a Rust toolchain must be installed. If you do not have Rust,
+visit [Rustup](https://rustup.rs/) or [Install Rust](https://www.rust-lang.org/tools/install).
 
-`parol` only needs stable Rust.
+`parol` requires only stable Rust.
 
-Now you should be able to install `parol` on your platform:
+To install `parol` on your platform, run:
 
 ```shell
 cargo install parol
 ```
 
-To confirm a correct installation invoke this command:
+To verify the installation, execute:
 
 ```shell
-$ parol -V
-parol 0.10.6
+parol -V
+parol 4.0.1
 ```
 
-If you see an error saying the tool couldn't be found please check your PATH variable. It should
-include ~/.cargo/bin.
+If you see an error indicating the tool could not be found, check your PATH variable. It should
+include `~/.cargo/bin`.
 
-### The video
+### Video Introduction
 
-If you prefer a more visual introduction, I recommend watching the introductory
-[video](https://youtu.be/TJMwMqD4XSo) on YouTube.
+For a visual introduction, watch the [introductory video](https://youtu.be/TJMwMqD4XSo) on YouTube.
 
-## Let `parol` generate a crate for you
+## Generate a Crate with `parol`
 
-We can use the `parol new` subcommand and let `parol` create our new project for us.
+Use the `parol new` subcommand to create a new project:
 
 ```shell
 parol new --bin --path ./my_grammar
 ```
 
-Then change into the new project's folder and start the initial build. Here `parol` is generating
-two files from the initial grammar definition.
+Change into the new project folder and start the initial build. `parol` will generate two files from
+the initial grammar definition.
 
 ```shell
 cd ./my_grammar
 cargo build
 ```
 
-And run the test with the generated parser:
+> You can safely ignore the `#[warn(unused_imports)]` warning for now. It will disappear as the
+grammar receives more content.
+
+Run the test with the generated parser:
 
 ```shell
-$ cargo run ./test.txt
-    Finished dev [unoptimized + debuginfo] target(s) in 0.20s
+cargo run ./test.txt
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.87s
      Running `target\debug\my_grammar.exe ./test.txt`
-Parsing took 4 milliseconds.
+Parsing took 0 milliseconds.
 Success!
-MyGrammar { my_grammar: Token { symbol: "Hello world!", token_type: 5, location: Location { line: 4, column: 5, length: 12, start_pos: 0, pos: 97, file_name: "./test.txt" } } }
+MyGrammar { my_grammar: Token { text: "Hello world!", token_type: 5, location: Location {
+start_line: 4, start_column: 5, end_line: 4, end_column: 17, start: 62, end: 74, file_name:
+"./test.txt" }, token_number: 2 } }
 ```
 
-`parol` has generated a full fledged parser with AST types suitable for your grammar description!
+`parol` has generated a complete parser with AST types suitable for your grammar description.
 
-Now you can open your favorite editor
+Now, open your preferred editor:
 
 ```shell
 code .
 ```
 
-and adapt the grammar description in the file `my_grammar.par` to fit your requirements. Any
-subsequent invocations of `cargo build` will trigger `parol` to generate the derived sources
-automatically if the grammar description file `my_grammar.par` has been changed.
+Edit the grammar description in `my_grammar.par` to fit your requirements. Any subsequent invocation
+of `cargo build` will trigger `parol` to regenerate the derived sources automatically if
+`my_grammar.par` has changed.
 
 **This is all you need to set up a working development environment.**
 
-> ## VS Code extension and Language Server
->
-> I provide a VS Code extension [parol-vscode](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode).
->
-> Please install this extension from VS Code
-> [marketplace](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode).
-> It provides syntax highlighting, folding and language icons and will surely be useful for you.
->
-> The extension utilizes a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls) that you have
-> to install separately.
->
+> ## VS Code Extension and Language Server
+> 
+> A VS Code extension, [parol-vscode](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode),
+is available.
+> 
+> Install this extension from the VS Code
+> [Marketplace](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode).
+> It provides syntax highlighting, folding, and language icons, which will be useful for you.
+> 
+> The extension utilizes a
+[Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls) that must be
+installed separately.
+> 
 > ```shell
 > cargo install --force parol-ls
-> ```
