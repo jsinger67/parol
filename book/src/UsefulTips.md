@@ -1,10 +1,8 @@
-# Useful tips
+# Useful Tips
 
-## Build performance
+## Build Performance
 
-To get an optimized build performance when using `parol`'s
-[Builder](https://github.com/jsinger67/parol/blob/main/crates/parol/src/build.rs) API in your
-`build.rs` script you can insert the following overrides into your `Cargo.toml` file:
+To optimize build performance when using `parol`'s [Builder](https://github.com/jsinger67/parol/blob/main/crates/parol/src/build.rs) API in your `build.rs` script, add the following overrides to your `Cargo.toml` file:
 
 ```toml
 # Optimized build performance
@@ -15,55 +13,37 @@ opt-level = 3
 opt-level = 3
 ```
 
-### Credits
+#### Credits
 
-Thanks to [dalance](https://github.com/dalance) for reporting
-[#49 (build.rs performance)](https://github.com/jsinger67/parol/issues/49)
+Thanks to [dalance](https://github.com/dalance) for reporting [issue #49 (build.rs performance)](https://github.com/jsinger67/parol/issues/49).
 
-## Performance of parser generation
+## Parser Generation Performance
 
-First you need to understand that the necessity to frequently generate the parser from a given
-grammar is drastically diminished in `parol` because of its design.
-That means `parol` generates besides the data structures for your grammar only an interface and the
-plumping to call its methods.
-This cuts the dependencies for parser generation from any code you write to process your grammar,
-i.e. the interface's implementation.
+The need to frequently regenerate the parser from a grammar is greatly reduced in `parol` due to its design. `parol` generates data structures for your grammar, an interface, and the plumbing to call its methods. This separates parser generation from any code you write to process your grammar, such as the interface's implementation.
 
->By the way, this property enables ad hoc generation of acceptors for any valid grammar, which I like
-to call *rapid prototyping* for your grammar.
+> This feature enables ad hoc generation of acceptors for any valid grammar, which can be considered *rapid prototyping* for your grammar.
 
-So, you only need to generate the parser if you change anything in your grammar description, i.e.
-in your *.par file.
-If parser generation is expensive for your grammar, what indeed can be the case, I advice you to put
-the generated parser and the user trait under source control.
+You only need to regenerate the parser when you change your grammar description (i.e., your `.par` file). If parser generation is expensive for your grammar, consider placing the generated parser and user trait under source control.
 
-The next thing you should understand is that you should design your grammar to be LL(k) with k as
-minimal as possible. I know, this can be hard but will pay out in the end.
+It is beneficial to design your grammar to be LL(k) with the smallest possible k. Although this can be challenging, it is worthwhile.
 
-Also try to optimize your grammar for the goal "Minimal number of productions". This can be often
-broken down to these constraints:
-* Avoid productions that only rename a non-terminal, i.e. the ones in the form
-    ```parol
-    A: B;
-    ```
-* Try to disambiguate your productions, i.e. avoid duplications that have the following form
-    ```parol
-    A: X Y Z;
-    B: X Y Z;
-    ```
-    Pin down why you need productions with identical right-hand-sides. Aren't they actually the same
-    and shouldn't they rather be unified?
+Also, optimize your grammar for a minimal number of productions. Consider these guidelines:
 
-If you have a historical grammar definition that is left recursive, which in deed is possible
-for instance because of the ubiquity of Yacc/Bison grammar descriptions, you should allow for extra
-time and effort to convert it to a working right recursive one.
+- Avoid productions that only rename a non-terminal, such as:
+  ```parol
+  A: B;
+  ```
+- Disambiguate your productions and avoid duplications like:
+  ```parol
+  A: X Y Z;
+  B: X Y Z;
+  ```
+  Determine why you need productions with identical right-hand sides. If they are actually the same, consider unifying them.
 
-Or you use the opportunity to use LALR(1) grammars without having to forgo the comfort of `parol`.
-Have a look at the specification of a
-[grammar type](https://jsinger67.github.io/ParGrammar.html#defining-the-grammar-type).
+If you have a historical grammar definition that is left-recursive (common in Yacc/Bison grammar descriptions), allow extra time and effort to convert it to a right-recursive form.
 
-`parol` currently provides no special support for this phase except that it is able to detect left
-recursions in your grammar.
+Alternatively, you can use LALR(1) grammars without sacrificing the convenience of `parol`. See the [grammar type specification](https://jsinger67.github.io/ParGrammar.html#defining-the-grammar-type).
 
-I may provide support for parts of this problem in the future, for instance to remove direct left
-recursions somehow.
+`parol` currently does not provide special support for this phase, except for detecting left recursions in your grammar.
+
+Support for removing direct left recursions may be provided in the future.

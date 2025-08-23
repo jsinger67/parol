@@ -1,67 +1,54 @@
-# AST generation
+# AST Generation
 
-`parol` can be instructed to generate all types your grammar implies automatically. It therefore
-analyzes all productions in your grammar.
+`parol` can automatically generate all types implied by your grammar. It analyzes every production in your grammar.
 
-## Grammar transformation
+## Grammar Transformation
 
-The first step is to canonicalize your grammar into a
-standard format applying the following transformations.
+The first step is to canonicalize your grammar by applying the following transformations:
 
-* All EBNF constructs, i.e. optional elements, repetitions and groupings are substituted by
-equivalent representations.
-  * A: [B]; => A: BOpt; BOpt: B; BOpt: ;
-  * A: {B}; => A: BList; BList: B BList; BList: ;
-  * A: (B); => A: BGroup; BGroup: B;
-* Alternations are propagated to multiple productions.
-  * A: B | C; => A: B; A: C;
+- All EBNF constructs—optional elements, repetitions, and groupings—are replaced with equivalent representations:
+  - `A: [B];` → `A: BOpt; BOpt: B; BOpt: ;`
+  - `A: {B};` → `A: BList; BList: B BList; BList: ;`
+  - `A: (B);` → `A: BGroup; BGroup: B;`
+- Alternations are expanded into multiple productions:
+  - `A: B | C;` → `A: B; A: C;`
 
-These transformations are applied iteratively until all EBNF constructs are replaced.
+These transformations are applied iteratively until all EBNF constructs are eliminated.
 
-Note that the transformations applied on LR grammars are slightly different, but the principle is
-the same.
+Note: Transformations for LR grammars differ slightly, but the principle remains the same.
 
-## Sanity checks
+## Sanity Checks
 
-Then `parol` checks this pre-transformed input grammar for several properties that prevent a
-successful processing. Those unwanted properties are
+Next, `parol` checks the transformed grammar for properties that would prevent successful processing:
 
-* Left-recursions
-* Non-productive non-terminals
-* Unreachable non-terminals
+- Left recursion
+- Non-productive non-terminals
+- Unreachable non-terminals
 
-If the grammar does not have such properties the next step is to left-factor this grammar form. This
-step is crucial for decreasing the number of necessary lookahead symbols.
+If none of these issues are present, the grammar is left-factored to reduce the number of required lookahead symbols.
 
-## The Expanded grammar
+## The Expanded Grammar
 
-This finally transformed grammar is the basis for the parser generation and is typically written to
-file for later reference. By convention this 'expanded' grammar is stored to files named
-\<original-name\>-exp.par.
+The fully transformed grammar serves as the basis for parser generation and is typically saved for reference. By convention, this "expanded" grammar is stored in files named `<original-name>-exp.par`.
 
-This expanded grammar is the basis for parser generation.
+## Type Inference
 
-## Type inference
+With the transformed grammar, all productions take the form:
 
-Having such a transformed grammar all productions have the form
-\\[v: s*; \\]
-where \\\(v \epsilon V, s \epsilon (V \cup \Sigma)\\\), \\\(V\\\) is the set of non-terminals,
-\\\(\Sigma\\\) is the set of terminals.
+```
+[v: s*;]
+```
+where \(v \in V, s \in (V \cup \Sigma)\), \(V\) is the set of non-terminals, and \(\Sigma\) is the set of terminals.
 
-The relation of the generated productions to their original EBNF constructs is actually lost at this
-point.
+At this stage, the relationship between generated productions and their original EBNF constructs is lost.
 
-But because we need the information if a set of productions was originated from, e.g. an optional
-construct (`[...]`) `parol`conveys these relationship during the whole transformation process to be
-able to infer it into a Rust `Option<T>` eventually.
+However, since it is necessary to know if a set of productions originated from an optional construct (`[...]`), `parol` maintains this relationship throughout the transformation process. This allows it to infer types such as Rust's `Option<T>`.
 
-To explain it using the form of transformation shown above we could write this:
+For example, using the transformation above:
 
-`A: [B]; => A: BOpt; BOpt: B; BOpt: ; => typeof A = Option<typeof B>`
+`A: [B];` → `A: BOpt; BOpt: B; BOpt: ;` → `typeof A = Option<typeof B>`
 
-This step leads directly to a solution if non-terminal `A` has only one production.
-
-In this case the the type of `A` is
+If non-terminal `A` has only one production, its type is:
 
 ```rust
 struct A {
@@ -69,14 +56,9 @@ struct A {
 }
 ```
 
-We must use a `struct` here because this patterns should work for productions with \\\(n\\\)
-elements on its right-hand side. For each such element we then introduce a separate member into the
-struct.
+A `struct` is used because productions may have multiple elements on the right-hand side, each becoming a separate member.
 
-If non-terminal `A` has more than one productions the resulting type of `A` will be a Rust `enum`
-type with \\\(n\\\) enum variants for \\\(n\\\) productions, e.g.:
-
-`A: B | C; => A: B; A: C; =>`
+If non-terminal `A` has multiple productions, its type becomes a Rust `enum` with one variant per production:
 
 ```rust
 struct B {
@@ -92,18 +74,13 @@ enum A {
 }
 ```
 
-When finally all types for all non-terminals are inferred `parol` generates an overall AST type.
-This is also a Rust `enum`. It comprises all non-terminal types of the grammar and provides exactly
-one enum variant for each of them. This type is mainly used by the parser itself to be able to
-instantiate a typed parse stack. The user rarely have to deal with this AST `enum`.
+Once all types for non-terminals are inferred, `parol` generates an overall AST type as a Rust `enum`. This enum contains one variant for each non-terminal type and is mainly used by the parser to instantiate a typed parse stack. Users rarely need to interact with this AST enum directly.
 
-### Recursive structure of a grammar
+### Recursive Structure of a Grammar
 
-A context free grammar is typically defined using recursive constructs. But you can't define types
-in Rust that are directly recursive because this would lead to an infinitive type size.
+Context-free grammars are typically defined using recursive constructs. However, Rust does not allow directly recursive types, as this would result in infinite type sizes.
 
-To cope with this limitation `parol` generates boxed types for non-terminals when introducing
-elements to `struct`s, e.g.:
+To address this, `parol` generates boxed types for non-terminals when adding elements to structs:
 
 ```rust
 struct A {
@@ -111,44 +88,31 @@ struct A {
 }
 ```
 
-This results in finite type sizes.
+This ensures finite type sizes.
 
-Note that `parol` has a way to minimize the use of boxed types in the generated parser.
-The `parol` tool supports a new command line switch (-b, --min_boxes) that enables the minimization
-of used boxes in generated data structures. The `parol::build::Builder` also provides a new method
-`minimize_boxed_types()` that you can call in your build scripts.
+`parol` can minimize the use of boxed types in the generated parser. The tool supports a command-line switch (`-b`, `--min_boxes`) to enable box minimization. The `parol::build::Builder` also provides a `minimize_boxed_types()` method for use in build scripts.
 
-`parol` then determines where no recursions can occur by applying extra calculations on the
-structure of the grammar.
+`parol` determines where recursion cannot occur by analyzing the grammar structure.
 
-## Manage AST generation
+## Managing AST Generation
 
-### Omission of elements
+### Omission of Elements
 
-You can suffix grammar symbols (terminals and non-terminals) with a cut operator (^). This instructs
-`parol` to not propagate them to the AST type, e.g.:
+You can suffix grammar symbols (terminals and non-terminals) with a cut operator (`^`) to prevent them from being included in the AST type. For example:
 
 ```parol
 Group: '('^ Alternations ')'^;
 ```
 
-The AST type for the symbol `Group` will then only contain a member for the non-terminal
-`Alternations`. The parentheses are suppressed because they have no special purpose for the grammar
-processing itself.
+The AST type for `Group` will only contain a member for the non-terminal `Alternations`. The parentheses are omitted since they are not needed for grammar processing.
 
-### Assigning user types
+### Assigning User Types
 
-You can specify a user type to be inserted into the AST structure at the place where the symbol
-would otherwise had the originally generated type.
-Add after a grammar symbol a colon followed by a user type name to instruct `parol` to use this type
-instead. In your language implementation you have to provide fallible conversions from references of
-the original generated types (`&T`) to your types (`U`) by implementing the trait
-`TryFrom<&T> for U`. An examples can be found in the `list_auto` example.
-You can also define aliases for the user type names by inserting as many `%user_type` directives as
-you want. Then use these aliases behind the colons.
+You can specify a user type to be inserted into the AST structure in place of the automatically generated type. Add a colon followed by a user type name after a grammar symbol to instruct `parol` to use this type. In your implementation, provide fallible conversions from references of the original generated types (`&T`) to your types (`U`) by implementing the trait `TryFrom<&T> for U`. See the `list_auto` example for details.
 
-You may have look at example [list_auto](https://github.com/jsinger67/parol/blob/6800c3060bad0df033e55cf113cfd16e860a5373/examples/list_auto/list.par)
-that demonstrates the handling of user types.
+You can also define aliases for user type names using `%user_type` directives. Use these aliases after the colons.
+
+See the [list_auto example](https://github.com/jsinger67/parol/blob/6800c3060bad0df033e55cf113cfd16e860a5373/examples/list_auto/list.par) for user type handling:
 
 ```parol
 %start List
@@ -165,41 +129,33 @@ Num: "0|[1-9][0-9]*": Number;
 TrailingComma: [","^];
 ```
 
-In this example grammar the terminal in the production `Num` is assigned to the user type `Number`
-which in turn is a shorthand for `crate::list_grammar::Number`. Also the non-terminal `Items` is
-assigned to the user type `Numbers` which in turn is a shorthand for `crate::list_grammar::Numbers`.
+In this grammar, the terminal in the `Num` production is assigned to the user type `Number`, which is an alias for `crate::list_grammar::Number`. The non-terminal `Items` is assigned to the user type `Numbers`, an alias for `crate::list_grammar::Numbers`.
 
-The parser generator substitutes the automatically inferred type in the type of the production by
-the user provided one and the parser calls the conversion form the original type to the user type at
-parse time.
+The parser generator replaces the automatically inferred type with the user-provided type and calls the conversion from the original type to the user type during parsing.
 
-The original type is the one of the source item in the grammar - terminal or non-terminal. Please
-have a look at the generated semantic action of the internal wrapper for production 1 of the
-expanded grammar `list-exp.par` which can be found in also generated traits file
-`examples\list_auto\list_grammar_trait.rs`:
+The original type is the type of the source item in the grammar—terminal or non-terminal. See the generated semantic action for production 1 of the expanded grammar `list-exp.par` in the traits file `examples\list_auto\list_grammar_trait.rs`:
 
 ```rust
-    /// Semantic action for production 1:
-    ///
-    /// ListOpt /* Option<T>::Some */: Items : Numbers;
-    ///
-    #[parol_runtime::function_name::named]
-    fn list_opt_0(&mut self, _items: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let items = pop_item!(self, items, Items, context);
-        let list_opt_0_built = ListOpt {
-            items: (&items)
-                .try_into()
-                .map_err(parol_runtime::ParolError::UserError)?,
-        };
-        self.push(ASTType::ListOpt(Some(Box::new(list_opt_0_built))), context);
-        Ok(())
-    }
+/// Semantic action for production 1:
+///
+/// ListOpt /* Option<T>::Some */: Items : Numbers;
+///
+#[parol_runtime::function_name::named]
+fn list_opt_0(&mut self, _items: &ParseTreeType<'t>) -> Result<()> {
+    let context = function_name!();
+    trace!("{}", self.trace_item_stack(context));
+    let items = pop_item!(self, items, Items, context);
+    let list_opt_0_built = ListOpt {
+        items: (&items)
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?,
+    };
+    self.push(ASTType::ListOpt(Some(Box::new(list_opt_0_built))), context);
+    Ok(())
+}
 ```
 
-At the line after the trace the original item is popped from the parse stack. It has the Rust type
-`Items`:
+After tracing, the original item is popped from the parse stack. Its Rust type is `Items`:
 
 ```rust
 /// Type derived for non-terminal Items
@@ -209,11 +165,9 @@ pub struct Items {
 }
 ```
 
-Then later at the construction of the `ListOpt` structure the conversion to the user's type is
-called: `.items((&items).try_into()`.
+When constructing the `ListOpt` structure, the conversion to the user type is called: `.items((&items).try_into())`.
 
-The `TryFrom` trait is provided by the user. Please see `examples\list_auto\list_grammar.rs` for
-that:
+The `TryFrom` trait is provided by the user. See `examples\list_auto\list_grammar.rs`:
 
 ```rust
 impl TryFrom<&Items> for Numbers {
@@ -231,10 +185,9 @@ impl TryFrom<&Items> for Numbers {
 }
 ```
 
-This is an example how non-terminal types are converted into user types.
+This demonstrates how non-terminal types are converted into user types.
 
-The easier variant is the conversion of a terminal type (i.e. a `Token`) into a user type. You can
-find an example also in `examples\list_auto\list_grammar.rs`:
+For terminals (tokens), conversion is simpler. See `examples\list_auto\list_grammar.rs`:
 
 ```rust
 impl<'t> TryFrom<&Token<'t>> for Number {
@@ -246,16 +199,10 @@ impl<'t> TryFrom<&Token<'t>> for Number {
 }
 ```
 
-Here the scanned text of the token is accessed using the method `text` of the `Token` type that was
-imported from the `parol_runtime`crate. This text is then parsed into an `u32` type and finally
-wrapped into a `Number`type which is a *newtype* for `u32`.
+Here, the scanned text of the token is accessed using the `text` method of the `Token` type from `parol_runtime`. The text is parsed into a `u32` and wrapped in a `Number` newtype.
 
-By implementing `TryFrom` traits for your user type you can integrate them easily into the parse
-process.
+By implementing `TryFrom` traits for your user types, you can easily integrate them into the parse process.
 
-There exist some examples that can help to become familiar with this concept. Maybe you would like
-to have a look at my rudimentary
-[basic interpreter example](https://github.com/jsinger67/parol/tree/main/examples/basic_interpreter).
+Several examples are available to help you become familiar with this concept. You may also review the [basic interpreter example](https://github.com/jsinger67/parol/tree/main/examples/basic_interpreter).
 
->For a more complete list of the ways to control the AST type generation, please see here:
-[Controlling the AST generation](./ParGrammar.md#controlling-the-ast-generation)
+> For a complete list of ways to control AST type generation, see: [Controlling the AST generation](./ParGrammar.md#controlling-the-ast-generation)
