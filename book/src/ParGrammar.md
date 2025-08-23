@@ -344,7 +344,7 @@ instead. In your language implementation you have to provide fallible conversion
 the original generated types (`&T`) to your types (`U`) by implementing the trait
 `TryFrom<&T> for U`.
 
-An examples can be found in the `list_auto` example.
+An examples can be found in the `list` example.
 
 ```rust
 impl<'t> TryFrom<&Token<'t>> for Number {
