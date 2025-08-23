@@ -374,7 +374,7 @@ As of version 3.0 you can easily define a user type to which each occurrence of 
 non-terminal should be automatically converted to.
 This is done like in the following example:
 
-```ebnf
+```parol
 %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
 ```
 
@@ -383,7 +383,7 @@ user defined type which in turn you could apply to single symbols on the right-h
 grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
 non-terminals much easier.
 Here is the old version used in `parol` itself before (only partial)
-```ebnf
+```parol
 %user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
 // ...
 %%
@@ -393,7 +393,7 @@ Prolog
 ;
 ```
 And here is the new variant in which `%nt_type` is used.
-```ebnf
+```parol
 %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
 // ...
 %%
@@ -413,7 +413,7 @@ As of version 3.0 you can easily define a user type to which each occurrence of 
 automatically converted to.
 This is done like in the following example:
 
-```ebnf
+```parol
 %t_type crate::parol_ls_grammar::OwnedToken
 ```
 
@@ -422,7 +422,7 @@ There can be only one type defined to which all terminals are converted to.
 More specifically, if several such instructions are given, the last one wins.
 
 Here is the old version used in `parol-ls` itself before (only partial)
-```ebnf
+```parol
 %user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
 // ...
 %%
@@ -434,7 +434,7 @@ ScannerSwitch
     ;
 ```
 And here is the new variant in which `%t_type` is used.
-```ebnf
+```parol
 %t_type crate::parol_ls_grammar::OwnedToken
 // ...
 %%
