@@ -68,6 +68,11 @@ instead of being silently ignored.
 
 * Fix: Update generated dependencies for subcommand `parol new`
 
+* Update the [book](https://jsinger67.github.io/) to reflect the current version. Remove
+explanations of deprecated features for clarity and move version-specific changes from their own
+chapters directly to where the changed features are covered.
+I hope this makes it easier to get started with `parol`.
+
 ## 4.0.1 - 2025-08-05
 
 * Fix for issue [#734](https://github.com/jsinger67/parol/issues/734)
