@@ -29,7 +29,7 @@ impl<'t> TokenBuffer<'t> {
     }
 
     /// Adds a token to the buffer
-    pub fn add(&mut self, token: Token<'t>, input: &'t str) {
+    pub(crate) fn add(&mut self, token: Token<'t>, input: &'t str) {
         let new_start = token.location.start;
         if self.last_token_location < new_start {
             use crate::lexer::location::Location;
