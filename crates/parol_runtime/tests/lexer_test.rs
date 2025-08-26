@@ -98,6 +98,8 @@ fn lexer_token_production() {
     assert_eq!(
         Token::eoi(81).with_location(
             LocationBuilder::default()
+                .start(545)
+                .end(545)
                 .file_name(token_stream.borrow().file_name.clone())
                 .build()
                 .unwrap()
@@ -108,6 +110,8 @@ fn lexer_token_production() {
         Token::eoi(82).with_location(
             LocationBuilder::default()
                 .file_name(token_stream.borrow().file_name.clone())
+                .start(545)
+                .end(545)
                 .build()
                 .unwrap()
         ),

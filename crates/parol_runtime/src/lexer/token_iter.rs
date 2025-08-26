@@ -105,7 +105,16 @@ where
             // Return at most k EOI tokens
             self.k -= 1;
             trace!("EOI");
-            Some(Token::eoi(self.next_token_number()))
+            Some(
+                Token::eoi(self.next_token_number()).with_location(
+                    LocationBuilder::default()
+                        .start(self.input.len() as u32)
+                        .end(self.input.len() as u32)
+                        .file_name(Arc::clone(&self.file_name))
+                        .build()
+                        .ok()?,
+                ),
+            )
         } else {
             trace!("Normal end of iteration");
             None
