@@ -176,7 +176,8 @@ impl ScannerConfig {
                     acc.push((
                         k.expand(t),
                         i as TerminalIndex + FIRST_USER_TOKEN,
-                        l.as_ref().map(|l| (l.is_positive, l.pattern.clone())),
+                        l.as_ref()
+                            .map(|l| (l.is_positive, l.kind.expand(&l.pattern))),
                         terminal_names[i + FIRST_USER_TOKEN as usize].clone(),
                     ));
                 }

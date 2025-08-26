@@ -68,6 +68,8 @@ instead of being silently ignored.
 
 * Fix: Update generated dependencies for subcommand `parol new`
 
+* Fix: Correct lookahead terminal pattern expansion in ScannerConfig
+
 * Update the [book](https://jsinger67.github.io/) to reflect the current version. Remove
 explanations of deprecated features for clarity and move version-specific changes from their own
 chapters directly to where the changed features are covered.
