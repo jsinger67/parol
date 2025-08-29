@@ -91,6 +91,29 @@ The scanner also per default skips whitespace automatically. To suppress this us
 directive.
 With this you have to handle whitespace tokens on your own in your grammar.
 
+### Open scanner states
+
+Scanner modes can also be configured to tolerate unmatched tokens by specifying `%allow_unmatched`
+in the scanner section of the grammar. This allows unmatched input to be ignored instead of
+triggering an error, which can be useful in certain scenarios.
+
+**Usage example:**
+```parol
+// For scanner state INITIAL
+%allow_unmatched
+
+// For any scanner state defined
+%scanner MyScanner {
+    ...
+    %allow_unmatched
+}
+```
+
+This feature is opt-in and fully backward compatible; existing grammars are unaffected unless
+`%allow_unmatched` is explicitly used.
+
+See also the new example `allow_unmatched`.
+
 ### Terminal name generation
 
 The names of the terminals are deduced from the content of the terminal itself. For instance, for a
@@ -178,10 +201,15 @@ Ident: /[a-zA-Z_][a-zA-Z0-9_]*/
 
 Defining _If_ before _Ident_ ensures the correct priority.
 
+#### Even more control with the help of scanner states
+
+You can define different scanner states and assign only the terminals you want to match in each mode.
+
+
 #### Conclusion
 
-❗ These two mechanisms, **longest match rule** and **priority by order**, gives you control over
-terminal conflicts.
+❗ These three mechanisms, **longest match rule**, **priority by order** and
+**using multiple scanner states**, gives you control over terminal conflicts.
 
 ### Terminals that matches an empty string
 
@@ -219,7 +247,9 @@ WhiteSpaces: /[ \t]+/;
 [Start conditions](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex_toc.html#TOC11)
 and provides more flexibility in defining several scanners for several parts of your grammar.
 
-`Parol` provides two different ways to control scanner states directly within your grammar
+> I use occasionally the term __scanner mode__ which is synonymous to __scanner state__.
+
+`Parol` provides comprehensive ways to control scanner states directly within your grammar
 description thereby holding the principle of strict separation of grammar description and grammar
 processing in semantic actions. This means no scanner switching in your code, but in the grammar
 description. Only because of this rapid prototyping is possible.
@@ -234,7 +264,7 @@ in the global `Declaration` section, such as:
 %block_comment "/\*" "\*/"
 ```
 
-### Introduce new scanner states with the %scanner directive
+### Introduce new scanner states with the `%scanner` directive
 
 Use the `%scanner Name {...}` construct after the global `Declaration` section and before the `%%`
 sign to introduce arbitrary scanner states. The identifier following the %scanner token defines the
@@ -285,14 +315,14 @@ INITIAL.
 
 ### Scanner switching
 
-Scanner-based scanner switching in Parol is managed by the scanner using the `%enter`, `%push`, and
-`%pop` directives within the scanner specification:
+Scanner switching in Parol is managed by the scanner using the `%enter`, `%push`, and `%pop`
+directives within the scanner specification:
 
 - `%enter`: Switches the scanner to a specific mode, replacing the current mode.
 - `%push`: Pushes the current mode onto a stack and enters a new mode.
 - `%pop`: Returns to the previous mode by popping the mode stack.
 
-These directives ensure that scanner mode switching is handled consistently and reliably, preventing
+These directives ensure that scanner state switching is handled consistently and reliably, preventing
 token buffer desynchronization in LL(k) grammars with k > 1. All scanner-related features are based
 on the [`scnr2`](https://crates.io/crates/scnr2) crate.
 
@@ -314,9 +344,6 @@ Example usage:
 
 After the `%on` directive, specify a list of primary non-terminals. After the `%enter` directive,
 specify the target scanner state. `%push` and `%pop` provide stack-based mode management.
-
-Mixing parser-based and scanner-based switching in one grammar file is not allowed and will result
-in errors.
 
 Parol generates all data required by `scnr2` to construct valid and efficient scanners. Users do not
 need to understand the internal configuration of `scnr2`.
