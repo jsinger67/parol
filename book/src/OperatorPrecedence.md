@@ -221,8 +221,8 @@ Env
 x = 0
 ```
 
-Now I think you could continue on your own. Implement the binary operations by taking the two top
-most numbers from the calculation stack and push the result on the stack again.
+Now I think you could continue on your own. Implement the unary and binary operations by taking one
+or two top most numbers from the calculation stack and push the result on the stack again.
 If all is implemented correctly the end result of the calculation should be laying as single value
 on top of the calculation stack.
 
