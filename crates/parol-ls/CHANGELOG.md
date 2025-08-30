@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 4.0.1 - 2025-08-30
+
+* Support new scanner directive: `%allow_unmatched`
+
 ## 4.0.0 - 2025-07-27
 
 * Official start of version 4 development.

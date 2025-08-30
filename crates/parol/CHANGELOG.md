@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.1.0 - Not released yet
+## 4.1.0 - 2025-08-30
 
 * Reintroduce the generation of an explicit error token, as was done in version 3. This change
 should not affect existing parsers, except that unknown tokens will now reliably trigger an error
