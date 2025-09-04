@@ -155,10 +155,14 @@ example project.
 It receives fixes on branch `release1.0`
 You should use the latest releases available on crates.io with version >=1.
 
-* Version 2 is still in its Beta phase.
+* Version 2 is stable and production ready with all the usual disclaimers.
 It receives fixes on branch `release2.2`
 
-* Version 3 is still in its Beta phase.
+* Version 3 is stable and production ready with all the usual disclaimers.
+It receives fixes on branch `release3.1`
+
+* Version 4 is in development but released versions can quite safely be used.
+Watch CHANGELOG closely and update when new releases are published.
 
 ## Dependencies
 
