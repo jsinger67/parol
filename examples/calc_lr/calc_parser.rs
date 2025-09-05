@@ -47,7 +47,7 @@ scanner! {
             token r"\r\n|\r|\n" => 1; // "Newline"
             token r"[\s--\r\n]+" => 2; // "Whitespace"
             token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
-            token r"/\*([^*]|\*[^/])*\*/" => 4; // "BlockComment"
+            token r"/\*/?([^/]|[^*]/)*\*/" => 4; // "BlockComment"
             token r";" => 5; // "Semicolon"
             token r"==|!=" => 6; // "EqualityOp"
             token r"(\+|-|\*|\/|%|<<|>>|&|\^|\|)?=" => 7; // "AssignOp"

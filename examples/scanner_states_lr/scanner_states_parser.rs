@@ -35,7 +35,7 @@ scanner! {
             token r"\r\n|\r|\n" => 1; // "Newline"
             token r"[\s--\r\n]+" => 2; // "Whitespace"
             token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
-            token r"/\*([^*]|\*[^/])*\*/" => 4; // "BlockComment"
+            token r"/\*/?([^/]|[^*]/)*\*/" => 4; // "BlockComment"
             token r"[a-zA-Z_]\w*" => 5; // "Identifier"
             token r"\u{22}" => 9; // "StringDelimiter"
             token r"." => 10; // "Error"

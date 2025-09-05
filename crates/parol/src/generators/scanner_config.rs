@@ -208,6 +208,11 @@ impl ScannerConfig {
     /// If the comment end is "*/" the regular expression is:
     /// `r"/\*([^*]|\*[^/])*\*/"`
     fn format_block_comment(s: &str, e: &str) -> Result<String> {
+        // Special case for /* ... */ block comments
+        if s == r"/\*" && e == r"\*/" {
+            // Use improved regex to match /***/ and similar cases
+            return Ok(r"/\*/?([^/]|[^*]/)*\*/".to_string());
+        }
         let len_with_escaped_chars = |s: &str| {
             let mut prev = None;
             s.chars()
@@ -322,7 +327,7 @@ mod tests {
         let s = r"/\*";
         let e = r"\*/";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"/\*([^*]|\*[^/])*\*/");
+        assert_eq!(r.unwrap(), r"/\*/?([^/]|[^*]/)*\*/");
 
         let s = r"\{\{";
         let e = r"\}\}";
@@ -343,5 +348,12 @@ mod tests {
         let e = r"\}";
         let r = ScannerConfig::format_block_comment(s, e);
         assert_eq!(r.unwrap(), r"\{[^}]*\}");
+        // Additional test: ensure the regex matches /***/
+        use regex::Regex;
+        let block_comment_regex = ScannerConfig::format_block_comment(r"/\*", r"\*/").unwrap();
+        let re = Regex::new(&block_comment_regex).unwrap();
+        assert!(re.is_match("/***/"));
+        assert!(re.is_match("/** test ***/"));
+        assert!(re.is_match("/*abc*/"));
     }
 }
