@@ -322,6 +322,71 @@ impl Display for ScannerConfig {
 mod tests {
     use super::*;
 
+    use scnr2::scanner;
+
+    fn format_matches(expected: &[scnr2::Match], input: &str) -> String {
+        format!(
+            "[{}]",
+            expected
+                .iter()
+                .map(|m| format!(
+                    "(\"{}\", {}, {})",
+                    &input[m.span.start..m.span.end],
+                    m.span.start,
+                    m.span.end
+                ))
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+    }
+
+    /// To help type inference in the macro
+    fn format_expected_matches(expected: &[(&str, usize, usize)]) -> String {
+        format!("{expected:?}")
+    }
+
+    macro_rules! scan_test {
+        ($test_name:ident, $module:ident, $scanner:ident, $pattern:expr, $input:expr, $expected:expr, $test_num:expr) => {
+            scanner! {
+                $scanner {
+                    mode M {
+                        token $pattern => 0;
+                    }
+                }
+            }
+            #[test]
+            fn $test_name() {
+                use $module::$scanner as S;
+                let scanner = S::new();
+                let matches = scanner.find_matches($input, 0).collect::<Vec<_>>();
+                const EXPECTED_MATCHES: &[(&str, usize, usize)] = $expected;
+                assert_eq!(
+                    matches.len(),
+                    EXPECTED_MATCHES.len(),
+                    "{}: Unexpected match count exp: {:?}, act: {:?}",
+                    $test_num,
+                    format_expected_matches(&EXPECTED_MATCHES),
+                    format_matches(&matches, $input)
+                );
+                for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+                    assert_eq!(
+                        matches[i].span.start, ma.1,
+                        concat!($test_num, ": Match start does not match")
+                    );
+                    assert_eq!(
+                        matches[i].span.end, ma.2,
+                        concat!($test_num, ": Match end does not match")
+                    );
+                    assert_eq!(
+                        &($input)[ma.1..ma.2],
+                        ma.0,
+                        concat!($test_num, ": Matched substring does not match expected")
+                    );
+                }
+            }
+        };
+    }
+
     #[test]
     fn test_format_block_comment() {
         let s = r"/\*";
@@ -348,12 +413,103 @@ mod tests {
         let e = r"\}";
         let r = ScannerConfig::format_block_comment(s, e);
         assert_eq!(r.unwrap(), r"\{[^}]*\}");
-        // Additional test: ensure the regex matches /***/
-        use regex::Regex;
-        let block_comment_regex = ScannerConfig::format_block_comment(r"/\*", r"\*/").unwrap();
-        let re = Regex::new(&block_comment_regex).unwrap();
-        assert!(re.is_match("/***/"));
-        assert!(re.is_match("/** test ***/"));
-        assert!(re.is_match("/*abc*/"));
     }
+
+    scan_test!(
+        test_block_comment_1,
+        scanner1,
+        Scanner1,
+        r"/\*/?([^/]|[^*]/)*\*/",
+        "code /* comment */ more code",
+        &[("/* comment */", 5, 18)],
+        "Test 1: Simple block comment"
+    );
+
+    scan_test!(
+        test_block_comment_2,
+        scanner2,
+        Scanner2,
+        r"/\*/?([^/]|[^*]/)*\*/",
+        "code /***/ more code /* comment */ /* com*ment */",
+        &[
+            ("/***/", 5, 10),
+            ("/* comment */", 21, 34),
+            ("/* com*ment */", 35, 49)
+        ],
+        "Test 2: Multiple block comments with stars inside"
+    );
+
+    // Tests for issue #828 - Edge cases with block comment parsing
+    scan_test!(
+        test_block_comment_empty,
+        scanner3,
+        Scanner3,
+        r"/\*/?([^/]|[^*]/)*\*/",
+        "code /**/ more code",
+        &[("/**/", 5, 9)],
+        "Test 3: Empty block comment"
+    );
+
+    scan_test!(
+        test_block_comment_triple_star,
+        scanner4,
+        Scanner4,
+        r"/\*/?([^/]|[^*]/)*\*/",
+        "code /****/ more code",
+        &[("/****/", 5, 11)],
+        "Test 4: Triple star comment"
+    );
+
+    scan_test!(
+        test_block_comment_start_end_token,
+        scanner5,
+        Scanner5,
+        r"/\*/?([^/]|[^*]/)*\*/",
+        "code /***/ more code",
+        &[("/***/", 5, 10)],
+        "Test 5: Block comment with only start of end token"
+    );
+
+    scan_test!(
+        test_block_comment_regular_content,
+        scanner6,
+        Scanner6,
+        r"/\*/?([^/]|[^*]/)*\*/",
+        "/* normal comment */ /* another * comment */",
+        &[
+            ("/* normal comment */", 0, 20),
+            ("/* another * comment */", 21, 44)
+        ],
+        "Test 6: Regular block comments with content"
+    );
+
+    scan_test!(
+        test_block_comment_multiple_sequence,
+        scanner7,
+        Scanner7,
+        r"/\*/?([^/]|[^*]/)*\*/",
+        "/**/ /* a */ /****/ /* b*c */ /**/",
+        &[
+            ("/**/", 0, 4),
+            ("/* a */", 5, 12),
+            ("/****/", 13, 19),
+            ("/* b*c */", 20, 29),
+            ("/**/", 30, 34)
+        ],
+        "Test 7: Multiple block comments in sequence"
+    );
+
+    scan_test!(
+        test_block_comment_complex_edge_cases,
+        scanner8,
+        Scanner8,
+        r"/\*/?([^/]|[^*]/)*\*/",
+        "/*/ not end */ /* ** */ /***/",
+        &[
+            ("/*/ not end */", 0, 14),
+            ("/* ** */", 15, 23),
+            ("/***/", 24, 29)
+        ],
+        "Test 8: Complex edge cases with various star patterns"
+    );
 }

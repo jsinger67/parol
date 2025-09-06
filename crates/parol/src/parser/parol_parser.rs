@@ -72,7 +72,7 @@ scanner! {
             token r"\r\n|\r|\n" => 1; // "Newline"
             token r"[\s--\r\n]+" => 2; // "Whitespace"
             token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
-            token r"/\*([^*]|\*[^/])*\*/" => 4; // "BlockComment"
+            token r"/\*/?([^/]|[^*]/)*\*/" => 4; // "BlockComment"
             token r"%start" => 5; // "PercentStart"
             token r"%title" => 6; // "PercentTitle"
             token r"%comment" => 7; // "PercentComment"
