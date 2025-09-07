@@ -512,4 +512,18 @@ mod tests {
         ],
         "Test 8: Complex edge cases with various star patterns"
     );
+
+    scan_test!(
+        test_block_comment_complex_edge_cases_different_delimiters,
+        scanner9,
+        Scanner9,
+        r"\{\{([^}]|\}[^}])*\}\}",
+        "{{} not end }} {{ {} }} {{{{}}",
+        &[
+            ("{{} not end }}", 0, 14),
+            ("{{ {} }}", 15, 23),
+            ("{{{{}}", 24, 30)
+        ],
+        "Test 9: Complex edge cases with different block comment delimiters"
+    );
 }
