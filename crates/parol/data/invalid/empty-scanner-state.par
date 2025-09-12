@@ -12,4 +12,4 @@
 
 %%
 
-ParolSandbox: /"/^ %push(String) { /a/ | /b/ | /c/ } /"/^ %pop();
+ParolSandbox: /"/^ { /a/ | /b/ | /c/ } /"/^;
