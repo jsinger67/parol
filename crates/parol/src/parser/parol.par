@@ -109,7 +109,7 @@ RawString
     ;
 
 Regex
-    : "/(\\.|[^\/])*/" // \u{2F} is /
+    : "/(\\.|[^\/])*/" // We use '/' as delimiter for regex and thus quotes for the Regex terminal
     ;
 
 // A non-empty grouping
@@ -156,7 +156,7 @@ MemberName
     : '@'^ Identifier
     ;
 
-// Prevents the symbol from being propagated to the AST in auto-gen
+// Prevents the symbol from being propagated to the AST
 CutOperator
     : '^'^
     ;

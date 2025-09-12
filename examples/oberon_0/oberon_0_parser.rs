@@ -16,7 +16,7 @@ use std::path::Path;
 use crate::oberon_0_grammar::Oberon0Grammar;
 use crate::oberon_0_grammar_trait::Oberon0GrammarAuto;
 
-pub const TERMINAL_NAMES: &[&str; 42] = &[
+pub const TERMINAL_NAMES: &[&str; 44] = &[
     /*  0 */ "EndOfInput",
     /*  1 */ "Newline",
     /*  2 */ "Whitespace",
@@ -28,37 +28,39 @@ pub const TERMINAL_NAMES: &[&str; 42] = &[
     /*  8 */ "LParen",
     /*  9 */ "RParen",
     /* 10 */ "Tilde",
-    /* 11 */ "ColonEqu",
+    /* 11 */ "AssignOp",
     /* 12 */ "RelationalOps",
-    /* 13 */ "Equ",
-    /* 14 */ "Comma",
-    /* 15 */ "ELSE",
-    /* 16 */ "END",
-    /* 17 */ "IF",
-    /* 18 */ "THEN",
-    /* 19 */ "ELSIF",
-    /* 20 */ "WHILE",
-    /* 21 */ "DO",
-    /* 22 */ "REPEAT",
-    /* 23 */ "UNTIL",
-    /* 24 */ "Semicolon",
-    /* 25 */ "ARRAY",
-    /* 26 */ "OF",
-    /* 27 */ "Colon",
-    /* 28 */ "RECORD",
-    /* 29 */ "VAR",
-    /* 30 */ "PROCEDURE",
-    /* 31 */ "BEGIN",
-    /* 32 */ "RETURN",
-    /* 33 */ "TYPE",
-    /* 34 */ "CONST",
-    /* 35 */ "MODULE",
-    /* 36 */ "MulOperator",
-    /* 37 */ "AddOperator",
-    /* 38 */ "UnaryOp",
-    /* 39 */ "Ident",
-    /* 40 */ "Integer",
-    /* 41 */ "Error",
+    /* 13 */ "LParen0",
+    /* 14 */ "RParen0",
+    /* 15 */ "Comma",
+    /* 16 */ "ELSE",
+    /* 17 */ "END",
+    /* 18 */ "IF",
+    /* 19 */ "THEN",
+    /* 20 */ "ELSIF",
+    /* 21 */ "WHILE",
+    /* 22 */ "DO",
+    /* 23 */ "REPEAT",
+    /* 24 */ "UNTIL",
+    /* 25 */ "Semicolon",
+    /* 26 */ "ARRAY",
+    /* 27 */ "OF",
+    /* 28 */ "Colon",
+    /* 29 */ "RECORD",
+    /* 30 */ "VAR",
+    /* 31 */ "PROCEDURE",
+    /* 32 */ "BEGIN",
+    /* 33 */ "RETURN",
+    /* 34 */ "TYPE",
+    /* 35 */ "CONST",
+    /* 36 */ "MODULE",
+    /* 37 */ "Dot0",
+    /* 38 */ "MulOperator",
+    /* 39 */ "AddOperator",
+    /* 40 */ "UnaryOp",
+    /* 41 */ "Ident",
+    /* 42 */ "Integer",
+    /* 43 */ "Error",
 ];
 
 scanner! {
@@ -73,37 +75,39 @@ scanner! {
             token r"\(" => 8; // "LParen"
             token r"\)" => 9; // "RParen"
             token r"~" => 10; // "Tilde"
-            token r":=" => 11; // "ColonEqu"
+            token r":=" => 11; // "AssignOp"
             token r">=|<=|\#|<|>" => 12; // "RelationalOps"
-            token r"=" => 13; // "Equ"
-            token r"," => 14; // "Comma"
-            token r"ELSE" => 15; // "ELSE"
-            token r"END" => 16; // "END"
-            token r"IF" => 17; // "IF"
-            token r"THEN" => 18; // "THEN"
-            token r"ELSIF" => 19; // "ELSIF"
-            token r"WHILE" => 20; // "WHILE"
-            token r"DO" => 21; // "DO"
-            token r"REPEAT" => 22; // "REPEAT"
-            token r"UNTIL" => 23; // "UNTIL"
-            token r";" => 24; // "Semicolon"
-            token r"ARRAY" => 25; // "ARRAY"
-            token r"OF" => 26; // "OF"
-            token r":" => 27; // "Colon"
-            token r"RECORD" => 28; // "RECORD"
-            token r"VAR" => 29; // "VAR"
-            token r"PROCEDURE" => 30; // "PROCEDURE"
-            token r"BEGIN" => 31; // "BEGIN"
-            token r"RETURN" => 32; // "RETURN"
-            token r"TYPE" => 33; // "TYPE"
-            token r"CONST" => 34; // "CONST"
-            token r"MODULE" => 35; // "MODULE"
-            token r"\*|/|DIV|MOD|&" => 36; // "MulOperator"
-            token r"\+|-|OR" => 37; // "AddOperator"
-            token r"\+|-" => 38; // "UnaryOp"
-            token r"[a-zA-Z][a-zA-Z0-9]*" => 39; // "Ident"
-            token r"[0-9]+" => 40; // "Integer"
-            token r"." => 41; // "Error"
+            token r"\(" => 13; // "LParen0"
+            token r"\)" => 14; // "RParen0"
+            token r"," => 15; // "Comma"
+            token r"ELSE" => 16; // "ELSE"
+            token r"END" => 17; // "END"
+            token r"IF" => 18; // "IF"
+            token r"THEN" => 19; // "THEN"
+            token r"ELSIF" => 20; // "ELSIF"
+            token r"WHILE" => 21; // "WHILE"
+            token r"DO" => 22; // "DO"
+            token r"REPEAT" => 23; // "REPEAT"
+            token r"UNTIL" => 24; // "UNTIL"
+            token r";" => 25; // "Semicolon"
+            token r"ARRAY" => 26; // "ARRAY"
+            token r"OF" => 27; // "OF"
+            token r":" => 28; // "Colon"
+            token r"RECORD" => 29; // "RECORD"
+            token r"VAR" => 30; // "VAR"
+            token r"PROCEDURE" => 31; // "PROCEDURE"
+            token r"BEGIN" => 32; // "BEGIN"
+            token r"RETURN" => 33; // "RETURN"
+            token r"TYPE" => 34; // "TYPE"
+            token r"CONST" => 35; // "CONST"
+            token r"MODULE" => 36; // "MODULE"
+            token r"\\\." => 37; // "Dot0"
+            token r"\*|/|DIV|MOD|&" => 38; // "MulOperator"
+            token r"\+|-|OR" => 39; // "AddOperator"
+            token r"\+|-" => 40; // "UnaryOp"
+            token r"[a-zA-Z][a-zA-Z0-9]*" => 41; // "Ident"
+            token r"[0-9]+" => 42; // "Integer"
+            token r"." => 43; // "Error"
         }
     }
 }
@@ -175,7 +179,7 @@ pub const NON_TERMINALS: &[&str; 59] = &[
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     /* 0 - "ActualParameters" */
     LookaheadDFA {
-        prod0: 24,
+        prod0: 23,
         transitions: &[],
         k: 0,
     },
@@ -183,12 +187,12 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 8, 2, 26),
-            Trans(0, 9, 1, 25),
-            Trans(0, 10, 2, 26),
-            Trans(0, 38, 2, 26),
-            Trans(0, 39, 2, 26),
-            Trans(0, 40, 2, 26),
+            Trans(0, 8, 2, 25),
+            Trans(0, 10, 2, 25),
+            Trans(0, 14, 1, 24),
+            Trans(0, 40, 2, 25),
+            Trans(0, 41, 2, 25),
+            Trans(0, 42, 2, 25),
         ],
         k: 1,
     },
@@ -200,42 +204,42 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
             Trans(0, 9, 2, 14),
             Trans(0, 11, 2, 14),
             Trans(0, 12, 2, 14),
-            Trans(0, 13, 2, 14),
             Trans(0, 14, 2, 14),
             Trans(0, 15, 2, 14),
             Trans(0, 16, 2, 14),
-            Trans(0, 18, 2, 14),
+            Trans(0, 17, 2, 14),
             Trans(0, 19, 2, 14),
-            Trans(0, 21, 2, 14),
-            Trans(0, 23, 2, 14),
+            Trans(0, 20, 2, 14),
+            Trans(0, 22, 2, 14),
             Trans(0, 24, 2, 14),
-            Trans(0, 26, 2, 14),
-            Trans(0, 32, 2, 14),
-            Trans(0, 37, 1, 13),
+            Trans(0, 25, 2, 14),
+            Trans(0, 27, 2, 14),
+            Trans(0, 33, 2, 14),
+            Trans(0, 39, 1, 13),
         ],
         k: 1,
     },
     /* 3 - "AddOperator" */
     LookaheadDFA {
-        prod0: 101,
+        prod0: 100,
         transitions: &[],
         k: 0,
     },
     /* 4 - "ArrayType" */
     LookaheadDFA {
-        prod0: 52,
+        prod0: 51,
         transitions: &[],
         k: 0,
     },
     /* 5 - "AssignOp" */
     LookaheadDFA {
-        prod0: -1,
-        transitions: &[Trans(0, 11, 1, 15), Trans(0, 13, 2, 19)],
-        k: 1,
+        prod0: 15,
+        transitions: &[],
+        k: 0,
     },
     /* 6 - "Assignment" */
     LookaheadDFA {
-        prod0: 23,
+        prod0: 22,
         transitions: &[],
         k: 0,
     },
@@ -243,13 +247,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 2, 92),
-            Trans(0, 29, 2, 92),
-            Trans(0, 30, 2, 92),
-            Trans(0, 31, 2, 92),
-            Trans(0, 32, 2, 92),
-            Trans(0, 33, 2, 92),
-            Trans(0, 39, 1, 91),
+            Trans(0, 17, 2, 91),
+            Trans(0, 30, 2, 91),
+            Trans(0, 31, 2, 91),
+            Trans(0, 32, 2, 91),
+            Trans(0, 33, 2, 91),
+            Trans(0, 34, 2, 91),
+            Trans(0, 41, 1, 90),
         ],
         k: 1,
     },
@@ -257,13 +261,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 4, 83),
-            Trans(0, 29, 3, 82),
-            Trans(0, 30, 4, 83),
-            Trans(0, 31, 4, 83),
-            Trans(0, 32, 4, 83),
-            Trans(0, 33, 1, 78),
-            Trans(0, 34, 2, 79),
+            Trans(0, 17, 4, 82),
+            Trans(0, 30, 3, 81),
+            Trans(0, 31, 4, 82),
+            Trans(0, 32, 4, 82),
+            Trans(0, 33, 4, 82),
+            Trans(0, 34, 1, 77),
+            Trans(0, 35, 2, 78),
         ],
         k: 1,
     },
@@ -271,11 +275,11 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 2, 88),
-            Trans(0, 29, 1, 87),
-            Trans(0, 30, 2, 88),
-            Trans(0, 31, 2, 88),
-            Trans(0, 32, 2, 88),
+            Trans(0, 17, 2, 87),
+            Trans(0, 30, 1, 86),
+            Trans(0, 31, 2, 87),
+            Trans(0, 32, 2, 87),
+            Trans(0, 33, 2, 87),
         ],
         k: 1,
     },
@@ -283,12 +287,12 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 3, 86),
-            Trans(0, 29, 2, 85),
-            Trans(0, 30, 3, 86),
-            Trans(0, 31, 3, 86),
-            Trans(0, 32, 3, 86),
-            Trans(0, 33, 1, 84),
+            Trans(0, 17, 3, 85),
+            Trans(0, 30, 2, 84),
+            Trans(0, 31, 3, 85),
+            Trans(0, 32, 3, 85),
+            Trans(0, 33, 3, 85),
+            Trans(0, 34, 1, 83),
         ],
         k: 1,
     },
@@ -296,11 +300,11 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 2, 81),
-            Trans(0, 29, 1, 80),
-            Trans(0, 30, 2, 81),
-            Trans(0, 31, 2, 81),
-            Trans(0, 32, 2, 81),
+            Trans(0, 17, 2, 80),
+            Trans(0, 30, 1, 79),
+            Trans(0, 31, 2, 80),
+            Trans(0, 32, 2, 80),
+            Trans(0, 33, 2, 80),
         ],
         k: 1,
     },
@@ -308,56 +312,56 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 15, 2, 37),
-            Trans(0, 16, 2, 37),
-            Trans(0, 19, 1, 36),
+            Trans(0, 16, 2, 36),
+            Trans(0, 17, 2, 36),
+            Trans(0, 20, 1, 35),
         ],
         k: 1,
     },
     /* 13 - "Expression" */
     LookaheadDFA {
-        prod0: 20,
+        prod0: 19,
         transitions: &[],
         k: 0,
     },
     /* 14 - "ExpressionListRest" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 9, 2, 28), Trans(0, 14, 1, 27)],
+        transitions: &[Trans(0, 14, 2, 27), Trans(0, 15, 1, 26)],
         k: 1,
     },
     /* 15 - "ExpressionSuffix" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 7, 2, 22),
-            Trans(0, 9, 2, 22),
-            Trans(0, 11, 1, 21),
-            Trans(0, 12, 1, 21),
-            Trans(0, 13, 1, 21),
-            Trans(0, 14, 2, 22),
-            Trans(0, 15, 2, 22),
-            Trans(0, 16, 2, 22),
-            Trans(0, 18, 2, 22),
-            Trans(0, 19, 2, 22),
-            Trans(0, 21, 2, 22),
-            Trans(0, 23, 2, 22),
-            Trans(0, 24, 2, 22),
-            Trans(0, 26, 2, 22),
-            Trans(0, 32, 2, 22),
+            Trans(0, 7, 2, 21),
+            Trans(0, 9, 2, 21),
+            Trans(0, 11, 1, 20),
+            Trans(0, 12, 1, 20),
+            Trans(0, 14, 2, 21),
+            Trans(0, 15, 2, 21),
+            Trans(0, 16, 2, 21),
+            Trans(0, 17, 2, 21),
+            Trans(0, 19, 2, 21),
+            Trans(0, 20, 2, 21),
+            Trans(0, 22, 2, 21),
+            Trans(0, 24, 2, 21),
+            Trans(0, 25, 2, 21),
+            Trans(0, 27, 2, 21),
+            Trans(0, 33, 2, 21),
         ],
         k: 1,
     },
     /* 16 - "FPSection" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 29, 1, 61), Trans(0, 39, 2, 62)],
+        transitions: &[Trans(0, 30, 1, 60), Trans(0, 41, 2, 61)],
         k: 1,
     },
     /* 17 - "FPSectionRest" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 9, 2, 67), Trans(0, 24, 1, 66)],
+        transitions: &[Trans(0, 14, 2, 66), Trans(0, 25, 1, 65)],
         k: 1,
     },
     /* 18 - "Factor" */
@@ -366,9 +370,9 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
         transitions: &[
             Trans(0, 8, 3, 6),
             Trans(0, 10, 4, 7),
-            Trans(0, 38, 5, 8),
-            Trans(0, 39, 1, 4),
-            Trans(0, 40, 2, 5),
+            Trans(0, 40, 5, 8),
+            Trans(0, 41, 1, 4),
+            Trans(0, 42, 2, 5),
         ],
         k: 1,
     },
@@ -376,82 +380,86 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 2, 54),
-            Trans(0, 24, 2, 54),
-            Trans(0, 39, 1, 53),
+            Trans(0, 17, 2, 53),
+            Trans(0, 25, 2, 53),
+            Trans(0, 41, 1, 52),
         ],
         k: 1,
     },
     /* 20 - "FieldListRest" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 16, 2, 57), Trans(0, 24, 1, 56)],
+        transitions: &[Trans(0, 17, 2, 56), Trans(0, 25, 1, 55)],
         k: 1,
     },
     /* 21 - "FormalParameters" */
     LookaheadDFA {
-        prod0: 63,
+        prod0: 62,
         transitions: &[],
         k: 0,
     },
     /* 22 - "FormalParametersSuffix" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 9, 1, 64), Trans(0, 29, 2, 65), Trans(0, 39, 2, 65)],
+        transitions: &[
+            Trans(0, 14, 1, 63),
+            Trans(0, 30, 2, 64),
+            Trans(0, 41, 2, 64),
+        ],
         k: 1,
     },
     /* 23 - "Ident" */
     LookaheadDFA {
-        prod0: 103,
+        prod0: 102,
         transitions: &[],
         k: 0,
     },
     /* 24 - "IdentList" */
     LookaheadDFA {
-        prod0: 49,
+        prod0: 48,
         transitions: &[],
         k: 0,
     },
     /* 25 - "IdentListRest" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 14, 1, 50), Trans(0, 27, 2, 51)],
+        transitions: &[Trans(0, 15, 1, 49), Trans(0, 28, 2, 50)],
         k: 1,
     },
     /* 26 - "IfPrefix" */
     LookaheadDFA {
-        prod0: 35,
+        prod0: 34,
         transitions: &[],
         k: 0,
     },
     /* 27 - "IfStatement" */
     LookaheadDFA {
-        prod0: 32,
+        prod0: 31,
         transitions: &[],
         k: 0,
     },
     /* 28 - "IfStatementSuffix" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 15, 1, 33), Trans(0, 16, 2, 34)],
+        transitions: &[Trans(0, 16, 1, 32), Trans(0, 17, 2, 33)],
         k: 1,
     },
     /* 29 - "Integer" */
     LookaheadDFA {
-        prod0: 104,
+        prod0: 103,
         transitions: &[],
         k: 0,
     },
     /* 30 - "Module" */
     LookaheadDFA {
-        prod0: 97,
+        prod0: 96,
         transitions: &[],
         k: 0,
     },
     /* 31 - "ModuleSuffix" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 16, 2, 99), Trans(0, 31, 1, 98)],
+        transitions: &[Trans(0, 17, 2, 98), Trans(0, 32, 1, 97)],
         k: 1,
     },
     /* 32 - "MulExpression" */
@@ -462,53 +470,53 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
             Trans(0, 9, 2, 11),
             Trans(0, 11, 2, 11),
             Trans(0, 12, 2, 11),
-            Trans(0, 13, 2, 11),
             Trans(0, 14, 2, 11),
             Trans(0, 15, 2, 11),
             Trans(0, 16, 2, 11),
-            Trans(0, 18, 2, 11),
+            Trans(0, 17, 2, 11),
             Trans(0, 19, 2, 11),
-            Trans(0, 21, 2, 11),
-            Trans(0, 23, 2, 11),
+            Trans(0, 20, 2, 11),
+            Trans(0, 22, 2, 11),
             Trans(0, 24, 2, 11),
-            Trans(0, 26, 2, 11),
-            Trans(0, 32, 2, 11),
-            Trans(0, 36, 1, 10),
-            Trans(0, 37, 2, 11),
+            Trans(0, 25, 2, 11),
+            Trans(0, 27, 2, 11),
+            Trans(0, 33, 2, 11),
+            Trans(0, 38, 1, 10),
+            Trans(0, 39, 2, 11),
         ],
         k: 1,
     },
     /* 33 - "MulOperator" */
     LookaheadDFA {
-        prod0: 100,
+        prod0: 99,
         transitions: &[],
         k: 0,
     },
     /* 34 - "ProcedureBody" */
     LookaheadDFA {
-        prod0: 71,
+        prod0: 70,
         transitions: &[],
         k: 0,
     },
     /* 35 - "ProcedureBodySuffix" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 16, 2, 76), Trans(0, 32, 1, 75)],
+        transitions: &[Trans(0, 17, 2, 75), Trans(0, 33, 1, 74)],
         k: 1,
     },
     /* 36 - "ProcedureBodySuffix0" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 3, 74),
-            Trans(0, 31, 1, 72),
-            Trans(0, 32, 2, 73),
+            Trans(0, 17, 3, 73),
+            Trans(0, 32, 1, 71),
+            Trans(0, 33, 2, 72),
         ],
         k: 1,
     },
     /* 37 - "ProcedureCall" */
     LookaheadDFA {
-        prod0: 29,
+        prod0: 28,
         transitions: &[],
         k: 0,
     },
@@ -516,19 +524,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 8, 1, 30),
-            Trans(0, 15, 2, 31),
-            Trans(0, 16, 2, 31),
-            Trans(0, 19, 2, 31),
-            Trans(0, 23, 2, 31),
-            Trans(0, 24, 2, 31),
-            Trans(0, 32, 2, 31),
+            Trans(0, 13, 1, 29),
+            Trans(0, 16, 2, 30),
+            Trans(0, 17, 2, 30),
+            Trans(0, 20, 2, 30),
+            Trans(0, 24, 2, 30),
+            Trans(0, 25, 2, 30),
+            Trans(0, 33, 2, 30),
         ],
         k: 1,
     },
     /* 39 - "ProcedureDeclaration" */
     LookaheadDFA {
-        prod0: 77,
+        prod0: 76,
         transitions: &[],
         k: 0,
     },
@@ -536,39 +544,35 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 2, 90),
-            Trans(0, 30, 1, 89),
-            Trans(0, 31, 2, 90),
-            Trans(0, 32, 2, 90),
+            Trans(0, 17, 2, 89),
+            Trans(0, 31, 1, 88),
+            Trans(0, 32, 2, 89),
+            Trans(0, 33, 2, 89),
         ],
         k: 1,
     },
     /* 41 - "ProcedureHeading" */
     LookaheadDFA {
-        prod0: 68,
+        prod0: 67,
         transitions: &[],
         k: 0,
     },
     /* 42 - "ProcedureHeadingSuffix" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 8, 1, 69), Trans(0, 24, 2, 70)],
+        transitions: &[Trans(0, 13, 1, 68), Trans(0, 25, 2, 69)],
         k: 1,
     },
     /* 43 - "RecordType" */
     LookaheadDFA {
-        prod0: 55,
+        prod0: 54,
         transitions: &[],
         k: 0,
     },
     /* 44 - "RelationOp" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[
-            Trans(0, 11, 1, 16),
-            Trans(0, 12, 2, 17),
-            Trans(0, 13, 1, 16),
-        ],
+        transitions: &[Trans(0, 11, 1, 16), Trans(0, 12, 2, 17)],
         k: 1,
     },
     /* 45 - "RelationalOps" */
@@ -579,7 +583,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     },
     /* 46 - "RepeatStatement" */
     LookaheadDFA {
-        prod0: 39,
+        prod0: 38,
         transitions: &[],
         k: 0,
     },
@@ -599,19 +603,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
             Trans(0, 9, 3, 3),
             Trans(0, 11, 3, 3),
             Trans(0, 12, 3, 3),
-            Trans(0, 13, 3, 3),
             Trans(0, 14, 3, 3),
             Trans(0, 15, 3, 3),
             Trans(0, 16, 3, 3),
-            Trans(0, 18, 3, 3),
+            Trans(0, 17, 3, 3),
             Trans(0, 19, 3, 3),
-            Trans(0, 21, 3, 3),
-            Trans(0, 23, 3, 3),
+            Trans(0, 20, 3, 3),
+            Trans(0, 22, 3, 3),
             Trans(0, 24, 3, 3),
-            Trans(0, 26, 3, 3),
-            Trans(0, 32, 3, 3),
-            Trans(0, 36, 3, 3),
-            Trans(0, 37, 3, 3),
+            Trans(0, 25, 3, 3),
+            Trans(0, 27, 3, 3),
+            Trans(0, 33, 3, 3),
+            Trans(0, 38, 3, 3),
+            Trans(0, 39, 3, 3),
         ],
         k: 1,
     },
@@ -625,77 +629,76 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 15, 10, -1),
-            Trans(0, 16, 11, -1),
-            Trans(0, 17, 4, -1),
-            Trans(0, 19, 12, -1),
-            Trans(0, 20, 6, -1),
-            Trans(0, 22, 8, -1),
-            Trans(0, 23, 12, -1),
-            Trans(0, 24, 13, -1),
-            Trans(0, 32, 12, -1),
-            Trans(0, 39, 1, -1),
-            Trans(1, 5, 2, 40),
-            Trans(1, 6, 2, 40),
-            Trans(1, 8, 3, 41),
-            Trans(1, 11, 2, 40),
-            Trans(1, 13, 2, 40),
-            Trans(1, 15, 3, 41),
-            Trans(1, 16, 3, 41),
-            Trans(1, 19, 3, 41),
-            Trans(1, 23, 3, 41),
-            Trans(1, 24, 3, 41),
-            Trans(1, 32, 3, 41),
-            Trans(4, 8, 5, 42),
-            Trans(4, 10, 5, 42),
-            Trans(4, 38, 5, 42),
-            Trans(4, 39, 5, 42),
-            Trans(4, 40, 5, 42),
-            Trans(6, 8, 7, 43),
-            Trans(6, 10, 7, 43),
-            Trans(6, 38, 7, 43),
-            Trans(6, 39, 7, 43),
-            Trans(6, 40, 7, 43),
-            Trans(8, 17, 9, 44),
-            Trans(8, 20, 9, 44),
-            Trans(8, 22, 9, 44),
-            Trans(8, 23, 9, 44),
-            Trans(8, 24, 9, 44),
-            Trans(8, 39, 9, 44),
-            Trans(10, 16, 14, 45),
-            Trans(10, 17, 14, 45),
-            Trans(10, 20, 14, 45),
-            Trans(10, 22, 14, 45),
-            Trans(10, 24, 14, 45),
-            Trans(10, 39, 14, 45),
-            Trans(11, 15, 14, 45),
-            Trans(11, 16, 14, 45),
-            Trans(11, 19, 14, 45),
-            Trans(11, 23, 14, 45),
-            Trans(11, 24, 14, 45),
-            Trans(11, 32, 14, 45),
-            Trans(11, 39, 14, 45),
-            Trans(12, 8, 14, 45),
-            Trans(12, 10, 14, 45),
-            Trans(12, 38, 14, 45),
-            Trans(12, 39, 14, 45),
-            Trans(12, 40, 14, 45),
-            Trans(13, 15, 14, 45),
-            Trans(13, 16, 14, 45),
-            Trans(13, 17, 14, 45),
-            Trans(13, 19, 14, 45),
-            Trans(13, 20, 14, 45),
-            Trans(13, 22, 14, 45),
-            Trans(13, 23, 14, 45),
-            Trans(13, 24, 14, 45),
-            Trans(13, 32, 14, 45),
-            Trans(13, 39, 14, 45),
+            Trans(0, 16, 10, -1),
+            Trans(0, 17, 11, -1),
+            Trans(0, 18, 4, -1),
+            Trans(0, 20, 12, -1),
+            Trans(0, 21, 6, -1),
+            Trans(0, 23, 8, -1),
+            Trans(0, 24, 12, -1),
+            Trans(0, 25, 13, -1),
+            Trans(0, 33, 12, -1),
+            Trans(0, 41, 1, -1),
+            Trans(1, 5, 2, 39),
+            Trans(1, 6, 2, 39),
+            Trans(1, 11, 2, 39),
+            Trans(1, 13, 3, 40),
+            Trans(1, 16, 3, 40),
+            Trans(1, 17, 3, 40),
+            Trans(1, 20, 3, 40),
+            Trans(1, 24, 3, 40),
+            Trans(1, 25, 3, 40),
+            Trans(1, 33, 3, 40),
+            Trans(4, 8, 5, 41),
+            Trans(4, 10, 5, 41),
+            Trans(4, 40, 5, 41),
+            Trans(4, 41, 5, 41),
+            Trans(4, 42, 5, 41),
+            Trans(6, 8, 7, 42),
+            Trans(6, 10, 7, 42),
+            Trans(6, 40, 7, 42),
+            Trans(6, 41, 7, 42),
+            Trans(6, 42, 7, 42),
+            Trans(8, 18, 9, 43),
+            Trans(8, 21, 9, 43),
+            Trans(8, 23, 9, 43),
+            Trans(8, 24, 9, 43),
+            Trans(8, 25, 9, 43),
+            Trans(8, 41, 9, 43),
+            Trans(10, 17, 14, 44),
+            Trans(10, 18, 14, 44),
+            Trans(10, 21, 14, 44),
+            Trans(10, 23, 14, 44),
+            Trans(10, 25, 14, 44),
+            Trans(10, 41, 14, 44),
+            Trans(11, 16, 14, 44),
+            Trans(11, 17, 14, 44),
+            Trans(11, 20, 14, 44),
+            Trans(11, 24, 14, 44),
+            Trans(11, 25, 14, 44),
+            Trans(11, 33, 14, 44),
+            Trans(11, 41, 14, 44),
+            Trans(12, 8, 14, 44),
+            Trans(12, 10, 14, 44),
+            Trans(12, 40, 14, 44),
+            Trans(12, 41, 14, 44),
+            Trans(12, 42, 14, 44),
+            Trans(13, 16, 14, 44),
+            Trans(13, 17, 14, 44),
+            Trans(13, 18, 14, 44),
+            Trans(13, 20, 14, 44),
+            Trans(13, 21, 14, 44),
+            Trans(13, 23, 14, 44),
+            Trans(13, 24, 14, 44),
+            Trans(13, 25, 14, 44),
+            Trans(13, 33, 14, 44),
+            Trans(13, 41, 14, 44),
         ],
         k: 2,
     },
     /* 51 - "StatementSequence" */
     LookaheadDFA {
-        prod0: 46,
+        prod0: 45,
         transitions: &[],
         k: 0,
     },
@@ -703,12 +706,12 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 15, 2, 48),
-            Trans(0, 16, 2, 48),
-            Trans(0, 19, 2, 48),
-            Trans(0, 23, 2, 48),
-            Trans(0, 24, 1, 47),
-            Trans(0, 32, 2, 48),
+            Trans(0, 16, 2, 47),
+            Trans(0, 17, 2, 47),
+            Trans(0, 20, 2, 47),
+            Trans(0, 24, 2, 47),
+            Trans(0, 25, 1, 46),
+            Trans(0, 33, 2, 47),
         ],
         k: 1,
     },
@@ -722,9 +725,9 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 25, 2, 59),
-            Trans(0, 28, 3, 60),
-            Trans(0, 39, 1, 58),
+            Trans(0, 26, 2, 58),
+            Trans(0, 29, 3, 59),
+            Trans(0, 41, 1, 57),
         ],
         k: 1,
     },
@@ -732,18 +735,18 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 2, 94),
-            Trans(0, 29, 2, 94),
-            Trans(0, 30, 2, 94),
-            Trans(0, 31, 2, 94),
-            Trans(0, 32, 2, 94),
-            Trans(0, 39, 1, 93),
+            Trans(0, 17, 2, 93),
+            Trans(0, 30, 2, 93),
+            Trans(0, 31, 2, 93),
+            Trans(0, 32, 2, 93),
+            Trans(0, 33, 2, 93),
+            Trans(0, 41, 1, 92),
         ],
         k: 1,
     },
     /* 56 - "UnaryOp" */
     LookaheadDFA {
-        prod0: 102,
+        prod0: 101,
         transitions: &[],
         k: 0,
     },
@@ -751,23 +754,23 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 16, 2, 96),
-            Trans(0, 30, 2, 96),
-            Trans(0, 31, 2, 96),
-            Trans(0, 32, 2, 96),
-            Trans(0, 39, 1, 95),
+            Trans(0, 17, 2, 95),
+            Trans(0, 31, 2, 95),
+            Trans(0, 32, 2, 95),
+            Trans(0, 33, 2, 95),
+            Trans(0, 41, 1, 94),
         ],
         k: 1,
     },
     /* 58 - "WhileStatement" */
     LookaheadDFA {
-        prod0: 38,
+        prod0: 37,
         transitions: &[],
         k: 0,
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 105] = &[
+pub const PRODUCTIONS: &[Production; 104] = &[
     // 0 - Selector: SelectorList;
     Production {
         lhs: 47,
@@ -848,7 +851,7 @@ pub const PRODUCTIONS: &[Production; 105] = &[
         lhs: 2,
         production: &[],
     },
-    // 15 - AssignOp: ":=";
+    // 15 - AssignOp: ':=';
     Production {
         lhs: 5,
         production: &[ParseType::T(11)],
@@ -863,32 +866,27 @@ pub const PRODUCTIONS: &[Production; 105] = &[
         lhs: 44,
         production: &[ParseType::N(45)],
     },
-    // 18 - RelationalOps: ">=|<=|\#|<|>";
+    // 18 - RelationalOps: />=|<=|\#|<|>/;
     Production {
         lhs: 45,
         production: &[ParseType::T(12)],
     },
-    // 19 - AssignOp: "=";
-    Production {
-        lhs: 5,
-        production: &[ParseType::T(13)],
-    },
-    // 20 - Expression: SimpleExpression ExpressionSuffix;
+    // 19 - Expression: SimpleExpression ExpressionSuffix;
     Production {
         lhs: 13,
         production: &[ParseType::N(15), ParseType::N(49)],
     },
-    // 21 - ExpressionSuffix: RelationOp SimpleExpression;
+    // 20 - ExpressionSuffix: RelationOp SimpleExpression;
     Production {
         lhs: 15,
         production: &[ParseType::N(49), ParseType::N(44)],
     },
-    // 22 - ExpressionSuffix: ;
+    // 21 - ExpressionSuffix: ;
     Production {
         lhs: 15,
         production: &[],
     },
-    // 23 - Assignment: Ident Selector AssignOp Expression;
+    // 22 - Assignment: Ident Selector AssignOp Expression;
     Production {
         lhs: 6,
         production: &[
@@ -898,488 +896,488 @@ pub const PRODUCTIONS: &[Production; 105] = &[
             ParseType::N(23),
         ],
     },
-    // 24 - ActualParameters: "\(" ActualParametersSuffix;
+    // 23 - ActualParameters: '(' ActualParametersSuffix;
     Production {
         lhs: 0,
-        production: &[ParseType::N(1), ParseType::T(8)],
+        production: &[ParseType::N(1), ParseType::T(13)],
     },
-    // 25 - ActualParametersSuffix: "\)";
+    // 24 - ActualParametersSuffix: ')';
     Production {
         lhs: 1,
-        production: &[ParseType::T(9)],
+        production: &[ParseType::T(14)],
     },
-    // 26 - ActualParametersSuffix: Expression ExpressionListRest "\)";
+    // 25 - ActualParametersSuffix: Expression ExpressionListRest ')';
     Production {
         lhs: 1,
-        production: &[ParseType::T(9), ParseType::N(14), ParseType::N(13)],
+        production: &[ParseType::T(14), ParseType::N(14), ParseType::N(13)],
     },
-    // 27 - ExpressionListRest: "," Expression ExpressionListRest;
+    // 26 - ExpressionListRest: ',' Expression ExpressionListRest;
     Production {
         lhs: 14,
-        production: &[ParseType::N(14), ParseType::N(13), ParseType::T(14)],
+        production: &[ParseType::N(14), ParseType::N(13), ParseType::T(15)],
     },
-    // 28 - ExpressionListRest: ;
+    // 27 - ExpressionListRest: ;
     Production {
         lhs: 14,
         production: &[],
     },
-    // 29 - ProcedureCall: Ident ProcedureCallSuffix;
+    // 28 - ProcedureCall: Ident ProcedureCallSuffix;
     Production {
         lhs: 37,
         production: &[ParseType::N(38), ParseType::N(23)],
     },
-    // 30 - ProcedureCallSuffix: ActualParameters;
+    // 29 - ProcedureCallSuffix: ActualParameters;
     Production {
         lhs: 38,
         production: &[ParseType::N(0)],
     },
-    // 31 - ProcedureCallSuffix: ;
+    // 30 - ProcedureCallSuffix: ;
     Production {
         lhs: 38,
         production: &[],
     },
-    // 32 - IfStatement: IfPrefix IfStatementSuffix;
+    // 31 - IfStatement: IfPrefix IfStatementSuffix;
     Production {
         lhs: 27,
         production: &[ParseType::N(28), ParseType::N(26)],
     },
-    // 33 - IfStatementSuffix: "ELSE" StatementSequence "END";
+    // 32 - IfStatementSuffix: 'ELSE' StatementSequence 'END';
     Production {
         lhs: 28,
-        production: &[ParseType::T(16), ParseType::N(51), ParseType::T(15)],
+        production: &[ParseType::T(17), ParseType::N(51), ParseType::T(16)],
     },
-    // 34 - IfStatementSuffix: "END";
+    // 33 - IfStatementSuffix: 'END';
     Production {
         lhs: 28,
-        production: &[ParseType::T(16)],
+        production: &[ParseType::T(17)],
     },
-    // 35 - IfPrefix: "IF" Expression "THEN" StatementSequence ElseIfList;
+    // 34 - IfPrefix: 'IF' Expression 'THEN' StatementSequence ElseIfList;
     Production {
         lhs: 26,
         production: &[
             ParseType::N(12),
             ParseType::N(51),
-            ParseType::T(18),
+            ParseType::T(19),
             ParseType::N(13),
-            ParseType::T(17),
+            ParseType::T(18),
         ],
     },
-    // 36 - ElseIfList: "ELSIF" Expression "THEN" StatementSequence ElseIfList;
+    // 35 - ElseIfList: 'ELSIF' Expression 'THEN' StatementSequence ElseIfList;
     Production {
         lhs: 12,
         production: &[
             ParseType::N(12),
             ParseType::N(51),
-            ParseType::T(18),
-            ParseType::N(13),
             ParseType::T(19),
-        ],
-    },
-    // 37 - ElseIfList: ;
-    Production {
-        lhs: 12,
-        production: &[],
-    },
-    // 38 - WhileStatement: "WHILE" Expression "DO" StatementSequence "END";
-    Production {
-        lhs: 58,
-        production: &[
-            ParseType::T(16),
-            ParseType::N(51),
-            ParseType::T(21),
             ParseType::N(13),
             ParseType::T(20),
         ],
     },
-    // 39 - RepeatStatement: "REPEAT" StatementSequence "UNTIL" Expression;
+    // 36 - ElseIfList: ;
+    Production {
+        lhs: 12,
+        production: &[],
+    },
+    // 37 - WhileStatement: 'WHILE' Expression 'DO' StatementSequence 'END';
+    Production {
+        lhs: 58,
+        production: &[
+            ParseType::T(17),
+            ParseType::N(51),
+            ParseType::T(22),
+            ParseType::N(13),
+            ParseType::T(21),
+        ],
+    },
+    // 38 - RepeatStatement: 'REPEAT' StatementSequence 'UNTIL' Expression;
     Production {
         lhs: 46,
         production: &[
             ParseType::N(13),
-            ParseType::T(23),
+            ParseType::T(24),
             ParseType::N(51),
-            ParseType::T(22),
+            ParseType::T(23),
         ],
     },
-    // 40 - Statement: Assignment;
+    // 39 - Statement: Assignment;
     Production {
         lhs: 50,
         production: &[ParseType::N(6)],
     },
-    // 41 - Statement: ProcedureCall;
+    // 40 - Statement: ProcedureCall;
     Production {
         lhs: 50,
         production: &[ParseType::N(37)],
     },
-    // 42 - Statement: IfStatement;
+    // 41 - Statement: IfStatement;
     Production {
         lhs: 50,
         production: &[ParseType::N(27)],
     },
-    // 43 - Statement: WhileStatement;
+    // 42 - Statement: WhileStatement;
     Production {
         lhs: 50,
         production: &[ParseType::N(58)],
     },
-    // 44 - Statement: RepeatStatement;
+    // 43 - Statement: RepeatStatement;
     Production {
         lhs: 50,
         production: &[ParseType::N(46)],
     },
-    // 45 - Statement: ;
+    // 44 - Statement: ;
     Production {
         lhs: 50,
         production: &[],
     },
-    // 46 - StatementSequence: Statement StatementSequenceRest;
+    // 45 - StatementSequence: Statement StatementSequenceRest;
     Production {
         lhs: 51,
         production: &[ParseType::N(52), ParseType::N(50)],
     },
-    // 47 - StatementSequenceRest: ";" Statement StatementSequenceRest;
+    // 46 - StatementSequenceRest: ';' Statement StatementSequenceRest;
     Production {
         lhs: 52,
-        production: &[ParseType::N(52), ParseType::N(50), ParseType::T(24)],
+        production: &[ParseType::N(52), ParseType::N(50), ParseType::T(25)],
     },
-    // 48 - StatementSequenceRest: ;
+    // 47 - StatementSequenceRest: ;
     Production {
         lhs: 52,
         production: &[],
     },
-    // 49 - IdentList: Ident IdentListRest;
+    // 48 - IdentList: Ident IdentListRest;
     Production {
         lhs: 24,
         production: &[ParseType::N(25), ParseType::N(23)],
     },
-    // 50 - IdentListRest: "," Ident IdentListRest;
+    // 49 - IdentListRest: ',' Ident IdentListRest;
     Production {
         lhs: 25,
-        production: &[ParseType::N(25), ParseType::N(23), ParseType::T(14)],
+        production: &[ParseType::N(25), ParseType::N(23), ParseType::T(15)],
     },
-    // 51 - IdentListRest: ;
+    // 50 - IdentListRest: ;
     Production {
         lhs: 25,
         production: &[],
     },
-    // 52 - ArrayType: "ARRAY" Expression "OF" Type;
+    // 51 - ArrayType: 'ARRAY' Expression 'OF' Type;
     Production {
         lhs: 4,
         production: &[
             ParseType::N(54),
-            ParseType::T(26),
+            ParseType::T(27),
             ParseType::N(13),
-            ParseType::T(25),
+            ParseType::T(26),
         ],
     },
-    // 53 - FieldList: IdentList ":" Type;
+    // 52 - FieldList: IdentList ':' Type;
     Production {
         lhs: 19,
-        production: &[ParseType::N(54), ParseType::T(27), ParseType::N(24)],
+        production: &[ParseType::N(54), ParseType::T(28), ParseType::N(24)],
     },
-    // 54 - FieldList: ;
+    // 53 - FieldList: ;
     Production {
         lhs: 19,
         production: &[],
     },
-    // 55 - RecordType: "RECORD" FieldList FieldListRest "END";
+    // 54 - RecordType: 'RECORD' FieldList FieldListRest 'END';
     Production {
         lhs: 43,
         production: &[
-            ParseType::T(16),
+            ParseType::T(17),
             ParseType::N(20),
             ParseType::N(19),
-            ParseType::T(28),
+            ParseType::T(29),
         ],
     },
-    // 56 - FieldListRest: ";" FieldList FieldListRest;
+    // 55 - FieldListRest: ';' FieldList FieldListRest;
     Production {
         lhs: 20,
-        production: &[ParseType::N(20), ParseType::N(19), ParseType::T(24)],
+        production: &[ParseType::N(20), ParseType::N(19), ParseType::T(25)],
     },
-    // 57 - FieldListRest: ;
+    // 56 - FieldListRest: ;
     Production {
         lhs: 20,
         production: &[],
     },
-    // 58 - Type: Ident;
+    // 57 - Type: Ident;
     Production {
         lhs: 54,
         production: &[ParseType::N(23)],
     },
-    // 59 - Type: ArrayType;
+    // 58 - Type: ArrayType;
     Production {
         lhs: 54,
         production: &[ParseType::N(4)],
     },
-    // 60 - Type: RecordType;
+    // 59 - Type: RecordType;
     Production {
         lhs: 54,
         production: &[ParseType::N(43)],
     },
-    // 61 - FPSection: "VAR" IdentList ":" Type;
+    // 60 - FPSection: 'VAR' IdentList ':' Type;
     Production {
         lhs: 16,
         production: &[
             ParseType::N(54),
-            ParseType::T(27),
+            ParseType::T(28),
             ParseType::N(24),
-            ParseType::T(29),
+            ParseType::T(30),
         ],
     },
-    // 62 - FPSection: IdentList ":" Type;
+    // 61 - FPSection: IdentList ':' Type;
     Production {
         lhs: 16,
-        production: &[ParseType::N(54), ParseType::T(27), ParseType::N(24)],
+        production: &[ParseType::N(54), ParseType::T(28), ParseType::N(24)],
     },
-    // 63 - FormalParameters: "\(" FormalParametersSuffix;
+    // 62 - FormalParameters: '(' FormalParametersSuffix;
     Production {
         lhs: 21,
-        production: &[ParseType::N(22), ParseType::T(8)],
+        production: &[ParseType::N(22), ParseType::T(13)],
     },
-    // 64 - FormalParametersSuffix: "\)";
+    // 63 - FormalParametersSuffix: ')';
     Production {
         lhs: 22,
-        production: &[ParseType::T(9)],
+        production: &[ParseType::T(14)],
     },
-    // 65 - FormalParametersSuffix: FPSection FPSectionRest "\)";
+    // 64 - FormalParametersSuffix: FPSection FPSectionRest ')';
     Production {
         lhs: 22,
-        production: &[ParseType::T(9), ParseType::N(17), ParseType::N(16)],
+        production: &[ParseType::T(14), ParseType::N(17), ParseType::N(16)],
     },
-    // 66 - FPSectionRest: ";" FPSection FPSectionRest;
+    // 65 - FPSectionRest: ';' FPSection FPSectionRest;
     Production {
         lhs: 17,
-        production: &[ParseType::N(17), ParseType::N(16), ParseType::T(24)],
+        production: &[ParseType::N(17), ParseType::N(16), ParseType::T(25)],
     },
-    // 67 - FPSectionRest: ;
+    // 66 - FPSectionRest: ;
     Production {
         lhs: 17,
         production: &[],
     },
-    // 68 - ProcedureHeading: "PROCEDURE" Ident ProcedureHeadingSuffix;
+    // 67 - ProcedureHeading: 'PROCEDURE' Ident ProcedureHeadingSuffix;
     Production {
         lhs: 41,
-        production: &[ParseType::N(42), ParseType::N(23), ParseType::T(30)],
+        production: &[ParseType::N(42), ParseType::N(23), ParseType::T(31)],
     },
-    // 69 - ProcedureHeadingSuffix: FormalParameters;
+    // 68 - ProcedureHeadingSuffix: FormalParameters;
     Production {
         lhs: 42,
         production: &[ParseType::N(21)],
     },
-    // 70 - ProcedureHeadingSuffix: ;
+    // 69 - ProcedureHeadingSuffix: ;
     Production {
         lhs: 42,
         production: &[],
     },
-    // 71 - ProcedureBody: Declarations ProcedureBodySuffix0;
+    // 70 - ProcedureBody: Declarations ProcedureBodySuffix0;
     Production {
         lhs: 34,
         production: &[ParseType::N(36), ParseType::N(8)],
     },
-    // 72 - ProcedureBodySuffix0: "BEGIN" StatementSequence ProcedureBodySuffix;
+    // 71 - ProcedureBodySuffix0: 'BEGIN' StatementSequence ProcedureBodySuffix;
     Production {
         lhs: 36,
-        production: &[ParseType::N(35), ParseType::N(51), ParseType::T(31)],
+        production: &[ParseType::N(35), ParseType::N(51), ParseType::T(32)],
     },
-    // 73 - ProcedureBodySuffix0: "RETURN" Expression "END" Ident;
+    // 72 - ProcedureBodySuffix0: 'RETURN' Expression 'END' Ident;
     Production {
         lhs: 36,
         production: &[
             ParseType::N(23),
-            ParseType::T(16),
+            ParseType::T(17),
             ParseType::N(13),
-            ParseType::T(32),
+            ParseType::T(33),
         ],
     },
-    // 74 - ProcedureBodySuffix0: "END" Ident;
+    // 73 - ProcedureBodySuffix0: 'END' Ident;
     Production {
         lhs: 36,
-        production: &[ParseType::N(23), ParseType::T(16)],
+        production: &[ParseType::N(23), ParseType::T(17)],
     },
-    // 75 - ProcedureBodySuffix: "RETURN" Expression "END" Ident;
+    // 74 - ProcedureBodySuffix: 'RETURN' Expression 'END' Ident;
     Production {
         lhs: 35,
         production: &[
             ParseType::N(23),
-            ParseType::T(16),
+            ParseType::T(17),
             ParseType::N(13),
-            ParseType::T(32),
+            ParseType::T(33),
         ],
     },
-    // 76 - ProcedureBodySuffix: "END" Ident;
+    // 75 - ProcedureBodySuffix: 'END' Ident;
     Production {
         lhs: 35,
-        production: &[ParseType::N(23), ParseType::T(16)],
+        production: &[ParseType::N(23), ParseType::T(17)],
     },
-    // 77 - ProcedureDeclaration: ProcedureHeading ";" ProcedureBody;
+    // 76 - ProcedureDeclaration: ProcedureHeading ';' ProcedureBody;
     Production {
         lhs: 39,
-        production: &[ParseType::N(34), ParseType::T(24), ParseType::N(41)],
+        production: &[ParseType::N(34), ParseType::T(25), ParseType::N(41)],
     },
-    // 78 - Declarations: "TYPE" TypeDecls DeclarationsSuffix1;
+    // 77 - Declarations: 'TYPE' TypeDecls DeclarationsSuffix1;
     Production {
         lhs: 8,
-        production: &[ParseType::N(11), ParseType::N(55), ParseType::T(33)],
+        production: &[ParseType::N(11), ParseType::N(55), ParseType::T(34)],
     },
-    // 79 - Declarations: "CONST" ConstDecls DeclarationsSuffix0;
+    // 78 - Declarations: 'CONST' ConstDecls DeclarationsSuffix0;
     Production {
         lhs: 8,
-        production: &[ParseType::N(10), ParseType::N(7), ParseType::T(34)],
+        production: &[ParseType::N(10), ParseType::N(7), ParseType::T(35)],
     },
-    // 80 - DeclarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;
+    // 79 - DeclarationsSuffix1: 'VAR' VarDecls ProcedureDeclarationList;
     Production {
         lhs: 11,
-        production: &[ParseType::N(40), ParseType::N(57), ParseType::T(29)],
+        production: &[ParseType::N(40), ParseType::N(57), ParseType::T(30)],
     },
-    // 81 - DeclarationsSuffix1: ProcedureDeclarationList;
+    // 80 - DeclarationsSuffix1: ProcedureDeclarationList;
     Production {
         lhs: 11,
         production: &[ParseType::N(40)],
     },
-    // 82 - Declarations: "VAR" VarDecls ProcedureDeclarationList;
+    // 81 - Declarations: 'VAR' VarDecls ProcedureDeclarationList;
     Production {
         lhs: 8,
-        production: &[ParseType::N(40), ParseType::N(57), ParseType::T(29)],
+        production: &[ParseType::N(40), ParseType::N(57), ParseType::T(30)],
     },
-    // 83 - Declarations: ProcedureDeclarationList;
+    // 82 - Declarations: ProcedureDeclarationList;
     Production {
         lhs: 8,
         production: &[ParseType::N(40)],
     },
-    // 84 - DeclarationsSuffix0: "TYPE" TypeDecls DeclarationsSuffix;
+    // 83 - DeclarationsSuffix0: 'TYPE' TypeDecls DeclarationsSuffix;
     Production {
         lhs: 10,
-        production: &[ParseType::N(9), ParseType::N(55), ParseType::T(33)],
+        production: &[ParseType::N(9), ParseType::N(55), ParseType::T(34)],
     },
-    // 85 - DeclarationsSuffix0: "VAR" VarDecls ProcedureDeclarationList;
+    // 84 - DeclarationsSuffix0: 'VAR' VarDecls ProcedureDeclarationList;
     Production {
         lhs: 10,
-        production: &[ParseType::N(40), ParseType::N(57), ParseType::T(29)],
+        production: &[ParseType::N(40), ParseType::N(57), ParseType::T(30)],
     },
-    // 86 - DeclarationsSuffix0: ProcedureDeclarationList;
+    // 85 - DeclarationsSuffix0: ProcedureDeclarationList;
     Production {
         lhs: 10,
         production: &[ParseType::N(40)],
     },
-    // 87 - DeclarationsSuffix: "VAR" VarDecls ProcedureDeclarationList;
+    // 86 - DeclarationsSuffix: 'VAR' VarDecls ProcedureDeclarationList;
     Production {
         lhs: 9,
-        production: &[ParseType::N(40), ParseType::N(57), ParseType::T(29)],
+        production: &[ParseType::N(40), ParseType::N(57), ParseType::T(30)],
     },
-    // 88 - DeclarationsSuffix: ProcedureDeclarationList;
+    // 87 - DeclarationsSuffix: ProcedureDeclarationList;
     Production {
         lhs: 9,
         production: &[ParseType::N(40)],
     },
-    // 89 - ProcedureDeclarationList: ProcedureDeclaration ";" ProcedureDeclarationList;
+    // 88 - ProcedureDeclarationList: ProcedureDeclaration ';' ProcedureDeclarationList;
     Production {
         lhs: 40,
-        production: &[ParseType::N(40), ParseType::T(24), ParseType::N(39)],
+        production: &[ParseType::N(40), ParseType::T(25), ParseType::N(39)],
     },
-    // 90 - ProcedureDeclarationList: ;
+    // 89 - ProcedureDeclarationList: ;
     Production {
         lhs: 40,
         production: &[],
     },
-    // 91 - ConstDecls: Ident AssignOp Expression ";" ConstDecls;
+    // 90 - ConstDecls: Ident AssignOp Expression ';' ConstDecls;
     Production {
         lhs: 7,
         production: &[
             ParseType::N(7),
-            ParseType::T(24),
+            ParseType::T(25),
             ParseType::N(13),
             ParseType::N(5),
             ParseType::N(23),
         ],
     },
-    // 92 - ConstDecls: ;
+    // 91 - ConstDecls: ;
     Production {
         lhs: 7,
         production: &[],
     },
-    // 93 - TypeDecls: Ident AssignOp Type ";" TypeDecls;
+    // 92 - TypeDecls: Ident AssignOp Type ';' TypeDecls;
     Production {
         lhs: 55,
         production: &[
             ParseType::N(55),
-            ParseType::T(24),
+            ParseType::T(25),
             ParseType::N(54),
             ParseType::N(5),
             ParseType::N(23),
         ],
     },
-    // 94 - TypeDecls: ;
+    // 93 - TypeDecls: ;
     Production {
         lhs: 55,
         production: &[],
     },
-    // 95 - VarDecls: IdentList ":" Type ";" VarDecls;
+    // 94 - VarDecls: IdentList ':' Type ';' VarDecls;
     Production {
         lhs: 57,
         production: &[
             ParseType::N(57),
-            ParseType::T(24),
+            ParseType::T(25),
             ParseType::N(54),
-            ParseType::T(27),
+            ParseType::T(28),
             ParseType::N(24),
         ],
     },
-    // 96 - VarDecls: ;
+    // 95 - VarDecls: ;
     Production {
         lhs: 57,
         production: &[],
     },
-    // 97 - Module: "MODULE" Ident ";" Declarations ModuleSuffix;
+    // 96 - Module: 'MODULE' Ident ';' Declarations ModuleSuffix;
     Production {
         lhs: 30,
         production: &[
             ParseType::N(31),
             ParseType::N(8),
-            ParseType::T(24),
+            ParseType::T(25),
             ParseType::N(23),
-            ParseType::T(35),
+            ParseType::T(36),
         ],
     },
-    // 98 - ModuleSuffix: "BEGIN" StatementSequence "END" Ident "\.";
+    // 97 - ModuleSuffix: 'BEGIN' StatementSequence 'END' Ident '\.';
     Production {
         lhs: 31,
         production: &[
             ParseType::T(5),
             ParseType::N(23),
-            ParseType::T(16),
+            ParseType::T(17),
             ParseType::N(51),
-            ParseType::T(31),
+            ParseType::T(32),
         ],
     },
-    // 99 - ModuleSuffix: "END" Ident "\.";
+    // 98 - ModuleSuffix: 'END' Ident '\.';
     Production {
         lhs: 31,
-        production: &[ParseType::T(5), ParseType::N(23), ParseType::T(16)],
+        production: &[ParseType::T(5), ParseType::N(23), ParseType::T(17)],
     },
-    // 100 - MulOperator: "\*|/|DIV|MOD|&";
+    // 99 - MulOperator: "\*|/|DIV|MOD|&";
     Production {
         lhs: 33,
-        production: &[ParseType::T(36)],
-    },
-    // 101 - AddOperator: "\+|-|OR";
-    Production {
-        lhs: 3,
-        production: &[ParseType::T(37)],
-    },
-    // 102 - UnaryOp: "\+|-";
-    Production {
-        lhs: 56,
         production: &[ParseType::T(38)],
     },
-    // 103 - Ident: "[a-zA-Z][a-zA-Z0-9]*";
+    // 100 - AddOperator: /\+|-|OR/;
     Production {
-        lhs: 23,
+        lhs: 3,
         production: &[ParseType::T(39)],
     },
-    // 104 - Integer: "[0-9]+";
+    // 101 - UnaryOp: /\+|-/;
+    Production {
+        lhs: 56,
+        production: &[ParseType::T(40)],
+    },
+    // 102 - Ident: /[a-zA-Z][a-zA-Z0-9]*/;
+    Production {
+        lhs: 23,
+        production: &[ParseType::T(41)],
+    },
+    // 103 - Integer: /[0-9]+/;
     Production {
         lhs: 29,
-        production: &[ParseType::T(40)],
+        production: &[ParseType::T(42)],
     },
 ];
 

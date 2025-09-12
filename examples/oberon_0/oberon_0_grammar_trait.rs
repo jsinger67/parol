@@ -404,17 +404,6 @@ pub struct AddExpressionAddOperatorTermAddExpression<'t> {
 pub struct AddExpressionAddExpressionEmpty {}
 
 ///
-/// Type derived for production 15
-///
-/// `AssignOp: ":=";`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct AssignOpColonEqu<'t> {
-    pub colon_equ: Token<'t>, /* := */
-}
-
-///
 /// Type derived for production 16
 ///
 /// `RelationOp: AssignOp;`
@@ -437,18 +426,7 @@ pub struct RelationOpRelationalOps<'t> {
 }
 
 ///
-/// Type derived for production 19
-///
-/// `AssignOp: "=";`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct AssignOpEqu<'t> {
-    pub equ: Token<'t>, /* = */
-}
-
-///
-/// Type derived for production 21
+/// Type derived for production 20
 ///
 /// `ExpressionSuffix: RelationOp SimpleExpression;`
 ///
@@ -460,7 +438,7 @@ pub struct ExpressionSuffixRelationOpSimpleExpression<'t> {
 }
 
 ///
-/// Type derived for production 22
+/// Type derived for production 21
 ///
 /// `ExpressionSuffix: ;`
 ///
@@ -469,33 +447,33 @@ pub struct ExpressionSuffixRelationOpSimpleExpression<'t> {
 pub struct ExpressionSuffixExpressionSuffixEmpty {}
 
 ///
-/// Type derived for production 25
+/// Type derived for production 24
 ///
-/// `ActualParametersSuffix: "\)";`
+/// `ActualParametersSuffix: ')';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct ActualParametersSuffixRParen<'t> {
-    pub r_paren: Token<'t>, /* \) */
+    pub r_paren: Token<'t>, /* ) */
 }
 
 ///
-/// Type derived for production 26
+/// Type derived for production 25
 ///
-/// `ActualParametersSuffix: Expression ExpressionListRest "\)";`
+/// `ActualParametersSuffix: Expression ExpressionListRest ')';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct ActualParametersSuffixExpressionExpressionListRestRParen<'t> {
     pub expression: Expression<'t>,
     pub expression_list_rest: ExpressionListRest<'t>,
-    pub r_paren: Token<'t>, /* \) */
+    pub r_paren: Token<'t>, /* ) */
 }
 
 ///
-/// Type derived for production 27
+/// Type derived for production 26
 ///
-/// `ExpressionListRest: "," Expression ExpressionListRest;`
+/// `ExpressionListRest: ',' Expression ExpressionListRest;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -506,7 +484,7 @@ pub struct ExpressionListRestCommaExpressionExpressionListRest<'t> {
 }
 
 ///
-/// Type derived for production 28
+/// Type derived for production 27
 ///
 /// `ExpressionListRest: ;`
 ///
@@ -515,7 +493,7 @@ pub struct ExpressionListRestCommaExpressionExpressionListRest<'t> {
 pub struct ExpressionListRestExpressionListRestEmpty {}
 
 ///
-/// Type derived for production 30
+/// Type derived for production 29
 ///
 /// `ProcedureCallSuffix: ActualParameters;`
 ///
@@ -526,7 +504,7 @@ pub struct ProcedureCallSuffixActualParameters<'t> {
 }
 
 ///
-/// Type derived for production 31
+/// Type derived for production 30
 ///
 /// `ProcedureCallSuffix: ;`
 ///
@@ -535,9 +513,9 @@ pub struct ProcedureCallSuffixActualParameters<'t> {
 pub struct ProcedureCallSuffixProcedureCallSuffixEmpty {}
 
 ///
-/// Type derived for production 33
+/// Type derived for production 32
 ///
-/// `IfStatementSuffix: "ELSE" StatementSequence "END";`
+/// `IfStatementSuffix: 'ELSE' StatementSequence 'END';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -548,9 +526,9 @@ pub struct IfStatementSuffixELSEStatementSequenceEND<'t> {
 }
 
 ///
-/// Type derived for production 34
+/// Type derived for production 33
 ///
-/// `IfStatementSuffix: "END";`
+/// `IfStatementSuffix: 'END';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -559,9 +537,9 @@ pub struct IfStatementSuffixEND<'t> {
 }
 
 ///
-/// Type derived for production 36
+/// Type derived for production 35
 ///
-/// `ElseIfList: "ELSIF" Expression "THEN" StatementSequence ElseIfList;`
+/// `ElseIfList: 'ELSIF' Expression 'THEN' StatementSequence ElseIfList;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -574,7 +552,7 @@ pub struct ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t> {
 }
 
 ///
-/// Type derived for production 37
+/// Type derived for production 36
 ///
 /// `ElseIfList: ;`
 ///
@@ -583,7 +561,7 @@ pub struct ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t> {
 pub struct ElseIfListElseIfListEmpty {}
 
 ///
-/// Type derived for production 40
+/// Type derived for production 39
 ///
 /// `Statement: Assignment;`
 ///
@@ -594,7 +572,7 @@ pub struct StatementAssignment<'t> {
 }
 
 ///
-/// Type derived for production 41
+/// Type derived for production 40
 ///
 /// `Statement: ProcedureCall;`
 ///
@@ -605,7 +583,7 @@ pub struct StatementProcedureCall<'t> {
 }
 
 ///
-/// Type derived for production 42
+/// Type derived for production 41
 ///
 /// `Statement: IfStatement;`
 ///
@@ -616,7 +594,7 @@ pub struct StatementIfStatement<'t> {
 }
 
 ///
-/// Type derived for production 43
+/// Type derived for production 42
 ///
 /// `Statement: WhileStatement;`
 ///
@@ -627,7 +605,7 @@ pub struct StatementWhileStatement<'t> {
 }
 
 ///
-/// Type derived for production 44
+/// Type derived for production 43
 ///
 /// `Statement: RepeatStatement;`
 ///
@@ -638,7 +616,7 @@ pub struct StatementRepeatStatement<'t> {
 }
 
 ///
-/// Type derived for production 45
+/// Type derived for production 44
 ///
 /// `Statement: ;`
 ///
@@ -647,9 +625,9 @@ pub struct StatementRepeatStatement<'t> {
 pub struct StatementStatementEmpty {}
 
 ///
-/// Type derived for production 47
+/// Type derived for production 46
 ///
-/// `StatementSequenceRest: ";" Statement StatementSequenceRest;`
+/// `StatementSequenceRest: ';' Statement StatementSequenceRest;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -660,7 +638,7 @@ pub struct StatementSequenceRestSemicolonStatementStatementSequenceRest<'t> {
 }
 
 ///
-/// Type derived for production 48
+/// Type derived for production 47
 ///
 /// `StatementSequenceRest: ;`
 ///
@@ -669,9 +647,9 @@ pub struct StatementSequenceRestSemicolonStatementStatementSequenceRest<'t> {
 pub struct StatementSequenceRestStatementSequenceRestEmpty {}
 
 ///
-/// Type derived for production 50
+/// Type derived for production 49
 ///
-/// `IdentListRest: "," Ident IdentListRest;`
+/// `IdentListRest: ',' Ident IdentListRest;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -682,7 +660,7 @@ pub struct IdentListRestCommaIdentIdentListRest<'t> {
 }
 
 ///
-/// Type derived for production 51
+/// Type derived for production 50
 ///
 /// `IdentListRest: ;`
 ///
@@ -691,9 +669,9 @@ pub struct IdentListRestCommaIdentIdentListRest<'t> {
 pub struct IdentListRestIdentListRestEmpty {}
 
 ///
-/// Type derived for production 53
+/// Type derived for production 52
 ///
-/// `FieldList: IdentList ":" Type;`
+/// `FieldList: IdentList ':' Type;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -704,7 +682,7 @@ pub struct FieldListIdentListColonType<'t> {
 }
 
 ///
-/// Type derived for production 54
+/// Type derived for production 53
 ///
 /// `FieldList: ;`
 ///
@@ -713,9 +691,9 @@ pub struct FieldListIdentListColonType<'t> {
 pub struct FieldListFieldListEmpty {}
 
 ///
-/// Type derived for production 56
+/// Type derived for production 55
 ///
-/// `FieldListRest: ";" FieldList FieldListRest;`
+/// `FieldListRest: ';' FieldList FieldListRest;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -726,7 +704,7 @@ pub struct FieldListRestSemicolonFieldListFieldListRest<'t> {
 }
 
 ///
-/// Type derived for production 57
+/// Type derived for production 56
 ///
 /// `FieldListRest: ;`
 ///
@@ -735,7 +713,7 @@ pub struct FieldListRestSemicolonFieldListFieldListRest<'t> {
 pub struct FieldListRestFieldListRestEmpty {}
 
 ///
-/// Type derived for production 58
+/// Type derived for production 57
 ///
 /// `Type: Ident;`
 ///
@@ -746,7 +724,7 @@ pub struct TypeIdent<'t> {
 }
 
 ///
-/// Type derived for production 59
+/// Type derived for production 58
 ///
 /// `Type: ArrayType;`
 ///
@@ -757,7 +735,7 @@ pub struct TypeArrayType<'t> {
 }
 
 ///
-/// Type derived for production 60
+/// Type derived for production 59
 ///
 /// `Type: RecordType;`
 ///
@@ -768,9 +746,9 @@ pub struct TypeRecordType<'t> {
 }
 
 ///
-/// Type derived for production 61
+/// Type derived for production 60
 ///
-/// `FPSection: "VAR" IdentList ":" Type;`
+/// `FPSection: 'VAR' IdentList ':' Type;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -782,9 +760,9 @@ pub struct FPSectionVARIdentListColonType<'t> {
 }
 
 ///
-/// Type derived for production 62
+/// Type derived for production 61
 ///
-/// `FPSection: IdentList ":" Type;`
+/// `FPSection: IdentList ':' Type;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -795,33 +773,33 @@ pub struct FPSectionIdentListColonType<'t> {
 }
 
 ///
-/// Type derived for production 64
+/// Type derived for production 63
 ///
-/// `FormalParametersSuffix: "\)";`
+/// `FormalParametersSuffix: ')';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct FormalParametersSuffixRParen<'t> {
-    pub r_paren: Token<'t>, /* \) */
+    pub r_paren: Token<'t>, /* ) */
 }
 
 ///
-/// Type derived for production 65
+/// Type derived for production 64
 ///
-/// `FormalParametersSuffix: FPSection FPSectionRest "\)";`
+/// `FormalParametersSuffix: FPSection FPSectionRest ')';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct FormalParametersSuffixFPSectionFPSectionRestRParen<'t> {
     pub f_p_section: FPSection<'t>,
     pub f_p_section_rest: FPSectionRest<'t>,
-    pub r_paren: Token<'t>, /* \) */
+    pub r_paren: Token<'t>, /* ) */
 }
 
 ///
-/// Type derived for production 66
+/// Type derived for production 65
 ///
-/// `FPSectionRest: ";" FPSection FPSectionRest;`
+/// `FPSectionRest: ';' FPSection FPSectionRest;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -832,7 +810,7 @@ pub struct FPSectionRestSemicolonFPSectionFPSectionRest<'t> {
 }
 
 ///
-/// Type derived for production 67
+/// Type derived for production 66
 ///
 /// `FPSectionRest: ;`
 ///
@@ -841,7 +819,7 @@ pub struct FPSectionRestSemicolonFPSectionFPSectionRest<'t> {
 pub struct FPSectionRestFPSectionRestEmpty {}
 
 ///
-/// Type derived for production 69
+/// Type derived for production 68
 ///
 /// `ProcedureHeadingSuffix: FormalParameters;`
 ///
@@ -852,7 +830,7 @@ pub struct ProcedureHeadingSuffixFormalParameters<'t> {
 }
 
 ///
-/// Type derived for production 70
+/// Type derived for production 69
 ///
 /// `ProcedureHeadingSuffix: ;`
 ///
@@ -861,9 +839,9 @@ pub struct ProcedureHeadingSuffixFormalParameters<'t> {
 pub struct ProcedureHeadingSuffixProcedureHeadingSuffixEmpty {}
 
 ///
-/// Type derived for production 72
+/// Type derived for production 71
 ///
-/// `ProcedureBodySuffix0: "BEGIN" StatementSequence ProcedureBodySuffix;`
+/// `ProcedureBodySuffix0: 'BEGIN' StatementSequence ProcedureBodySuffix;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -874,9 +852,9 @@ pub struct ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix<'t> {
 }
 
 ///
-/// Type derived for production 73
+/// Type derived for production 72
 ///
-/// `ProcedureBodySuffix0: "RETURN" Expression "END" Ident;`
+/// `ProcedureBodySuffix0: 'RETURN' Expression 'END' Ident;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -888,9 +866,9 @@ pub struct ProcedureBodySuffix0RETURNExpressionENDIdent<'t> {
 }
 
 ///
-/// Type derived for production 74
+/// Type derived for production 73
 ///
-/// `ProcedureBodySuffix0: "END" Ident;`
+/// `ProcedureBodySuffix0: 'END' Ident;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -900,9 +878,9 @@ pub struct ProcedureBodySuffix0ENDIdent<'t> {
 }
 
 ///
-/// Type derived for production 75
+/// Type derived for production 74
 ///
-/// `ProcedureBodySuffix: "RETURN" Expression "END" Ident;`
+/// `ProcedureBodySuffix: 'RETURN' Expression 'END' Ident;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -914,9 +892,9 @@ pub struct ProcedureBodySuffixRETURNExpressionENDIdent<'t> {
 }
 
 ///
-/// Type derived for production 76
+/// Type derived for production 75
 ///
-/// `ProcedureBodySuffix: "END" Ident;`
+/// `ProcedureBodySuffix: 'END' Ident;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -926,9 +904,9 @@ pub struct ProcedureBodySuffixENDIdent<'t> {
 }
 
 ///
-/// Type derived for production 78
+/// Type derived for production 77
 ///
-/// `Declarations: "TYPE" TypeDecls DeclarationsSuffix1;`
+/// `Declarations: 'TYPE' TypeDecls DeclarationsSuffix1;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -939,9 +917,9 @@ pub struct DeclarationsTYPETypeDeclsDeclarationsSuffix1<'t> {
 }
 
 ///
-/// Type derived for production 79
+/// Type derived for production 78
 ///
-/// `Declarations: "CONST" ConstDecls DeclarationsSuffix0;`
+/// `Declarations: 'CONST' ConstDecls DeclarationsSuffix0;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -952,9 +930,9 @@ pub struct DeclarationsCONSTConstDeclsDeclarationsSuffix0<'t> {
 }
 
 ///
-/// Type derived for production 80
+/// Type derived for production 79
 ///
-/// `DeclarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;`
+/// `DeclarationsSuffix1: 'VAR' VarDecls ProcedureDeclarationList;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -965,7 +943,7 @@ pub struct DeclarationsSuffix1VARVarDeclsProcedureDeclarationList<'t> {
 }
 
 ///
-/// Type derived for production 81
+/// Type derived for production 80
 ///
 /// `DeclarationsSuffix1: ProcedureDeclarationList;`
 ///
@@ -976,9 +954,9 @@ pub struct DeclarationsSuffix1ProcedureDeclarationList<'t> {
 }
 
 ///
-/// Type derived for production 82
+/// Type derived for production 81
 ///
-/// `Declarations: "VAR" VarDecls ProcedureDeclarationList;`
+/// `Declarations: 'VAR' VarDecls ProcedureDeclarationList;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -989,7 +967,7 @@ pub struct DeclarationsVARVarDeclsProcedureDeclarationList<'t> {
 }
 
 ///
-/// Type derived for production 83
+/// Type derived for production 82
 ///
 /// `Declarations: ProcedureDeclarationList;`
 ///
@@ -1000,9 +978,9 @@ pub struct DeclarationsProcedureDeclarationList<'t> {
 }
 
 ///
-/// Type derived for production 84
+/// Type derived for production 83
 ///
-/// `DeclarationsSuffix0: "TYPE" TypeDecls DeclarationsSuffix;`
+/// `DeclarationsSuffix0: 'TYPE' TypeDecls DeclarationsSuffix;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1013,9 +991,9 @@ pub struct DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t> {
 }
 
 ///
-/// Type derived for production 85
+/// Type derived for production 84
 ///
-/// `DeclarationsSuffix0: "VAR" VarDecls ProcedureDeclarationList;`
+/// `DeclarationsSuffix0: 'VAR' VarDecls ProcedureDeclarationList;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1026,7 +1004,7 @@ pub struct DeclarationsSuffix0VARVarDeclsProcedureDeclarationList<'t> {
 }
 
 ///
-/// Type derived for production 86
+/// Type derived for production 85
 ///
 /// `DeclarationsSuffix0: ProcedureDeclarationList;`
 ///
@@ -1037,9 +1015,9 @@ pub struct DeclarationsSuffix0ProcedureDeclarationList<'t> {
 }
 
 ///
-/// Type derived for production 87
+/// Type derived for production 86
 ///
-/// `DeclarationsSuffix: "VAR" VarDecls ProcedureDeclarationList;`
+/// `DeclarationsSuffix: 'VAR' VarDecls ProcedureDeclarationList;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1050,7 +1028,7 @@ pub struct DeclarationsSuffixVARVarDeclsProcedureDeclarationList<'t> {
 }
 
 ///
-/// Type derived for production 88
+/// Type derived for production 87
 ///
 /// `DeclarationsSuffix: ProcedureDeclarationList;`
 ///
@@ -1061,9 +1039,9 @@ pub struct DeclarationsSuffixProcedureDeclarationList<'t> {
 }
 
 ///
-/// Type derived for production 89
+/// Type derived for production 88
 ///
-/// `ProcedureDeclarationList: ProcedureDeclaration ";" ProcedureDeclarationList;`
+/// `ProcedureDeclarationList: ProcedureDeclaration ';' ProcedureDeclarationList;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1074,7 +1052,7 @@ pub struct ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclara
 }
 
 ///
-/// Type derived for production 90
+/// Type derived for production 89
 ///
 /// `ProcedureDeclarationList: ;`
 ///
@@ -1083,9 +1061,9 @@ pub struct ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclara
 pub struct ProcedureDeclarationListProcedureDeclarationListEmpty {}
 
 ///
-/// Type derived for production 91
+/// Type derived for production 90
 ///
-/// `ConstDecls: Ident AssignOp Expression ";" ConstDecls;`
+/// `ConstDecls: Ident AssignOp Expression ';' ConstDecls;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1098,7 +1076,7 @@ pub struct ConstDeclsIdentAssignOpExpressionSemicolonConstDecls<'t> {
 }
 
 ///
-/// Type derived for production 92
+/// Type derived for production 91
 ///
 /// `ConstDecls: ;`
 ///
@@ -1107,9 +1085,9 @@ pub struct ConstDeclsIdentAssignOpExpressionSemicolonConstDecls<'t> {
 pub struct ConstDeclsConstDeclsEmpty {}
 
 ///
-/// Type derived for production 93
+/// Type derived for production 92
 ///
-/// `TypeDecls: Ident AssignOp Type ";" TypeDecls;`
+/// `TypeDecls: Ident AssignOp Type ';' TypeDecls;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1122,7 +1100,7 @@ pub struct TypeDeclsIdentAssignOpTypeSemicolonTypeDecls<'t> {
 }
 
 ///
-/// Type derived for production 94
+/// Type derived for production 93
 ///
 /// `TypeDecls: ;`
 ///
@@ -1131,9 +1109,9 @@ pub struct TypeDeclsIdentAssignOpTypeSemicolonTypeDecls<'t> {
 pub struct TypeDeclsTypeDeclsEmpty {}
 
 ///
-/// Type derived for production 95
+/// Type derived for production 94
 ///
-/// `VarDecls: IdentList ":" Type ";" VarDecls;`
+/// `VarDecls: IdentList ':' Type ';' VarDecls;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1146,7 +1124,7 @@ pub struct VarDeclsIdentListColonTypeSemicolonVarDecls<'t> {
 }
 
 ///
-/// Type derived for production 96
+/// Type derived for production 95
 ///
 /// `VarDecls: ;`
 ///
@@ -1155,9 +1133,9 @@ pub struct VarDeclsIdentListColonTypeSemicolonVarDecls<'t> {
 pub struct VarDeclsVarDeclsEmpty {}
 
 ///
-/// Type derived for production 98
+/// Type derived for production 97
 ///
-/// `ModuleSuffix: "BEGIN" StatementSequence "END" Ident "\.";`
+/// `ModuleSuffix: 'BEGIN' StatementSequence 'END' Ident '\.';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1170,9 +1148,9 @@ pub struct ModuleSuffixBEGINStatementSequenceENDIdentDot<'t> {
 }
 
 ///
-/// Type derived for production 99
+/// Type derived for production 98
 ///
-/// `ModuleSuffix: "END" Ident "\.";`
+/// `ModuleSuffix: 'END' Ident '\.';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1193,7 +1171,7 @@ pub struct ModuleSuffixENDIdentDot<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct ActualParameters<'t> {
-    pub l_paren: Token<'t>, /* \( */
+    pub l_paren: Token<'t>, /* ( */
     pub actual_parameters_suffix: ActualParametersSuffix<'t>,
 }
 
@@ -1245,9 +1223,8 @@ pub struct ArrayType<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum AssignOp<'t> {
-    ColonEqu(AssignOpColonEqu<'t>),
-    Equ(AssignOpEqu<'t>),
+pub struct AssignOp<'t> {
+    pub assign_op: Token<'t>, /* := */
 }
 
 ///
@@ -1418,7 +1395,7 @@ pub enum FieldListRest<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct FormalParameters<'t> {
-    pub l_paren: Token<'t>, /* \( */
+    pub l_paren: Token<'t>, /* ( */
     pub formal_parameters_suffix: FormalParametersSuffix<'t>,
 }
 
@@ -2290,18 +2267,17 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// `AssignOp: ":=";`
+    /// `AssignOp: ':=';`
     ///
     #[parol_runtime::function_name::named]
-    fn assign_op_0(&mut self, colon_equ: &ParseTreeType<'t>) -> Result<()> {
+    fn assign_op(&mut self, assign_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon_equ = colon_equ.token()?.clone();
-        let assign_op_0_built = AssignOpColonEqu { colon_equ };
-        let assign_op_0_built = AssignOp::ColonEqu(assign_op_0_built);
+        let assign_op = assign_op.token()?.clone();
+        let assign_op_built = AssignOp { assign_op };
         // Calling user action here
-        self.user_grammar.assign_op(&assign_op_0_built)?;
-        self.push(ASTType::AssignOp(assign_op_0_built), context);
+        self.user_grammar.assign_op(&assign_op_built)?;
+        self.push(ASTType::AssignOp(assign_op_built), context);
         Ok(())
     }
 
@@ -2341,7 +2317,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// `RelationalOps: ">=|<=|\#|<|>";`
+    /// `RelationalOps: />=|<=|\#|<|>/;`
     ///
     #[parol_runtime::function_name::named]
     fn relational_ops(&mut self, relational_ops: &ParseTreeType<'t>) -> Result<()> {
@@ -2356,23 +2332,6 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
     }
 
     /// Semantic action for production 19:
-    ///
-    /// `AssignOp: "=";`
-    ///
-    #[parol_runtime::function_name::named]
-    fn assign_op_1(&mut self, equ: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let equ = equ.token()?.clone();
-        let assign_op_1_built = AssignOpEqu { equ };
-        let assign_op_1_built = AssignOp::Equ(assign_op_1_built);
-        // Calling user action here
-        self.user_grammar.assign_op(&assign_op_1_built)?;
-        self.push(ASTType::AssignOp(assign_op_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 20:
     ///
     /// `Expression: SimpleExpression ExpressionSuffix;`
     ///
@@ -2396,7 +2355,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 20:
     ///
     /// `ExpressionSuffix: RelationOp SimpleExpression;`
     ///
@@ -2423,7 +2382,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 22:
+    /// Semantic action for production 21:
     ///
     /// `ExpressionSuffix: ;`
     ///
@@ -2441,7 +2400,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 23:
+    /// Semantic action for production 22:
     ///
     /// `Assignment: Ident Selector AssignOp Expression;`
     ///
@@ -2471,9 +2430,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 24:
+    /// Semantic action for production 23:
     ///
-    /// `ActualParameters: "\(" ActualParametersSuffix;`
+    /// `ActualParameters: '(' ActualParametersSuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn actual_parameters(
@@ -2501,9 +2460,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 25:
+    /// Semantic action for production 24:
     ///
-    /// `ActualParametersSuffix: "\)";`
+    /// `ActualParametersSuffix: ')';`
     ///
     #[parol_runtime::function_name::named]
     fn actual_parameters_suffix_0(&mut self, r_paren: &ParseTreeType<'t>) -> Result<()> {
@@ -2520,9 +2479,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 26:
+    /// Semantic action for production 25:
     ///
-    /// `ActualParametersSuffix: Expression ExpressionListRest "\)";`
+    /// `ActualParametersSuffix: Expression ExpressionListRest ')';`
     ///
     #[parol_runtime::function_name::named]
     fn actual_parameters_suffix_1(
@@ -2554,9 +2513,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 27:
+    /// Semantic action for production 26:
     ///
-    /// `ExpressionListRest: "," Expression ExpressionListRest;`
+    /// `ExpressionListRest: ',' Expression ExpressionListRest;`
     ///
     #[parol_runtime::function_name::named]
     fn expression_list_rest_0(
@@ -2588,7 +2547,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 28:
+    /// Semantic action for production 27:
     ///
     /// `ExpressionListRest: ;`
     ///
@@ -2609,7 +2568,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 29:
+    /// Semantic action for production 28:
     ///
     /// `ProcedureCall: Ident ProcedureCallSuffix;`
     ///
@@ -2634,7 +2593,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 30:
+    /// Semantic action for production 29:
     ///
     /// `ProcedureCallSuffix: ActualParameters;`
     ///
@@ -2654,7 +2613,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 31:
+    /// Semantic action for production 30:
     ///
     /// `ProcedureCallSuffix: ;`
     ///
@@ -2672,7 +2631,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 32:
+    /// Semantic action for production 31:
     ///
     /// `IfStatement: IfPrefix IfStatementSuffix;`
     ///
@@ -2696,9 +2655,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 33:
+    /// Semantic action for production 32:
     ///
-    /// `IfStatementSuffix: "ELSE" StatementSequence "END";`
+    /// `IfStatementSuffix: 'ELSE' StatementSequence 'END';`
     ///
     #[parol_runtime::function_name::named]
     fn if_statement_suffix_0(
@@ -2726,9 +2685,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 34:
+    /// Semantic action for production 33:
     ///
-    /// `IfStatementSuffix: "END";`
+    /// `IfStatementSuffix: 'END';`
     ///
     #[parol_runtime::function_name::named]
     fn if_statement_suffix_1(&mut self, e_n_d: &ParseTreeType<'t>) -> Result<()> {
@@ -2744,9 +2703,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 35:
+    /// Semantic action for production 34:
     ///
-    /// `IfPrefix: "IF" Expression "THEN" StatementSequence ElseIfList;`
+    /// `IfPrefix: 'IF' Expression 'THEN' StatementSequence ElseIfList;`
     ///
     #[parol_runtime::function_name::named]
     fn if_prefix(
@@ -2777,9 +2736,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 36:
+    /// Semantic action for production 35:
     ///
-    /// `ElseIfList: "ELSIF" Expression "THEN" StatementSequence ElseIfList;`
+    /// `ElseIfList: 'ELSIF' Expression 'THEN' StatementSequence ElseIfList;`
     ///
     #[parol_runtime::function_name::named]
     fn else_if_list_0(
@@ -2812,7 +2771,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 37:
+    /// Semantic action for production 36:
     ///
     /// `ElseIfList: ;`
     ///
@@ -2828,9 +2787,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 37:
     ///
-    /// `WhileStatement: "WHILE" Expression "DO" StatementSequence "END";`
+    /// `WhileStatement: 'WHILE' Expression 'DO' StatementSequence 'END';`
     ///
     #[parol_runtime::function_name::named]
     fn while_statement(
@@ -2861,9 +2820,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 38:
     ///
-    /// `RepeatStatement: "REPEAT" StatementSequence "UNTIL" Expression;`
+    /// `RepeatStatement: 'REPEAT' StatementSequence 'UNTIL' Expression;`
     ///
     #[parol_runtime::function_name::named]
     fn repeat_statement(
@@ -2892,7 +2851,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 40:
+    /// Semantic action for production 39:
     ///
     /// `Statement: Assignment;`
     ///
@@ -2909,7 +2868,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 41:
+    /// Semantic action for production 40:
     ///
     /// `Statement: ProcedureCall;`
     ///
@@ -2926,7 +2885,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 42:
+    /// Semantic action for production 41:
     ///
     /// `Statement: IfStatement;`
     ///
@@ -2945,7 +2904,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 43:
+    /// Semantic action for production 42:
     ///
     /// `Statement: WhileStatement;`
     ///
@@ -2964,7 +2923,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 44:
+    /// Semantic action for production 43:
     ///
     /// `Statement: RepeatStatement;`
     ///
@@ -2983,7 +2942,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 45:
+    /// Semantic action for production 44:
     ///
     /// `Statement: ;`
     ///
@@ -2999,7 +2958,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 45:
     ///
     /// `StatementSequence: Statement StatementSequenceRest;`
     ///
@@ -3032,9 +2991,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 46:
     ///
-    /// `StatementSequenceRest: ";" Statement StatementSequenceRest;`
+    /// `StatementSequenceRest: ';' Statement StatementSequenceRest;`
     ///
     #[parol_runtime::function_name::named]
     fn statement_sequence_rest_0(
@@ -3073,7 +3032,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 47:
     ///
     /// `StatementSequenceRest: ;`
     ///
@@ -3094,7 +3053,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 48:
     ///
     /// `IdentList: Ident IdentListRest;`
     ///
@@ -3118,9 +3077,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 49:
     ///
-    /// `IdentListRest: "," Ident IdentListRest;`
+    /// `IdentListRest: ',' Ident IdentListRest;`
     ///
     #[parol_runtime::function_name::named]
     fn ident_list_rest_0(
@@ -3148,7 +3107,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 51:
+    /// Semantic action for production 50:
     ///
     /// `IdentListRest: ;`
     ///
@@ -3165,9 +3124,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 52:
+    /// Semantic action for production 51:
     ///
-    /// `ArrayType: "ARRAY" Expression "OF" Type;`
+    /// `ArrayType: 'ARRAY' Expression 'OF' Type;`
     ///
     #[parol_runtime::function_name::named]
     fn array_type(
@@ -3195,9 +3154,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 53:
+    /// Semantic action for production 52:
     ///
-    /// `FieldList: IdentList ":" Type;`
+    /// `FieldList: IdentList ':' Type;`
     ///
     #[parol_runtime::function_name::named]
     fn field_list_0(
@@ -3223,7 +3182,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 54:
+    /// Semantic action for production 53:
     ///
     /// `FieldList: ;`
     ///
@@ -3239,9 +3198,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 55:
+    /// Semantic action for production 54:
     ///
-    /// `RecordType: "RECORD" FieldList FieldListRest "END";`
+    /// `RecordType: 'RECORD' FieldList FieldListRest 'END';`
     ///
     #[parol_runtime::function_name::named]
     fn record_type(
@@ -3269,9 +3228,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 56:
+    /// Semantic action for production 55:
     ///
-    /// `FieldListRest: ";" FieldList FieldListRest;`
+    /// `FieldListRest: ';' FieldList FieldListRest;`
     ///
     #[parol_runtime::function_name::named]
     fn field_list_rest_0(
@@ -3299,7 +3258,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 57:
+    /// Semantic action for production 56:
     ///
     /// `FieldListRest: ;`
     ///
@@ -3316,7 +3275,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 58:
+    /// Semantic action for production 57:
     ///
     /// `Type: Ident;`
     ///
@@ -3333,7 +3292,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 59:
+    /// Semantic action for production 58:
     ///
     /// `Type: ArrayType;`
     ///
@@ -3352,7 +3311,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 60:
+    /// Semantic action for production 59:
     ///
     /// `Type: RecordType;`
     ///
@@ -3369,9 +3328,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 61:
+    /// Semantic action for production 60:
     ///
-    /// `FPSection: "VAR" IdentList ":" Type;`
+    /// `FPSection: 'VAR' IdentList ':' Type;`
     ///
     #[parol_runtime::function_name::named]
     fn f_p_section_0(
@@ -3400,9 +3359,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 62:
+    /// Semantic action for production 61:
     ///
-    /// `FPSection: IdentList ":" Type;`
+    /// `FPSection: IdentList ':' Type;`
     ///
     #[parol_runtime::function_name::named]
     fn f_p_section_1(
@@ -3428,9 +3387,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 63:
+    /// Semantic action for production 62:
     ///
-    /// `FormalParameters: "\(" FormalParametersSuffix;`
+    /// `FormalParameters: '(' FormalParametersSuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn formal_parameters(
@@ -3458,9 +3417,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 64:
+    /// Semantic action for production 63:
     ///
-    /// `FormalParametersSuffix: "\)";`
+    /// `FormalParametersSuffix: ')';`
     ///
     #[parol_runtime::function_name::named]
     fn formal_parameters_suffix_0(&mut self, r_paren: &ParseTreeType<'t>) -> Result<()> {
@@ -3477,9 +3436,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 65:
+    /// Semantic action for production 64:
     ///
-    /// `FormalParametersSuffix: FPSection FPSectionRest "\)";`
+    /// `FormalParametersSuffix: FPSection FPSectionRest ')';`
     ///
     #[parol_runtime::function_name::named]
     fn formal_parameters_suffix_1(
@@ -3507,9 +3466,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 66:
+    /// Semantic action for production 65:
     ///
-    /// `FPSectionRest: ";" FPSection FPSectionRest;`
+    /// `FPSectionRest: ';' FPSection FPSectionRest;`
     ///
     #[parol_runtime::function_name::named]
     fn f_p_section_rest_0(
@@ -3537,7 +3496,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 67:
+    /// Semantic action for production 66:
     ///
     /// `FPSectionRest: ;`
     ///
@@ -3554,9 +3513,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 68:
+    /// Semantic action for production 67:
     ///
-    /// `ProcedureHeading: "PROCEDURE" Ident ProcedureHeadingSuffix;`
+    /// `ProcedureHeading: 'PROCEDURE' Ident ProcedureHeadingSuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn procedure_heading(
@@ -3587,7 +3546,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 69:
+    /// Semantic action for production 68:
     ///
     /// `ProcedureHeadingSuffix: FormalParameters;`
     ///
@@ -3607,7 +3566,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 70:
+    /// Semantic action for production 69:
     ///
     /// `ProcedureHeadingSuffix: ;`
     ///
@@ -3625,7 +3584,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 71:
+    /// Semantic action for production 70:
     ///
     /// `ProcedureBody: Declarations ProcedureBodySuffix0;`
     ///
@@ -3650,9 +3609,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 72:
+    /// Semantic action for production 71:
     ///
-    /// `ProcedureBodySuffix0: "BEGIN" StatementSequence ProcedureBodySuffix;`
+    /// `ProcedureBodySuffix0: 'BEGIN' StatementSequence ProcedureBodySuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn procedure_body_suffix0_0(
@@ -3684,9 +3643,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 73:
+    /// Semantic action for production 72:
     ///
-    /// `ProcedureBodySuffix0: "RETURN" Expression "END" Ident;`
+    /// `ProcedureBodySuffix0: 'RETURN' Expression 'END' Ident;`
     ///
     #[parol_runtime::function_name::named]
     fn procedure_body_suffix0_1(
@@ -3717,9 +3676,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 74:
+    /// Semantic action for production 73:
     ///
-    /// `ProcedureBodySuffix0: "END" Ident;`
+    /// `ProcedureBodySuffix0: 'END' Ident;`
     ///
     #[parol_runtime::function_name::named]
     fn procedure_body_suffix0_2(
@@ -3741,9 +3700,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 75:
+    /// Semantic action for production 74:
     ///
-    /// `ProcedureBodySuffix: "RETURN" Expression "END" Ident;`
+    /// `ProcedureBodySuffix: 'RETURN' Expression 'END' Ident;`
     ///
     #[parol_runtime::function_name::named]
     fn procedure_body_suffix_0(
@@ -3774,9 +3733,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 76:
+    /// Semantic action for production 75:
     ///
-    /// `ProcedureBodySuffix: "END" Ident;`
+    /// `ProcedureBodySuffix: 'END' Ident;`
     ///
     #[parol_runtime::function_name::named]
     fn procedure_body_suffix_1(
@@ -3798,9 +3757,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 77:
+    /// Semantic action for production 76:
     ///
-    /// `ProcedureDeclaration: ProcedureHeading ";" ProcedureBody;`
+    /// `ProcedureDeclaration: ProcedureHeading ';' ProcedureBody;`
     ///
     #[parol_runtime::function_name::named]
     fn procedure_declaration(
@@ -3829,9 +3788,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 78:
+    /// Semantic action for production 77:
     ///
-    /// `Declarations: "TYPE" TypeDecls DeclarationsSuffix1;`
+    /// `Declarations: 'TYPE' TypeDecls DeclarationsSuffix1;`
     ///
     #[parol_runtime::function_name::named]
     fn declarations_0(
@@ -3859,9 +3818,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 79:
+    /// Semantic action for production 78:
     ///
-    /// `Declarations: "CONST" ConstDecls DeclarationsSuffix0;`
+    /// `Declarations: 'CONST' ConstDecls DeclarationsSuffix0;`
     ///
     #[parol_runtime::function_name::named]
     fn declarations_1(
@@ -3889,9 +3848,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 80:
+    /// Semantic action for production 79:
     ///
-    /// `DeclarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;`
+    /// `DeclarationsSuffix1: 'VAR' VarDecls ProcedureDeclarationList;`
     ///
     #[parol_runtime::function_name::named]
     fn declarations_suffix1_0(
@@ -3924,7 +3883,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 81:
+    /// Semantic action for production 80:
     ///
     /// `DeclarationsSuffix1: ProcedureDeclarationList;`
     ///
@@ -3953,9 +3912,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 82:
+    /// Semantic action for production 81:
     ///
-    /// `Declarations: "VAR" VarDecls ProcedureDeclarationList;`
+    /// `Declarations: 'VAR' VarDecls ProcedureDeclarationList;`
     ///
     #[parol_runtime::function_name::named]
     fn declarations_2(
@@ -3987,7 +3946,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 83:
+    /// Semantic action for production 82:
     ///
     /// `Declarations: ProcedureDeclarationList;`
     ///
@@ -4011,9 +3970,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 84:
+    /// Semantic action for production 83:
     ///
-    /// `DeclarationsSuffix0: "TYPE" TypeDecls DeclarationsSuffix;`
+    /// `DeclarationsSuffix0: 'TYPE' TypeDecls DeclarationsSuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn declarations_suffix0_0(
@@ -4041,9 +4000,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 85:
+    /// Semantic action for production 84:
     ///
-    /// `DeclarationsSuffix0: "VAR" VarDecls ProcedureDeclarationList;`
+    /// `DeclarationsSuffix0: 'VAR' VarDecls ProcedureDeclarationList;`
     ///
     #[parol_runtime::function_name::named]
     fn declarations_suffix0_1(
@@ -4076,7 +4035,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 86:
+    /// Semantic action for production 85:
     ///
     /// `DeclarationsSuffix0: ProcedureDeclarationList;`
     ///
@@ -4105,9 +4064,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 87:
+    /// Semantic action for production 86:
     ///
-    /// `DeclarationsSuffix: "VAR" VarDecls ProcedureDeclarationList;`
+    /// `DeclarationsSuffix: 'VAR' VarDecls ProcedureDeclarationList;`
     ///
     #[parol_runtime::function_name::named]
     fn declarations_suffix_0(
@@ -4140,7 +4099,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 88:
+    /// Semantic action for production 87:
     ///
     /// `DeclarationsSuffix: ProcedureDeclarationList;`
     ///
@@ -4169,9 +4128,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 89:
+    /// Semantic action for production 88:
     ///
-    /// `ProcedureDeclarationList: ProcedureDeclaration ";" ProcedureDeclarationList;`
+    /// `ProcedureDeclarationList: ProcedureDeclaration ';' ProcedureDeclarationList;`
     ///
     #[parol_runtime::function_name::named]
     fn procedure_declaration_list_0(
@@ -4211,7 +4170,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 90:
+    /// Semantic action for production 89:
     ///
     /// `ProcedureDeclarationList: ;`
     ///
@@ -4235,9 +4194,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 91:
+    /// Semantic action for production 90:
     ///
-    /// `ConstDecls: Ident AssignOp Expression ";" ConstDecls;`
+    /// `ConstDecls: Ident AssignOp Expression ';' ConstDecls;`
     ///
     #[parol_runtime::function_name::named]
     fn const_decls_0(
@@ -4270,7 +4229,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 92:
+    /// Semantic action for production 91:
     ///
     /// `ConstDecls: ;`
     ///
@@ -4286,9 +4245,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 93:
+    /// Semantic action for production 92:
     ///
-    /// `TypeDecls: Ident AssignOp Type ";" TypeDecls;`
+    /// `TypeDecls: Ident AssignOp Type ';' TypeDecls;`
     ///
     #[parol_runtime::function_name::named]
     fn type_decls_0(
@@ -4320,7 +4279,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 94:
+    /// Semantic action for production 93:
     ///
     /// `TypeDecls: ;`
     ///
@@ -4336,9 +4295,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 95:
+    /// Semantic action for production 94:
     ///
-    /// `VarDecls: IdentList ":" Type ";" VarDecls;`
+    /// `VarDecls: IdentList ':' Type ';' VarDecls;`
     ///
     #[parol_runtime::function_name::named]
     fn var_decls_0(
@@ -4370,7 +4329,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 96:
+    /// Semantic action for production 95:
     ///
     /// `VarDecls: ;`
     ///
@@ -4386,9 +4345,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 97:
+    /// Semantic action for production 96:
     ///
-    /// `Module: "MODULE" Ident ";" Declarations ModuleSuffix;`
+    /// `Module: 'MODULE' Ident ';' Declarations ModuleSuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn module(
@@ -4419,9 +4378,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 98:
+    /// Semantic action for production 97:
     ///
-    /// `ModuleSuffix: "BEGIN" StatementSequence "END" Ident "\.";`
+    /// `ModuleSuffix: 'BEGIN' StatementSequence 'END' Ident '\.';`
     ///
     #[parol_runtime::function_name::named]
     fn module_suffix_0(
@@ -4452,9 +4411,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 99:
+    /// Semantic action for production 98:
     ///
-    /// `ModuleSuffix: "END" Ident "\.";`
+    /// `ModuleSuffix: 'END' Ident '\.';`
     ///
     #[parol_runtime::function_name::named]
     fn module_suffix_1(
@@ -4474,7 +4433,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 100:
+    /// Semantic action for production 99:
     ///
     /// `MulOperator: "\*|/|DIV|MOD|&";`
     ///
@@ -4490,9 +4449,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 101:
+    /// Semantic action for production 100:
     ///
-    /// `AddOperator: "\+|-|OR";`
+    /// `AddOperator: /\+|-|OR/;`
     ///
     #[parol_runtime::function_name::named]
     fn add_operator(&mut self, add_operator: &ParseTreeType<'t>) -> Result<()> {
@@ -4506,9 +4465,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 102:
+    /// Semantic action for production 101:
     ///
-    /// `UnaryOp: "\+|-";`
+    /// `UnaryOp: /\+|-/;`
     ///
     #[parol_runtime::function_name::named]
     fn unary_op(&mut self, unary_op: &ParseTreeType<'t>) -> Result<()> {
@@ -4522,9 +4481,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 103:
+    /// Semantic action for production 102:
     ///
-    /// `Ident: "[a-zA-Z][a-zA-Z0-9]*";`
+    /// `Ident: /[a-zA-Z][a-zA-Z0-9]*/;`
     ///
     #[parol_runtime::function_name::named]
     fn ident(&mut self, ident: &ParseTreeType<'t>) -> Result<()> {
@@ -4538,9 +4497,9 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 104:
+    /// Semantic action for production 103:
     ///
-    /// `Integer: "[0-9]+";`
+    /// `Integer: /[0-9]+/;`
     ///
     #[parol_runtime::function_name::named]
     fn integer(&mut self, integer: &ParseTreeType<'t>) -> Result<()> {
@@ -4580,151 +4539,150 @@ impl<'t> UserActionsTrait<'t> for Oberon0GrammarAuto<'t, '_> {
             12 => self.simple_expression(&children[0], &children[1]),
             13 => self.add_expression_0(&children[0], &children[1], &children[2]),
             14 => self.add_expression_1(),
-            15 => self.assign_op_0(&children[0]),
+            15 => self.assign_op(&children[0]),
             16 => self.relation_op_0(&children[0]),
             17 => self.relation_op_1(&children[0]),
             18 => self.relational_ops(&children[0]),
-            19 => self.assign_op_1(&children[0]),
-            20 => self.expression(&children[0], &children[1]),
-            21 => self.expression_suffix_0(&children[0], &children[1]),
-            22 => self.expression_suffix_1(),
-            23 => self.assignment(&children[0], &children[1], &children[2], &children[3]),
-            24 => self.actual_parameters(&children[0], &children[1]),
-            25 => self.actual_parameters_suffix_0(&children[0]),
-            26 => self.actual_parameters_suffix_1(&children[0], &children[1], &children[2]),
-            27 => self.expression_list_rest_0(&children[0], &children[1], &children[2]),
-            28 => self.expression_list_rest_1(),
-            29 => self.procedure_call(&children[0], &children[1]),
-            30 => self.procedure_call_suffix_0(&children[0]),
-            31 => self.procedure_call_suffix_1(),
-            32 => self.if_statement(&children[0], &children[1]),
-            33 => self.if_statement_suffix_0(&children[0], &children[1], &children[2]),
-            34 => self.if_statement_suffix_1(&children[0]),
-            35 => self.if_prefix(
+            19 => self.expression(&children[0], &children[1]),
+            20 => self.expression_suffix_0(&children[0], &children[1]),
+            21 => self.expression_suffix_1(),
+            22 => self.assignment(&children[0], &children[1], &children[2], &children[3]),
+            23 => self.actual_parameters(&children[0], &children[1]),
+            24 => self.actual_parameters_suffix_0(&children[0]),
+            25 => self.actual_parameters_suffix_1(&children[0], &children[1], &children[2]),
+            26 => self.expression_list_rest_0(&children[0], &children[1], &children[2]),
+            27 => self.expression_list_rest_1(),
+            28 => self.procedure_call(&children[0], &children[1]),
+            29 => self.procedure_call_suffix_0(&children[0]),
+            30 => self.procedure_call_suffix_1(),
+            31 => self.if_statement(&children[0], &children[1]),
+            32 => self.if_statement_suffix_0(&children[0], &children[1], &children[2]),
+            33 => self.if_statement_suffix_1(&children[0]),
+            34 => self.if_prefix(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            36 => self.else_if_list_0(
+            35 => self.else_if_list_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            37 => self.else_if_list_1(),
-            38 => self.while_statement(
+            36 => self.else_if_list_1(),
+            37 => self.while_statement(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            39 => self.repeat_statement(&children[0], &children[1], &children[2], &children[3]),
-            40 => self.statement_0(&children[0]),
-            41 => self.statement_1(&children[0]),
-            42 => self.statement_2(&children[0]),
-            43 => self.statement_3(&children[0]),
-            44 => self.statement_4(&children[0]),
-            45 => self.statement_5(),
-            46 => self.statement_sequence(&children[0], &children[1]),
-            47 => self.statement_sequence_rest_0(&children[0], &children[1], &children[2]),
-            48 => self.statement_sequence_rest_1(),
-            49 => self.ident_list(&children[0], &children[1]),
-            50 => self.ident_list_rest_0(&children[0], &children[1], &children[2]),
-            51 => self.ident_list_rest_1(),
-            52 => self.array_type(&children[0], &children[1], &children[2], &children[3]),
-            53 => self.field_list_0(&children[0], &children[1], &children[2]),
-            54 => self.field_list_1(),
-            55 => self.record_type(&children[0], &children[1], &children[2], &children[3]),
-            56 => self.field_list_rest_0(&children[0], &children[1], &children[2]),
-            57 => self.field_list_rest_1(),
-            58 => self.type_0(&children[0]),
-            59 => self.type_1(&children[0]),
-            60 => self.type_2(&children[0]),
-            61 => self.f_p_section_0(&children[0], &children[1], &children[2], &children[3]),
-            62 => self.f_p_section_1(&children[0], &children[1], &children[2]),
-            63 => self.formal_parameters(&children[0], &children[1]),
-            64 => self.formal_parameters_suffix_0(&children[0]),
-            65 => self.formal_parameters_suffix_1(&children[0], &children[1], &children[2]),
-            66 => self.f_p_section_rest_0(&children[0], &children[1], &children[2]),
-            67 => self.f_p_section_rest_1(),
-            68 => self.procedure_heading(&children[0], &children[1], &children[2]),
-            69 => self.procedure_heading_suffix_0(&children[0]),
-            70 => self.procedure_heading_suffix_1(),
-            71 => self.procedure_body(&children[0], &children[1]),
-            72 => self.procedure_body_suffix0_0(&children[0], &children[1], &children[2]),
-            73 => self.procedure_body_suffix0_1(
+            38 => self.repeat_statement(&children[0], &children[1], &children[2], &children[3]),
+            39 => self.statement_0(&children[0]),
+            40 => self.statement_1(&children[0]),
+            41 => self.statement_2(&children[0]),
+            42 => self.statement_3(&children[0]),
+            43 => self.statement_4(&children[0]),
+            44 => self.statement_5(),
+            45 => self.statement_sequence(&children[0], &children[1]),
+            46 => self.statement_sequence_rest_0(&children[0], &children[1], &children[2]),
+            47 => self.statement_sequence_rest_1(),
+            48 => self.ident_list(&children[0], &children[1]),
+            49 => self.ident_list_rest_0(&children[0], &children[1], &children[2]),
+            50 => self.ident_list_rest_1(),
+            51 => self.array_type(&children[0], &children[1], &children[2], &children[3]),
+            52 => self.field_list_0(&children[0], &children[1], &children[2]),
+            53 => self.field_list_1(),
+            54 => self.record_type(&children[0], &children[1], &children[2], &children[3]),
+            55 => self.field_list_rest_0(&children[0], &children[1], &children[2]),
+            56 => self.field_list_rest_1(),
+            57 => self.type_0(&children[0]),
+            58 => self.type_1(&children[0]),
+            59 => self.type_2(&children[0]),
+            60 => self.f_p_section_0(&children[0], &children[1], &children[2], &children[3]),
+            61 => self.f_p_section_1(&children[0], &children[1], &children[2]),
+            62 => self.formal_parameters(&children[0], &children[1]),
+            63 => self.formal_parameters_suffix_0(&children[0]),
+            64 => self.formal_parameters_suffix_1(&children[0], &children[1], &children[2]),
+            65 => self.f_p_section_rest_0(&children[0], &children[1], &children[2]),
+            66 => self.f_p_section_rest_1(),
+            67 => self.procedure_heading(&children[0], &children[1], &children[2]),
+            68 => self.procedure_heading_suffix_0(&children[0]),
+            69 => self.procedure_heading_suffix_1(),
+            70 => self.procedure_body(&children[0], &children[1]),
+            71 => self.procedure_body_suffix0_0(&children[0], &children[1], &children[2]),
+            72 => self.procedure_body_suffix0_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
             ),
-            74 => self.procedure_body_suffix0_2(&children[0], &children[1]),
-            75 => {
+            73 => self.procedure_body_suffix0_2(&children[0], &children[1]),
+            74 => {
                 self.procedure_body_suffix_0(&children[0], &children[1], &children[2], &children[3])
             }
-            76 => self.procedure_body_suffix_1(&children[0], &children[1]),
-            77 => self.procedure_declaration(&children[0], &children[1], &children[2]),
-            78 => self.declarations_0(&children[0], &children[1], &children[2]),
-            79 => self.declarations_1(&children[0], &children[1], &children[2]),
-            80 => self.declarations_suffix1_0(&children[0], &children[1], &children[2]),
-            81 => self.declarations_suffix1_1(&children[0]),
-            82 => self.declarations_2(&children[0], &children[1], &children[2]),
-            83 => self.declarations_3(&children[0]),
-            84 => self.declarations_suffix0_0(&children[0], &children[1], &children[2]),
-            85 => self.declarations_suffix0_1(&children[0], &children[1], &children[2]),
-            86 => self.declarations_suffix0_2(&children[0]),
-            87 => self.declarations_suffix_0(&children[0], &children[1], &children[2]),
-            88 => self.declarations_suffix_1(&children[0]),
-            89 => self.procedure_declaration_list_0(&children[0], &children[1], &children[2]),
-            90 => self.procedure_declaration_list_1(),
-            91 => self.const_decls_0(
+            75 => self.procedure_body_suffix_1(&children[0], &children[1]),
+            76 => self.procedure_declaration(&children[0], &children[1], &children[2]),
+            77 => self.declarations_0(&children[0], &children[1], &children[2]),
+            78 => self.declarations_1(&children[0], &children[1], &children[2]),
+            79 => self.declarations_suffix1_0(&children[0], &children[1], &children[2]),
+            80 => self.declarations_suffix1_1(&children[0]),
+            81 => self.declarations_2(&children[0], &children[1], &children[2]),
+            82 => self.declarations_3(&children[0]),
+            83 => self.declarations_suffix0_0(&children[0], &children[1], &children[2]),
+            84 => self.declarations_suffix0_1(&children[0], &children[1], &children[2]),
+            85 => self.declarations_suffix0_2(&children[0]),
+            86 => self.declarations_suffix_0(&children[0], &children[1], &children[2]),
+            87 => self.declarations_suffix_1(&children[0]),
+            88 => self.procedure_declaration_list_0(&children[0], &children[1], &children[2]),
+            89 => self.procedure_declaration_list_1(),
+            90 => self.const_decls_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            92 => self.const_decls_1(),
-            93 => self.type_decls_0(
+            91 => self.const_decls_1(),
+            92 => self.type_decls_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            94 => self.type_decls_1(),
-            95 => self.var_decls_0(
+            93 => self.type_decls_1(),
+            94 => self.var_decls_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            96 => self.var_decls_1(),
-            97 => self.module(
+            95 => self.var_decls_1(),
+            96 => self.module(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            98 => self.module_suffix_0(
+            97 => self.module_suffix_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            99 => self.module_suffix_1(&children[0], &children[1], &children[2]),
-            100 => self.mul_operator(&children[0]),
-            101 => self.add_operator(&children[0]),
-            102 => self.unary_op(&children[0]),
-            103 => self.ident(&children[0]),
-            104 => self.integer(&children[0]),
+            98 => self.module_suffix_1(&children[0], &children[1], &children[2]),
+            99 => self.mul_operator(&children[0]),
+            100 => self.add_operator(&children[0]),
+            101 => self.unary_op(&children[0]),
+            102 => self.ident(&children[0]),
+            103 => self.integer(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {prod_num}"
             ))

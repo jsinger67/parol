@@ -40,9 +40,9 @@ scanner! {
             token r"[a-zA-Z_]\w*" => 5; // "Identifier"
             token r#"""# => 9; // "StringDelimiter"
             token r"." => 10; // "Error"
-            on 9 enter String;
+            on 9 enter STRING;
         }
-        mode String {
+        mode STRING {
             token r#"\\["\\bfnt]"# => 6; // "Escaped"
             token r"\\[\s--\n\r]*\r?\n" => 7; // "EscapedLineEnd"
             token r#"[^"\\]+"# => 8; // "NoneQuote"
@@ -219,7 +219,7 @@ pub const PRODUCTIONS: &[Production; 16] = &[
         lhs: 4,
         production: &[ParseType::T(8)],
     },
-    // 15 - StringDelimiter: /"/;
+    // 15 - StringDelimiter: '"';
     Production {
         lhs: 9,
         production: &[ParseType::T(9)],

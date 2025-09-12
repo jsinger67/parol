@@ -3,9 +3,9 @@
 %comment "Tests correct handling of scanner states"
 %line_comment "//"
 %block_comment "/\*" "\*/"
-%on StringDelimiter %enter String
+%on StringDelimiter %enter STRING
 
-%scanner String {
+%scanner STRING {
     %auto_newline_off
     %auto_ws_off
     %on StringDelimiter %enter INITIAL
@@ -25,7 +25,7 @@
 /*  9 */ StringElement: EscapedLineEnd;
 /* 10 */ StringElement: NoneQuote;
 /* 11 */ Identifier: /[a-zA-Z_]\w*/;
-/* 12 */ Escaped: <String>/\\["\\bfnt]/;
-/* 13 */ EscapedLineEnd: <String>/\\[\s--\n\r]*\r?\n/;
-/* 14 */ NoneQuote: <String>/[^"\\]+/;
-/* 15 */ StringDelimiter: <INITIAL, String>/"/;
+/* 12 */ Escaped: <STRING>/\\["\\bfnt]/;
+/* 13 */ EscapedLineEnd: <STRING>/\\[\s--\n\r]*\r?\n/;
+/* 14 */ NoneQuote: <STRING>/[^"\\]+/;
+/* 15 */ StringDelimiter: <INITIAL, STRING>'"';

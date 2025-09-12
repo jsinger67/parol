@@ -37,9 +37,9 @@ scanner! {
             token r"[\s--\r\n]+" => 2; // "Whitespace"
             token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
             token r";" => 5; // "Semicolon"
-            token r"[bB][eE][gG][iI][nN]" => 6; // "Begin"
-            token r"[eE][nN][dD]" => 7; // "End"
-            token r"[vV][aA][rR]" => 8; // "Var"
+            token r"(?i)begin" => 6; // "Begin"
+            token r"(?i)end" => 7; // "End"
+            token r"(?i)var" => 8; // "Var"
             token r"[a-zA-Z_][a-zA-Z0-9_]*" => 9; // "Identifier"
             token r"." => 10; // "Error"
         }
@@ -170,17 +170,17 @@ pub const PRODUCTIONS: &[Production; 13] = &[
         lhs: 2,
         production: &[],
     },
-    // 9 - Begin: "[bB][eE][gG][iI][nN]";
+    // 9 - Begin: "(?i)begin";
     Production {
         lhs: 0,
         production: &[ParseType::T(6)],
     },
-    // 10 - End: "[eE][nN][dD]";
+    // 10 - End: "(?i)end";
     Production {
         lhs: 4,
         production: &[ParseType::T(7)],
     },
-    // 11 - Var: "[vV][aA][rR]";
+    // 11 - Var: "(?i)var";
     Production {
         lhs: 9,
         production: &[ParseType::T(8)],

@@ -6,18 +6,19 @@
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
-// Switch to scanner state 'String' when we encounter a double quote in scanner state INITIAL
-%on StringDelimiter %enter String
+// When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
 
 // The following line will result in a syntax error because the terminal 'Escaped' is not valid in
 // scanner state INITIAL
-// %on Escaped %enter String
+// %on Escaped %enter STRING
 
-// Here we introduce a new scanner state 'String'
-// Switch back to scanner state INITIAL when we encounter a double quote in scanner state 'String'
-%scanner String {
+// Here we introduce a new scanner state 'STRING'
+// Switch back to scanner state INITIAL when we encounter a double quote in scanner state 'STRING'
+%scanner STRING {
     %auto_newline_off
     %auto_ws_off
+    // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
     %on StringDelimiter %enter INITIAL
 }
 
@@ -29,7 +30,9 @@ Start
 
 Content
     : Identifier
-    | StringDelimiter StringContent StringDelimiter
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent
+      StringDelimiter // Here the scanner switches back to the scanner INITIAL
     ;
 
 StringContent
@@ -49,23 +52,23 @@ Identifier
     ;
 
 Escaped
-    // This terminal is only valid in scanner state 'String'
-    : <String>"\u{5c}[\u{22}\u{5c}bfnt]"
+    // This terminal is only valid in scanner state 'STRING'
+    : <STRING>"\u{5c}[\u{22}\u{5c}bfnt]"
     ;
 
 EscapedLineEnd
-    // This terminal is only valid in scanner state 'String'
+    // This terminal is only valid in scanner state 'STRING'
     // NOTE: [\s^\n\r] matches all whitespace characters *except* \r and \n
     // Otherwise, the regex will greedily pickup newlines See issue #5
-    : <String>"\u{5c}[\s^\n\r]*\r?\n"
+    : <STRING>"\u{5c}[\s^\n\r]*\r?\n"
     ;
 
 NoneQuote
-    // This terminal is only valid in scanner state 'String'
-    : <String>"[^\u{22}\u{5c}]+"
+    // This terminal is only valid in scanner state 'STRING'
+    : <STRING>"[^\u{22}\u{5c}]+"
     ;
 
 StringDelimiter
-    // This terminal is valid in both scanner states INITIAL and 'String'
-    : <String, INITIAL>"\u{22}"
+    // This terminal is valid in both scanner states INITIAL and 'STRING'
+    : <STRING, INITIAL>'"'
     ;

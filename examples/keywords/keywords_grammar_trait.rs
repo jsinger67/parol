@@ -101,7 +101,7 @@ pub struct ItemsBlock<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Begin<'t> {
-    pub begin: Token<'t>, /* [bB][eE][gG][iI][nN] */
+    pub begin: Token<'t>, /* (?i)begin */
 }
 
 ///
@@ -141,7 +141,7 @@ pub struct Declaration<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct End<'t> {
-    pub end: Token<'t>, /* [eE][nN][dD] */
+    pub end: Token<'t>, /* (?i)end */
 }
 
 ///
@@ -187,7 +187,7 @@ pub enum Items<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Var<'t> {
-    pub var: Token<'t>, /* [vV][aA][rR] */
+    pub var: Token<'t>, /* (?i)var */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -453,7 +453,7 @@ impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// `Begin: "[bB][eE][gG][iI][nN]";`
+    /// `Begin: "(?i)begin";`
     ///
     #[parol_runtime::function_name::named]
     fn begin(&mut self, begin: &ParseTreeType<'t>) -> Result<()> {
@@ -469,7 +469,7 @@ impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// `End: "[eE][nN][dD]";`
+    /// `End: "(?i)end";`
     ///
     #[parol_runtime::function_name::named]
     fn end(&mut self, end: &ParseTreeType<'t>) -> Result<()> {
@@ -485,7 +485,7 @@ impl<'t, 'u> KeywordsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// `Var: "[vV][aA][rR]";`
+    /// `Var: "(?i)var";`
     ///
     #[parol_runtime::function_name::named]
     fn var(&mut self, var: &ParseTreeType<'t>) -> Result<()> {

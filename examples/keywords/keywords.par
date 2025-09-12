@@ -13,9 +13,8 @@ Items       : Declaration
 Declaration : Var Identifier ";";
 Block       : Begin { Items } End;
 
-// 1. Declare the keyword tokens before the conflicting identifier token.
-// 2. Enclose keywords with word boundaries.
-Begin:      "[bB][eE][gG][iI][nN]";
-End:        "[eE][nN][dD]";
-Var:        "[vV][aA][rR]";
+// Declare the keyword tokens before the conflicting identifier token.
+Begin:      "(?i)begin";  // Case insensitive match
+End:        "(?i)end";
+Var:        "(?i)var";
 Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";

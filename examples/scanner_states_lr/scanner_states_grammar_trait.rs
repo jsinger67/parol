@@ -246,7 +246,7 @@ pub struct StringContentList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct StringDelimiter<'t> {
-    pub string_delimiter: Token<'t>, /* \u{22} */
+    pub string_delimiter: Token<'t>, /* " */
 }
 
 ///
@@ -579,7 +579,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// `Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";`
+    /// `Escaped: <STRING>"\u{5c}[\u{22}\u{5c}bfnt]";`
     ///
     #[parol_runtime::function_name::named]
     fn escaped(&mut self, escaped: &ParseTreeType<'t>) -> Result<()> {
@@ -595,7 +595,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// `EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";`
+    /// `EscapedLineEnd: <STRING>"\u{5c}[\s^\n\r]*\r?\n";`
     ///
     #[parol_runtime::function_name::named]
     fn escaped_line_end(&mut self, escaped_line_end: &ParseTreeType<'t>) -> Result<()> {
@@ -612,7 +612,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// `NoneQuote: <String>"[^\u{22}\u{5c}]+";`
+    /// `NoneQuote: <STRING>"[^\u{22}\u{5c}]+";`
     ///
     #[parol_runtime::function_name::named]
     fn none_quote(&mut self, none_quote: &ParseTreeType<'t>) -> Result<()> {
@@ -628,7 +628,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// `StringDelimiter: <INITIAL, String>"\u{22}";`
+    /// `StringDelimiter: <INITIAL, STRING>'"';`
     ///
     #[parol_runtime::function_name::named]
     fn string_delimiter(&mut self, string_delimiter: &ParseTreeType<'t>) -> Result<()> {

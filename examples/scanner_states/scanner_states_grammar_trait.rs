@@ -554,7 +554,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// `Escaped: <String>/\\["\\bfnt]/;`
+    /// `Escaped: <STRING>/\\["\\bfnt]/;`
     ///
     #[parol_runtime::function_name::named]
     fn escaped(&mut self, escaped: &ParseTreeType<'t>) -> Result<()> {
@@ -570,7 +570,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// `EscapedLineEnd: <String>/\\[\s--\n\r]*\r?\n/;`
+    /// `EscapedLineEnd: <STRING>/\\[\s--\n\r]*\r?\n/;`
     ///
     #[parol_runtime::function_name::named]
     fn escaped_line_end(&mut self, escaped_line_end: &ParseTreeType<'t>) -> Result<()> {
@@ -587,7 +587,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// `NoneQuote: <String>/[^"\\]+/;`
+    /// `NoneQuote: <STRING>/[^"\\]+/;`
     ///
     #[parol_runtime::function_name::named]
     fn none_quote(&mut self, none_quote: &ParseTreeType<'t>) -> Result<()> {
@@ -603,7 +603,7 @@ impl<'t, 'u> ScannerStatesGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// `StringDelimiter: <INITIAL, String>/"/;`
+    /// `StringDelimiter: <INITIAL, STRING>'"';`
     ///
     #[parol_runtime::function_name::named]
     fn string_delimiter(&mut self, string_delimiter: &ParseTreeType<'t>) -> Result<()> {

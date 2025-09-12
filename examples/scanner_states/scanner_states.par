@@ -6,12 +6,14 @@
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
-%on StringDelimiter %enter String
+// When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
 
-// Here we introduce a new scanner state 'String'
-%scanner String {
+// Here we introduce a new scanner state 'STRING'
+%scanner STRING {
     %auto_newline_off
     %auto_ws_off
+    // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
     %on StringDelimiter %enter INITIAL
 }
 
@@ -22,21 +24,10 @@ Start
 
 Content
     : Identifier
-    | StringDelimiter
-      // Here we push the current scanner index (INITIAL) on the scanner stack and switch to
-      // the scanner 'String'
-      StringContent StringDelimiter
-      // And here we return to the scanner INITIAL again by popping it from the scanner stack and
-      // switching to it.
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent
+      StringDelimiter // Here the scanner switches back to the scanner INITIAL
     ;
-
-// Another valid version of the production above with the same effect is to use %sc as shown below.
-// %sc performs a direct switch to the given scanner state without affecting the scanner stack.
-// An omitted scanner state (as in %s()) implies scanner state INITIAL.
-//
-// Content
-//     : Identifier
-//     | StringDelimiter %sc(String) StringContent StringDelimiter %sc()
 
 StringContent
     : { StringElement }
@@ -54,23 +45,23 @@ Identifier
     ;
 
 Escaped
-    // This terminal is only valid in scanner state 'String'
-    : <String>/\\["\\bfnt]/
+    // This terminal is only valid in scanner state 'STRING'
+    : <STRING>/\\["\\bfnt]/
     ;
 
 EscapedLineEnd
-    // This terminal is only valid in scanner state 'String'
+    // This terminal is only valid in scanner state 'STRING'
     // NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
     // Otherwise, the regex will greedily pickup newlines See issue #5
-    : <String>/\\[\s--\n\r]*\r?\n/
+    : <STRING>/\\[\s--\n\r]*\r?\n/
     ;
 
 NoneQuote
-    // This terminal is only valid in scanner state 'String'
-    : <String>/[^"\\]+/
+    // This terminal is only valid in scanner state 'STRING'
+    : <STRING>/[^"\\]+/
     ;
 
 StringDelimiter
-    // This terminal is valid in both scanner states INITIAL and 'String'
-    : <String, INITIAL>/"/
+    // This terminal is valid in both scanner states INITIAL and 'STRING'
+    : <STRING, INITIAL>'"'
     ;

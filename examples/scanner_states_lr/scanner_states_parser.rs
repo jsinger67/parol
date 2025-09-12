@@ -37,15 +37,15 @@ scanner! {
             token r"//.*(\r\n|\r|\n)?" => 3; // "LineComment"
             token r"/\*/?([^/]|[^*]/)*\*/" => 4; // "BlockComment"
             token r"[a-zA-Z_]\w*" => 5; // "Identifier"
-            token r"\u{22}" => 9; // "StringDelimiter"
+            token r#"""# => 9; // "StringDelimiter"
             token r"." => 10; // "Error"
-            on 9 enter String;
+            on 9 enter STRING;
         }
-        mode String {
+        mode STRING {
             token r"\u{5c}[\u{22}\u{5c}bfnt]" => 6; // "Escaped"
             token r"\u{5c}[\s^\n\r]*\r?\n" => 7; // "EscapedLineEnd"
             token r"[^\u{22}\u{5c}]+" => 8; // "NoneQuote"
-            token r"\u{22}" => 9; // "StringDelimiter"
+            token r#"""# => 9; // "StringDelimiter"
             token r"." => 10; // "Error"
             on 9 enter INITIAL;
         }
@@ -96,7 +96,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
             actions: &[
                 (0, 12), /* '<$>' => LRAction::Reduce(StartList, 2) */
                 (5, 12), /* '[a-zA-Z_]\w*' => LRAction::Reduce(StartList, 2) */
-                (9, 12), /* '\u{22}' => LRAction::Reduce(StartList, 2) */
+                (9, 12), /* '"' => LRAction::Reduce(StartList, 2) */
             ],
             gotos: &[(6, 1) /* StartList => 1 */],
         },
@@ -105,7 +105,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
             actions: &[
                 (0, 20), /* '<$>' => LRAction::Accept */
                 (5, 0),  /* '[a-zA-Z_]\w*' => LRAction::Shift(2) */
-                (9, 1),  /* '\u{22}' => LRAction::Shift(3) */
+                (9, 1),  /* '"' => LRAction::Shift(3) */
             ],
             gotos: &[
                 (0, 4), /* Content => 4 */
@@ -118,7 +118,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
             actions: &[
                 (0, 9), /* '<$>' => LRAction::Reduce(Identifier, 12) */
                 (5, 9), /* '[a-zA-Z_]\w*' => LRAction::Reduce(Identifier, 12) */
-                (9, 9), /* '\u{22}' => LRAction::Reduce(Identifier, 12) */
+                (9, 9), /* '"' => LRAction::Reduce(Identifier, 12) */
             ],
             gotos: &[],
         },
@@ -130,7 +130,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 16), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringDelimiter, 16) */
                 (7, 16), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringDelimiter, 16) */
                 (8, 16), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringDelimiter, 16) */
-                (9, 16), /* '\u{22}' => LRAction::Reduce(StringDelimiter, 16) */
+                (9, 16), /* '"' => LRAction::Reduce(StringDelimiter, 16) */
             ],
             gotos: &[],
         },
@@ -139,7 +139,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
             actions: &[
                 (0, 11), /* '<$>' => LRAction::Reduce(StartList, 1) */
                 (5, 11), /* '[a-zA-Z_]\w*' => LRAction::Reduce(StartList, 1) */
-                (9, 11), /* '\u{22}' => LRAction::Reduce(StartList, 1) */
+                (9, 11), /* '"' => LRAction::Reduce(StartList, 1) */
             ],
             gotos: &[],
         },
@@ -148,7 +148,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
             actions: &[
                 (0, 5), /* '<$>' => LRAction::Reduce(Content, 3) */
                 (5, 5), /* '[a-zA-Z_]\w*' => LRAction::Reduce(Content, 3) */
-                (9, 5), /* '\u{22}' => LRAction::Reduce(Content, 3) */
+                (9, 5), /* '"' => LRAction::Reduce(Content, 3) */
             ],
             gotos: &[],
         },
@@ -158,7 +158,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 15), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringContentList, 7) */
                 (7, 15), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringContentList, 7) */
                 (8, 15), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringContentList, 7) */
-                (9, 15), /* '\u{22}' => LRAction::Reduce(StringContentList, 7) */
+                (9, 15), /* '"' => LRAction::Reduce(StringContentList, 7) */
             ],
             gotos: &[
                 (7, 7), /* StringContent => 7 */
@@ -167,7 +167,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
         },
         // State 7
         LR1State {
-            actions: &[(9, 1) /* '\u{22}' => LRAction::Shift(3) */],
+            actions: &[(9, 1) /* '"' => LRAction::Shift(3) */],
             gotos: &[(9, 9) /* StringDelimiter => 9 */],
         },
         // State 8
@@ -176,7 +176,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 2),  /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Shift(10) */
                 (7, 3),  /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Shift(11) */
                 (8, 4),  /* '[^\u{22}\u{5c}]+' => LRAction::Shift(12) */
-                (9, 13), /* '\u{22}' => LRAction::Reduce(StringContent, 5) */
+                (9, 13), /* '"' => LRAction::Reduce(StringContent, 5) */
             ],
             gotos: &[
                 (1, 13),  /* Escaped => 13 */
@@ -190,7 +190,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
             actions: &[
                 (0, 6), /* '<$>' => LRAction::Reduce(Content, 4) */
                 (5, 6), /* '[a-zA-Z_]\w*' => LRAction::Reduce(Content, 4) */
-                (9, 6), /* '\u{22}' => LRAction::Reduce(Content, 4) */
+                (9, 6), /* '"' => LRAction::Reduce(Content, 4) */
             ],
             gotos: &[],
         },
@@ -200,7 +200,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 7), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(Escaped, 13) */
                 (7, 7), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(Escaped, 13) */
                 (8, 7), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(Escaped, 13) */
-                (9, 7), /* '\u{22}' => LRAction::Reduce(Escaped, 13) */
+                (9, 7), /* '"' => LRAction::Reduce(Escaped, 13) */
             ],
             gotos: &[],
         },
@@ -210,7 +210,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 8), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(EscapedLineEnd, 14) */
                 (7, 8), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(EscapedLineEnd, 14) */
                 (8, 8), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(EscapedLineEnd, 14) */
-                (9, 8), /* '\u{22}' => LRAction::Reduce(EscapedLineEnd, 14) */
+                (9, 8), /* '"' => LRAction::Reduce(EscapedLineEnd, 14) */
             ],
             gotos: &[],
         },
@@ -220,7 +220,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 10), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(NoneQuote, 15) */
                 (7, 10), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(NoneQuote, 15) */
                 (8, 10), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(NoneQuote, 15) */
-                (9, 10), /* '\u{22}' => LRAction::Reduce(NoneQuote, 15) */
+                (9, 10), /* '"' => LRAction::Reduce(NoneQuote, 15) */
             ],
             gotos: &[],
         },
@@ -230,7 +230,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 17), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringElement, 9) */
                 (7, 17), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringElement, 9) */
                 (8, 17), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringElement, 9) */
-                (9, 17), /* '\u{22}' => LRAction::Reduce(StringElement, 9) */
+                (9, 17), /* '"' => LRAction::Reduce(StringElement, 9) */
             ],
             gotos: &[],
         },
@@ -240,7 +240,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 18), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringElement, 10) */
                 (7, 18), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringElement, 10) */
                 (8, 18), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringElement, 10) */
-                (9, 18), /* '\u{22}' => LRAction::Reduce(StringElement, 10) */
+                (9, 18), /* '"' => LRAction::Reduce(StringElement, 10) */
             ],
             gotos: &[],
         },
@@ -250,7 +250,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 19), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringElement, 11) */
                 (7, 19), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringElement, 11) */
                 (8, 19), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringElement, 11) */
-                (9, 19), /* '\u{22}' => LRAction::Reduce(StringElement, 11) */
+                (9, 19), /* '"' => LRAction::Reduce(StringElement, 11) */
             ],
             gotos: &[],
         },
@@ -260,7 +260,7 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
                 (6, 14), /* '\u{5c}[\u{22}\u{5c}bfnt]' => LRAction::Reduce(StringContentList, 6) */
                 (7, 14), /* '\u{5c}[\s^\n\r]*\r?\n' => LRAction::Reduce(StringContentList, 6) */
                 (8, 14), /* '[^\u{22}\u{5c}]+' => LRAction::Reduce(StringContentList, 6) */
-                (9, 14), /* '\u{22}' => LRAction::Reduce(StringContentList, 6) */
+                (9, 14), /* '"' => LRAction::Reduce(StringContentList, 6) */
             ],
             gotos: &[],
         },
@@ -300,7 +300,7 @@ pub const PRODUCTIONS: &[LRProduction; 17] = &[
     LRProduction { lhs: 2, len: 1 },
     // 15 - NoneQuote: "[^\u{22}\u{5c}]+";
     LRProduction { lhs: 4, len: 1 },
-    // 16 - StringDelimiter: "\u{22}";
+    // 16 - StringDelimiter: '"';
     LRProduction { lhs: 9, len: 1 },
 ];
 

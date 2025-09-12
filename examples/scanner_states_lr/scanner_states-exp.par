@@ -4,9 +4,9 @@
 %grammar_type 'lalr(1)'
 %line_comment "//"
 %block_comment "/\*" "\*/"
-%on StringDelimiter %enter String
+%on StringDelimiter %enter STRING
 
-%scanner String {
+%scanner STRING {
     %auto_newline_off
     %auto_ws_off
     %on StringDelimiter %enter INITIAL
@@ -27,7 +27,7 @@
 /* 10 */ StringElement: EscapedLineEnd;
 /* 11 */ StringElement: NoneQuote;
 /* 12 */ Identifier: "[a-zA-Z_]\w*";
-/* 13 */ Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";
-/* 14 */ EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";
-/* 15 */ NoneQuote: <String>"[^\u{22}\u{5c}]+";
-/* 16 */ StringDelimiter: <INITIAL, String>"\u{22}";
+/* 13 */ Escaped: <STRING>"\u{5c}[\u{22}\u{5c}bfnt]";
+/* 14 */ EscapedLineEnd: <STRING>"\u{5c}[\s^\n\r]*\r?\n";
+/* 15 */ NoneQuote: <STRING>"[^\u{22}\u{5c}]+";
+/* 16 */ StringDelimiter: <INITIAL, STRING>'"';

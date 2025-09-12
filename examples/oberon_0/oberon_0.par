@@ -65,7 +65,7 @@ AddExpression
     ;
 
 AssignOp
-    : ":="
+    : ':='
     ;
 
 RelationOp
@@ -77,11 +77,7 @@ RelationOp
     ;
 
 RelationalOps
-    : ">=|<=|\#|<|>"
-    ;
-
-AssignOp
-    : "="
+    : />=|<=|\#|<|>/
     ;
 
 Expression
@@ -97,15 +93,15 @@ Assignment
     ;
 
 ActualParameters
-    : "\(" "\)"
+    : '(' ')'
     ;
 
 ActualParameters
-    : "\(" Expression ExpressionListRest "\)"
+    : '(' Expression ExpressionListRest ')'
     ;
 
 ExpressionListRest
-    : "," Expression ExpressionListRest
+    : ',' Expression ExpressionListRest
     ;
 
 ExpressionListRest
@@ -121,19 +117,19 @@ ProcedureCall
     ;
 
 IfStatement
-    : IfPrefix "ELSE" StatementSequence "END"
+    : IfPrefix 'ELSE' StatementSequence 'END'
     ;
 
 IfStatement
-    : IfPrefix "END"
+    : IfPrefix 'END'
     ;
 
 IfPrefix
-    : "IF" Expression "THEN" StatementSequence ElseIfList
+    : 'IF' Expression 'THEN' StatementSequence ElseIfList
     ;
 
 ElseIfList
-    : "ELSIF" Expression "THEN" StatementSequence ElseIfList
+    : 'ELSIF' Expression 'THEN' StatementSequence ElseIfList
     ;
 
 ElseIfList
@@ -141,11 +137,11 @@ ElseIfList
     ;
 
 WhileStatement
-    : "WHILE" Expression "DO" StatementSequence "END"
+    : 'WHILE' Expression 'DO' StatementSequence 'END'
     ;
 
 RepeatStatement
-    : "REPEAT" StatementSequence "UNTIL" Expression
+    : 'REPEAT' StatementSequence 'UNTIL' Expression
     ;
 
 Statement
@@ -177,7 +173,7 @@ StatementSequence
     ;
 
 StatementSequenceRest
-    : ";" Statement StatementSequenceRest
+    : ';' Statement StatementSequenceRest
     ;
 
 StatementSequenceRest
@@ -189,7 +185,7 @@ IdentList
     ;
 
 IdentListRest
-    : "," Ident IdentListRest
+    : ',' Ident IdentListRest
     ;
 
 IdentListRest
@@ -197,11 +193,11 @@ IdentListRest
     ;
 
 ArrayType
-    : "ARRAY" Expression "OF" Type
+    : 'ARRAY' Expression 'OF' Type
     ;
 
 FieldList
-    : IdentList ":" Type
+    : IdentList ':' Type
     ;
 
 FieldList
@@ -209,11 +205,11 @@ FieldList
     ;
 
 RecordType
-    : "RECORD" FieldList FieldListRest "END"
+    : 'RECORD' FieldList FieldListRest 'END'
     ;
 
 FieldListRest
-    : ";" FieldList FieldListRest
+    : ';' FieldList FieldListRest
     ;
 
 FieldListRest
@@ -233,23 +229,23 @@ Type
     ;
 
 FPSection
-    : "VAR" IdentList ":" Type
+    : 'VAR' IdentList ':' Type
     ;
 
 FPSection
-    : IdentList ":" Type
+    : IdentList ':' Type
     ;
 
 FormalParameters
-    : "\(" "\)"
+    : '(' ')'
     ;
 
 FormalParameters
-    : "\(" FPSection FPSectionRest "\)"
+    : '(' FPSection FPSectionRest ')'
     ;
 
 FPSectionRest
-    : ";" FPSection FPSectionRest
+    : ';' FPSection FPSectionRest
     ;
 
 FPSectionRest
@@ -257,59 +253,59 @@ FPSectionRest
     ;
 
 ProcedureHeading
-    : "PROCEDURE" Ident FormalParameters
+    : 'PROCEDURE' Ident FormalParameters
     ;
 
 ProcedureHeading
-    : "PROCEDURE" Ident
+    : 'PROCEDURE' Ident
     ;
 
 ProcedureBody
-    : Declarations "BEGIN" StatementSequence "RETURN" Expression "END" Ident
+    : Declarations 'BEGIN' StatementSequence 'RETURN' Expression 'END' Ident
     ;
 
 ProcedureBody
-    : Declarations "RETURN" Expression "END" Ident
+    : Declarations 'RETURN' Expression 'END' Ident
     ;
 
 ProcedureBody
-    : Declarations "BEGIN" StatementSequence "END" Ident
+    : Declarations 'BEGIN' StatementSequence 'END' Ident
     ;
 
 ProcedureBody
-    : Declarations "END" Ident
+    : Declarations 'END' Ident
     ;
 
 ProcedureDeclaration
-    : ProcedureHeading ";" ProcedureBody
+    : ProcedureHeading ';' ProcedureBody
     ;
 
 Declarations
-    : "CONST" ConstDecls "TYPE" TypeDecls "VAR" VarDecls ProcedureDeclarationList
+    : 'CONST' ConstDecls 'TYPE' TypeDecls 'VAR' VarDecls ProcedureDeclarationList
     ;
 
 Declarations
-    : "CONST" ConstDecls "TYPE" TypeDecls ProcedureDeclarationList
+    : 'CONST' ConstDecls 'TYPE' TypeDecls ProcedureDeclarationList
     ;
 
 Declarations
-    : "CONST" ConstDecls "VAR" VarDecls ProcedureDeclarationList
+    : 'CONST' ConstDecls 'VAR' VarDecls ProcedureDeclarationList
     ;
 
 Declarations
-    : "CONST" ConstDecls ProcedureDeclarationList
+    : 'CONST' ConstDecls ProcedureDeclarationList
     ;
 
 Declarations
-    : "TYPE" TypeDecls "VAR" VarDecls ProcedureDeclarationList
+    : 'TYPE' TypeDecls 'VAR' VarDecls ProcedureDeclarationList
     ;
 
 Declarations
-    : "TYPE" TypeDecls ProcedureDeclarationList
+    : 'TYPE' TypeDecls ProcedureDeclarationList
     ;
 
 Declarations
-    : "VAR" VarDecls ProcedureDeclarationList
+    : 'VAR' VarDecls ProcedureDeclarationList
     ;
 
 Declarations
@@ -317,7 +313,7 @@ Declarations
     ;
 
 ProcedureDeclarationList
-    : ProcedureDeclaration ";" ProcedureDeclarationList
+    : ProcedureDeclaration ';' ProcedureDeclarationList
     ;
 
 ProcedureDeclarationList
@@ -325,7 +321,7 @@ ProcedureDeclarationList
     ;
 
 ConstDecls
-    : Ident AssignOp Expression ";" ConstDecls
+    : Ident AssignOp Expression ';' ConstDecls
     ;
 
 ConstDecls
@@ -333,7 +329,7 @@ ConstDecls
     ;
 
 TypeDecls
-    : Ident AssignOp Type ";" TypeDecls
+    : Ident AssignOp Type ';' TypeDecls
     ;
 
 TypeDecls
@@ -341,7 +337,7 @@ TypeDecls
     ;
 
 VarDecls
-    : IdentList ":" Type ";" VarDecls
+    : IdentList ':' Type ';' VarDecls
     ;
 
 VarDecls
@@ -349,11 +345,11 @@ VarDecls
     ;
 
 Module
-    : "MODULE" Ident ";" Declarations "BEGIN" StatementSequence "END" Ident "\."
+    : 'MODULE' Ident ';' Declarations 'BEGIN' StatementSequence 'END' Ident '\.'
     ;
 
 Module
-    : "MODULE" Ident ";" Declarations "END" Ident "\."
+    : 'MODULE' Ident ';' Declarations 'END' Ident '\.'
     ;
 
 MulOperator
@@ -361,17 +357,17 @@ MulOperator
     ;
 
 AddOperator
-    : "\+|-|OR"
+    : /\+|-|OR/
     ;
 
 UnaryOp
-    : "\+|-"
+    : /\+|-/
     ;
 
 Ident
-    : "[a-zA-Z][a-zA-Z0-9]*"
+    : /[a-zA-Z][a-zA-Z0-9]*/
     ;
 
 Integer
-    : "[0-9]+"
+    : /[0-9]+/
     ;
