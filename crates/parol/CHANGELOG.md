@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.1.1 - Not released yet
+## 4.1.1 - 2025-09-19
 
 * Fix: Update block comment regex in
 [`ScannerConfig::format_block_comment()`](crates/parol/src/generators/scanner_config.rs:210) to
 correctly match cases like `/***/`, resolving [#828](https://github.com/jsinger67/parol/issues/828).
 Extended tests to verify correct behavior.
+  * Update all generated sources of affected examples
 
 ## 4.1.0 - 2025-08-30
 

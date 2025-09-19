@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 4.0.2 - 2025-09-19
+
+* New regex for block comment. See [#828](https://github.com/jsinger67/parol/issues/828)
+
 ## 4.0.1 - 2025-08-30
 
 * Support new scanner directive: `%allow_unmatched`
