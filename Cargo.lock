@@ -732,7 +732,7 @@ dependencies = [
  "serde",
  "serde_json",
  "syn 2.0.106",
- "syntree",
+ "syntree 0.18.0",
  "syntree_layout",
  "tempfile",
  "thiserror 2.0.17",
@@ -760,7 +760,7 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "syntree",
+ "syntree 0.18.0",
  "thiserror 2.0.17",
 ]
 
@@ -785,7 +785,7 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "regex-automata 0.4.13",
- "syntree",
+ "syntree 0.18.0",
  "syntree_layout",
  "thiserror 2.0.17",
 ]
@@ -1150,13 +1150,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d8a019a25d9135e907319cd33f02eeed4633388deea3a723b9242d062fa09486"
 
 [[package]]
+name = "syntree"
+version = "0.18.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "00c99c9cda412afe293a6b962af651b4594161ba88c1affe7ef66459ea040a06"
+
+[[package]]
 name = "syntree_layout"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c4dcc044568a0f9708c87b9dd79f1d8e5fb2086a831ead7ef044c9a48bd756b"
 dependencies = [
  "anyhow",
- "syntree",
+ "syntree 0.14.5",
  "thiserror 1.0.69",
  "xml_writer",
 ]
