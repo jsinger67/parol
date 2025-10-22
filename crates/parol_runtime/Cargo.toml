@@ -13,7 +13,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = { workspace = true }
-codespan-reporting = "0.13.0"
+codespan-reporting = "0.13.1"
 derive_builder = { workspace = true }
 function_name = { workspace = true }
 log = { workspace = true }
