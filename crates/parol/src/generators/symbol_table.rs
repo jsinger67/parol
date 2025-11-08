@@ -139,8 +139,10 @@ impl Display for MetaSymbolKind {
 ///
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
+#[derive(Default)]
 pub(crate) enum TypeEntrails {
     /// Not specified, used as prototype during generation
+    #[default]
     None,
     /// Will be generated as Token structure
     Token,
@@ -194,11 +196,6 @@ impl TypeEntrails {
     }
 }
 
-impl Default for TypeEntrails {
-    fn default() -> Self {
-        Self::None
-    }
-}
 
 ///
 /// Type information used for auto-generation

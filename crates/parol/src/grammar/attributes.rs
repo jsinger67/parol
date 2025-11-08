@@ -25,8 +25,10 @@ where
 ///
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS)]
 #[ts(export)]
+#[derive(Default)]
 pub enum ProductionAttribute {
     /// No valid attribute, default value
+    #[default]
     None,
     /// Indicates a start of repetition, i.e. a collection
     CollectionStart,
@@ -50,11 +52,6 @@ impl Display for ProductionAttribute {
     }
 }
 
-impl Default for ProductionAttribute {
-    fn default() -> Self {
-        Self::None
-    }
-}
 
 impl<T, W> Decorate<T, W> for ProductionAttribute
 where
@@ -77,8 +74,10 @@ where
 ///
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS)]
 #[ts(export)]
+#[derive(Default)]
 pub enum SymbolAttribute {
     /// No valid attribute, default value
+    #[default]
     None,
 
     /// The symbol is actually a collection, i.e. a vector
@@ -105,11 +104,6 @@ impl Display for SymbolAttribute {
     }
 }
 
-impl Default for SymbolAttribute {
-    fn default() -> Self {
-        Self::None
-    }
-}
 
 impl<T, W> Decorate<T, W> for SymbolAttribute
 where
