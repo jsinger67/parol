@@ -17,7 +17,7 @@ pub struct ParolErrorReporter {}
 impl Report for ParolErrorReporter {
     fn report_user_error(err: &anyhow::Error) -> anyhow::Result<()> {
         let files: SimpleFiles<String, String> = SimpleFiles::new();
-        let writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
+        let mut writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
         let config = Config::default();
 
         if let Some(err) = err.downcast_ref::<ParolParserError>() {
@@ -32,8 +32,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                            &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                            &mut writer,
                             &config,
                             &files,
                             &Diagnostic::error()
@@ -53,8 +53,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -79,8 +79,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -105,8 +105,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -135,8 +135,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -157,17 +157,21 @@ impl Report for ParolErrorReporter {
                             ]),
                     )?)
                 }
-                ParolParserError::EmptyScanners { empty_scanners } => Ok(term::emit(
-                    &mut writer.lock(),
-                    &config,
-                    &files,
-                    &Diagnostic::error()
-                        .with_message(format!("Empty scanner states ({empty_scanners:?}) found"))
-                        .with_code("parol::parser::empty_scanner_states")
-                        .with_notes(vec![
-                            "Assign at least one terminal or remove them.".to_string(),
-                        ]),
-                )?),
+                ParolParserError::EmptyScanners { empty_scanners } => {
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!(
+                                "Empty scanner states ({empty_scanners:?}) found"
+                            ))
+                            .with_code("parol::parser::empty_scanner_states")
+                            .with_notes(vec![
+                                "Assign at least one terminal or remove them.".to_string(),
+                            ]),
+                    )?)
+                }
                 ParolParserError::UnsupportedGrammarType {
                     grammar_type,
                     input,
@@ -177,8 +181,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -203,8 +207,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -230,8 +234,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -259,8 +263,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -287,8 +291,8 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -314,8 +318,8 @@ impl Report for ParolErrorReporter {
                         .map(|r| r.name.to_string())
                         .collect::<Vec<String>>()
                         .join(", ");
-                    return Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -327,7 +331,7 @@ impl Report for ParolErrorReporter {
                                 "Please rework your grammar to remove these recursions."
                                     .to_string(),
                             ]),
-                    )?);
+                    )?)
                 }
                 GrammarAnalysisError::UnreachableNonTerminals { non_terminals } => {
                     let non_terminals = non_terminals
@@ -335,8 +339,8 @@ impl Report for ParolErrorReporter {
                         .map(|r| r.hint.clone())
                         .collect::<Vec<String>>()
                         .join(", ");
-                    return Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -347,7 +351,7 @@ impl Report for ParolErrorReporter {
                                 non_terminals,
                                 "Unreachable non-terminals are not allowed. If not used they can be safely removed.".to_string(),
                             ]),
-                    )?);
+                    )?)
                 }
                 GrammarAnalysisError::NonProductiveNonTerminals { non_terminals } => {
                     let non_terminals = non_terminals
@@ -355,8 +359,8 @@ impl Report for ParolErrorReporter {
                         .map(|r| r.hint.clone())
                         .collect::<Vec<String>>()
                         .join(", ");
-                    return Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -367,22 +371,20 @@ impl Report for ParolErrorReporter {
                                 non_terminals,
                                 "Nonproductive non-terminals are not allowed. If not used they can be safely removed.".to_string(),
                             ]),
-                    )?);
+                    )?)
                 }
-                GrammarAnalysisError::MaxKExceeded { max_k } => {
-                    return Ok(term::emit(
-                        &mut writer.lock(),
-                        &config,
-                        &files,
-                        &Diagnostic::error()
-                            .with_message(format!("Maximum lookahead of {max_k} exceeded"))
-                            .with_code("parol::analysis::max_k_exceeded")
-                            .with_notes(vec!["Please examine your grammar.".to_string()]),
-                    )?);
-                }
+                GrammarAnalysisError::MaxKExceeded { max_k } => Ok(term::emit_to_write_style(
+                    &mut writer,
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message(format!("Maximum lookahead of {max_k} exceeded"))
+                        .with_code("parol::analysis::max_k_exceeded")
+                        .with_notes(vec!["Please examine your grammar.".to_string()]),
+                )?),
                 GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict } => {
-                    return Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -392,12 +394,12 @@ impl Report for ParolErrorReporter {
                                 "Please examine your grammar.".to_string(),
                                 format!("{}", conflict),
                             ]),
-                    )?);
+                    )?)
                 }
             }
         } else {
-            let result = term::emit(
-                &mut writer.lock(),
+            let result = term::emit_to_write_style(
+                &mut writer,
                 &config,
                 &files,
                 &Diagnostic::error()

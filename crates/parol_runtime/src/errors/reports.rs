@@ -36,11 +36,11 @@ pub trait Report {
     /// itself fails somehow.
     ///
     fn report_user_error(err: &anyhow::Error) -> anyhow::Result<()> {
-        let writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
+        let mut writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
         let config = codespan_reporting::term::Config::default();
         let files = SimpleFiles::<String, String>::new();
-        let result = term::emit(
-            &mut writer.lock(),
+        let result = term::emit_to_write_style(
+            &mut writer,
             &config,
             &files,
             &Diagnostic::error()
@@ -60,7 +60,6 @@ pub trait Report {
     where
         T: AsRef<Path>,
     {
-        let writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
         let config = codespan_reporting::term::Config::default();
 
         let mut files = SimpleFiles::new();
@@ -68,9 +67,10 @@ pub trait Report {
         let file_id = files.add(file_name.as_ref().display().to_string(), content);
 
         let report_lexer_error = |err: &LexerError| -> anyhow::Result<()> {
+            let mut writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
             match err {
-                LexerError::TokenBufferEmptyError => Ok(term::emit(
-                    &mut writer.lock(),
+                LexerError::TokenBufferEmptyError => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
@@ -78,32 +78,32 @@ pub trait Report {
                         .with_code("parol_runtime::lexer::empty_token_buffer")
                         .with_notes(vec!["Token buffer is empty".to_string()]),
                 )?),
-                LexerError::InternalError(e) => Ok(term::emit(
-                    &mut writer.lock(),
+                LexerError::InternalError(e) => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
                         .with_message(format!("Internal lexer error: {e}"))
                         .with_code("parol_runtime::lexer::internal_error"),
                 )?),
-                LexerError::LookaheadExceedsMaximum => Ok(term::emit(
-                    &mut writer.lock(),
+                LexerError::LookaheadExceedsMaximum => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
                         .with_message("Lookahead exceeds maximum".to_string())
                         .with_code("parol_runtime::lexer::lookahead_exceeds_maximum"),
                 )?),
-                LexerError::LookaheadExceedsTokenBufferLength => Ok(term::emit(
-                    &mut writer.lock(),
+                LexerError::LookaheadExceedsTokenBufferLength => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
                         .with_message("Lookahead exceeds token buffer length".to_string())
                         .with_code("parol_runtime::lexer::lookahead_exceeds_token_buffer_length"),
                 )?),
-                LexerError::ScannerStackEmptyError => Ok(term::emit(
-                    &mut writer.lock(),
+                LexerError::ScannerStackEmptyError => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
@@ -114,8 +114,8 @@ pub trait Report {
                                 .to_string(),
                         ]),
                 )?),
-                LexerError::RecoveryError(e) => Ok(term::emit(
-                    &mut writer.lock(),
+                LexerError::RecoveryError(e) => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
@@ -126,9 +126,10 @@ pub trait Report {
         };
 
         let report_parser_error = |err: &ParserError| -> anyhow::Result<()> {
+            let mut writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
             match err {
-                ParserError::TreeError { source } => Ok(term::emit(
-                    &mut writer.lock(),
+                ParserError::TreeError { source } => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
@@ -136,8 +137,8 @@ pub trait Report {
                         .with_code("parol_runtime::parser::syntree_error")
                         .with_notes(vec!["Internal error".to_string()]),
                 )?),
-                ParserError::DataError(e) => Ok(term::emit(
-                    &mut writer.lock(),
+                ParserError::DataError(e) => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
@@ -145,8 +146,8 @@ pub trait Report {
                         .with_code("parol_runtime::lexer::internal_error")
                         .with_notes(vec!["Error in generated source".to_string()]),
                 )?),
-                ParserError::PredictionError { cause } => Ok(term::emit(
-                    &mut writer.lock(),
+                ParserError::PredictionError { cause } => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::error()
@@ -184,8 +185,8 @@ pub trait Report {
                                     );
                                     acc
                                 });
-                            Ok(term::emit(
-                                &mut writer.lock(),
+                            Ok(term::emit_to_write_style(
+                                &mut writer,
                                 &config,
                                 &files,
                                 &Diagnostic::error()
@@ -202,8 +203,8 @@ pub trait Report {
                             )?)
                         },
                     )?;
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -212,8 +213,8 @@ pub trait Report {
                 }
                 ParserError::UnprocessedInput { last_token, .. } => {
                     let un_span: Span = (Into::<Range<usize>>::into(&**last_token)).into();
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -232,8 +233,8 @@ pub trait Report {
                     error_location,
                 } => {
                     let range: Range<usize> = (&**error_location).into();
-                    Ok(term::emit(
-                        &mut writer.lock(),
+                    Ok(term::emit_to_write_style(
+                        &mut writer,
                         &config,
                         &files,
                         &Diagnostic::error()
@@ -245,8 +246,8 @@ pub trait Report {
                             .with_notes(vec![format!("Context: {context}")]),
                     )?)
                 }
-                ParserError::InternalError(e) => Ok(term::emit(
-                    &mut writer.lock(),
+                ParserError::InternalError(e) => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::bug()
@@ -254,8 +255,8 @@ pub trait Report {
                         .with_code("parol_runtime::parser::internal_error")
                         .with_notes(vec!["This may be a bug. Please report it!".to_string()]),
                 )?),
-                ParserError::TooManyErrors { count } => Ok(term::emit(
-                    &mut writer.lock(),
+                ParserError::TooManyErrors { count } => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::error()
@@ -265,8 +266,8 @@ pub trait Report {
                             "The parser has stopped because too many errors occurred.".to_string(),
                         ]),
                 )?),
-                ParserError::RecoveryFailed => Ok(term::emit(
-                    &mut writer.lock(),
+                ParserError::RecoveryFailed => Ok(term::emit_to_write_style(
+                    &mut writer,
                     &config,
                     &files,
                     &Diagnostic::error()
