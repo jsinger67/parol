@@ -1,20 +1,14 @@
 [package]
 name = "snapshot_bin"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 anyhow = "1.0"
-env_logger = "0.11.3"
-parol_runtime = { version = "1.0.0", features = ["auto_generation"] }
-thiserror = "1.0"
+env_logger = "0.11"
+parol_runtime = "4.0"
+scnr2 = "0.3.2"
+thiserror = "2.0"
 
 [build-dependencies]
-parol = "1.0.0"
-parol_runtime = { version = "1.0.0", features = ["auto_generation"] }
-
-# For faster builds.
-[profile.dev.build-override]
-opt-level = 3
-[profile.release.build-override]
-opt-level = 3
+parol = "4.1.1"
