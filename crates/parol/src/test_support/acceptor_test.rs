@@ -45,9 +45,13 @@ pub fn acceptor_test<T>(
     let temp_dir = tempfile::Builder::new()
         .prefix("acceptor_test_")
         .tempdir()
-        .expect("Couldn't create a directory inside of `std::env::temp_dir()");
-    Command::cargo_bin("parol")
-        .unwrap()
+        .expect("Couldn't create a directory inside of `std::env::temp_dir()`");
+
+    // Use runtime environment variable lookup instead of compile-time macro
+    let parol_bin = std::env::var("CARGO_BIN_EXE_parol")
+        .expect("CARGO_BIN_EXE_parol environment variable not set");
+
+    Command::new(parol_bin)
         .current_dir(&temp_dir)
         .args([
             "new",
