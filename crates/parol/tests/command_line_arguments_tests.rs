@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 #[test]
 fn test_help_argument() {
-    let mut cmd = Command::cargo_bin("parol").unwrap();
+    let mut cmd = Command::new("parol");
     cmd.arg("--help")
         .assert()
         .success()
@@ -13,7 +13,7 @@ fn test_help_argument() {
 
 #[test]
 fn test_version_argument() {
-    let mut cmd = Command::cargo_bin("parol").unwrap();
+    let mut cmd = Command::new("parol");
     cmd.arg("--version")
         .assert()
         .success()
@@ -26,14 +26,14 @@ fn test_subcommand_generate() {
     let output_file = PathBuf::from("tests/output.rs");
 
     // Test with missing output file
-    let mut cmd = Command::cargo_bin("parol").unwrap();
+    let mut cmd = Command::new("parol");
     cmd.args(["generate", "-f", grammar_file.to_str().unwrap()])
         .assert()
         .success()
         .stdout(predicates::str::starts_with("Var").and(predicates::str::ends_with("End \n")));
 
     // Test with output file
-    let mut cmd = Command::cargo_bin("parol").unwrap();
+    let mut cmd = Command::new("parol");
     cmd.args([
         "generate",
         "-f",
@@ -50,7 +50,7 @@ fn test_subcommand_generate() {
     // Test with LR grammar as input
     // This subcommand only supports LL grammars
     let grammar_file = PathBuf::from("tests/data/arg_tests/generate_lr.par");
-    let mut cmd = Command::cargo_bin("parol").unwrap();
+    let mut cmd = Command::new("parol");
     cmd.args(["generate", "-f", grammar_file.to_str().unwrap()])
         .assert()
         .failure()
@@ -64,7 +64,7 @@ fn test_subcommand_left_factor() {
     let grammar_file = PathBuf::from("tests/data/arg_tests/left_factor.par");
 
     // Test with missing output file
-    let mut cmd = Command::cargo_bin("parol").unwrap();
+    let mut cmd = Command::new("parol");
     cmd.args(["left-factor", "-f", grammar_file.to_str().unwrap()])
         .assert()
         .success()
@@ -72,7 +72,7 @@ fn test_subcommand_left_factor() {
 
     // Test with output file
     let output_file = PathBuf::from("tests/output.par");
-    let mut cmd = Command::cargo_bin("parol").unwrap();
+    let mut cmd = Command::new("parol");
     cmd.args([
         "left-factor",
         "-f",
@@ -88,7 +88,7 @@ fn test_subcommand_left_factor() {
     // Test with LR grammar as input
     // This subcommand only supports LL grammars
     let grammar_file = PathBuf::from("tests/data/arg_tests/left_factor_lr.par");
-    let mut cmd = Command::cargo_bin("parol").unwrap();
+    let mut cmd = Command::new("parol");
     cmd.args(["left-factor", "-f", grammar_file.to_str().unwrap()])
         .assert()
         .failure()
