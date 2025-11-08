@@ -1,11 +1,11 @@
-use assert_cmd::Command;
+use assert_cmd::cargo::cargo_bin_cmd;
 use predicates::prelude::PredicateBooleanExt;
 use std::path::PathBuf;
 
 #[test]
 fn test_help_argument() {
-    let mut cmd = Command::new("parol");
-    cmd.arg("--help")
+    cargo_bin_cmd!("parol")
+        .arg("--help")
         .assert()
         .success()
         .stdout(predicates::str::contains("Usage:"));
@@ -13,8 +13,8 @@ fn test_help_argument() {
 
 #[test]
 fn test_version_argument() {
-    let mut cmd = Command::new("parol");
-    cmd.arg("--version")
+    cargo_bin_cmd!("parol")
+        .arg("--version")
         .assert()
         .success()
         .stdout(predicates::str::contains(env!("CARGO_PKG_VERSION")));
@@ -26,23 +26,23 @@ fn test_subcommand_generate() {
     let output_file = PathBuf::from("tests/output.rs");
 
     // Test with missing output file
-    let mut cmd = Command::new("parol");
-    cmd.args(["generate", "-f", grammar_file.to_str().unwrap()])
+    cargo_bin_cmd!("parol")
+        .args(["generate", "-f", grammar_file.to_str().unwrap()])
         .assert()
         .success()
         .stdout(predicates::str::starts_with("Var").and(predicates::str::ends_with("End \n")));
 
     // Test with output file
-    let mut cmd = Command::new("parol");
-    cmd.args([
-        "generate",
-        "-f",
-        grammar_file.to_str().unwrap(),
-        "-o",
-        output_file.to_str().unwrap(),
-    ])
-    .assert()
-    .success();
+    cargo_bin_cmd!("parol")
+        .args([
+            "generate",
+            "-f",
+            grammar_file.to_str().unwrap(),
+            "-o",
+            output_file.to_str().unwrap(),
+        ])
+        .assert()
+        .success();
 
     assert!(output_file.exists());
     std::fs::remove_file(output_file).unwrap();
@@ -50,8 +50,8 @@ fn test_subcommand_generate() {
     // Test with LR grammar as input
     // This subcommand only supports LL grammars
     let grammar_file = PathBuf::from("tests/data/arg_tests/generate_lr.par");
-    let mut cmd = Command::new("parol");
-    cmd.args(["generate", "-f", grammar_file.to_str().unwrap()])
+    cargo_bin_cmd!("parol")
+        .args(["generate", "-f", grammar_file.to_str().unwrap()])
         .assert()
         .failure()
         .stderr(predicates::str::contains(
@@ -64,32 +64,32 @@ fn test_subcommand_left_factor() {
     let grammar_file = PathBuf::from("tests/data/arg_tests/left_factor.par");
 
     // Test with missing output file
-    let mut cmd = Command::new("parol");
-    cmd.args(["left-factor", "-f", grammar_file.to_str().unwrap()])
+    cargo_bin_cmd!("parol")
+        .args(["left-factor", "-f", grammar_file.to_str().unwrap()])
         .assert()
         .success()
         .stdout(predicates::str::contains("ASuffix"));
 
     // Test with output file
     let output_file = PathBuf::from("tests/output.par");
-    let mut cmd = Command::new("parol");
-    cmd.args([
-        "left-factor",
-        "-f",
-        grammar_file.to_str().unwrap(),
-        "-o",
-        output_file.to_str().unwrap(),
-    ])
-    .assert()
-    .success();
+    cargo_bin_cmd!("parol")
+        .args([
+            "left-factor",
+            "-f",
+            grammar_file.to_str().unwrap(),
+            "-o",
+            output_file.to_str().unwrap(),
+        ])
+        .assert()
+        .success();
     assert!(output_file.exists());
     std::fs::remove_file(output_file).unwrap();
 
     // Test with LR grammar as input
     // This subcommand only supports LL grammars
     let grammar_file = PathBuf::from("tests/data/arg_tests/left_factor_lr.par");
-    let mut cmd = Command::new("parol");
-    cmd.args(["left-factor", "-f", grammar_file.to_str().unwrap()])
+    cargo_bin_cmd!("parol")
+        .args(["left-factor", "-f", grammar_file.to_str().unwrap()])
         .assert()
         .failure()
         .stderr(predicates::str::contains(
