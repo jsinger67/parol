@@ -5,6 +5,10 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v0.5.1 - 2025-11-15
+
+- Fix vulnerability warning CVE-2025-64718
+
 ## v0.5.0 - 2025-08-30
 
 ### feat: add %allow_unmatched scanner directive support
