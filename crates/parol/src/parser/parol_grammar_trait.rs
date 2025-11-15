@@ -240,7 +240,7 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName<'t> {
 ///
 /// Type derived for production 10
 ///
-/// `Declaration: "%nt_type" Identifier@nt_name "="^ /* Clipped */ UserTypeName@nt_type;`
+/// `Declaration: "%nt_type" Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -1377,7 +1377,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// `Declaration: "%nt_type" Identifier@nt_name "="^ /* Clipped */ UserTypeName@nt_type;`
+    /// `Declaration: "%nt_type" Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_3(

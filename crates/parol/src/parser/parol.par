@@ -27,7 +27,7 @@ Declaration
     : '%title'^ String
     | '%comment'^ String
     | '%user_type'^ Identifier '='^ UserTypeName // User type alias definition
-    | "%nt_type" Identifier@nt_name "="^ UserTypeName@nt_type // User type for a non-terminal
+    | "%nt_type" Identifier@nt_name '='^ UserTypeName@nt_type // User type for a non-terminal
     | "%t_type" UserTypeName@t_type // User type for all terminals, the last will win
     | '%grammar_type'^ RawString // The type of the grammar, e.g. LL(k), LALR(1)
     | ScannerDirectives
