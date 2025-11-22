@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.1.0 - 2025-11-22
+
+* Make dependency `codespan-reporting` optional
+  * Made the codespan-reporting dependency optional in parol_runtime by introducing a new reporting
+  feature flag. This allows users to opt out of the default error reporting implementation if they
+  wish to use a different reporting crate. Users who wish to opt out of codespan-reporting must now
+  set `default-features = false` for parol_runtime in their Cargo.toml. Then they can add the
+  reporting crate of their choice such as `miette` or `ariadne` as a dependency and implement the
+  `Report` trait accordingly.
+
 ## 4.0.1 - 2025-08-30
 
 * Fix: Enhance EOI token location information in TokenIter

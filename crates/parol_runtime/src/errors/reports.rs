@@ -1,10 +1,17 @@
+#[cfg(feature = "reporting")]
 use std::fs;
+#[cfg(feature = "reporting")]
 use std::ops::Range;
 use std::path::Path;
 
-use crate::{LexerError, ParolError, ParserError, Span, SyntaxError};
+use crate::ParolError;
+#[cfg(feature = "reporting")]
+use crate::{LexerError, ParserError, Span, SyntaxError};
+#[cfg(feature = "reporting")]
 use codespan_reporting::diagnostic::{Diagnostic, Label};
+#[cfg(feature = "reporting")]
 use codespan_reporting::files::SimpleFiles;
+#[cfg(feature = "reporting")]
 use codespan_reporting::term::{self, termcolor::StandardStream};
 
 /// *Trait for parol's error reporting*
@@ -18,7 +25,14 @@ use codespan_reporting::term::{self, termcolor::StandardStream};
 /// use parol_macros::parol;
 ///
 /// struct MyErrorReporter;
-/// impl Report for MyErrorReporter {};
+/// impl Report for MyErrorReporter {
+///     #[cfg(not(feature = "reporting"))]
+///     fn report_user_error(err: &anyhow::Error) -> anyhow::Result<()> { Ok(()) }
+///     #[cfg(not(feature = "reporting"))]
+///     fn report_error<T>(err: &parol_runtime::ParolError, file_name: T) -> anyhow::Result<()>
+///     where T: AsRef<std::path::Path>
+///     { Ok(()) }
+/// };
 ///
 /// let err = parol!("Crucial problem!");   // Suppose that this error comes from a call of `parse`
 /// MyErrorReporter::report_error(&err, "my_file.xyz").unwrap_or_default();
@@ -35,6 +49,7 @@ pub trait Report {
     /// content. It should return Ok(()) if reporting succeeds and an error value if the reporting
     /// itself fails somehow.
     ///
+    #[cfg(feature = "reporting")]
     fn report_user_error(err: &anyhow::Error) -> anyhow::Result<()> {
         let mut writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
         let config = codespan_reporting::term::Config::default();
@@ -54,8 +69,12 @@ pub trait Report {
         result.map_err(|e| anyhow::anyhow!(e))
     }
 
+    #[cfg(not(feature = "reporting"))]
+    fn report_user_error(err: &anyhow::Error) -> anyhow::Result<()>;
+
     /// You don't need to implement this method because it contains the reporting functionality for
     /// errors from parol_runtime itself.
+    #[cfg(feature = "reporting")]
     fn report_error<T>(err: &ParolError, file_name: T) -> anyhow::Result<()>
     where
         T: AsRef<Path>,
@@ -286,4 +305,9 @@ pub trait Report {
             ParolError::UserError(e) => Self::report_user_error(e),
         }
     }
+
+    #[cfg(not(feature = "reporting"))]
+    fn report_error<T>(err: &ParolError, file_name: T) -> anyhow::Result<()>
+    where
+        T: AsRef<Path>;
 }

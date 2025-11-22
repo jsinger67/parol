@@ -46,6 +46,7 @@ pub use errors::{
 };
 
 // re-export
+#[cfg(feature = "reporting")]
 pub use codespan_reporting;
 pub use derive_builder;
 pub use function_name;
