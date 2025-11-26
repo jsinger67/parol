@@ -79,9 +79,8 @@ impl NodeTypesExporter<'_> {
             .get_non_terminal_set()
             .iter()
             .map(|nt_original_name| {
-                // Get child kind information for this non-terminal
-                let (children_type, children) =
-                    self.generate_child_kinds_info(nt_original_name, &nt_original_to_variant);
+                // Get the structure for this non-terminal
+                let structure = self.generate_structure(nt_original_name, &nt_original_to_variant);
 
                 let variant_name = nt_original_to_variant
                     .get(nt_original_name)
@@ -91,18 +90,18 @@ impl NodeTypesExporter<'_> {
                 NonTerminalInfo {
                     name: nt_original_name.clone(),
                     variant: variant_name,
-                    children,
-                    kind: children_type,
+                    structure,
                 }
             })
-            .chain(std::iter::once(NonTerminalInfo {
-                name: "Root".to_string(),
-                variant: "Root".to_string(),
-                children: vec![Child {
-                    kind: ChildAttribute::Normal,
-                    name: NodeName::NonTerminal(NonTerminalName(start_symbol.to_string())),
-                }],
-                kind: ChildrenType::Sequence,
+            .chain(std::iter::once({
+                NonTerminalInfo {
+                    name: "Root".to_string(),
+                    variant: "Root".to_string(),
+                    structure: NonTerminalStructure::Sequence(vec![Child {
+                        kind: ChildAttribute::Normal,
+                        name: NodeName::NonTerminal(NonTerminalName(start_symbol.to_string())),
+                    }]),
+                }
             }))
             .collect::<Vec<_>>();
 
@@ -112,90 +111,53 @@ impl NodeTypesExporter<'_> {
         }
     }
 
-    /// Generate child kinds information for a non-terminal.
-    fn generate_child_kinds_info(
+    /// Generate the structure for a non-terminal.
+    fn generate_structure(
         &self,
         pr: &str,
         nt_original_to_variant: &HashMap<String, String>,
-    ) -> (ChildrenType, Vec<Child>) {
+    ) -> NonTerminalStructure {
         let alts = self.grammar_config.cfg.matching_productions(pr);
         if alts.is_empty() {
             panic!("Not supported: no productions for {pr}");
         }
 
+        // Helper to collect all children from a production
+        let collect_children = |prod: &crate::Pr| -> Vec<Child> {
+            prod.get_r()
+                .iter()
+                .filter_map(|s| self.child_kind(s, nt_original_to_variant))
+                .collect()
+        };
+
+        // Single production = Sequence
+        if alts.len() == 1 {
+            return NonTerminalStructure::Sequence(collect_children(alts[0].1));
+        }
+
+        // Two productions - check for special cases (Option, Recursion)
         if alts.len() == 2 {
             match (alts[0].1.get_attribute(), alts[1].1.get_attribute()) {
-                (ProductionAttribute::CollectionStart, ProductionAttribute::AddToCollection) => (
-                    ChildrenType::Recursion,
-                    alts[1]
-                        .1
-                        .get_r()
-                        .iter()
-                        .map(|s| self.child_kind(s, nt_original_to_variant).unwrap())
-                        .collect(),
-                ),
-                (ProductionAttribute::AddToCollection, ProductionAttribute::CollectionStart) => (
-                    ChildrenType::Recursion,
-                    alts[0]
-                        .1
-                        .get_r()
-                        .iter()
-                        .map(|s| self.child_kind(s, nt_original_to_variant).unwrap())
-                        .collect(),
-                ),
-                (ProductionAttribute::OptionalNone, ProductionAttribute::OptionalSome) => (
-                    ChildrenType::Option,
-                    alts[1]
-                        .1
-                        .get_r()
-                        .iter()
-                        .map(|s| self.child_kind(s, nt_original_to_variant).unwrap())
-                        .collect(),
-                ),
-                (ProductionAttribute::OptionalSome, ProductionAttribute::OptionalNone) => (
-                    ChildrenType::Option,
-                    alts[0]
-                        .1
-                        .get_r()
-                        .iter()
-                        .map(|s| self.child_kind(s, nt_original_to_variant).unwrap())
-                        .collect(),
-                ),
-                _ => (
-                    ChildrenType::OneOf,
-                    alts.iter()
-                        .map(|(_, p)| {
-                            p.get_r()
-                                .first()
-                                .map(|s| self.child_kind(s, nt_original_to_variant).unwrap())
-                                .expect("Expected a single child for each variant")
-                        })
-                        .collect(),
-                ),
+                // Recursion: CollectionStart | AddToCollection
+                (ProductionAttribute::CollectionStart, ProductionAttribute::AddToCollection) => {
+                    return NonTerminalStructure::Recursion(collect_children(alts[1].1));
+                }
+                (ProductionAttribute::AddToCollection, ProductionAttribute::CollectionStart) => {
+                    return NonTerminalStructure::Recursion(collect_children(alts[0].1));
+                }
+                // Option: OptionalNone | OptionalSome
+                (ProductionAttribute::OptionalNone, ProductionAttribute::OptionalSome) => {
+                    return NonTerminalStructure::Option(collect_children(alts[1].1));
+                }
+                (ProductionAttribute::OptionalSome, ProductionAttribute::OptionalNone) => {
+                    return NonTerminalStructure::Option(collect_children(alts[0].1));
+                }
+                _ => {}
             }
-        } else if alts.len() == 1 {
-            (
-                ChildrenType::Sequence,
-                alts[0]
-                    .1
-                    .get_r()
-                    .iter()
-                    .map(|s| self.child_kind(s, nt_original_to_variant).unwrap())
-                    .collect(),
-            )
-        } else {
-            (
-                ChildrenType::OneOf,
-                alts.iter()
-                    .map(|(_, p)| {
-                        p.get_r()
-                            .first()
-                            .map(|s| self.child_kind(s, nt_original_to_variant).unwrap())
-                            .expect("Expected a single child for each variant")
-                    })
-                    .collect(),
-            )
         }
+
+        // Default: OneOf with all alternatives and all their children
+        NonTerminalStructure::OneOf(alts.iter().map(|(_, p)| collect_children(p)).collect())
     }
 
     fn child_kind(
@@ -255,7 +217,7 @@ impl NodeTypesExporter<'_> {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 /// The name of a node
 pub enum NodeName {
@@ -266,12 +228,12 @@ pub enum NodeName {
 }
 
 /// The name of a terminal
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct TerminalName(pub String);
 
 /// The name of a non-terminal
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct NonTerminalName(pub String);
 
@@ -305,14 +267,12 @@ pub struct NonTerminalInfo {
     pub name: String,
     /// The enum variant name for this non-terminal in the generated NonTerminalKind enum
     pub variant: String,
-    /// The children of the non-terminal
-    pub children: Vec<Child>,
-    /// The kind of the non-terminal
-    pub kind: ChildrenType,
+    /// The structure of the non-terminal as an ADT (new API)
+    pub structure: NonTerminalStructure,
 }
 
 /// A child of a non-terminal
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct Child {
     /// The attribute of the child
@@ -322,7 +282,7 @@ pub struct Child {
 }
 
 /// The children of the non-terminal
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub enum ChildrenType {
     /// The children are a sequence
@@ -335,8 +295,38 @@ pub enum ChildrenType {
     Option,
 }
 
-/// The attribute of a child
+/// The structure of a non-terminal
+/// This provides full information about all children in each alternative.
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub enum NonTerminalStructure {
+    /// Single production with all its children
+    Sequence(Vec<Child>),
+
+    /// Multiple alternatives, each with all its children
+    OneOf(Vec<Vec<Child>>),
+
+    /// Optional: None | Some(children)
+    Option(Vec<Child>),
+
+    /// Recursion: Base | Recursive(children)
+    Recursion(Vec<Child>),
+}
+
+impl NonTerminalStructure {
+    /// Returns the ChildrenType
+    pub fn kind(&self) -> ChildrenType {
+        match self {
+            Self::Sequence(_) => ChildrenType::Sequence,
+            Self::OneOf(_) => ChildrenType::OneOf,
+            Self::Option(_) => ChildrenType::Option,
+            Self::Recursion(_) => ChildrenType::Recursion,
+        }
+    }
+}
+
+/// The attribute of a child
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub enum ChildAttribute {
     /// The child is clipped
@@ -347,4 +337,132 @@ pub enum ChildAttribute {
     Optional,
     /// The child is a vector
     Vec,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::generators::grammar_type_generator::GrammarTypeInfo;
+    use crate::obtain_grammar_config_from_string;
+
+    #[test]
+    fn test_one_of_with_multi_element_alternatives() {
+        // Grammar: S: A B | C D E ;
+        // Each alternative has multiple elements.
+        // Expected: NonTerminalStructure::OneOf should have all children in each alternative
+        let input = r#"
+            %start S
+            %%
+            S: A B | C D E ;
+            A: "a" ;
+            B: "b" ;
+            C: "c" ;
+            D: "d" ;
+            E: "e" ;
+        "#;
+
+        let grammar_config =
+            obtain_grammar_config_from_string(input, false).expect("Failed to parse grammar");
+
+        let mut type_info = GrammarTypeInfo::try_new("Test").expect("Failed to create type info");
+        type_info
+            .build(&grammar_config)
+            .expect("Failed to build type info");
+
+        let exporter = NodeTypesExporter::new(&grammar_config, &type_info);
+        let node_types = exporter.generate();
+
+        // Find the non-terminal S
+        let s_info = node_types
+            .non_terminals
+            .iter()
+            .find(|nt| nt.name == "S")
+            .expect("S not found");
+
+        // Check the new structure field
+        let alternatives = match &s_info.structure {
+            NonTerminalStructure::OneOf(alts) => alts,
+            other => panic!("Expected OneOf, got {:?}", other),
+        };
+
+        let expected_alternatives = vec![
+            vec![
+                Child {
+                    kind: ChildAttribute::Normal,
+                    name: NodeName::NonTerminal(NonTerminalName("A".to_string())),
+                },
+                Child {
+                    kind: ChildAttribute::Normal,
+                    name: NodeName::NonTerminal(NonTerminalName("B".to_string())),
+                },
+            ],
+            vec![
+                Child {
+                    kind: ChildAttribute::Normal,
+                    name: NodeName::NonTerminal(NonTerminalName("C".to_string())),
+                },
+                Child {
+                    kind: ChildAttribute::Normal,
+                    name: NodeName::NonTerminal(NonTerminalName("D".to_string())),
+                },
+                Child {
+                    kind: ChildAttribute::Normal,
+                    name: NodeName::NonTerminal(NonTerminalName("E".to_string())),
+                },
+            ],
+        ];
+
+        assert_eq!(alternatives, &expected_alternatives);
+    }
+
+    #[test]
+    fn test_sequence_structure() {
+        let input = r#"
+            %start S
+            %%
+            S: A B C ;
+            A: "a" ;
+            B: "b" ;
+            C: "c" ;
+        "#;
+
+        let grammar_config =
+            obtain_grammar_config_from_string(input, false).expect("Failed to parse grammar");
+
+        let mut type_info = GrammarTypeInfo::try_new("Test").expect("Failed to create type info");
+        type_info
+            .build(&grammar_config)
+            .expect("Failed to build type info");
+
+        let exporter = NodeTypesExporter::new(&grammar_config, &type_info);
+        let node_types = exporter.generate();
+
+        let s_info = node_types
+            .non_terminals
+            .iter()
+            .find(|nt| nt.name == "S")
+            .expect("S not found");
+
+        let expected_children = vec![
+            Child {
+                kind: ChildAttribute::Normal,
+                name: NodeName::NonTerminal(NonTerminalName("A".to_string())),
+            },
+            Child {
+                kind: ChildAttribute::Normal,
+                name: NodeName::NonTerminal(NonTerminalName("B".to_string())),
+            },
+            Child {
+                kind: ChildAttribute::Normal,
+                name: NodeName::NonTerminal(NonTerminalName("C".to_string())),
+            },
+        ];
+
+        match &s_info.structure {
+            NonTerminalStructure::Sequence(children) => {
+                assert_eq!(children, &expected_children);
+            }
+            other => panic!("Expected Sequence, got {:?}", other),
+        };
+    }
 }
