@@ -126,7 +126,7 @@ impl NodeTypesExporter<'_> {
         let collect_children = |prod: &crate::Pr| -> Vec<Child> {
             prod.get_r()
                 .iter()
-                .filter_map(|s| self.child_kind(s, nt_original_to_variant))
+                .map(|s| self.child_kind(s, nt_original_to_variant).unwrap())
                 .collect()
         };
 
