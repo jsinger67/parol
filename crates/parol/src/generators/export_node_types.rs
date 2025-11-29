@@ -238,7 +238,7 @@ pub struct TerminalName(pub String);
 pub struct NonTerminalName(pub String);
 
 /// Information about the node types
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct NodeTypesInfo {
     /// The terminals
@@ -248,7 +248,7 @@ pub struct NodeTypesInfo {
 }
 
 /// Information about the terminals
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct TerminalInfo {
     /// The name of the terminal
@@ -260,7 +260,7 @@ pub struct TerminalInfo {
 }
 
 /// Information about the non-terminals
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct NonTerminalInfo {
     /// The name of the non-terminal
@@ -297,7 +297,7 @@ pub enum ChildrenType {
 
 /// The structure of a non-terminal
 /// This provides full information about all children in each alternative.
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub enum NonTerminalStructure {
     /// Single production with all its children
@@ -345,12 +345,116 @@ mod tests {
     use crate::generators::grammar_type_generator::GrammarTypeInfo;
     use crate::obtain_grammar_config_from_string;
 
+    /// Generate NodeTypesInfo from a grammar string
+    fn generate_node_types(input: &str) -> NodeTypesInfo {
+        let grammar_config =
+            obtain_grammar_config_from_string(input, false).expect("Failed to parse grammar");
+        let mut type_info = GrammarTypeInfo::try_new("Test").expect("Failed to create type info");
+        type_info
+            .build(&grammar_config)
+            .expect("Failed to build type info");
+        let exporter = NodeTypesExporter::new(&grammar_config, &type_info);
+        exporter.generate()
+    }
+
+    /// Find a non-terminal by name from NodeTypesInfo
+    fn find_nt<'a>(node_types: &'a NodeTypesInfo, name: &str) -> &'a NonTerminalInfo {
+        node_types
+            .non_terminals
+            .iter()
+            .find(|nt| nt.name == name)
+            .unwrap_or_else(|| panic!("Non-terminal '{}' not found", name))
+    }
+
+    /// Convenience: Generate and find non-terminal in one call
+    fn get_nt(input: &str, name: &str) -> NonTerminalInfo {
+        let node_types = generate_node_types(input);
+        find_nt(&node_types, name).clone()
+    }
+
+    /// Get all terminals from a grammar string
+    fn get_terminals(input: &str) -> Vec<TerminalInfo> {
+        generate_node_types(input).terminals
+    }
+
+    fn nt(name: &str) -> Child {
+        Child {
+            kind: ChildAttribute::Normal,
+            name: NodeName::NonTerminal(NonTerminalName(name.to_string())),
+        }
+    }
+
+    fn t(name: &str) -> Child {
+        Child {
+            kind: ChildAttribute::Normal,
+            name: NodeName::Terminal(TerminalName(name.to_string())),
+        }
+    }
+
+    fn opt_nt(name: &str) -> Child {
+        Child {
+            kind: ChildAttribute::Optional,
+            name: NodeName::NonTerminal(NonTerminalName(name.to_string())),
+        }
+    }
+
+    fn vec_nt(name: &str) -> Child {
+        Child {
+            kind: ChildAttribute::Vec,
+            name: NodeName::NonTerminal(NonTerminalName(name.to_string())),
+        }
+    }
+
+    fn clipped_nt(name: &str) -> Child {
+        Child {
+            kind: ChildAttribute::Clipped,
+            name: NodeName::NonTerminal(NonTerminalName(name.to_string())),
+        }
+    }
+
+    fn clipped_t(name: &str) -> Child {
+        Child {
+            kind: ChildAttribute::Clipped,
+            name: NodeName::Terminal(TerminalName(name.to_string())),
+        }
+    }
+
+    fn sequence(name: &str, children: Vec<Child>) -> NonTerminalInfo {
+        NonTerminalInfo {
+            name: name.to_string(),
+            variant: name.to_string(),
+            structure: NonTerminalStructure::Sequence(children),
+        }
+    }
+
+    fn one_of(name: &str, alternatives: Vec<Vec<Child>>) -> NonTerminalInfo {
+        NonTerminalInfo {
+            name: name.to_string(),
+            variant: name.to_string(),
+            structure: NonTerminalStructure::OneOf(alternatives),
+        }
+    }
+
+    fn option(name: &str, children: Vec<Child>) -> NonTerminalInfo {
+        NonTerminalInfo {
+            name: name.to_string(),
+            variant: name.to_string(),
+            structure: NonTerminalStructure::Option(children),
+        }
+    }
+
+    fn recursion(name: &str, children: Vec<Child>) -> NonTerminalInfo {
+        NonTerminalInfo {
+            name: name.to_string(),
+            variant: name.to_string(),
+            structure: NonTerminalStructure::Recursion(children),
+        }
+    }
+
     #[test]
-    fn test_one_of_with_multi_element_alternatives() {
-        // Grammar: S: A B | C D E ;
-        // Each alternative has multiple elements.
-        // Expected: NonTerminalStructure::OneOf should have all children in each alternative
-        let input = r#"
+    fn test_one_of_structure() {
+        let s = get_nt(
+            r#"
             %start S
             %%
             S: A B | C D E ;
@@ -359,110 +463,187 @@ mod tests {
             C: "c" ;
             D: "d" ;
             E: "e" ;
-        "#;
+        "#,
+            "S",
+        );
 
-        let grammar_config =
-            obtain_grammar_config_from_string(input, false).expect("Failed to parse grammar");
-
-        let mut type_info = GrammarTypeInfo::try_new("Test").expect("Failed to create type info");
-        type_info
-            .build(&grammar_config)
-            .expect("Failed to build type info");
-
-        let exporter = NodeTypesExporter::new(&grammar_config, &type_info);
-        let node_types = exporter.generate();
-
-        // Find the non-terminal S
-        let s_info = node_types
-            .non_terminals
-            .iter()
-            .find(|nt| nt.name == "S")
-            .expect("S not found");
-
-        // Check the new structure field
-        let alternatives = match &s_info.structure {
-            NonTerminalStructure::OneOf(alts) => alts,
-            other => panic!("Expected OneOf, got {:?}", other),
-        };
-
-        let expected_alternatives = vec![
-            vec![
-                Child {
-                    kind: ChildAttribute::Normal,
-                    name: NodeName::NonTerminal(NonTerminalName("A".to_string())),
-                },
-                Child {
-                    kind: ChildAttribute::Normal,
-                    name: NodeName::NonTerminal(NonTerminalName("B".to_string())),
-                },
-            ],
-            vec![
-                Child {
-                    kind: ChildAttribute::Normal,
-                    name: NodeName::NonTerminal(NonTerminalName("C".to_string())),
-                },
-                Child {
-                    kind: ChildAttribute::Normal,
-                    name: NodeName::NonTerminal(NonTerminalName("D".to_string())),
-                },
-                Child {
-                    kind: ChildAttribute::Normal,
-                    name: NodeName::NonTerminal(NonTerminalName("E".to_string())),
-                },
-            ],
-        ];
-
-        assert_eq!(alternatives, &expected_alternatives);
+        assert_eq!(
+            s,
+            one_of(
+                "S",
+                vec![vec![nt("A"), nt("B")], vec![nt("C"), nt("D"), nt("E")]]
+            )
+        );
     }
 
     #[test]
     fn test_sequence_structure() {
-        let input = r#"
+        let s = get_nt(
+            r#"
             %start S
             %%
             S: A B C ;
             A: "a" ;
             B: "b" ;
             C: "c" ;
+        "#,
+            "S",
+        );
+
+        assert_eq!(s, sequence("S", vec![nt("A"), nt("B"), nt("C")]));
+    }
+
+    #[test]
+    fn test_option_structure() {
+        let input = r#"
+            %start S
+            %%
+            S: [ A ] ;
+            A: "a" ;
         "#;
+        let node_types = generate_node_types(input);
 
-        let grammar_config =
-            obtain_grammar_config_from_string(input, false).expect("Failed to parse grammar");
+        let s = find_nt(&node_types, "S");
+        let s_opt = find_nt(&node_types, "SOpt");
 
-        let mut type_info = GrammarTypeInfo::try_new("Test").expect("Failed to create type info");
-        type_info
-            .build(&grammar_config)
-            .expect("Failed to build type info");
+        assert_eq!(s, &sequence("S", vec![opt_nt("SOpt")]));
+        assert_eq!(s_opt, &option("SOpt", vec![nt("A")]));
+    }
 
-        let exporter = NodeTypesExporter::new(&grammar_config, &type_info);
-        let node_types = exporter.generate();
+    #[test]
+    fn test_recursion_structure() {
+        let input = r#"
+            %start S
+            %%
+            S: { A } ;
+            A: "a" ;
+        "#;
+        let node_types = generate_node_types(input);
 
-        let s_info = node_types
-            .non_terminals
-            .iter()
-            .find(|nt| nt.name == "S")
-            .expect("S not found");
+        let s = find_nt(&node_types, "S");
+        let s_list = find_nt(&node_types, "SList");
 
-        let expected_children = vec![
-            Child {
-                kind: ChildAttribute::Normal,
-                name: NodeName::NonTerminal(NonTerminalName("A".to_string())),
-            },
-            Child {
-                kind: ChildAttribute::Normal,
-                name: NodeName::NonTerminal(NonTerminalName("B".to_string())),
-            },
-            Child {
-                kind: ChildAttribute::Normal,
-                name: NodeName::NonTerminal(NonTerminalName("C".to_string())),
-            },
-        ];
+        assert_eq!(s, &sequence("S", vec![vec_nt("SList")]));
+        assert_eq!(s_list, &recursion("SList", vec![nt("A"), nt("SList")]));
+    }
 
-        match &s_info.structure {
-            NonTerminalStructure::Sequence(children) => {
-                assert_eq!(children, &expected_children);
-            }
-            other => panic!("Expected Sequence, got {:?}", other),
-        };
+    #[test]
+    fn test_terminal_children() {
+        let s = get_nt(
+            r#"
+            %start S
+            %%
+            S: "hello" "world" ;
+        "#,
+            "S",
+        );
+
+        assert_eq!(s, sequence("S", vec![t("Hello"), t("World")]));
+    }
+
+    fn terminal(name: &str, index: usize) -> TerminalInfo {
+        TerminalInfo {
+            name: name.to_string(),
+            variant: name.to_string(),
+            index,
+        }
+    }
+
+    #[test]
+    fn test_terminal_info_generation() {
+        let terminals = get_terminals(
+            r#"
+            %start S
+            %%
+            S: "foo" "bar" ;
+        "#,
+        );
+
+        assert_eq!(
+            terminals,
+            vec![
+                terminal("NewLine", 1),
+                terminal("Whitespace", 2),
+                terminal("LineComment", 3),
+                terminal("BlockComment", 4),
+                terminal("Foo", 5),
+                terminal("Bar", 6),
+            ]
+        );
+    }
+
+    #[test]
+    fn test_root_node_generation() {
+        let root = get_nt(
+            r#"
+            %start MyStart
+            %%
+            MyStart: "a" ;
+        "#,
+            "Root",
+        );
+
+        assert_eq!(root, sequence("Root", vec![nt("MyStart")]));
+    }
+
+    #[test]
+    fn test_clipped_non_terminal() {
+        let s = get_nt(
+            r#"
+            %start S
+            %%
+            S: A^ ;
+            A: "a" ;
+        "#,
+            "S",
+        );
+
+        assert_eq!(s, sequence("S", vec![clipped_nt("A")]));
+    }
+
+    #[test]
+    fn test_clipped_terminal() {
+        let s = get_nt(
+            r#"
+            %start S
+            %%
+            S: "foo"^ ;
+        "#,
+            "S",
+        );
+
+        assert_eq!(s, sequence("S", vec![clipped_t("S")]));
+    }
+
+    #[test]
+    fn test_optional_terminal() {
+        let input = r#"
+            %start S
+            %%
+            S: [ "foo" ] ;
+        "#;
+        let node_types = generate_node_types(input);
+
+        let s = find_nt(&node_types, "S");
+        let s_opt = find_nt(&node_types, "SOpt");
+
+        assert_eq!(s, &sequence("S", vec![opt_nt("SOpt")]));
+        assert_eq!(s_opt, &option("SOpt", vec![t("Foo")]));
+    }
+
+    #[test]
+    fn test_vec_terminal() {
+        let input = r#"
+            %start S
+            %%
+            S: { "foo" } ;
+        "#;
+        let node_types = generate_node_types(input);
+
+        let s = find_nt(&node_types, "S");
+        let s_list = find_nt(&node_types, "SList");
+
+        assert_eq!(s, &sequence("S", vec![vec_nt("SList")]));
+        assert_eq!(s_list, &recursion("SList", vec![t("Foo"), nt("SList")]));
     }
 }
