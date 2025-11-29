@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.0 - 2025-11-29
+
+* Merged PR [#951](https://github.com/jsinger67/parol/pull/951) from @ryo33 that fixes an issue
+with the generation of node type information for a grammar.
+* Merged PR [#952](https://github.com/jsinger67/parol/pull/952) from @ryo33 that adds comprehensive
+tests for node export feature
+* `cargo update`
+
 ## 4.1.1 - 2025-09-19
 
 * Fix: Update block comment regex in
