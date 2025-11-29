@@ -5,6 +5,7 @@ use crate::analysis::lookahead_dfa::CompiledProductionIndex;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
 use crate::conversions::dot::render_dfa_dot_string;
 use crate::generators::{GrammarConfig, NamingHelper};
+use crate::parser::parol_grammar::LookaheadExpression;
 use crate::{LRAction, LRParseTable, Pr, Symbol, Terminal};
 use anyhow::{Result, anyhow};
 use parol_runtime::lexer::{
@@ -112,12 +113,16 @@ impl Production {
         pr: &Pr,
         prod_num: usize,
         non_terminals: &[&str],
-        terminals: &[&str],
+        terminals: &[(&str, Option<LookaheadExpression>)],
     ) -> Self {
         let get_non_terminal_index =
             |nt: &str| non_terminals.iter().position(|n| *n == nt).unwrap();
-        let get_terminal_index = |tr: &str| {
-            terminals.iter().position(|t| *t == tr).unwrap() as TerminalIndex + FIRST_USER_TOKEN
+        let get_terminal_index = |tr: &str, l: &Option<LookaheadExpression>| {
+            terminals
+                .iter()
+                .position(|t| t.0 == tr && t.1 == *l)
+                .unwrap() as TerminalIndex
+                + FIRST_USER_TOKEN
         };
         let lhs = get_non_terminal_index(pr.get_n_str());
         let production =
@@ -129,8 +134,8 @@ impl Production {
                         Symbol::N(n, ..) => {
                             acc.push(format!("ParseType::N({}),", get_non_terminal_index(n)))
                         }
-                        Symbol::T(Terminal::Trm(t, ..)) => {
-                            acc.push(format!("ParseType::T({}),", get_terminal_index(t)))
+                        Symbol::T(Terminal::Trm(t, .., l0)) => {
+                            acc.push(format!("ParseType::T({}),", get_terminal_index(t, l0)))
                         }
                         Symbol::S(s) => acc.push(format!("ParseType::S({s}),")),
                         Symbol::Push(s) => acc.push(format!("ParseType::Push({s}),")),
@@ -641,13 +646,13 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     Ok(format!("{parser_data}"))
 }
 
-fn get_terminals(grammar_config: &GrammarConfig) -> Vec<&str> {
+fn get_terminals(grammar_config: &GrammarConfig) -> Vec<(&str, Option<LookaheadExpression>)> {
     grammar_config
         .cfg
         .get_ordered_terminals()
         .iter()
-        .map(|(t, _, _, _)| *t)
-        .collect::<Vec<&str>>()
+        .map(|(t, _, l, _)| (*t, l.clone()))
+        .collect::<Vec<(&str, Option<LookaheadExpression>)>>()
 }
 
 fn find_start_symbol_index(
@@ -731,13 +736,13 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
 
 fn generate_parse_table_source(
     parse_table: &LRParseTable,
-    terminals: &[&str],
+    terminals: &[(&str, Option<LookaheadExpression>)],
     non_terminals: &[&String],
 ) -> String {
     // Create a terminal resolver function
     let tr = |ti: TerminalIndex| {
         if ti >= FIRST_USER_TOKEN {
-            terminals[(ti - FIRST_USER_TOKEN) as usize]
+            terminals[(ti - FIRST_USER_TOKEN) as usize].0
         } else {
             match ti {
                 EOI => "<$>",
@@ -910,7 +915,7 @@ fn generate_dfa_source(la_dfa: &BTreeMap<String, LookaheadDFA>) -> String {
 fn generate_productions(
     grammar_config: &GrammarConfig,
     non_terminals: &BTreeSet<String>,
-    terminals: &[&str],
+    terminals: &[(&str, Option<LookaheadExpression>)],
 ) -> String {
     let non_terminals = non_terminals
         .iter()
