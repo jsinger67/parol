@@ -73,7 +73,12 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
             .fold(Vec::new(), |mut acc, (i, e)| {
                 let n = generate_name(
                     acc.iter(),
-                    generate_terminal_name(&e.0, Some(i as TerminalIndex), &grammar_config.cfg),
+                    generate_terminal_name(
+                        &e.0,
+                        Some(i as TerminalIndex),
+                        e.1.as_ref(),
+                        &grammar_config.cfg,
+                    ),
                 );
                 acc.push(n);
                 acc
@@ -133,7 +138,12 @@ pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
         .fold(Vec::new(), |mut acc, (i, e)| {
             let n = generate_name(
                 acc.iter(),
-                generate_terminal_name(&e.0, Some(i as TerminalIndex), &grammar_config.cfg),
+                generate_terminal_name(
+                    &e.0,
+                    Some(i as TerminalIndex),
+                    e.1.as_ref(),
+                    &grammar_config.cfg,
+                ),
             );
             acc.push(n);
             acc

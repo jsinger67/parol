@@ -2,6 +2,7 @@ use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
 use crate::parser::GrammarType;
+use crate::parser::parol_grammar::LookaheadExpression;
 use crate::{Pr, Symbol, Terminal, generate_name};
 use anyhow::{Result, anyhow, bail};
 use parol_runtime::log::trace;
@@ -76,7 +77,7 @@ pub struct GrammarTypeInfo {
     pub(crate) grammar_type: GrammarType,
 
     /// Helper
-    terminals: Vec<String>,
+    terminals: Vec<(String, Option<LookaheadExpression>)>,
     terminal_names: Vec<String>,
 
     // Contains non-terminals that should be represented as vectors in the AST Enum type
@@ -283,11 +284,11 @@ impl GrammarTypeInfo {
         self.terminals = cfg
             .get_ordered_terminals()
             .iter()
-            .map(|(t, k, _, _)| k.expand(t))
-            .collect::<Vec<String>>();
+            .map(|(t, k, l, _)| (k.expand(t), l.clone()))
+            .collect::<Vec<(String, Option<LookaheadExpression>)>>();
 
         self.terminal_names = self.terminals.iter().fold(Vec::new(), |mut acc, e| {
-            let n = generate_terminal_name(e, None, cfg);
+            let n = generate_terminal_name(&e.0, None, e.1.as_ref(), cfg);
             acc.push(n);
             acc
         });
@@ -540,7 +541,7 @@ impl GrammarTypeInfo {
     }
 
     fn get_terminal_index(&self, tr: &str) -> usize {
-        self.terminals.iter().position(|t| *t == tr).unwrap()
+        self.terminals.iter().position(|t| t.0 == tr).unwrap()
     }
 
     /// Generates a member name from a symbol that stems from a production's right-hand side

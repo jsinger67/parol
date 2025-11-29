@@ -189,11 +189,11 @@ impl GrammarConfig {
             .get_ordered_terminals()
             .into_iter()
             .enumerate()
-            .map(|(i, (t, _, _, _))| (i + 5, t))
-            .fold(names, |mut acc, (i, t)| {
+            .map(|(i, (t, _, l, _))| (i + 5, t, l))
+            .fold(names, |mut acc, (i, t, l)| {
                 let name = generate_name(
                     acc.iter(),
-                    generate_terminal_name(t, Some(i as TerminalIndex), &self.cfg),
+                    generate_terminal_name(t, Some(i as TerminalIndex), l.as_ref(), &self.cfg),
                 );
                 acc.push(name);
                 acc

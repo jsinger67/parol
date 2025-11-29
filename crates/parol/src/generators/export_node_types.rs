@@ -191,7 +191,7 @@ impl NodeTypesExporter<'_> {
                 attrs,
                 _,
                 _,
-                _,
+                l,
             )) => {
                 let attribute = match attrs {
                     SymbolAttribute::Option => ChildAttribute::Optional,
@@ -201,7 +201,7 @@ impl NodeTypesExporter<'_> {
                 };
 
                 let terminal_name =
-                    generate_terminal_name(terminal, None, &self.grammar_config.cfg);
+                    generate_terminal_name(terminal, None, l.as_ref(), &self.grammar_config.cfg);
 
                 Some(Child {
                     kind: attribute,

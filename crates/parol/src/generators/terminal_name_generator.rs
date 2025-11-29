@@ -1,4 +1,5 @@
 use crate::generators::NamingHelper as NmHlp;
+use crate::parser::parol_grammar::LookaheadExpression;
 use crate::{Cfg, Symbol, Terminal};
 use parol_runtime::TerminalIndex;
 use parol_runtime::lexer::{BLOCK_COMMENT, EOI, LINE_COMMENT, NEW_LINE, WHITESPACE};
@@ -7,14 +8,25 @@ use parol_runtime::lexer::{BLOCK_COMMENT, EOI, LINE_COMMENT, NEW_LINE, WHITESPAC
 /// The parameter of type `Option<TerminalIndex>` is used to handle fixed terminal indices like EOI.
 /// When only 'normal' terminal strings are processed and a terminal index is not relevant
 /// simply provide None for this value.
-pub fn generate_terminal_name(terminal: &str, i: Option<TerminalIndex>, cfg: &Cfg) -> String {
-    fn primary_non_terminal(cfg: &Cfg, terminal: &str) -> Option<String> {
+pub fn generate_terminal_name(
+    terminal: &str,
+    i: Option<TerminalIndex>,
+    l: Option<&LookaheadExpression>,
+    cfg: &Cfg,
+) -> String {
+    fn primary_non_terminal(
+        cfg: &Cfg,
+        terminal: &str,
+        l: Option<&LookaheadExpression>,
+    ) -> Option<String> {
         cfg.pr
             .iter()
             .find(|r| {
                 if r.len() == 1 {
-                    if let Symbol::T(Terminal::Trm(n, k, ..)) = &r.1[0] {
-                        k.expand(n) == terminal && cfg.matching_productions(&r.get_n()).len() == 1
+                    if let Symbol::T(Terminal::Trm(n, k, .., l0)) = &r.1[0] {
+                        k.expand(n) == terminal
+                            && cfg.matching_productions(&r.get_n()).len() == 1
+                            && l == l0.as_ref()
                     } else {
                         false
                     }
@@ -93,7 +105,7 @@ pub fn generate_terminal_name(terminal: &str, i: Option<TerminalIndex>, cfg: &Cf
             Some(LINE_COMMENT) => "LineComment".to_owned(),
             Some(BLOCK_COMMENT) => "BlockComment".to_owned(),
             _ => {
-                if let Some(nt) = primary_non_terminal(cfg, terminal) {
+                if let Some(nt) = primary_non_terminal(cfg, terminal, l) {
                     NmHlp::to_upper_camel_case(&nt)
                 } else {
                     generate_name(terminal)
