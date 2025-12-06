@@ -71,6 +71,9 @@ pub(crate) fn extract_text_range(input: &str, rng: Rng) -> &str {
     input.split_at(start).1.split_at(end - start).0
 }
 
+/// Converts a string to a markdown code block with "parol" as language identifier.
+/// Since the parol-vscode extension supports syntax highlighting for parol code blocks,
+/// this function is useful to format hover content and ensure proper syntax highlighting.
 pub(crate) fn to_markdown(input: &str) -> String {
     format!(
         "```parol  \n{}  \n```",
