@@ -5,6 +5,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 4.1.0 - 2025-12-06
+
+* Removed support for parser based scanner state switching in productions. This language feature is
+not supported anymore since parol v4.
+
 ## 4.0.2 - 2025-09-19
 
 * New regex for block comment. See [#828](https://github.com/jsinger67/parol/issues/828)

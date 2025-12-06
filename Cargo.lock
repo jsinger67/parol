@@ -1279,7 +1279,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "4.0.2"
+version = "4.1.0"
 dependencies = [
  "anyhow",
  "clap",

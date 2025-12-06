@@ -80,7 +80,6 @@ Symbol
     : NonTerminal
     | SimpleToken
     | TokenWithStates
-    | ScannerSwitch
     ;
 
 TokenLiteral
@@ -135,12 +134,6 @@ ScannerState
 
 IdentifierList
     : Identifier { "," Identifier }
-    ;
-
-ScannerSwitch
-    : "%sc" '(' [ Identifier ] ')'
-    | "%push" '(' Identifier ')'
-    | "%pop" '(' ')'
     ;
 
 ASTControl

@@ -10,10 +10,9 @@ use crate::{
         NonTerminal, NonTerminalOpt, Optional, ParolLs, Production, ProductionLHS, Prolog,
         PrologList, PrologList0, Regex, Repeat, ScannerDirectives,
         ScannerDirectivesPercentOnIdentifierListScannerStateDirectives, ScannerState,
-        ScannerStateDirectives, ScannerStateList, ScannerSwitch, ScannerSwitchOpt, SimpleToken,
-        SimpleTokenOpt, StartDeclaration, Symbol, TokenExpression, TokenExpressionOpt,
-        TokenLiteral, TokenWithStates, TokenWithStatesOpt, UserTypeDeclaration, UserTypeName,
-        UserTypeNameList,
+        ScannerStateDirectives, ScannerStateList, SimpleToken, SimpleTokenOpt, StartDeclaration,
+        Symbol, TokenExpression, TokenExpressionOpt, TokenLiteral, TokenWithStates,
+        TokenWithStatesOpt, UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
     utils::RX_NEW_LINE,
@@ -735,46 +734,7 @@ impl Fmt for ScannerStateList {
         handle_scanner_directives(&self.scanner_directives, options, comments)
     }
 }
-impl Fmt for ScannerSwitch {
-    fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
-        match self {
-            ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sc) => {
-                let (scanner_switch_opt, comments) =
-                    if let Some(scanner_switch_opt) = sc.scanner_switch_opt.as_ref() {
-                        scanner_switch_opt.txt(options, comments)
-                    } else {
-                        (String::default(), comments)
-                    };
-                (
-                    format!(
-                        "{}{}{}{}",
-                        sc.percent_sc, sc.l_paren, scanner_switch_opt, sc.r_paren,
-                    ),
-                    comments,
-                )
-            }
-            ScannerSwitch::PercentPushLParenIdentifierRParen(push) => {
-                let (identifier, comments) = push.identifier.txt(options, comments);
-                (
-                    format!(
-                        "{}{}{}{}",
-                        push.percent_push, push.l_paren, identifier, push.r_paren,
-                    ),
-                    comments,
-                )
-            }
-            ScannerSwitch::PercentPopLParenRParen(pop) => (
-                format!("{}{}{}", pop.percent_pop, pop.l_paren, pop.r_paren,),
-                comments,
-            ),
-        }
-    }
-}
-impl Fmt for ScannerSwitchOpt {
-    fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
-        self.identifier.txt(options, comments)
-    }
-}
+
 impl Fmt for SimpleToken {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (token_literal, comments) = self.token_expression.txt(options, comments);
@@ -1161,7 +1121,6 @@ fn handle_symbol(symbol: &Symbol, options: &FmtOptions, comments: Comments) -> (
         Symbol::NonTerminal(n) => n.non_terminal.txt(options, comments),
         Symbol::SimpleToken(t) => t.simple_token.txt(options, comments),
         Symbol::TokenWithStates(t) => t.token_with_states.txt(options, comments),
-        Symbol::ScannerSwitch(s) => s.scanner_switch.txt(options, comments),
     }
 }
 

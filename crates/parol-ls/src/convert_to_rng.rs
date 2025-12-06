@@ -288,28 +288,6 @@ impl From<&ScannerStateList> for Rng {
     }
 }
 
-impl From<&ScannerSwitch> for Rng {
-    fn from(val: &ScannerSwitch) -> Self {
-        match val {
-            ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sc) => {
-                Self::from(&sc.percent_sc).extend(Self::from(&sc.r_paren))
-            }
-            ScannerSwitch::PercentPushLParenIdentifierRParen(push) => {
-                Self::from(&push.percent_push).extend(Self::from(&push.r_paren))
-            }
-            ScannerSwitch::PercentPopLParenRParen(pop) => {
-                Self::from(&pop.percent_pop).extend(Self::from(&pop.r_paren))
-            }
-        }
-    }
-}
-
-impl From<&ScannerSwitchOpt> for Rng {
-    fn from(val: &ScannerSwitchOpt) -> Self {
-        Self::from(&val.identifier.identifier)
-    }
-}
-
 impl From<&SimpleToken> for Rng {
     fn from(val: &SimpleToken) -> Self {
         let rng = Self::from(&val.token_expression);
@@ -362,7 +340,6 @@ impl From<&Symbol> for Rng {
             Symbol::NonTerminal(nt) => Self::from(&nt.non_terminal.identifier.identifier),
             Symbol::SimpleToken(to) => Self::from(&to.simple_token),
             Symbol::TokenWithStates(ts) => Self::from(&ts.token_with_states),
-            Symbol::ScannerSwitch(sw) => Self::from(&sw.scanner_switch),
         }
     }
 }
