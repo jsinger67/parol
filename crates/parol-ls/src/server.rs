@@ -592,7 +592,7 @@ impl Server {
         }
         let result = PublishDiagnosticsParams::new(
             uri.clone(),
-            vec![Diagnostics::to_resolved_confict_warning(
+            vec![Diagnostics::to_resolved_conflict_warning(
                 uri,
                 resolved_conflicts,
             )],

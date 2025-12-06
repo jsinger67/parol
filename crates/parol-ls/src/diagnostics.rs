@@ -77,7 +77,7 @@ impl Diagnostics {
         diagnostics
     }
 
-    pub(crate) fn to_resolved_confict_warning(
+    pub(crate) fn to_resolved_conflict_warning(
         uri: &Uri,
         warnings: Vec<LRResolvedConflict>,
     ) -> Diagnostic {
