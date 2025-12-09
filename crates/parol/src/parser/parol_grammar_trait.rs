@@ -240,12 +240,11 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName<'t> {
 ///
 /// Type derived for production 10
 ///
-/// `Declaration: "%nt_type" Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type;`
+/// `Declaration: "%nt_type"^ /* Clipped */ Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct DeclarationPercentNtUnderscoreTypeNtNameEquNtType<'t> {
-    pub percent_nt_underscore_type: Token<'t>, /* %nt_type */
     pub nt_name: Identifier<'t>,
     pub nt_type: crate::parser::parol_grammar::UserDefinedTypeName,
 }
@@ -253,12 +252,11 @@ pub struct DeclarationPercentNtUnderscoreTypeNtNameEquNtType<'t> {
 ///
 /// Type derived for production 11
 ///
-/// `Declaration: "%t_type" UserTypeName@t_type;`
+/// `Declaration: "%t_type"^ /* Clipped */ UserTypeName@t_type;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationPercentTUnderscoreTypeTType<'t> {
-    pub percent_t_underscore_type: Token<'t>, /* %t_type */
+pub struct DeclarationPercentTUnderscoreTypeTType {
     pub t_type: crate::parser::parol_grammar::UserDefinedTypeName,
 }
 
@@ -626,7 +624,7 @@ pub enum Declaration<'t> {
         DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName<'t>,
     ),
     PercentNtUnderscoreTypeNtNameEquNtType(DeclarationPercentNtUnderscoreTypeNtNameEquNtType<'t>),
-    PercentTUnderscoreTypeTType(DeclarationPercentTUnderscoreTypeTType<'t>),
+    PercentTUnderscoreTypeTType(DeclarationPercentTUnderscoreTypeTType),
     PercentGrammarUnderscoreTypeRawString(DeclarationPercentGrammarUnderscoreTypeRawString<'t>),
     ScannerDirectives(DeclarationScannerDirectives<'t>),
 }
@@ -1377,23 +1375,21 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// `Declaration: "%nt_type" Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type;`
+    /// `Declaration: "%nt_type"^ /* Clipped */ Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_3(
         &mut self,
-        percent_nt_underscore_type: &ParseTreeType<'t>,
+        _percent_nt_underscore_type: &ParseTreeType<'t>,
         _nt_name: &ParseTreeType<'t>,
         _equ: &ParseTreeType<'t>,
         _nt_type: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_nt_underscore_type = percent_nt_underscore_type.token()?.clone();
         let nt_type = pop_item!(self, nt_type, UserTypeName, context);
         let nt_name = pop_item!(self, nt_name, Identifier, context);
         let declaration_3_built = DeclarationPercentNtUnderscoreTypeNtNameEquNtType {
-            percent_nt_underscore_type,
             nt_name,
             nt_type: (&nt_type)
                 .try_into()
@@ -1409,20 +1405,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// `Declaration: "%t_type" UserTypeName@t_type;`
+    /// `Declaration: "%t_type"^ /* Clipped */ UserTypeName@t_type;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_4(
         &mut self,
-        percent_t_underscore_type: &ParseTreeType<'t>,
+        _percent_t_underscore_type: &ParseTreeType<'t>,
         _t_type: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_t_underscore_type = percent_t_underscore_type.token()?.clone();
         let t_type = pop_item!(self, t_type, UserTypeName, context);
         let declaration_4_built = DeclarationPercentTUnderscoreTypeTType {
-            percent_t_underscore_type,
             t_type: (&t_type)
                 .try_into()
                 .map_err(parol_runtime::ParolError::UserError)?,

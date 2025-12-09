@@ -734,7 +734,7 @@ pub const PRODUCTIONS: &[Production; 85] = &[
             ParseType::T(8),
         ],
     },
-    // 10 - Declaration: "%nt_type" Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type : crate::parser::parol_grammar::UserDefinedTypeName ;
+    // 10 - Declaration: "%nt_type"^ /* Clipped */ Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
         lhs: 7,
         production: &[
@@ -744,7 +744,7 @@ pub const PRODUCTIONS: &[Production; 85] = &[
             ParseType::T(10),
         ],
     },
-    // 11 - Declaration: "%t_type" UserTypeName@t_type : crate::parser::parol_grammar::UserDefinedTypeName ;
+    // 11 - Declaration: "%t_type"^ /* Clipped */ UserTypeName@t_type : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
         lhs: 7,
         production: &[ParseType::N(47), ParseType::T(11)],

@@ -19,8 +19,8 @@
 /*  7 */ Declaration: '%title'^ /* Clipped */ String;
 /*  8 */ Declaration: '%comment'^ /* Clipped */ String;
 /*  9 */ Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName;
-/* 10 */ Declaration: "%nt_type" Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type;
-/* 11 */ Declaration: "%t_type" UserTypeName@t_type;
+/* 10 */ Declaration: "%nt_type"^ /* Clipped */ Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type;
+/* 11 */ Declaration: "%t_type"^ /* Clipped */ UserTypeName@t_type;
 /* 12 */ Declaration: '%grammar_type'^ /* Clipped */ RawString;
 /* 13 */ Declaration: ScannerDirectives;
 /* 14 */ ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
