@@ -25,7 +25,10 @@ impl<'t> TryFrom<&Token<'t>> for Number {
     type Error = anyhow::Error;
 
     fn try_from(number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
-        Ok(Self(number.text().parse::<u32>()?))
+        match number.text().parse::<u32>() {
+            Ok(num) => Ok(Self(num)),
+            Err(e) => anyhow::bail!(format!("{}: {}", number.text(), e)),
+        }
     }
 }
 
