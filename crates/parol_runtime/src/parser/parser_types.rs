@@ -1,7 +1,7 @@
 use crate::{
     FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParolError, ParseStack,
     ParseTreeStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result, SyntaxError,
-    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait, lexer::EOI,
     parser::recovery::Recovery,
 };
 use log::trace;
@@ -521,11 +521,15 @@ impl<'t> LLKParser<'t> {
 
         if !possible_terminal_strings.is_empty() {
             // Steamroller tactics: sync with the first possible token string
-            let first_token_string = possible_terminal_strings.iter().next().unwrap();
-            trace!("Force sync with {first_token_string:?}");
+            // Prefer the ones that don't contain the EOI token
+            let forced_token_string = possible_terminal_strings
+                .iter()
+                .find(|ts| !ts.contains(&EOI))
+                .unwrap_or_else(|| possible_terminal_strings.iter().next().unwrap());
+            trace!("Force sync with {forced_token_string:?}");
             self.sync_token_stream(
                 scanned_token_types,
-                first_token_string.clone(),
+                forced_token_string.clone(),
                 stream.clone(),
             )?;
             let result = self.predict_production(non_terminal, stream);
