@@ -11,9 +11,13 @@ mod errors;
 use crate::calc_grammar::CalcGrammar;
 use crate::calc_parser::parse;
 use anyhow::{Context, Result, anyhow};
+use parol_runtime::Report;
 use parol_runtime::log::debug;
 use std::env;
 use std::fs;
+
+struct CalcErrorReporter;
+impl Report for CalcErrorReporter {}
 
 fn main() -> Result<()> {
     env_logger::init();
@@ -25,10 +29,16 @@ fn main() -> Result<()> {
         let input = fs::read_to_string(file_name.clone())
             .with_context(|| format!("Can't read file {}", file_name))?;
         let mut calc_grammar = CalcGrammar::new();
-        let _syntax_tree = parse(&input, file_name.clone(), &mut calc_grammar)
-            .with_context(|| format!("Failed parsing file {}", file_name))?;
-        println!("{}", calc_grammar);
-        Ok(())
+        match parse(&input, &file_name, &mut calc_grammar) {
+            Ok(_) => {
+                println!("{}", calc_grammar);
+                Ok(())
+            }
+            Err(e) => {
+                CalcErrorReporter::report_error(&e, file_name).unwrap_or(());
+                Err(anyhow!("Parsing failed!"))
+            }
+        }
     } else {
         Err(anyhow!("Please provide a file name as single parameter!"))
     }
