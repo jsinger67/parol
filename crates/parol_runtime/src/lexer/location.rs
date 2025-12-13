@@ -90,15 +90,26 @@ impl Location {
 
 impl Display for Location {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(
-            f,
-            "{}:{}:{}-{}:{}",
-            self.file_name.display(),
-            self.start_line,
-            self.start_column,
-            self.end_line,
-            self.end_column
-        )
+        if self.start_line == self.end_line {
+            write!(
+                f,
+                "{}:{}:{}-{}",
+                self.file_name.display(),
+                self.start_line,
+                self.start_column,
+                self.end_column
+            )
+        } else {
+            write!(
+                f,
+                "{}:{}:{}-{}:{}",
+                self.file_name.display(),
+                self.start_line,
+                self.start_column,
+                self.end_line,
+                self.end_column
+            )
+        }
     }
 }
 
