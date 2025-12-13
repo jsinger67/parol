@@ -172,6 +172,18 @@ impl<'t> LLKParser<'t> {
         self.trim_parse_tree = true;
     }
 
+    /// Returns true if the parser is currently in error recovery mode
+    #[inline]
+    pub fn is_in_recovery_mode(&self) -> bool {
+        !self.error_entries.is_empty()
+    }
+
+    /// Returns true if error recovery is enabled for this parser
+    #[inline]
+    pub fn is_recovery_enabled(&self) -> bool {
+        self.enable_recovery
+    }
+
     /// Disables error recovery
     /// The recovery is enabled by default
     pub fn disable_recovery(&mut self) {
@@ -264,7 +276,40 @@ impl<'t> LLKParser<'t> {
             .split_off(self.parse_tree_stack.len() - l);
 
         // With the children we can call the user's semantic action
-        user_actions.call_semantic_action_for_production_number(prod_num, &children)?;
+        match user_actions.call_semantic_action_for_production_number(prod_num, &children) {
+            Ok(()) => {}
+            Err(e) => {
+                if self.is_in_recovery_mode() {
+                    trace!("Ignoring semantic action error during recovery: {:?}", e);
+                    // Add the error to the error entries
+
+                    // Try to get a location from the error if it implements LocationProvider
+                    if let ParolError::UserError(anyhow_error) = e.as_ref() {
+                        for cause in anyhow_error.chain() {
+                            if let Some(syntax_error) = cause.downcast_ref::<SyntaxError>() {
+                                trace!(
+                                    "Found location provider for semantic action error during recovery"
+                                );
+                                let _ = self.add_error(
+                                    SyntaxError::default()
+                                        .with_cause("Semantic action error during recovery")
+                                        .with_location(syntax_error.error_location.as_ref().clone())
+                                        .with_source(Box::new(e)),
+                                );
+                                return Ok(());
+                            }
+                        }
+                    } else {
+                        trace!(
+                            "Ignoring semantic action error during recovery without location provider\n{:?}",
+                            e
+                        );
+                    }
+                } else {
+                    return Err(e);
+                }
+            }
+        }
 
         if !self.trim_parse_tree {
             // And we close the production subtree
@@ -493,7 +538,7 @@ impl<'t> LLKParser<'t> {
         non_terminal: NonTerminalIndex,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<ProductionIndex> {
-        if !self.enable_recovery {
+        if !self.is_recovery_enabled() {
             return Err(ParserError::RecoveryFailed.into());
         }
         stream.borrow_mut().enter_recovery_mode();
@@ -567,7 +612,7 @@ impl<'t> LLKParser<'t> {
         &mut self,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<()> {
-        if !self.enable_recovery {
+        if !self.is_recovery_enabled() {
             return Err(ParserError::RecoveryFailed.into());
         }
         stream.borrow_mut().enter_recovery_mode();

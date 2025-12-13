@@ -74,6 +74,12 @@ pub enum ParolError {
     UserError(#[from] anyhow::Error),
 }
 
+impl AsRef<ParolError> for ParolError {
+    fn as_ref(&self) -> &ParolError {
+        self
+    }
+}
+
 #[derive(Error, Debug, Default)]
 #[error("{cause}")]
 pub struct SyntaxError {
@@ -86,13 +92,18 @@ pub struct SyntaxError {
 }
 
 impl SyntaxError {
-    pub(crate) fn with_cause(mut self, cause: &str) -> Self {
+    pub fn with_cause(mut self, cause: &str) -> Self {
         cause.clone_into(&mut self.cause);
         self
     }
 
-    pub(crate) fn with_location(mut self, location: Location) -> Self {
+    pub fn with_location(mut self, location: Location) -> Self {
         self.error_location = Box::new(location);
+        self
+    }
+
+    pub(crate) fn with_source(mut self, e: Box<ParolError>) -> SyntaxError {
+        self.source = Some(e);
         self
     }
 }
@@ -144,6 +155,11 @@ impl TokenVec {
     /// Returns a token at the given index
     pub fn get(&self, index: usize) -> Option<&String> {
         self.0.get(index)
+    }
+
+    /// Returns true if the vector is empty
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
     }
 }
 

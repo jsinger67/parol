@@ -1,6 +1,6 @@
 use crate::list_grammar_trait::{Items, List, ListGrammarTrait, ListOpt};
-use parol_runtime::Result;
 use parol_runtime::lexer::Token;
+use parol_runtime::{Result, SyntaxError};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -29,7 +29,10 @@ impl<'t> TryFrom<&Token<'t>> for Number {
             Ok(num) => Ok(Self(num)),
             Err(e) => {
                 let context = format!("'{}' at {}", number.text(), number.location);
-                Err(anyhow::Error::new(e).context(context))
+                let syntax_error = SyntaxError::default()
+                    .with_cause(e.to_string().as_str())
+                    .with_location(number.location.clone());
+                Err(anyhow::Error::new(syntax_error).context(context))
             }
         }
     }

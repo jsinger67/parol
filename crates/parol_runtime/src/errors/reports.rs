@@ -215,10 +215,14 @@ pub trait Report {
                                         Label::primary(file_id, range).with_message("Found"),
                                     ])
                                     .with_labels(unexpected_tokens_labels)
-                                    .with_notes(vec![
-                                        format!("Expecting {}", expected_tokens),
-                                        cause.to_string(),
-                                    ]),
+                                    .with_notes(if expected_tokens.is_empty() {
+                                        vec![cause.to_string()]
+                                    } else {
+                                        vec![
+                                            format!("Expecting {}", expected_tokens),
+                                            cause.to_string(),
+                                        ]
+                                    }),
                             )?)
                         },
                     )?;

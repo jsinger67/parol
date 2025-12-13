@@ -136,7 +136,11 @@ fn extract_syntax_errors(entries: &[SyntaxError], diagnostics: &mut Vec<Diagnost
         }
         related_information.push(DiagnosticRelatedInformation {
             location: location_to_location(&e.unexpected_tokens[0].token, uri),
-            message: format!("Expecting {}", e.expected_tokens),
+            message: if !e.expected_tokens.is_empty() {
+                format!("Expected one of: {}", e.expected_tokens)
+            } else {
+                "No expected tokens available".to_string()
+            },
         });
         diagnostics.push(Diagnostic {
             range,
