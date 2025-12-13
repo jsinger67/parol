@@ -1,11 +1,12 @@
 use crate::{
     FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParolError, ParseStack,
     ParseTreeStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result, SyntaxError,
-    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait, lexer::EOI,
-    parser::recovery::Recovery,
+    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    lexer::EOI,
+    parser::recovery::{EditOp, Recovery},
 };
 use log::trace;
-use std::{cell::RefCell, cmp::Ord, rc::Rc};
+use std::{cell::RefCell, rc::Rc};
 use syntree::{Builder, Tree};
 
 use super::parse_tree_type::{SynTree, TreeConstruct};
@@ -585,40 +586,38 @@ impl<'t> LLKParser<'t> {
         expected_token_types: Vec<TerminalIndex>,
         stream: Rc<RefCell<TokenStream<'t, F>>>,
     ) -> Result<()> {
-        if let Some((act, exp)) =
-            Recovery::calculate_match_ranges(&scanned_token_types, &expected_token_types)
-        {
-            trace!("Match ranges are {act:?}, {exp:?}");
-            match act.start.cmp(&exp.start) {
-                std::cmp::Ordering::Less => {
-                    (act.start..exp.start).try_for_each(|i| -> Result<()> {
-                        Ok(stream
-                            .borrow_mut()
-                            .insert_token_at(i, expected_token_types[i])?)
-                    })?;
-                    trace!("{}", stream.borrow().diagnostic_message());
+        let (_, ops) = Recovery::levenshtein_distance(&scanned_token_types, &expected_token_types);
+        trace!("Levenshtein ops: {ops:?}");
+
+        let mut stream_idx = 0;
+        let mut exp_idx = 0;
+
+        for op in ops {
+            match op {
+                EditOp::Keep => {
+                    stream_idx += 1;
+                    exp_idx += 1;
                 }
-                std::cmp::Ordering::Equal => {
-                    (0..act.start).try_for_each(|i| -> Result<()> {
-                        Ok(stream
-                            .borrow_mut()
-                            .replace_token_type_at(i, expected_token_types[i])?)
-                    })?;
-                    trace!("{}", stream.borrow().diagnostic_message());
+                EditOp::Replace => {
+                    stream
+                        .borrow_mut()
+                        .replace_token_type_at(stream_idx, expected_token_types[exp_idx])?;
+                    stream_idx += 1;
+                    exp_idx += 1;
                 }
-                std::cmp::Ordering::Greater => {
-                    (exp.start..act.start).try_for_each(|_| -> Result<()> {
-                        trace!("Consuming superfluous token");
-                        Ok(stream.borrow_mut().consume().map(|_| ())?)
-                    })?;
+                EditOp::Insert => {
+                    stream
+                        .borrow_mut()
+                        .insert_token_at(stream_idx, expected_token_types[exp_idx])?;
+                    stream_idx += 1;
+                    exp_idx += 1;
+                }
+                EditOp::Delete => {
+                    stream.borrow_mut().remove_token_at(stream_idx)?;
                 }
             }
-            return Ok(());
         }
-
-        // Steamroller tactics: sync with the expected token string
-        trace!("Force sync with {expected_token_types:?}");
-        self.sync_token_stream(scanned_token_types, expected_token_types, stream.clone())
+        Ok(())
     }
 
     fn sync_token_stream<F: Fn(char) -> Option<usize> + Clone>(

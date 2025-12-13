@@ -294,6 +294,20 @@ where
         }
     }
 
+    /// Removes a token from the token buffer.
+    /// It is used in recovery mode to remove tokens that are not needed.
+    pub(crate) fn remove_token_at(&mut self, index: usize) -> Result<(), LexerError> {
+        if self.tokens.len() > index {
+            trace!("removing token at index {index}");
+            self.tokens.remove(index);
+            Ok(())
+        } else {
+            Err(LexerError::RecoveryError(
+                "Can't remove from token buffer".to_owned(),
+            ))
+        }
+    }
+
     /// Used in recovery mode to insert a token at a specific index in the token buffer.
     pub(crate) fn insert_token_at(
         &mut self,

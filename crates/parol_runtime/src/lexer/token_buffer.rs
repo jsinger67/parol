@@ -120,6 +120,26 @@ impl<'t> TokenBuffer<'t> {
         self.tokens.insert(insert_index, to_insert);
     }
 
+    /// Removes the non-skip-token at the given index.
+    pub fn remove(&mut self, index: usize) -> Option<Token<'t>> {
+        let mut skip_count = 0;
+        let mut remove_index = None;
+        for (i, token) in self.tokens.iter().enumerate() {
+            if !token.is_skip_token() {
+                if skip_count == index {
+                    remove_index = Some(i);
+                    break;
+                }
+                skip_count += 1;
+            }
+        }
+        if let Some(i) = remove_index {
+            Some(self.tokens.remove(i))
+        } else {
+            None
+        }
+    }
+
     /// Remove all tokens from the buffer
     pub fn clear(&mut self) {
         self.tokens.clear();
