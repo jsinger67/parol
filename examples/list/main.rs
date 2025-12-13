@@ -26,7 +26,7 @@ fn main() -> Result<()> {
     debug!("env logger started");
 
     let args: Vec<String> = env::args().collect();
-    if args.len() == 2 {
+    if args.len() >= 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
             .with_context(|| format!("Can't read file {}", file_name))?;
@@ -34,9 +34,11 @@ fn main() -> Result<()> {
         match parse(&input, &file_name, &mut list_grammar) {
             Ok(syntax_tree) => {
                 println!("{}", list_grammar);
-                let mut s = Vec::new();
-                syntree::print::print_with_source(&mut s, &syntax_tree, &input)?;
-                println!("{}", String::from_utf8(s)?);
+                if args.len() > 2 && args[2] == "-t" {
+                    let mut s = Vec::new();
+                    syntree::print::print_with_source(&mut s, &syntax_tree, &input)?;
+                    println!("{}", String::from_utf8(s)?);
+                }
                 generate_tree_layout(&syntax_tree, &input, &file_name)
                     .context("Error generating tree layout")
             }
