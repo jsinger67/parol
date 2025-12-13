@@ -215,10 +215,17 @@ impl Recovery {
 mod test {
     use super::*;
 
+    // Type alias to simplify the complex test data type
+    type TestCase = (
+        (&'static [TerminalIndex], &'static [TerminalIndex]),
+        usize,
+        Vec<EditOp>,
+    );
+
     #[test]
     fn test_levenshtein_distance() {
         let _ = env_logger::builder().is_test(true).try_init();
-        let test_data: &[((&[TerminalIndex], &[TerminalIndex]), usize, Vec<EditOp>)] = &[
+        let test_data: &[TestCase] = &[
             ((&[1, 2], &[0, 2]), 1, vec![EditOp::Replace, EditOp::Keep]),
             (
                 (&[7, 8, 9, 10], &[8, 8, 9, 10]),
