@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.2.2 - Not released yet
+
+* Enhance default grammar in `parol new` to avoid initial build warning due to a too simple grammar.
+
 ## 4.2.1 - 2025-12-06
 
 * Fixed a problem with token aliases (primary non-terminals) when only the lookahead expressions

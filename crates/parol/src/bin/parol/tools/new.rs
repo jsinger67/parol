@@ -201,6 +201,11 @@ fn generate_grammar_par(creation_data: &CreationData) -> Result<()> {
     let mut grammar_file_out = creation_data.path.clone();
     grammar_file_out.push(format!("{}.par", creation_data.crate_name));
     let grammar_name = NmHlp::to_upper_camel_case(creation_data.crate_name);
+    let terminal_name = if grammar_name == "HelloWorld" {
+        "HelloWorldTerminal"
+    } else {
+        "HelloWorld"
+    };
     let grammar_source = format!(
         r#"%start {grammar_name}
 %title "{grammar_name} grammar"
@@ -210,7 +215,13 @@ fn generate_grammar_par(creation_data: &CreationData) -> Result<()> {
 %%
 
 // Start symbol
-{grammar_name}: "Hello world!";
+{grammar_name}
+    : [ {terminal_name} ]
+    ;
+
+{terminal_name}
+    : "Hello world!"
+    ;
 "#
     );
     fs::write(grammar_file_out, grammar_source)
