@@ -359,7 +359,11 @@ where
                     }
                 }
             }
-            Symbol::S(_) | Symbol::Push(_) | Symbol::Pop => (),
+            _ => {
+                unreachable!(
+                    "Scanner switching directives have been removed from the grammar syntax."
+                );
+            }
         }
     }
 
@@ -416,7 +420,11 @@ where
                                     .k_concat(first_of_nt, args.k)
                             });
                     }
-                    Symbol::S(_) | Symbol::Push(_) | Symbol::Pop => (),
+                    _ => {
+                        unreachable!(
+                            "Scanner switching directives have been removed from the grammar syntax."
+                        );
+                    }
                 }
             }
             let nt = args.nti.non_terminal_index(args.pr.get_n_str());

@@ -224,9 +224,11 @@ where
                         }
                     }
                 }
-                Symbol::S(_) => (),
-                Symbol::Push(_) => (),
-                Symbol::Pop => (),
+                _ => {
+                    unreachable!(
+                        "Scanner switching directives have been removed from the grammar syntax."
+                    );
+                }
             }
             acc
         });
@@ -270,9 +272,11 @@ where
                     result_function(result_vector.clone()).k_concat(&f(result_vector), k)
                 });
             }
-            Symbol::S(_) => (),
-            Symbol::Push(_) => (),
-            Symbol::Pop => (),
+            _ => {
+                unreachable!(
+                    "Scanner switching directives have been removed from the grammar syntax."
+                );
+            }
         }
     }
     result_function

@@ -282,32 +282,10 @@ impl Report for ParolErrorReporter {
                             ]),
                     )?)
                 }
-                ParolParserError::MixedScannerSwitching {
-                    context,
-                    input,
-                    location,
-                } => {
-                    let mut files = SimpleFiles::new();
-                    let content = fs::read_to_string(input).unwrap_or_default();
-                    let file_id = files.add(input.display().to_string(), content);
-
-                    Ok(term::emit_to_write_style(
-                        &mut writer,
-                        &config,
-                        &files,
-                        &Diagnostic::error()
-                            .with_message(format!("{context} - Mixed scanner switching is not allowed"))
-                            .with_code("parol::parser::mixed_scanner_switching")
-                            .with_labels(vec![Label::primary(
-                                file_id,
-                                Into::<Range<usize>>::into(location),
-                            )])
-                            .with_notes(vec![
-                                "Use either parser-based or scanner-based switching.".to_string(),
-                                "Parser-based switching is done via the %sc, %push and %pop directives in productions.".to_string(),
-                                "Scanner-based switching is done via the %on directive in the header of the grammar file.".to_string(),
-                            ]),
-                    )?)
+                _ => {
+                    unreachable!(
+                        "Scanner switching directives have been removed from the grammar syntax."
+                    );
                 }
             }
         } else if let Some(err) = err.downcast_ref::<GrammarAnalysisError>() {

@@ -145,6 +145,13 @@ pub enum ParolParserError {
     /// Mixed scanner switching is not allowed - use either parser-based or scanner-based switching.
     /// Parser-based switching is done via the %sc, %push and %pop directives productions.
     /// Scanner-based switching is done via the %on directive in the header of the grammar file.
+    ///
+    /// This error can no more occur as of Parol 4, because scanner switching directives
+    /// have been removed from the grammar syntax.
+    #[deprecated(
+        since = "4.0.0",
+        note = "Scanner switching directives have been removed from the grammar syntax."
+    )]
     #[error("{context} - Mixed scanner switching is not allowed")]
     MixedScannerSwitching {
         /// Context where the error was issued

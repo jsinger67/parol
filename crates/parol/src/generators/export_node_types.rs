@@ -210,9 +210,9 @@ impl NodeTypesExporter<'_> {
             }
             GrammarSymbol::T(crate::grammar::Terminal::Eps) => None,
             GrammarSymbol::T(crate::grammar::Terminal::End) => None,
-            GrammarSymbol::S(_) => None,
-            GrammarSymbol::Push(_) => None,
-            GrammarSymbol::Pop => None,
+            _ => unreachable!(
+                "Scanner switching directives have been removed from the grammar syntax."
+            ),
         }
     }
 }

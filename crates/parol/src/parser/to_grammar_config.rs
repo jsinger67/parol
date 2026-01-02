@@ -191,9 +191,6 @@ pub(crate) fn try_from_factor(factor: Factor) -> Result<Symbol> {
             // We use the member name here if given
             Ok(Symbol::T(Terminal::Trm(t, k, s, a, u, m, l)))
         }
-        Factor::ScannerSwitch(s, _) => Ok(Symbol::s(s)),
-        Factor::ScannerSwitchPush(s, _) => Ok(Symbol::Push(s)),
-        Factor::ScannerSwitchPop(_) => Ok(Symbol::Pop),
         _ => bail!("Unexpected type of factor: {}", factor),
     }
 }

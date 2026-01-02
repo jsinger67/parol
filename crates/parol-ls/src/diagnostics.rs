@@ -417,16 +417,8 @@ fn extract_parser_error(
                 ),
             });
         }
-        ParolParserError::MixedScannerSwitching {
-            context,
-            input,
-            location,
-        } => {
-            *range = location_to_range(location);
-            related_information.push(DiagnosticRelatedInformation {
-                location: location_to_location(location, located_document_state.uri),
-                message: format!("Context: {}, Input: {}", context, input.display()),
-            });
+        _ => {
+            unreachable!("Scanner switching directives have been removed from the grammar syntax.");
         }
     }
 }

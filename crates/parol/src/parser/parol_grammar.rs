@@ -197,11 +197,23 @@ pub enum Factor {
     ),
     /// An identifier, scanner state name
     Identifier(String),
-    /// A scanner switch instruction
+    /// Obsolete since Parol 4: A scanner switch instruction
+    #[deprecated(
+        since = "4.0.0",
+        note = "Scanner switching directives have been removed from the grammar syntax."
+    )]
     ScannerSwitch(usize, Location),
-    /// A scanner switch & push instruction
+    /// Obsolete since Parol 4: A scanner switch & push instruction
+    #[deprecated(
+        since = "4.0.0",
+        note = "Scanner switching directives have been removed from the grammar syntax."
+    )]
     ScannerSwitchPush(usize, Location),
-    /// A scanner switch + pop instruction
+    /// Obsolete since Parol 4: A scanner switch + pop instruction
+    #[deprecated(
+        since = "4.0.0",
+        note = "Scanner switching directives have been removed from the grammar syntax."
+    )]
     ScannerSwitchPop(Location),
 }
 
@@ -259,9 +271,9 @@ impl Factor {
                 buf
             }
             Factor::Identifier(i) => format!("\"{i}\""),
-            Self::ScannerSwitch(n, _) => format!("%sc({n})"),
-            Self::ScannerSwitchPush(n, _) => format!("%push({n})"),
-            Self::ScannerSwitchPop(_) => "%pop()".to_string(),
+            _ => unreachable!(
+                "Scanner switching directives have been removed from the grammar syntax."
+            ),
         }
     }
 
@@ -319,9 +331,9 @@ impl Display for Factor {
                 write!(f, "{s}")
             }
             Self::Identifier(n) => write!(f, "Id({n})"),
-            Self::ScannerSwitch(n, _) => write!(f, "S({n})"),
-            Self::ScannerSwitchPush(n, _) => write!(f, "Push({n})"),
-            Self::ScannerSwitchPop(_) => write!(f, "Pop"),
+            _ => unreachable!(
+                "Scanner switching directives have been removed from the grammar syntax."
+            ),
         }
     }
 }
@@ -382,15 +394,6 @@ impl Alternation {
         } else {
             None
         }
-    }
-
-    fn has_switch(&self) -> Option<Location> {
-        self.0.iter().find_map(|f| match f {
-            Factor::ScannerSwitch(_, l)
-            | Factor::ScannerSwitchPush(_, l)
-            | Factor::ScannerSwitchPop(l) => Some(l.clone()),
-            _ => None,
-        })
     }
 }
 
@@ -474,10 +477,6 @@ pub struct Production {
 impl Production {
     pub(crate) fn new(lhs: String, rhs: Alternations) -> Self {
         Self { lhs, rhs }
-    }
-
-    fn has_switch(&self) -> Option<parol_runtime::Location> {
-        self.rhs.0.iter().find_map(|a| a.has_switch())
     }
 }
 
@@ -1305,15 +1304,6 @@ impl ParolGrammar<'_> {
     }
 
     fn check_transitions(&self, index: usize, s: &ScannerConfig) -> Result<()> {
-        if !s.transitions.is_empty()
-            && let Some(location) = self.parser_based_scanner_switching_used()
-        {
-            bail!(ParolParserError::MixedScannerSwitching {
-                context: "check_transitions".to_string(),
-                input: location.file_name.to_path_buf(),
-                location,
-            });
-        }
         s.transitions.iter().try_for_each(|(k, v)| {
             if !self.is_primary_non_terminal(k) {
                 bail!(ParolParserError::InvalidTokenInTransition {
@@ -1412,15 +1402,6 @@ impl ParolGrammar<'_> {
         } else {
             false
         }
-    }
-
-    /// Check if the grammar uses parser-based scanner switching (i.e. scanner switching in the
-    /// grammar productions) is used.
-    /// We need to check if also scanner-based scanner switching (i.e. scanner switching in the
-    /// scanner directives) is used, because the two cannot be mixed reasonably.
-    fn parser_based_scanner_switching_used(&self) -> Option<parol_runtime::Location> {
-        // Check if any of the productions uses scanner switching
-        self.productions.iter().find_map(|p| p.has_switch())
     }
 }
 

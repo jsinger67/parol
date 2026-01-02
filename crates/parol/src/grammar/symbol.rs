@@ -301,20 +301,32 @@ pub enum Symbol {
     T(Terminal),
 
     ///
-    /// Instruction to switch scanner state
+    /// Obsolete since Parol 4: Instruction to switch scanner state
     ///
+    #[deprecated(
+        since = "4.0.0",
+        note = "Scanner switching directives have been removed from the grammar syntax."
+    )]
     S(ScannerIndex),
 
     ///
-    /// Instruction to push the index of the current scanner and switch to a scanner configuration
+    /// Obsolete since Parol 4: Instruction to push the index of the current scanner and switch to a scanner configuration
     /// with the given index
     ///
+    #[deprecated(
+        since = "4.0.0",
+        note = "Scanner switching directives have been removed from the grammar syntax."
+    )]
     Push(ScannerIndex),
 
     ///
-    /// Instruction to pop the index of the scanner pushed before and switch to the scanner
+    /// Obsolete since Parol 4: Instruction to pop the index of the scanner pushed before and switch to the scanner
     /// configuration with that index
     ///
+    #[deprecated(
+        since = "4.0.0",
+        note = "Scanner switching directives have been removed from the grammar syntax."
+    )]
     Pop,
 }
 
@@ -328,8 +340,12 @@ impl Symbol {
         Self::T(Terminal::End)
     }
     /// Creates a scanner index
-    pub fn s(s: usize) -> Self {
-        Self::S(s)
+    #[deprecated(
+        since = "4.0.0",
+        note = "Scanner switching directives have been removed from the grammar syntax."
+    )]
+    pub fn s(_: usize) -> Self {
+        unimplemented!("Scanner switching directives have been removed from the grammar syntax.")
     }
     /// Checks if self is a terminal
     pub fn is_t(&self) -> bool {
@@ -344,8 +360,9 @@ impl Symbol {
         matches!(self, Self::T(Terminal::End))
     }
     /// Checks if self is a scanner switch instruction
+    /// Obstolete since Parol 4
     pub fn is_switch(&self) -> bool {
-        matches!(self, Self::S(_)) || matches!(self, Self::Push(_)) || matches!(self, Self::Pop)
+        false
     }
     /// Returns a terminal if available
     pub fn get_t(&self) -> Option<Terminal> {
@@ -420,15 +437,9 @@ impl Symbol {
                 Ok(s)
             }
             Self::T(t) => t.format(scanner_state_resolver, user_type_resolver),
-            Self::S(s) => {
-                if *s == 0 {
-                    Ok("%sc()".to_string())
-                } else {
-                    Ok(format!("%sc({})", scanner_state_resolver(&[*s])))
-                }
-            }
-            Self::Push(s) => Ok(format!("%push({})", scanner_state_resolver(&[*s]))),
-            Self::Pop => Ok("%pop()".to_string()),
+            _ => unreachable!(
+                "Scanner switching directives have been removed from the grammar syntax."
+            ),
         }
     }
 }
@@ -452,9 +463,9 @@ impl Display for Symbol {
                 self.attribute().decorate(&mut d, &format!("{t}"))?;
                 write!(f, "{d}")
             }
-            Self::S(s) => write!(f, "S({s})"),
-            Self::Push(s) => write!(f, "Push({s})"),
-            Self::Pop => write!(f, "Pop"),
+            _ => unreachable!(
+                "Scanner switching directives have been removed from the grammar syntax."
+            ),
         }
     }
 }

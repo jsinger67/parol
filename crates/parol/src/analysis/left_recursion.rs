@@ -33,7 +33,11 @@ pub fn detect_left_recursive_non_terminals(cfg: &Cfg) -> Vec<String> {
                         }
                     }
                     crate::Symbol::T(_) => break,
-                    crate::Symbol::S(_) | crate::Symbol::Push(_) | crate::Symbol::Pop => (),
+                    _ => {
+                        unreachable!(
+                            "Scanner switching directives have been removed from the grammar syntax."
+                        );
+                    }
                 }
             }
         }

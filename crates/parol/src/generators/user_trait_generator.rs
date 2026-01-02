@@ -505,7 +505,6 @@ impl<'a> UserTraitGenerator<'a> {
         let arguments = pr
             .get_r()
             .iter()
-            .filter(|s| !s.is_switch())
             .enumerate()
             .map(|(i, _)| format!("&children[{i}]"))
             .collect::<Vec<String>>();

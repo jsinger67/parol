@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.2.2 - Not released yet
 
 * Enhance default grammar in `parol new` to avoid initial build warning due to a too simple grammar.
+* Removed code that handles unsupported scanner switch directives. Public interface is untouched
+but you may see new deprecation warnings if you used now unsupported interface parts.
 
 ## 4.2.1 - 2025-12-06
 

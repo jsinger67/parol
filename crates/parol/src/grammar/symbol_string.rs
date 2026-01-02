@@ -16,10 +16,7 @@ impl From<&Pr> for SymbolString {
             pr.get_r()
                 .iter()
                 .fold(Vec::with_capacity(pr.len()), |mut acc, e| {
-                    // Don't include scanner state switches into symbol string
-                    if !e.is_switch() {
-                        acc.push(e.clone())
-                    }
+                    acc.push(e.clone());
                     acc
                 }),
         )
