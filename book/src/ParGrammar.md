@@ -201,15 +201,36 @@ Ident: /[a-zA-Z_][a-zA-Z0-9_]*/
 
 Defining _If_ before _Ident_ ensures the correct priority.
 
+#### Context aware terminals
+
+You can also specify whether or whether not a certain token should follow your terminal.
+To achieve this you can use the two lookahead operators `?=` and `?!`. They in principle work like
+similar operators provided by some regex engines. The scanner only tests for the existence or
+absence of the specified regular expression on the right-hand side of these operators and if the
+constraint holds it only matches the left-hand side. The right-hand side is not consumed.
+
+```parol
+// Terminal for a function name using positive lookahead expression
+// Matches the identifier part only if it is followed by an opening parenthesis
+FunctionName: /[a-zA-Z_][a-zA-Z0-9_]*/ ?= '('
+    ;
+
+// Terminal for an identifier using negative lookahead expression
+// Matches the identifier part only if it is not followed by an opening parenthesis
+Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/ ?! '('
+    ;
+```
+
 #### Even more control with the help of scanner states
 
 You can define different scanner states and assign only the terminals you want to match in each mode.
+For details, please see <a href="#scanner-states">Scanner states</a> below.
 
 
 #### Conclusion
 
-❗ These three mechanisms, **longest match rule**, **priority by order** and
-**using multiple scanner states**, gives you control over terminal conflicts.
+❗ These four mechanisms, **longest match rule**, **priority by order**, **lookahead expressions**
+and **using multiple scanner states** gives you control over terminal conflicts.
 
 ### Terminals that matches an empty string
 
