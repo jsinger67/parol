@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.2.2 - Not released yet
+## 4.2.2 - 2026-01-04
 
 * Enhance default grammar in `parol new` to avoid initial build warning due to a too simple grammar.
 * Removed code that handles unsupported scanner switch directives. Public interface is untouched

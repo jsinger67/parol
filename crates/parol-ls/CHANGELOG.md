@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 4.2.0 - 2026-01-04
+
+* Update dependencies
+
 ## 4.1.0 - 2025-12-06
 
 * Removed support for parser based scanner state switching in productions. This language feature is
