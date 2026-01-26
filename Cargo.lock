@@ -1494,9 +1494,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.105"
+version = "1.0.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "535d180e0ecab6268a3e718bb9fd44db66bbbc256257165fc699dadf70d16fe7"
+checksum = "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934"
 dependencies = [
  "unicode-ident",
 ]
@@ -1581,9 +1581,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.43"
+version = "1.0.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc74d9a594b72ae6656596548f56f667211f8a97b3d4c3d467150794690dc40a"
+checksum = "21b2ebcf727b7760c461f091f9f0f539b77b8e87f2fd88131e7f1b433b3cece4"
 dependencies = [
  "proc-macro2",
 ]
@@ -1874,9 +1874,9 @@ dependencies = [
 
 [[package]]
 name = "scnr2"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38511cd7220d32c6cd53cf0ec6b9e20a479811c42a7fa0f47a75cafaf653c224"
+checksum = "4966feadc6f0a47d60296ffc30ea515cdeb5876c5c81ac2660f1040e349ec1ae"
 dependencies = [
  "log",
  "scnr2_macro",
@@ -1884,9 +1884,9 @@ dependencies = [
 
 [[package]]
 name = "scnr2_generate"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bfce055fb70ff744a2b09fef33c8bec971e8fb9bd90147cf5a5667a86378501b"
+checksum = "c9f192b40e716209c169328fbc0d9eb353747948587b5e94afad972e3b5ef868"
 dependencies = [
  "log",
  "proc-macro2",
@@ -1898,9 +1898,9 @@ dependencies = [
 
 [[package]]
 name = "scnr2_macro"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "837426cf12f42c033700193897cdc40e5c43d301c857739a5ef1e965209b0658"
+checksum = "94ab98ffcf4285d5b841d3c3a84d32da23e29804bf9ab5452fe5f62e07416540"
 dependencies = [
  "scnr2_generate",
 ]
