@@ -814,7 +814,7 @@ dependencies = [
  "petgraph",
  "quickcheck",
  "quickcheck_macros",
- "regex-automata 0.4.13",
+ "regex-automata 0.4.14",
  "syntree",
  "syntree_layout",
  "thiserror 2.0.18",
@@ -1030,7 +1030,7 @@ checksum = "843bc0191f75f3e22651ae5f1e72939ab2f72a4bc30fa80a066bd66edefc24d4"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-automata 0.4.13",
+ "regex-automata 0.4.14",
  "regex-syntax",
 ]
 
@@ -1042,9 +1042,9 @@ checksum = "6c230d73fb8d8c1b9c0b3135c5142a8acee3a0558fb8db5cf1cb65f8d7862132"
 
 [[package]]
 name = "regex-automata"
-version = "0.4.13"
+version = "0.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5276caf25ac86c8d810222b3dbb938e512c55c6831a10f3e6ed1c93b84041f1c"
+checksum = "6e1dd4122fc1595e8162618945476892eefca7b88c52820e74af6262213cae8f"
 dependencies = [
  "aho-corasick",
  "memchr",
