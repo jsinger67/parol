@@ -131,7 +131,7 @@ name = "k_tuples_k_concat_benchmark"
 harness = false
 
 [dev-dependencies]
-criterion = "0.8.1"
+criterion = "0.8.2"
 pretty_assertions = "1.4"
 assert_cmd = "2.1"
 tempfile = "3"
