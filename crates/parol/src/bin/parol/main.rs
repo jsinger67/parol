@@ -215,8 +215,8 @@ fn post_process_args(args: &mut CliArgs) {
 
 // We need the file name to support error reporting
 fn extract_file_name(args: &CliArgs) -> Option<PathBuf> {
-    if args.subcommand.is_some() {
-        match args.subcommand.as_ref().unwrap() {
+    if let Some(subcommand) = args.subcommand.as_ref() {
+        match subcommand {
             tools::ToolsSubcommands::calculate_k(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::calculate_k_tuples(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::decidable(args) => Some(args.grammar_file.clone()),
