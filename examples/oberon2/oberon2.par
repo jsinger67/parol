@@ -13,8 +13,7 @@ KwCase
     : "CASE"^
     ;
 
-KwDo
-    : "DO"^
+KwDo: "DO"^
     ;
 
 KwElse
@@ -29,12 +28,10 @@ KwEnd
     : "END"^
     ;
 
-KwIf
-    : "IF"^
+KwIf: "IF"^
     ;
 
-KwOf
-    : "OF"^
+KwOf: "OF"^
     ;
 
 KwProcedure
@@ -45,8 +42,7 @@ KwThen
     : "THEN"^
     ;
 
-KwTo
-    : "TO"^
+KwTo: "TO"^
     ;
 
 KwVar
@@ -70,12 +66,12 @@ ImportList
     ;
 
 DeclSeq
-    : { DeclBlock } { ProcDecl ";"^ 
-    | ForwardDecl ";"^}
+    : { DeclBlock } { ProcDecl ";"^
+    | ForwardDecl ";"^ }
     ;
 
 DeclBlock
-    : ConstDeclBlock 
+    : ConstDeclBlock
     | TypeDeclBlock
     | VarDeclBlock
     ;
@@ -141,7 +137,7 @@ ReceiverVarDecl
     ;
 
 TypeDef
-    : QualIdent 
+    : QualIdent
     | "ARRAY"^ [ ConstExpr { ","^ ConstExpr } ] KwOf^ TypeDef
     | "RECORD"^ [ "\("^ QualIdent "\)"^ ] FieldList { ";"^ FieldList } KwEnd^
     | "POINTER"^ KwTo^ TypeDef
@@ -157,7 +153,7 @@ StatementSeq
     ;
 
 Statement
-    : [ Designator ":="^ Expr 
+    : [ Designator ":="^ Expr
     | Designator [ "\("^ [ ExprList ] "\)"^ ]
     | KwIf^ Expr ThenBlock { ElsifPart } OptElsePartEnd
     | KwCase^ Expr KwOf^ Cases OptElsePartEnd
@@ -167,7 +163,7 @@ Statement
     | "LOOP"^ StatementSeq KwEnd^
     | "WITH"^ GuardedDoBlock { "\|"^ GuardedDoBlock } OptElsePartEnd
     | "EXIT"^
-    | "RETURN"^ [ Expr ]]
+    | "RETURN"^ [ Expr ] ]
     ;
 
 ThenBlock
@@ -206,8 +202,7 @@ ForStep
     : "BY"^ ConstExpr
     ;
 
-Case
-    : [ CaseLabels { ","^ CaseLabels } ":"^ StatementSeq ]
+Case: [ CaseLabels { ","^ CaseLabels } ":"^ StatementSeq ]
     ;
 
 CaseLabels
@@ -222,21 +217,19 @@ ConstExpr
     : Expr
     ;
 
-Expr
-    : SimpleExpr [ Relation SimpleExpr ]
+Expr: SimpleExpr [ Relation SimpleExpr ]
     ;
 
 SimpleExpr
-    : [ "\+" 
-    | "-"] Term { AddOp Term }
+    : [ "\+"
+    | "-" ] Term { AddOp Term }
     ;
 
-Term
-    : Factor { MulOp Factor }
+Term: Factor { MulOp Factor }
     ;
 
 Factor
-    : Designator [ "\("^ [ ExprList ] "\)"^ ] 
+    : Designator [ "\("^ [ ExprList ] "\)"^ ]
     | Number
     | Character
     | String
@@ -246,8 +239,7 @@ Factor
     | "~"^ Factor
     ;
 
-Set
-    : "\{"^ [ Element { ","^ Element } ] "\}"^
+Set : "\{"^ [ Element { ","^ Element } ] "\}"^
     ;
 
 Element
@@ -255,7 +247,7 @@ Element
     ;
 
 Relation
-    : "="^ 
+    : "="^
     | "#"
     | "<"
     | "<="
@@ -266,13 +258,13 @@ Relation
     ;
 
 AddOp
-    : "\+" 
+    : "\+"
     | "-"
     | "OR"
     ;
 
 MulOp
-    : "\*" 
+    : "\*"
     | "/"
     | "DIV"
     | "MOD"
@@ -284,7 +276,7 @@ Designator
     ;
 
 DesignatorSuffix
-    : "\."^ Ident 
+    : "\."^ Ident
     | "\["^ ExprList "\]"^ //| "\("^ QualIdent "\)"^;
     | "\^"^
     ;
@@ -298,22 +290,21 @@ IdentList
     ;
 
 QualIdent
-    : Ident 
+    : Ident
     | QIdent
     ;
 
 IdentDef
-    : Ident [ "\*" 
-    | "-"]
+    : Ident [ "\*"
+    | "-" ]
     ;
 
 Number
-    : Integer 
+    : Integer
     | Real
     ;
 
-Real
-    : "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?"
+Real: "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?"
     ;
 
 Character
@@ -336,6 +327,5 @@ String
     : "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'"
     ;
 
-InOp
-    : "IN"^
+InOp: "IN"^
     ;

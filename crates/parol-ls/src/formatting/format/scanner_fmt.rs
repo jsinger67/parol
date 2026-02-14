@@ -185,7 +185,7 @@ pub(super) fn format_scanner_directives_with_context(
                     let (ident, comments) = scanner_state_directives_percent_enter_identifier
                         .identifier
                         .txt(context.policy(), comments);
-                    (format!("%enter {ident};",), comments)
+                    (format!("%enter {ident}",), comments)
                 }
                 ScannerStateDirectives::PercentPushIdentifier(
                     scanner_state_directives_percent_push_identifier,

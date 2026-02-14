@@ -40,8 +40,7 @@ Factor
     : UnaryOp Factor
     ;
 
-Term
-    : Factor MulExpression
+Term: Factor MulExpression
     ;
 
 MulExpression
@@ -216,16 +215,13 @@ FieldListRest
     : 
     ;
 
-Type
-    : Ident
+Type: Ident
     ;
 
-Type
-    : ArrayType
+Type: ArrayType
     ;
 
-Type
-    : RecordType
+Type: RecordType
     ;
 
 FPSection
