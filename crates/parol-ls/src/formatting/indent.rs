@@ -11,7 +11,7 @@ impl Indent {
 
 #[cfg(test)]
 mod test {
-    use crate::formatting::{FmtOptions, Indent};
+    use crate::formatting::{FmtOptions, indent::Indent};
 
     #[test]
     fn test_make_indent() {

@@ -7,10 +7,10 @@ file.
 
 ## 4.2.1 - Not released yet
 
-* Refactored formatter internals to improve maintainability and scalability:
-  * Introduced a context-driven formatting flow (`FormatterContext`)
-  * Split monolithic formatter implementation into focused modules
-  * Extracted shared helper/dispatch/last-token logic to reduce duplication
+* Completed formatter refactoring:
+  * Split formatter implementation into focused modules (logic, traits, tests)
+  * Replaced implicit parent-scope dependencies with explicit internal imports
+  * Kept `Format` as the only outward formatter API
 * Added centralized formatting settings alignment with `parol-vscode` plus sync checks.
 * No intended user-visible formatting behavior changes.
 

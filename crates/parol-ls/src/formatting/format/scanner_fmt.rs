@@ -1,13 +1,15 @@
+use super::super::comments::Comments;
+use super::super::{
+    context::{FormatterContext, context_for_scanner_directive, scanner_directive_indent},
+    indent::Indent,
+};
 use super::helpers::{
     comment_opts_left, comment_opts_left_force_remove, format_comments_before_token,
     format_trailing_comment,
 };
 use super::last_token::LastToken;
-use super::{
-    Comments, Fmt, FormatterContext, Indent, ScannerStateDirectives, context_for_scanner_directive,
-    scanner_directive_indent,
-};
-use crate::parol_ls_grammar_trait::ScannerDirectives;
+use super::traits::Fmt;
+use crate::parol_ls_grammar_trait::{ScannerDirectives, ScannerStateDirectives};
 
 pub(super) fn format_scanner_directives_with_context(
     scanner_directives: &ScannerDirectives,

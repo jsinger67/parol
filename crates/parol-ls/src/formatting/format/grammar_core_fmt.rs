@@ -7,10 +7,15 @@ use crate::{
     utils::RX_NEW_LINE,
 };
 
+use super::super::comments::Comments;
+use super::super::fmt_options::FmtOptions;
+use super::super::{context::FormatterContext, line::Line};
 use super::dispatch::handle_symbol;
 use super::helpers::{comment_opts_right, format_comments_before_token};
 use super::production_fmt::{format_production_lhs_with_context, format_production_with_context};
-use super::{Comments, Fmt, FmtOptions, FormatterContext, Line, START_LINE_OFFSET};
+use super::traits::Fmt;
+
+const START_LINE_OFFSET: usize = 6;
 
 impl Fmt for ASTControl {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {

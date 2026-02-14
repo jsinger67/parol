@@ -1,6 +1,7 @@
 use crate::parol_ls_grammar::OwnedToken;
 
-use super::{Comments, FmtOptions, LineEnd, Padding};
+use super::super::comments::Comments;
+use super::super::fmt_options::{FmtOptions, LineEnd, Padding};
 
 pub(super) fn format_comments_before_token(
     comments: Comments,

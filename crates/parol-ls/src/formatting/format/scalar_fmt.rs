@@ -2,7 +2,9 @@ use crate::parol_ls_grammar_trait::{
     DoubleColon, Identifier, LiteralString, LookAheadGroup, Regex, TokenLiteral, UserTypeNameList,
 };
 
-use super::{Comments, Fmt, FmtOptions};
+use super::super::comments::Comments;
+use super::super::fmt_options::FmtOptions;
+use super::traits::Fmt;
 
 impl Fmt for DoubleColon {
     fn txt(&self, _options: &FmtOptions, comments: Comments) -> (String, Comments) {

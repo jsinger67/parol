@@ -1,6 +1,8 @@
 use crate::parol_ls_grammar_trait::{Prolog, PrologList, PrologList0};
 
-use super::{Comments, Fmt, FmtOptions};
+use super::super::fmt_options::FmtOptions;
+use super::super::comments::Comments;
+use super::traits::Fmt;
 
 impl Fmt for Prolog {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
