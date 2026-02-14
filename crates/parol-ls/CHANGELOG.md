@@ -5,6 +5,15 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 4.2.1 - Not released yet
+
+* Refactored formatter internals to improve maintainability and scalability:
+  * Introduced a context-driven formatting flow (`FormatterContext`)
+  * Split monolithic formatter implementation into focused modules
+  * Extracted shared helper/dispatch/last-token logic to reduce duplication
+* Added centralized formatting settings alignment with `parol-vscode` plus sync checks.
+* No intended user-visible formatting behavior changes.
+
 ## 4.2.0 - 2026-01-04
 
 * Update dependencies
