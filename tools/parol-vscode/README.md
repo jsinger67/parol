@@ -34,6 +34,18 @@ cargo install --force parol-ls
 Alternatively you can clone the [repository](https://github.com/jsinger67/parol.git) and build the
 language server from sources.
 
+## Development checks
+
+To keep extension configuration definitions and `package.json` contribution settings in sync,
+run:
+
+```shell
+npm run check-config-sync
+```
+
+This check also runs in CI via the dedicated workflow
+`Parol VSCode Config Sync`.
+
 Changes regarding the Language Server can be viewed here:
 * [CHANGELOG parol-ls](./crates/parol-ls/CHANGELOG.md)
 

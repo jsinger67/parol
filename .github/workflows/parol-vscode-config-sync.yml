@@ -1,0 +1,43 @@
+name: Parol VSCode Config Sync
+
+on:
+  push:
+    branches: [ main, release1.0, release2.2 ]
+    paths:
+      - tools/parol-vscode/config-definitions.js
+      - tools/parol-vscode/scripts/check-config-sync.js
+      - tools/parol-vscode/src/config.ts
+      - tools/parol-vscode/package.json
+      - tools/parol-vscode/package-lock.json
+      - .github/workflows/parol-vscode-config-sync.yml
+  pull_request:
+    branches: [ main, release1.0, release2.2 ]
+    paths:
+      - tools/parol-vscode/config-definitions.js
+      - tools/parol-vscode/scripts/check-config-sync.js
+      - tools/parol-vscode/src/config.ts
+      - tools/parol-vscode/package.json
+      - tools/parol-vscode/package-lock.json
+      - .github/workflows/parol-vscode-config-sync.yml
+
+permissions:
+  contents: read
+
+jobs:
+  config-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: tools/parol-vscode/package-lock.json
+      - name: Install extension dependencies
+        working-directory: tools/parol-vscode
+        run: npm ci
+      - name: Validate extension config sync
+        working-directory: tools/parol-vscode
+        run: npm run check-config-sync

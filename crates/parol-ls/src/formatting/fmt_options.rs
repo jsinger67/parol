@@ -1,39 +1,5 @@
-use super::Line;
-use lsp_types::{FormattingOptions, FormattingProperty};
-
-macro_rules! add_boolean_formatting_option {
-    ($self:ident, $options:ident, $option_name:ident, $default:literal) => {
-        $self.$option_name = if let Some(&FormattingProperty::Bool(val)) = $options
-            .properties
-            .get(concat!("formatting.", stringify!($option_name)))
-        {
-            val
-        } else {
-            $default
-        };
-        eprintln!(
-            concat!("FmtOptions: ", stringify!($option_name), ": {}"),
-            $self.$option_name
-        );
-    };
-}
-
-macro_rules! add_number_formatting_option {
-    ($self:ident, $options:ident, $option_name:ident, $default:literal) => {
-        $self.$option_name = if let Some(&FormattingProperty::Number(val)) = $options
-            .properties
-            .get(concat!("formatting.", stringify!($option_name)))
-        {
-            val as usize
-        } else {
-            $default
-        };
-        eprintln!(
-            concat!("FmtOptions: ", stringify!($option_name), ": {}"),
-            $self.$option_name
-        );
-    };
-}
+use super::{FormattingSettings, Line};
+use lsp_types::FormattingOptions;
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 #[allow(dead_code)]
@@ -86,10 +52,11 @@ pub(crate) struct FmtOptions {
 #[allow(unused)]
 impl FmtOptions {
     pub(crate) fn new() -> Self {
+        let defaults = FormattingSettings::default();
         FmtOptions {
-            empty_line_after_prod: true,
-            prod_semicolon_on_nl: true,
-            max_line_length: 100,
+            empty_line_after_prod: defaults.empty_line_after_prod,
+            prod_semicolon_on_nl: defaults.prod_semicolon_on_nl,
+            max_line_length: defaults.max_line_length,
             ..Default::default()
         }
     }
@@ -156,10 +123,12 @@ impl FmtOptions {
 
 impl From<&FormattingOptions> for FmtOptions {
     fn from(options: &FormattingOptions) -> Self {
-        let mut me = Self::new();
-        add_boolean_formatting_option!(me, options, empty_line_after_prod, true);
-        add_boolean_formatting_option!(me, options, prod_semicolon_on_nl, true);
-        add_number_formatting_option!(me, options, max_line_length, 100);
-        me
+        let settings = FormattingSettings::from_options(options);
+        Self {
+            empty_line_after_prod: settings.empty_line_after_prod,
+            prod_semicolon_on_nl: settings.prod_semicolon_on_nl,
+            max_line_length: settings.max_line_length,
+            ..Self::default()
+        }
     }
 }

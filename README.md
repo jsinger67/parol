@@ -40,6 +40,7 @@ It also contains the vs-code extension `parol-vscode` which is released on VS Co
 [parol-vscode](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
 
 - [CHANGELOG parol-vscode](./tools/parol-vscode/CHANGELOG.md)
+- [Development checks parol-vscode](./tools/parol-vscode/README.md#development-checks)
 
 ---
 

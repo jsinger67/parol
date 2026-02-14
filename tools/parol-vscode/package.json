@@ -99,10 +99,11 @@
   "scripts": {
     "vscode:prepublish": "npm run build-base -- --minify",
     "package": "vsce package -o parol-vscode.vsix",
+    "check-config-sync": "node ./scripts/check-config-sync.js",
     "build-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --target=node16",
     "build": "npm run build-base -- --sourcemap",
     "watch": "npm run build-base -- --sourcemap --watch",
-    "lint": "prettier --check . && eslint -c .eslintrc.js --ext ts ./src ./tests",
+    "lint": "npm run check-config-sync && prettier --check . && eslint -c .eslintrc.js --ext ts ./src ./tests",
     "fix": "prettier --write . && eslint -c .eslintrc.js --ext ts ./src ./tests --fix"
   }
 }

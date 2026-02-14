@@ -2,6 +2,17 @@ import * as vscode from "vscode";
 import { LSPAny } from "vscode-languageclient";
 import { log } from "./extension";
 
+type ConfigDefinition = {
+    name: string;
+    defaultValue: unknown;
+    valueType: "boolean" | "integer";
+};
+
+const { ROOT_SECTION, CONFIG_DEFINITIONS } = require("../config-definitions") as {
+    ROOT_SECTION: string;
+    CONFIG_DEFINITIONS: ReadonlyArray<ConfigDefinition>;
+};
+
 class ConfigProperty {
     private _changed: boolean;
 
@@ -34,16 +45,15 @@ class ConfigProperty {
 }
 
 export class Config {
-    readonly rootSection = "parol-vscode";
+    readonly rootSection = ROOT_SECTION;
     configProps: ConfigProperty[] = [];
     changedConfigProps: string[] = [];
 
     // Note: Add appropriate configurations to package.json for each config property!
     constructor() {
-        this.configProps.push(new ConfigProperty("max_k", 3));
-        this.configProps.push(new ConfigProperty("formatting.empty_line_after_prod", true));
-        this.configProps.push(new ConfigProperty("formatting.prod_semicolon_on_nl", true));
-        this.configProps.push(new ConfigProperty("formatting.max_line_length", 100));
+        this.configProps = CONFIG_DEFINITIONS.map(
+            ({ name, defaultValue }) => new ConfigProperty(name, defaultValue)
+        );
         this.loadConfiguration();
     }
 
