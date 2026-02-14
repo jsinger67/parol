@@ -4,7 +4,7 @@ pub(crate) use format::Format;
 mod indent;
 
 mod fmt_options;
-pub(crate) use fmt_options::{FmtOptions, LineEnd, Padding};
+pub(crate) use fmt_options::{FmtOptions, LineEnd};
 
 mod settings;
 pub(crate) use settings::FormattingSettings;
