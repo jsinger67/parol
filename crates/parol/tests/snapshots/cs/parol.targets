@@ -1,0 +1,11 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="GenerateParser" BeforeTargets="BeforeCompile;CoreCompile" Inputs="snapshot_cs.par" Outputs="SnapshotCsParser.cs;ISnapshotCsActions.cs">
+    <Exec Command="parol -f snapshot_cs.par -p SnapshotCsParser.cs -a ISnapshotCsActions.cs -t SnapshotCs -m SnapshotCs -l c-sharp" />
+    <ItemGroup>
+      <Compile Remove="SnapshotCsParser.cs" />
+      <Compile Include="SnapshotCsParser.cs" />
+      <Compile Remove="ISnapshotCsActions.cs" />
+      <Compile Include="ISnapshotCsActions.cs" />
+    </ItemGroup>
+  </Target>
+</Project>

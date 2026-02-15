@@ -22,6 +22,8 @@ impl std::fmt::Display for CsProjCsData<'_> {
     <PackageReference Include="Parol.Runtime" Version="1.0.0" />
   </ItemGroup>
 
+  <Import Project="parol.targets" />
+
 </Project>
 "#
         )

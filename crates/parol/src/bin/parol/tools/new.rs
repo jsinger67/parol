@@ -4,6 +4,7 @@ mod csproj_cs;
 mod grammar_rs;
 mod lib_rs;
 mod main_rs;
+mod parol_targets;
 mod program_cs;
 
 use actions_cs::ActionsCsDataBuilder;
@@ -12,6 +13,7 @@ use csproj_cs::CsProjCsDataBuilder;
 use grammar_rs::GrammarRsDataBuilder;
 use lib_rs::LibRsDataBuilder;
 use main_rs::MainRsDataBuilder;
+use parol_targets::ParolTargetsDataBuilder;
 use program_cs::ProgramCsDataBuilder;
 
 use anyhow::{Context, Result, anyhow};
@@ -384,6 +386,7 @@ fn apply_dotnet(creation_data: &CreationData) -> Result<()> {
 
 fn generate_dotnet_project(creation_data: &CreationData) -> Result<()> {
     generate_csproj(creation_data)?;
+    generate_parol_targets(creation_data)?;
     generate_grammar_par(creation_data)?;
     generate_program_cs(creation_data)?;
     generate_actions_cs(creation_data)?;
@@ -432,6 +435,19 @@ fn generate_actions_cs(creation_data: &CreationData) -> Result<()> {
         .build()?;
     let actions_source = format!("{actions_data}");
     fs::write(actions_file_out, actions_source).context("Error writing generated actions file!")?;
+
+    Ok(())
+}
+
+fn generate_parol_targets(creation_data: &CreationData) -> Result<()> {
+    let mut targets_file_out = creation_data.path.clone();
+    targets_file_out.push("parol.targets");
+    let targets_data = ParolTargetsDataBuilder::default()
+        .crate_name(creation_data.crate_name)
+        .grammar_name(creation_data.grammar_name.clone())
+        .build()?;
+    let targets_source = format!("{targets_data}");
+    fs::write(targets_file_out, targets_source).context("Error writing generated targets file!")?;
 
     Ok(())
 }

@@ -1,6 +1,6 @@
 use anyhow::{Result, anyhow};
 use std::fs;
-use std::process::{Command, ExitStatus};
+use std::process::Command;
 use tempfile::tempdir;
 
 macro_rules! binary_path {
@@ -13,16 +13,8 @@ macro_rules! binary_path {
     };
 }
 
-fn run_parol(args: &[&str]) -> Result<ExitStatus> {
+fn run_parol(args: &[&str]) -> Result<std::process::ExitStatus> {
     Command::new(binary_path!("parol"))
-        .args(args)
-        .status()
-        .map_err(|e| anyhow!(e))
-}
-
-fn run_dotnet(args: &[&str], cwd: &std::path::Path) -> Result<ExitStatus> {
-    Command::new("dotnet")
-        .current_dir(cwd)
         .args(args)
         .status()
         .map_err(|e| anyhow!(e))
@@ -32,6 +24,7 @@ fn run_dotnet(args: &[&str], cwd: &std::path::Path) -> Result<ExitStatus> {
 fn test_csharp_end_to_end() -> Result<()> {
     let temp_dir = tempdir()?;
     let project_path = temp_dir.path().join("cs_test");
+    let project_name = "cs_test";
 
     // 1. Scaffold the project
     let status = run_parol(&[
@@ -44,34 +37,10 @@ fn test_csharp_end_to_end() -> Result<()> {
     ])?;
     assert!(status.success(), "parol new failed");
 
-    // 2. Generate the parser
-    // We need to run parol on the generated grammar
-    let grammar_file = project_path.join("cs_test.par");
-    let parser_file = project_path.join("CsTestParser.cs");
-    let actions_file = project_path.join("ICsTestActions.cs"); // This is a bit of a guess for the filename
-
-    // Let's check what the actual filenames are or use explicit ones
-    let status = run_parol(&[
-        "-f",
-        grammar_file.to_str().unwrap(),
-        "-p",
-        parser_file.to_str().unwrap(),
-        "-a",
-        actions_file.to_str().unwrap(),
-        "-t",
-        "CsTest",
-        "-m",
-        "CsTest",
-        "-l",
-        "c-sharp",
-    ])?;
-    assert!(status.success(), "parol generation failed");
-
-    // 3. Update .csproj to point to local Parol.Runtime (optional but needed if not available on NuGet)
-    let csproj_path = project_path.join("cs_test.csproj");
+    // 2. Update .csproj to point to local Parol.Runtime
+    let csproj_path = project_path.join(format!("{}.csproj", project_name));
     let mut csproj_content = fs::read_to_string(&csproj_path)?;
 
-    // Replace the PackageReference with a ProjectReference to the local Parol.Runtime
     let runtime_project_path = "d:\\Source\\parol-dotnet\\src\\Parol.Runtime\\Parol.Runtime.csproj";
     if std::path::Path::new(runtime_project_path).exists() {
         csproj_content = csproj_content.replace(
@@ -81,13 +50,39 @@ fn test_csharp_end_to_end() -> Result<()> {
         fs::write(&csproj_path, csproj_content)?;
     }
 
-    // 4. Build the project
-    let status = run_dotnet(&["build"], &project_path)?;
-    assert!(status.success(), "dotnet build failed");
+    // 3. Build the project (should trigger parol generation via parol.targets)
+    let parol_bin_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .join("target")
+        .join("debug");
 
-    // 5. Run the project
+    let path = std::env::var("PATH").unwrap_or_default();
+    let new_path = format!("{};{}", parol_bin_dir.display(), path);
+
+    let output = Command::new("dotnet")
+        .current_dir(&project_path)
+        .arg("build")
+        .env("PATH", &new_path)
+        .output()
+        .map_err(|e| anyhow!(e))?;
+
+    if !output.status.success() {
+        eprintln!("stdout: {}", String::from_utf8_lossy(&output.stdout));
+        eprintln!("stderr: {}", String::from_utf8_lossy(&output.stderr));
+    }
+    assert!(output.status.success(), "dotnet build failed");
+
+    // 4. Run the project
     let test_file = project_path.join("test.txt");
-    let status = run_dotnet(&["run", "--", test_file.to_str().unwrap()], &project_path)?;
+    let status = Command::new("dotnet")
+        .current_dir(&project_path)
+        .args(["run", "--", test_file.to_str().unwrap()])
+        .env("PATH", &new_path)
+        .status()
+        .map_err(|e| anyhow!(e))?;
     assert!(status.success(), "dotnet run failed");
 
     Ok(())
