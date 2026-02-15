@@ -1,5 +1,24 @@
 use crate::InnerAttributes;
 
+/// The language to generate code for.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, clap::ValueEnum)]
+pub enum Language {
+    /// Rust
+    #[default]
+    Rust,
+    /// C#
+    CSharp,
+}
+
+impl std::fmt::Display for Language {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Language::Rust => write!(f, "rust"),
+            Language::CSharp => write!(f, "csharp"),
+        }
+    }
+}
+
 // ---------------------------------------------------
 // Part of the Public API
 // *Changes will affect crate's version according to semver*
@@ -16,6 +35,10 @@ pub trait CommonGeneratorConfig {
     fn range(&self) -> bool;
     /// Generate typed syntree node wrappers
     fn node_kind_enums(&self) -> bool;
+    /// The language to generate code for
+    fn language(&self) -> Language {
+        Language::Rust
+    }
 }
 
 // ---------------------------------------------------

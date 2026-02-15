@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "4.2.2"
+version = "4.3.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) and LALR(1) parser generator for Rust"
 default-run = "parol"
@@ -44,6 +44,7 @@ ts-rs = "12.0.1"
 ume = "0.1"
 rayon = "1.11.0"
 scnr2 = { workspace = true }
+scnr2_generate = { workspace = true }
 tempfile = "3"
 lalry = "0.1.0"
 rustc-hash = "2.1.1"

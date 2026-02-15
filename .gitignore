@@ -30,3 +30,8 @@ Cargo.lock
 
 # mdbook
 /book/book/**
+
+# C# build artifacts
+**/[Bb]in/
+**/[Oo]bj/
+!crates/parol/src/bin/

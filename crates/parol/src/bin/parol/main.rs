@@ -83,6 +83,7 @@ fn run(args: &CliArgs) -> Result<u128> {
         builder.debug_verbose();
     }
     builder.inner_attributes(args.inner_attributes.clone());
+    builder.language(args.language);
     if let Some(expanded_grammar_file) = &args.expanded {
         if expanded_grammar_file == OsStr::new("--") {
             // We special case this in our listener (see below)

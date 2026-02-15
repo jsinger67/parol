@@ -210,6 +210,8 @@ pub struct Builder {
     pub(crate) trim_parse_tree: bool,
     /// Disbales the error recovery mechanism in the generated parser
     pub(crate) disable_recovery: bool,
+    /// The language to generate code for
+    pub(crate) language: crate::config::Language,
 }
 
 impl Builder {
@@ -289,6 +291,7 @@ impl Builder {
             output_sanity_checks: true,
             trim_parse_tree: false,
             disable_recovery: false,
+            language: crate::config::Language::Rust,
         }
     }
     /// By default, we require that the generated parser and action files are not discarded.
@@ -422,6 +425,12 @@ impl Builder {
         self
     }
 
+    /// Set the language to generate code for
+    pub fn language(&mut self, language: crate::config::Language) -> &mut Self {
+        self.language = language;
+        self
+    }
+
     /// Begin the process of generating the grammar
     /// using the specified listener (or None if no listener is desired).
     ///
@@ -495,6 +504,10 @@ impl CommonGeneratorConfig for Builder {
 
     fn node_kind_enums(&self) -> bool {
         self.enum_kind
+    }
+
+    fn language(&self) -> crate::config::Language {
+        self.language
     }
 }
 
@@ -662,48 +675,103 @@ impl GrammarGenerator<'_> {
     pub fn write_output(&mut self) -> Result<()> {
         assert_eq!(self.state, Some(State::PostProcessed));
         let grammar_config = self.grammar_config.as_mut().unwrap();
-        let lexer_source = crate::generate_lexer_source(grammar_config, &self.builder)
-            .map_err(|e| parol!("Failed to generate lexer source!: {}", e))?;
 
-        let user_trait_generator = UserTraitGenerator::new(grammar_config);
+        let language = self.builder.language();
+
+        let lexer_source = match language {
+            crate::config::Language::Rust => {
+                crate::generate_lexer_source(grammar_config, &self.builder)
+                    .map_err(|e| parol!("Failed to generate lexer source!: {}", e))?
+            }
+            crate::config::Language::CSharp => {
+                crate::generators::cs_lexer_generator::generate_lexer_source(
+                    grammar_config,
+                    &self.builder,
+                )
+                .map_err(|e| parol!("Failed to generate C# lexer source!: {}", e))?
+            }
+        };
+
         let mut type_info: GrammarTypeInfo =
             GrammarTypeInfo::try_new(&self.builder.user_type_name)?;
-        let user_trait_source = user_trait_generator.generate_user_trait_source(
-            &self.builder,
-            grammar_config.grammar_type,
-            &mut type_info,
-        )?;
+
+        let user_trait_source = match language {
+            crate::config::Language::Rust => {
+                let user_trait_generator = UserTraitGenerator::new(grammar_config);
+                user_trait_generator.generate_user_trait_source(
+                    &self.builder,
+                    grammar_config.grammar_type,
+                    &mut type_info,
+                )?
+            }
+            crate::config::Language::CSharp => {
+                let user_trait_generator =
+                    crate::generators::cs_user_trait_generator::CSUserTraitGenerator::new(
+                        grammar_config,
+                    );
+                user_trait_generator.generate_user_trait_source(
+                    &self.builder,
+                    grammar_config.grammar_type,
+                    &mut type_info,
+                )?
+            }
+        };
+
         if let Some(ref user_trait_file_out) = self.builder.actions_output_file {
             fs::write(user_trait_file_out, user_trait_source)
                 .map_err(|e| parol!("Error writing generated user trait source!: {}", e))?;
-            crate::try_format(user_trait_file_out)?;
+            if language == crate::config::Language::Rust {
+                crate::try_format(user_trait_file_out)?;
+            }
         } else if self.builder.debug_verbose {
             println!("\nSource for semantic actions:\n{user_trait_source}");
         }
 
         let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
 
-        let parser_source = match grammar_config.grammar_type {
-            GrammarType::LLK => crate::generate_parser_source(
-                grammar_config,
-                &lexer_source,
-                &self.builder,
-                self.lookahead_dfa_s.as_ref().unwrap(),
-                ast_type_has_lifetime,
-            )?,
-            GrammarType::LALR1 => crate::generate_lalr1_parser_source(
-                grammar_config,
-                &lexer_source,
-                &self.builder,
-                self.parse_table.as_ref().unwrap(),
-                ast_type_has_lifetime,
-            )?,
+        let parser_source = match language {
+            crate::config::Language::Rust => match grammar_config.grammar_type {
+                GrammarType::LLK => crate::generate_parser_source(
+                    grammar_config,
+                    &lexer_source,
+                    &self.builder,
+                    self.lookahead_dfa_s.as_ref().unwrap(),
+                    ast_type_has_lifetime,
+                )?,
+                GrammarType::LALR1 => crate::generate_lalr1_parser_source(
+                    grammar_config,
+                    &lexer_source,
+                    &self.builder,
+                    self.parse_table.as_ref().unwrap(),
+                    ast_type_has_lifetime,
+                )?,
+            },
+            crate::config::Language::CSharp => match grammar_config.grammar_type {
+                GrammarType::LLK => crate::generators::cs_parser_generator::generate_parser_source(
+                    grammar_config,
+                    &lexer_source,
+                    &self.builder,
+                    self.lookahead_dfa_s.as_ref().unwrap(),
+                    ast_type_has_lifetime,
+                )?,
+                GrammarType::LALR1 => {
+                    crate::generators::cs_parser_generator::generate_lalr1_parser_source(
+                        grammar_config,
+                        &lexer_source,
+                        &self.builder,
+                        self.parse_table.as_ref().unwrap(),
+                        ast_type_has_lifetime,
+                    )?
+                }
+            },
         };
 
         if let Some(ref parser_file_out) = self.builder.parser_output_file {
             fs::write(parser_file_out, parser_source)
                 .map_err(|e| parol!("Error writing generated lexer source!: {}", e))?;
-            crate::try_format(parser_file_out)?;
+            if language == crate::config::Language::Rust {
+                crate::try_format(parser_file_out)?;
+            }
         } else if self.builder.debug_verbose {
             println!("\nParser source:\n{parser_source}");
         }

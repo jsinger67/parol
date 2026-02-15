@@ -1,12 +1,18 @@
+mod actions_cs;
 mod build_rs;
+mod csproj_cs;
 mod grammar_rs;
 mod lib_rs;
 mod main_rs;
+mod program_cs;
 
+use actions_cs::ActionsCsDataBuilder;
 use build_rs::BuildRsDataBuilder;
+use csproj_cs::CsProjCsDataBuilder;
 use grammar_rs::GrammarRsDataBuilder;
 use lib_rs::LibRsDataBuilder;
 use main_rs::MainRsDataBuilder;
+use program_cs::ProgramCsDataBuilder;
 
 use anyhow::{Context, Result, anyhow};
 use clap::ArgGroup;
@@ -46,6 +52,10 @@ pub struct Args {
     /// Track the generated files in git
     #[clap(long)]
     track_generated_files: bool,
+
+    /// The language of the new crate
+    #[clap(short = 'L', long, default_value = "rust")]
+    pub language: parol::Language,
 }
 
 #[derive(Debug, Builder)]
@@ -56,6 +66,7 @@ struct CreationData<'a> {
     is_bin: bool,
     tree_gen: bool,
     track_generated_files: bool,
+    language: parol::Language,
 }
 
 pub fn main(args: &Args) -> Result<()> {
@@ -78,17 +89,27 @@ pub fn main(args: &Args) -> Result<()> {
         .is_bin(args.bin)
         .tree_gen(args.tree)
         .track_generated_files(args.track_generated_files)
+        .language(args.language)
         .build()?;
 
-    apply_cargo(&creation_data)?;
+    if creation_data.language == parol::Language::Rust {
+        apply_cargo(&creation_data)?;
+    } else {
+        apply_dotnet(&creation_data)?;
+    }
 
     print!(
-        "Generating crate {} for grammar {}...",
+        "Generating project {} for grammar {} in {}...",
         creation_data.crate_name.green(),
-        creation_data.grammar_name.green()
+        creation_data.grammar_name.green(),
+        creation_data.language.to_string().yellow()
     );
 
-    generate_crate(&creation_data)?;
+    if creation_data.language == parol::Language::Rust {
+        generate_crate(&creation_data)?;
+    } else {
+        generate_dotnet_project(&creation_data)?;
+    }
 
     Ok(())
 }
@@ -337,6 +358,80 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
         src/{crate_name}_grammar_trait.rs\n"
     )
     .context("Error writing to .gitignore file!")?;
+
+    Ok(())
+}
+
+fn apply_dotnet(creation_data: &CreationData) -> Result<()> {
+    // Call the `dotnet new console` command
+    Command::new("dotnet")
+        .args([
+            "new",
+            "console",
+            "-n",
+            creation_data.crate_name,
+            "-o",
+            creation_data
+                .path
+                .to_str()
+                .ok_or_else(|| anyhow!("Please provide a path"))?,
+        ])
+        .status()
+        .map(|_| ())?;
+
+    Ok(())
+}
+
+fn generate_dotnet_project(creation_data: &CreationData) -> Result<()> {
+    generate_csproj(creation_data)?;
+    generate_grammar_par(creation_data)?;
+    generate_program_cs(creation_data)?;
+    generate_actions_cs(creation_data)?;
+    generate_test_txt(creation_data)?;
+
+    Ok(())
+}
+
+fn generate_csproj(creation_data: &CreationData) -> Result<()> {
+    let mut csproj_file_out = creation_data.path.clone();
+    csproj_file_out.push(format!("{}.csproj", creation_data.crate_name));
+    let csproj_data = CsProjCsDataBuilder::default()
+        ._crate_name(creation_data.crate_name)
+        .build()?;
+    let csproj_source = format!("{csproj_data}");
+    fs::write(csproj_file_out, csproj_source).context("Error writing generated csproj file!")?;
+
+    Ok(())
+}
+
+fn generate_program_cs(creation_data: &CreationData) -> Result<()> {
+    let mut program_file_out = creation_data.path.clone();
+    program_file_out.push("Program.cs");
+    let user_type_name = NmHlp::to_upper_camel_case(creation_data.crate_name);
+    let program_data = ProgramCsDataBuilder::default()
+        .crate_name(creation_data.crate_name)
+        .grammar_name(creation_data.grammar_name.clone())
+        .user_type_name(user_type_name.as_str())
+        .build()?;
+    let program_source = format!("{program_data}");
+    fs::write(program_file_out, program_source).context("Error writing generated Program.cs!")?;
+
+    Ok(())
+}
+
+fn generate_actions_cs(creation_data: &CreationData) -> Result<()> {
+    let mut actions_file_out = creation_data.path.clone();
+    actions_file_out.push(format!(
+        "{}_actions.cs",
+        NmHlp::to_lower_snake_case(creation_data.crate_name)
+    ));
+    let user_type_name = NmHlp::to_upper_camel_case(creation_data.crate_name);
+    let actions_data = ActionsCsDataBuilder::default()
+        .grammar_name(creation_data.grammar_name.clone())
+        .user_type_name(user_type_name.as_str())
+        .build()?;
+    let actions_source = format!("{actions_data}");
+    fs::write(actions_file_out, actions_source).context("Error writing generated actions file!")?;
 
     Ok(())
 }

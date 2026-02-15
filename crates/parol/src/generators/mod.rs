@@ -52,3 +52,10 @@ pub mod node_kind_enum_generator;
 
 /// Module with the node types exporter
 pub mod export_node_types;
+
+/// C# Lexer generator
+pub mod cs_lexer_generator;
+/// C# Parser generator
+pub mod cs_parser_generator;
+/// C# User trait generator
+pub mod cs_user_trait_generator;

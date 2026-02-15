@@ -84,6 +84,10 @@ pub(crate) struct CliArgs {
     #[arg(long)]
     pub disable_recovery: bool,
 
+    /// The language to generate code for
+    #[arg(short, long, value_enum, default_value_t = parol::Language::Rust)]
+    pub language: parol::Language,
+
     #[command(subcommand)]
     pub subcommand: Option<super::tools::ToolsSubcommands>,
 }

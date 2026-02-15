@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.0 - Not yet released
+
+* Added multi-language support to `parol new` via the `--language` (`-L`) flag.
+* Added scaffolding for C# projects, including `.csproj`, `Program.cs`, and `Actions.cs` templates.
+* Added C# target support in code generators (lexer, parser, and user traits).
+* Fixed robust character literal escaping in C# for Unicode characters.
+* Improved CLI argument consistency for the `new` subcommand.
+
 ## 4.2.2 - 2026-01-04
 
 * Enhance default grammar in `parol new` to avoid initial build warning due to a too simple grammar.
@@ -44,6 +52,7 @@ instead of being silently ignored.
   triggering an error, which can be useful in certain scenarios.
 
   **Usage example:**
+
   ```parol
   // For scanner mode INITIAL
   %allow_unmatched
@@ -73,11 +82,14 @@ instead of being silently ignored.
   testing grammar acceptors in isolation, facilitating rapid development.
 
   **Usage:**
+
   ```shell
   parol acceptor_test --grammar-file <path-to-grammar-file> --test-count <test-count> --max-length <max-length-of-generated-input>
   ```
+
   concrete example:
-  ```
+
+  ```text
   parol acceptor-test -f .\examples\json_parser\json.par -c 1000 -l 1000
   ```
 

@@ -113,8 +113,14 @@ where
     L: AsRef<Path>,
     R: AsRef<Path>,
 {
-    fs::remove_file(actual.as_ref().join("Cargo.lock")).unwrap();
-    fs::remove_dir_all(actual.as_ref().join(".git")).unwrap();
+    let cargo_lock = actual.as_ref().join("Cargo.lock");
+    if cargo_lock.exists() {
+        fs::remove_file(cargo_lock).unwrap();
+    }
+    let git_dir = actual.as_ref().join(".git");
+    if git_dir.exists() {
+        fs::remove_dir_all(git_dir).unwrap();
+    }
 
     let local_package_version = concat!("parol = \"", env!("CARGO_PKG_VERSION"), "\"");
 
@@ -257,4 +263,25 @@ fn snapshot_bin() {
         .success();
     clean_build_artifacts("bin");
     diff(path.path().join("bin"), snapshot_path("bin"));
+}
+
+#[test]
+fn snapshot_csharp() {
+    let path = tempdir().unwrap();
+    Command::new("parol")
+        .current_dir(&path)
+        .args([
+            "new",
+            "--bin",
+            "--path",
+            "cs",
+            "--name",
+            "snapshot_cs",
+            "--language",
+            "c-sharp",
+        ])
+        .assert()
+        .success();
+    // No build artifacts to clean for C# yet in this test context
+    diff(path.path().join("cs"), snapshot_path("cs"));
 }
