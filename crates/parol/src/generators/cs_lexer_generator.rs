@@ -259,7 +259,7 @@ fn generate_dfa(source: &mut String, dfa: &Dfa, num_classes: usize) -> Result<()
         writeln!(source, "                    new DfaState(")?;
 
         // Transitions
-        write!(source, "                        new DfaTransition[] {{ ")?;
+        write!(source, "                        new DfaTransition?[] {{ ")?;
         let mut transition_opts = vec![None; num_classes];
         for t in &state.transitions {
             transition_opts[t.elementary_interval_index.as_usize()] = Some(t.target.as_usize());
