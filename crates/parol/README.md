@@ -39,6 +39,12 @@ the start symbol of your grammar which is called after the whole input string is
 function then is called with a parameter that comprises the complete structure of the parsed
 document.
 
+For generated C# parsers this interface is emitted as `I<GrammarName>Actions` and extends
+`IUserActions` and `IProvidesValueConverter`. Generated actions include a default
+`GeneratedValueConverter` and delegate `%nt_type` conversions via `RuntimeValueConverter.Convert<T>`.
+You can override the `ValueConverter` property in a derived actions class to provide custom
+grammar-specific conversions.
+
 The parser calls the interface trait's functions via a separately generated adapter automatically
 during the process of parsing.
 

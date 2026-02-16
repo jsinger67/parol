@@ -35,7 +35,7 @@ namespace {user_type_name}
 
             string fileName = args[0];
             string input = File.ReadAllText(fileName);
-            var actions = new {grammar_name}Actions();
+            I{grammar_name}Actions actions = new {grammar_name}Actions();
 
             try
             {{

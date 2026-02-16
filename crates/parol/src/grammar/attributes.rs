@@ -52,7 +52,6 @@ impl Display for ProductionAttribute {
     }
 }
 
-
 impl<T, W> Decorate<T, W> for ProductionAttribute
 where
     T: Display,
@@ -103,7 +102,6 @@ impl Display for SymbolAttribute {
         }
     }
 }
-
 
 impl<T, W> Decorate<T, W> for SymbolAttribute
 where

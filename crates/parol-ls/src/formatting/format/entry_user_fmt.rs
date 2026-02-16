@@ -3,13 +3,13 @@ use crate::parol_ls_grammar_trait::{
     UserTypeName,
 };
 
+use super::super::comments::Comments;
+use super::super::context::FormatterContext;
+use super::super::fmt_options::FmtOptions;
 use super::declaration_fmt::format_declaration_with_context;
 use super::helpers::{
     comment_opts_force_single_newline, comment_opts_right, format_comments_before_token,
 };
-use super::super::context::FormatterContext;
-use super::super::fmt_options::FmtOptions;
-use super::super::comments::Comments;
 use super::traits::Fmt;
 
 impl Fmt for Declaration {

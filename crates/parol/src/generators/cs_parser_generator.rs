@@ -165,6 +165,10 @@ fn generate_parse_methods(
     _parser_type_name: &str,
 ) -> Result<()> {
     let scanner_type_name = NamingHelper::to_upper_camel_case(config.user_type_name()) + "Scanner";
+    let actions_interface_name = format!(
+        "I{}Actions",
+        NamingHelper::to_upper_camel_case(config.user_type_name())
+    );
     let start_symbol_index = grammar_config
         .cfg
         .get_non_terminal_set()
@@ -174,7 +178,30 @@ fn generate_parse_methods(
 
     writeln!(
         source,
+        "        public static void Parse(string input, string fileName, {} userActions) {{",
+        actions_interface_name
+    )?;
+    writeln!(
+        source,
+        "            ParseInternal(input, fileName, userActions);"
+    )?;
+    writeln!(source, "        }}")?;
+    writeln!(source)?;
+
+    writeln!(
+        source,
         "        public static void Parse(string input, string fileName, IUserActions userActions) {{"
+    )?;
+    writeln!(
+        source,
+        "            ParseInternal(input, fileName, userActions);"
+    )?;
+    writeln!(source, "        }}")?;
+    writeln!(source)?;
+
+    writeln!(
+        source,
+        "        private static void ParseInternal(string input, string fileName, IUserActions userActions) {{"
     )?;
     writeln!(source, "            var parser = new LLKParser(")?;
     writeln!(source, "                {},", start_symbol_index)?;

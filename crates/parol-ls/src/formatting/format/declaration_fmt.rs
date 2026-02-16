@@ -1,3 +1,4 @@
+use super::super::comments::Comments;
 use super::super::context::{FormatterContext, context_for_declaration, declaration_delimiter};
 use super::helpers::{
     comment_opts_left, comment_opts_left_force_remove, format_comments_before_token,
@@ -6,7 +7,6 @@ use super::helpers::{
 use super::last_token::LastToken;
 use super::scanner_fmt::format_scanner_directives_with_context;
 use super::traits::Fmt;
-use super::super::comments::Comments;
 use crate::parol_ls_grammar_trait::Declaration;
 
 pub(super) fn format_declaration_with_context(

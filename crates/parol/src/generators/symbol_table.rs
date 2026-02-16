@@ -196,7 +196,6 @@ impl TypeEntrails {
     }
 }
 
-
 ///
 /// Type information used for auto-generation
 ///

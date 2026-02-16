@@ -1,12 +1,12 @@
-use super::helpers::{
-    comment_opts_force_single_newline, comment_opts_left, format_comments_before_token,
-};
-use super::traits::Fmt;
 use super::super::{
     comments::Comments,
     context::{FormatterContext, semicolon_starts_on_new_line},
     line::Line,
 };
+use super::helpers::{
+    comment_opts_force_single_newline, comment_opts_left, format_comments_before_token,
+};
+use super::traits::Fmt;
 use crate::parol_ls_grammar_trait::{Production, ProductionLHS};
 
 pub(super) fn format_production_with_context(

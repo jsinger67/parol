@@ -28,17 +28,16 @@ impl FormattingSettings {
         &mut self,
         props: &ConfigProperties,
     ) -> Result<(), serde_json::error::Error> {
-        self.empty_line_after_prod = read_config_bool(
-            props,
-            EMPTY_LINE_AFTER_PROD_KEY,
-            self.empty_line_after_prod,
-        )?;
+        self.empty_line_after_prod =
+            read_config_bool(props, EMPTY_LINE_AFTER_PROD_KEY, self.empty_line_after_prod)?;
         self.prod_semicolon_on_nl =
             read_config_bool(props, PROD_SEMICOLON_ON_NL_KEY, self.prod_semicolon_on_nl)?;
-        self.max_line_length =
-            read_config_usize(props, MAX_LINE_LENGTH_KEY, self.max_line_length)?;
+        self.max_line_length = read_config_usize(props, MAX_LINE_LENGTH_KEY, self.max_line_length)?;
 
-        eprintln!("{EMPTY_LINE_AFTER_PROD_KEY}: {}", self.empty_line_after_prod);
+        eprintln!(
+            "{EMPTY_LINE_AFTER_PROD_KEY}: {}",
+            self.empty_line_after_prod
+        );
         eprintln!("{PROD_SEMICOLON_ON_NL_KEY}: {}", self.prod_semicolon_on_nl);
         eprintln!("{MAX_LINE_LENGTH_KEY}: {}", self.max_line_length);
 

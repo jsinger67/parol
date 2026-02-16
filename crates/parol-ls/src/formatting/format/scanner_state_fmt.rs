@@ -1,11 +1,11 @@
 use crate::parol_ls_grammar_trait::{ScannerDirectives, ScannerState, ScannerStateList};
 
+use super::super::comments::Comments;
+use super::super::context::FormatterContext;
+use super::super::fmt_options::FmtOptions;
 use super::dispatch::handle_scanner_directives;
 use super::helpers::{comment_opts_force_single_newline, format_comments_before_token};
 use super::scanner_fmt::format_scanner_directives_with_context;
-use super::super::context::FormatterContext;
-use super::super::fmt_options::FmtOptions;
-use super::super::comments::Comments;
 use super::traits::Fmt;
 
 impl Fmt for ScannerDirectives {

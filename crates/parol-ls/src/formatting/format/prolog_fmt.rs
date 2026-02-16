@@ -1,7 +1,7 @@
 use crate::parol_ls_grammar_trait::{Prolog, PrologList, PrologList0};
 
-use super::super::fmt_options::FmtOptions;
 use super::super::comments::Comments;
+use super::super::fmt_options::FmtOptions;
 use super::traits::Fmt;
 
 impl Fmt for Prolog {
