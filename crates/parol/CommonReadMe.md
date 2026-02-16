@@ -25,6 +25,8 @@ For generated C# parsers this interface is emitted as `I<GrammarName>Actions` an
 `GeneratedValueConverter` and delegate `%nt_type` conversions via `RuntimeValueConverter.Convert<T>`.
 You can override the `ValueConverter` property in a derived actions class to provide custom
 grammar-specific conversions.
+The .NET SDK is only required for C# generation/build workflows. Rust-only workflows do not
+require .NET, and C# integration tests are skipped automatically when `dotnet` is not available.
 
 The parser calls the interface trait's functions via a separately generated adapter automatically
 during the process of parsing.

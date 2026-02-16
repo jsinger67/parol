@@ -13,16 +13,37 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  rust:
+    name: Rust checks (no .NET required)
 
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Build workspace
       run: cargo build --verbose
-    - name: Run tests
+    - name: Run Rust test suite
       run: cargo test --verbose
     # snapshot testing
-    - name: Assert no changes
+    - name: Assert no generated changes
       run: git diff --exit-code
+
+  csharp-integration:
+    name: C# integration tests (.NET SDK required)
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+    - name: Build parol crate
+      run: cargo build -p parol --verbose
+    - name: Run C# integration test suite
+      run: cargo test -p parol --test cs_integration_tests -- --nocapture

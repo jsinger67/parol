@@ -2,6 +2,7 @@ use anyhow::{Result, anyhow};
 use std::fs;
 use std::process::Command;
 use std::sync::{Mutex, OnceLock};
+use std::{env, path::PathBuf};
 use tempfile::tempdir;
 
 macro_rules! binary_path {
@@ -26,6 +27,34 @@ fn cs_runtime_build_lock() -> &'static Mutex<()> {
     LOCK.get_or_init(|| Mutex::new(()))
 }
 
+fn dotnet_available() -> bool {
+    static AVAILABLE: OnceLock<bool> = OnceLock::new();
+    *AVAILABLE.get_or_init(|| {
+        Command::new("dotnet")
+            .arg("--version")
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false)
+    })
+}
+
+fn skip_if_no_dotnet(test_name: &str) -> bool {
+    if dotnet_available() {
+        false
+    } else {
+        eprintln!("Skipping {test_name}: dotnet SDK not found in PATH");
+        true
+    }
+}
+
+fn runtime_project_path() -> PathBuf {
+    env::var_os("PAROL_RUNTIME_PROJECT_PATH")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            PathBuf::from("d:\\Source\\parol-dotnet\\src\\Parol.Runtime\\Parol.Runtime.csproj")
+        })
+}
+
 fn ensure_local_runtime_reference(
     project_path: &std::path::Path,
     project_name: &str,
@@ -33,9 +62,12 @@ fn ensure_local_runtime_reference(
     let csproj_path = project_path.join(format!("{}.csproj", project_name));
     let mut csproj_content = fs::read_to_string(&csproj_path)?;
 
-    let runtime_project_path = "d:\\Source\\parol-dotnet\\src\\Parol.Runtime\\Parol.Runtime.csproj";
-    if std::path::Path::new(runtime_project_path).exists() {
-        let replacement = format!(r#"<ProjectReference Include="{}" />"#, runtime_project_path);
+    let runtime_project_path = runtime_project_path();
+    if runtime_project_path.exists() {
+        let replacement = format!(
+            r#"<ProjectReference Include="{}" />"#,
+            runtime_project_path.display()
+        );
         csproj_content = csproj_content
             .lines()
             .map(|line| {
@@ -77,6 +109,10 @@ fn dotnet_build(project_path: &std::path::Path, path: &str) -> Result<std::proce
 
 #[test]
 fn test_csharp_end_to_end() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_end_to_end") {
+        return Ok(());
+    }
+
     let _guard = cs_runtime_build_lock()
         .lock()
         .unwrap_or_else(|e| e.into_inner());
@@ -125,6 +161,10 @@ fn test_csharp_end_to_end() -> Result<()> {
 
 #[test]
 fn test_csharp_typed_generation_with_alternations() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_typed_generation_with_alternations") {
+        return Ok(());
+    }
+
     let _guard = cs_runtime_build_lock()
         .lock()
         .unwrap_or_else(|e| e.into_inner());
@@ -207,6 +247,10 @@ Number
 
 #[test]
 fn test_csharp_typed_generation_with_list_and_optional() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_typed_generation_with_list_and_optional") {
+        return Ok(());
+    }
+
     let _guard = cs_runtime_build_lock()
         .lock()
         .unwrap_or_else(|e| e.into_inner());
@@ -305,6 +349,10 @@ Number
 
 #[test]
 fn test_csharp_typed_generation_with_nt_type_conversion() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_typed_generation_with_nt_type_conversion") {
+        return Ok(());
+    }
+
     let _guard = cs_runtime_build_lock()
         .lock()
         .unwrap_or_else(|e| e.into_inner());
@@ -412,6 +460,10 @@ Number
 
 #[test]
 fn test_csharp_generated_actions_contains_converter_contract_markers() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_generated_actions_contains_converter_contract_markers") {
+        return Ok(());
+    }
+
     let _guard = cs_runtime_build_lock()
         .lock()
         .unwrap_or_else(|e| e.into_inner());
@@ -467,6 +519,10 @@ fn test_csharp_generated_actions_contains_converter_contract_markers() -> Result
 
 #[test]
 fn test_csharp_nt_type_custom_value_converter_override_is_used() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_nt_type_custom_value_converter_override_is_used") {
+        return Ok(());
+    }
+
     let _guard = cs_runtime_build_lock()
         .lock()
         .unwrap_or_else(|e| e.into_inner());
@@ -605,6 +661,10 @@ namespace CsNtTypeOverride
 
 #[test]
 fn test_csharp_nt_type_null_input_conversion_is_rejected() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_nt_type_null_input_conversion_is_rejected") {
+        return Ok(());
+    }
+
     let _guard = cs_runtime_build_lock()
         .lock()
         .unwrap_or_else(|e| e.into_inner());
