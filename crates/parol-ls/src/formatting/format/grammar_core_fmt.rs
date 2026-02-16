@@ -17,6 +17,19 @@ use super::traits::Fmt;
 
 const START_LINE_OFFSET: usize = 6;
 
+fn normalize_to_single_line(text: &str) -> String {
+    text.replace("\n    | ", " | ")
+        .replace("\n      ", " ")
+        .replace('\n', " ")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn rhs_exceeds_max_line_length(options: &FmtOptions, rhs: &str) -> bool {
+    START_LINE_OFFSET + rhs.len() > options.max_line_length
+}
+
 impl Fmt for ASTControl {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         match self {
@@ -48,24 +61,21 @@ impl Fmt for Alternation {
             (String::new(), comments),
             |(mut acc, comments), e| {
                 let (mut next_part, comments) = e.txt(&next_option, comments);
-                if split_top_level_alternatives {
-                    if !acc.is_empty() {
-                        let lines: Vec<&str> = RX_NEW_LINE.split(&acc).collect();
-                        if lines.len() > 1 && lines.last().unwrap().is_empty() {
-                            acc.push_str("      ");
-                        } else if lines.len() > 1 {
-                            if lines.last().unwrap().len() + next_part.len()
-                                > options.max_line_length
-                            {
-                                acc.push_str("\n      ");
-                            }
-                        } else if START_LINE_OFFSET + acc.len() + next_part.len()
-                            > options.max_line_length
-                        {
+                if split_top_level_alternatives && !acc.is_empty() {
+                    let lines: Vec<&str> = RX_NEW_LINE.split(&acc).collect();
+                    if lines.len() > 1 && lines.last().unwrap().is_empty() {
+                        acc.push_str("      ");
+                    } else if lines.len() > 1 {
+                        if lines.last().unwrap().len() + next_part.len() > options.max_line_length {
                             acc.push_str("\n      ");
                         }
+                    } else if START_LINE_OFFSET + acc.len() + next_part.len()
+                        > options.max_line_length
+                    {
+                        acc.push_str("\n      ");
                     }
                 }
+
                 if !acc.is_empty() && !Line::ends_with_nl(&acc) && !Line::ends_with_space(&acc) {
                     acc.push(' ');
                 }
@@ -106,6 +116,15 @@ impl Fmt for Alternations {
                 (acc, comments)
             },
         );
+        if options.nesting_depth <= 1
+            && !all_alternations_str.contains("//")
+            && !all_alternations_str.contains("/*")
+        {
+            let single_line_rhs = normalize_to_single_line(&all_alternations_str);
+            if !rhs_exceeds_max_line_length(options, &single_line_rhs) {
+                return (single_line_rhs, comments);
+            }
+        }
         (all_alternations_str, comments)
     }
 }
@@ -178,9 +197,12 @@ impl Fmt for GrammarDefinitionList {
 impl Fmt for Group {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (alternations_str, comments) = self.alternations.txt(options, comments);
+        let single_line_alternations = normalize_to_single_line(&alternations_str);
+        let group_rhs = format!("( {single_line_alternations} )");
         let split_group_alternatives = options.nesting_depth == 2
             && !self.alternations.alternations_list.is_empty()
-            && !alternations_str.contains('\n');
+            && !alternations_str.contains('\n')
+            && rhs_exceeds_max_line_length(options, &group_rhs);
         let alternations_str = if split_group_alternatives {
             alternations_str.replace(" | ", "\n    | ")
         } else {
@@ -249,9 +271,12 @@ impl Fmt for NonTerminalOpt {
 impl Fmt for Optional {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (alternations_str, comments) = self.alternations.txt(options, comments);
+        let single_line_alternations = normalize_to_single_line(&alternations_str);
+        let optional_rhs = format!("[ {single_line_alternations} ]");
         let split_optional_alternatives = options.nesting_depth == 2
             && !self.alternations.alternations_list.is_empty()
-            && !alternations_str.contains('\n');
+            && !alternations_str.contains('\n')
+            && rhs_exceeds_max_line_length(options, &optional_rhs);
         let alternations_str = if split_optional_alternatives {
             alternations_str.replace(" | ", "\n    | ")
         } else {
@@ -302,9 +327,12 @@ impl Fmt for ProductionLHS {
 impl Fmt for Repeat {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (alternations_str, comments) = self.alternations.txt(options, comments);
+        let single_line_alternations = normalize_to_single_line(&alternations_str);
+        let repeat_rhs = format!("{{ {single_line_alternations} }}");
         let split_repeat_alternatives = options.nesting_depth == 2
             && !self.alternations.alternations_list.is_empty()
-            && !alternations_str.contains('\n');
+            && !alternations_str.contains('\n')
+            && rhs_exceeds_max_line_length(options, &repeat_rhs);
         let alternations_str = if split_repeat_alternatives {
             alternations_str.replace(" | ", "\n    | ")
         } else {

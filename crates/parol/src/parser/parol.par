@@ -69,10 +69,7 @@ Alternation
     ;
 
 Factor
-    : Group
-    | Repeat
-    | Optional
-    | Symbol
+    : Group | Repeat | Optional | Symbol
     ;
 
 Symbol
@@ -146,9 +143,7 @@ IdentifierList
     ;
 
 ASTControl
-    : CutOperator
-    | MemberName [ UserTypeDeclaration ]
-    | UserTypeDeclaration
+    : CutOperator | MemberName [ UserTypeDeclaration ] | UserTypeDeclaration
     ;
 
 // The name of the member in the AST as it will appear in the generated code
