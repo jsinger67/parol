@@ -12,3 +12,14 @@ dotnet run --project .\examples\calc_csharp\calc_csharp.csproj -- examples/calc_
 ```
 
 The sample input is in `examples/calc_csharp/test.txt`.
+
+## Conversion principle (Rust-style typed token mapping)
+
+This example now also demonstrates the typed-token mapping principle used in Rust examples:
+
+- Grammar declares a terminal result type:
+	- `Number: "0|[1-9][0-9]*" : CalcCsharp::CalcNumber;`
+- `parol` generates `Number` with a typed member (`CalcNumber`) instead of raw `Token` for `NumberValue`.
+- Conversion happens through generated mapping/runtime conversion by using a constructible target type.
+
+In this example, `CalcNumber` provides a constructor from `Token` and stores the parsed `long` value.

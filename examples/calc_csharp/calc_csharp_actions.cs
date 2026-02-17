@@ -208,7 +208,7 @@ namespace CalcCsharp
 
         private static long ParseNumber(Number number)
         {
-            return long.Parse(number.NumberValue.Text, CultureInfo.InvariantCulture);
+            return number.NumberValue.Value;
         }
 
         private long LookupVariable(string name)

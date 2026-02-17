@@ -117,7 +117,7 @@ namespace CalcCsharp {
     public sealed record Negate(Minus Minus);
 
     // Type derived for non-terminal Number
-    public sealed record Number(Token NumberValue);
+    public sealed record Number(CalcCsharp.CalcNumber NumberValue);
 
     // Type derived for non-terminal Plus
     public sealed record Plus(Token PlusValue);
@@ -1945,7 +1945,7 @@ namespace CalcCsharp {
 
         private static Number MapNumber(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
-            if (children.Length == 1 ) return new Number((Token)children[0 + 0]);
+            if (children.Length == 1 ) return new Number(ConvertValue<CalcCsharp.CalcNumber>(children[0 + 0]));
             if (children.Length == 1 && children[0] is Number directValue) return directValue;
             throw new InvalidOperationException("Unsupported C# mapping for production 58 (Number: \"0|[1-9][0-9]*\";)");
         }
