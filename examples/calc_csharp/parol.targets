@@ -1,0 +1,11 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="GenerateParser" BeforeTargets="BeforeCompile;CoreCompile" Inputs="calc_csharp.par" Outputs="CalcCsharpParser.cs;ICalcCsharpActions.cs">
+    <Exec Command="parol -f calc_csharp.par -p CalcCsharpParser.cs -a ICalcCsharpActions.cs -t CalcCsharp -m CalcCsharp -l c-sharp" />
+    <ItemGroup>
+      <Compile Remove="CalcCsharpParser.cs" />
+      <Compile Include="CalcCsharpParser.cs" />
+      <Compile Remove="ICalcCsharpActions.cs" />
+      <Compile Include="ICalcCsharpActions.cs" />
+    </ItemGroup>
+  </Target>
+</Project>

@@ -324,12 +324,14 @@ Number
 
     // Repetition support in expanded grammar mapper types
     assert!(
-        generated_actions.contains("private static ItemsList MapItemsList0(object[] children)")
+        generated_actions
+            .contains("private static List<ItemsList> MapItemsList0(object[] children)")
             && generated_actions
-                .contains("private static ItemsList MapItemsList1(object[] children)")
+                .contains("private static List<ItemsList> MapItemsList1(object[] children)")
     );
     assert!(
-        generated_actions.contains("List<") && generated_actions.contains("children.Length == 2")
+        generated_actions.contains("new List<ItemsList>()")
+            && generated_actions.contains("children.Length == 1 + 1")
     );
 
     // Optional support in expanded grammar mapper types

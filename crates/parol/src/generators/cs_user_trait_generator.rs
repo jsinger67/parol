@@ -250,194 +250,321 @@ impl<'a> CSUserTraitGenerator<'a> {
             .get(&prod_num)
             .ok_or_else(|| anyhow!("No adapter action for production {}", prod_num))?;
         let function = type_info.symbol_table.symbol_as_function(action_id)?;
-        let non_terminal = function.non_terminal.clone();
+        let non_terminal = self.grammar_config.cfg.pr[prod_num].get_n();
         let nt_type_id = *type_info
             .non_terminal_types
             .get(&non_terminal)
             .ok_or_else(|| anyhow!("Missing non-terminal type for {}", non_terminal))?;
         let nt_cs_type = Self::to_cs_type(nt_type_id, &type_info.symbol_table)?;
-        let map_method = format!("Map{}", self.action_name(prod_num));
+        let production_attribute = self.grammar_config.cfg.pr[prod_num].get_attribute();
+        let action_name = self.action_name(prod_num);
+        let alternatives = self.grammar_config.cfg.matching_productions(&non_terminal);
+        let has_empty_alternative = alternatives
+            .iter()
+            .any(|(_, production)| production.get_r().is_empty());
+        let list_shape_fallback = (non_terminal.ends_with("List")
+            || non_terminal.ends_with("_list"))
+            && has_empty_alternative;
+        let list_action_fallback = action_name.ends_with("List0") || action_name.ends_with("List1");
+        let is_collection_helper = matches!(
+            production_attribute,
+            ProductionAttribute::CollectionStart | ProductionAttribute::AddToCollection
+        ) || list_shape_fallback
+            || list_action_fallback;
+        let map_type_id = nt_type_id;
+        let map_cs_type = if is_collection_helper {
+            format!("List<{}>", nt_cs_type)
+        } else {
+            Self::to_cs_type(map_type_id, &type_info.symbol_table)?
+        };
+        let map_method = format!("Map{}", action_name);
 
         writeln!(
             source,
             "        private static {} {}(object[] children) {{",
-            nt_cs_type, map_method
+            map_cs_type, map_method
         )?;
         writeln!(
             source,
             "            if (children == null) throw new ArgumentNullException(nameof(children));"
         )?;
 
-        let nt_symbol = type_info.symbol_table.symbol_as_type(nt_type_id);
-        match nt_symbol.entrails() {
-            TypeEntrails::Struct => {
-                let members = Self::non_clipped_members(nt_type_id, &type_info.symbol_table)?;
-                let nt_name = nt_symbol.inner_name();
-                if members.is_empty() {
-                    writeln!(source, "            return new {}();", nt_name)?;
-                } else if members.len() == 1 {
-                    let member = type_info.symbol_table.symbol_as_instance(members[0]);
-                    let member_type = type_info.symbol_table.symbol_as_type(member.type_id());
-                    let member_name = Self::member_property_name(
-                        &nt_name,
-                        type_info.symbol_table.name(member.my_id()),
-                    );
-                    match (function.sem, member_type.entrails()) {
-                        (ProductionAttribute::OptionalNone, _) => {
-                            writeln!(
-                                source,
-                                "            if (children.Length == 0) return new {}(default!);",
-                                nt_name
-                            )?;
-                        }
-                        (ProductionAttribute::OptionalSome, _) => {
-                            let value_expr = Self::child_to_value_expr(
-                                member.type_id(),
-                                &type_info.symbol_table,
-                                "children[0]",
-                            )?;
-                            writeln!(
-                                source,
-                                "            if (children.Length == 1) return new {}({});",
-                                nt_name, value_expr
-                            )?;
-                        }
-                        (ProductionAttribute::CollectionStart, TypeEntrails::Vec(inner)) => {
-                            let inner_type = Self::to_cs_type(*inner, &type_info.symbol_table)?;
-                            let value_expr = Self::child_to_value_expr(
-                                *inner,
-                                &type_info.symbol_table,
-                                "children[0]",
-                            )?;
-                            writeln!(
-                                source,
-                                "            if (children.Length == 1) return new {}(new List<{}> {{ {} }});",
-                                nt_name, inner_type, value_expr
-                            )?;
-                        }
-                        (ProductionAttribute::AddToCollection, TypeEntrails::Vec(inner)) => {
-                            let inner_type = Self::to_cs_type(*inner, &type_info.symbol_table)?;
-                            let value_expr = Self::child_to_value_expr(
-                                *inner,
-                                &type_info.symbol_table,
-                                "children[1]",
-                            )?;
-                            writeln!(
-                                source,
-                                "            if (children.Length == 2 && children[0] is {} previous) {{",
-                                nt_name
-                            )?;
-                            writeln!(
-                                source,
-                                "                var items = new List<{}>();",
-                                inner_type
-                            )?;
-                            writeln!(
-                                source,
-                                "                if (previous.{} != null) items.AddRange(previous.{});",
-                                member_name, member_name
-                            )?;
-                            writeln!(source, "                items.Add({});", value_expr)?;
-                            writeln!(source, "                return new {}(items);", nt_name)?;
-                            writeln!(source, "            }}")?;
-                        }
-                        _ => {}
-                    }
-                }
+        if is_collection_helper {
+            let item_members = Self::non_clipped_members(nt_type_id, &type_info.symbol_table)?;
+            let item_arity = item_members.len();
+            let is_empty_production = self.grammar_config.cfg.pr[prod_num].get_r().is_empty();
 
+            writeln!(
+                source,
+                "            if (children.Length == 0) return new List<{}>();",
+                nt_cs_type
+            )?;
+            writeln!(
+                source,
+                "            if (children.Length == 1 && children[0] is List<{}> directValue) return directValue;",
+                nt_cs_type
+            )?;
+            if !is_empty_production {
                 writeln!(
                     source,
-                    "            if (children.Length == {} ) return {};",
-                    members.len(),
+                    "            if (children.Length == {}) {{",
+                    item_arity
+                )?;
+                writeln!(
+                    source,
+                    "                var item = {};",
                     Self::emit_struct_ctor(nt_type_id, &type_info.symbol_table, "0")?
                 )?;
                 writeln!(
                     source,
-                    "            if (children.Length == 1 && children[0] is {} directValue) return directValue;",
-                    nt_name
+                    "                return new List<{}> {{ item }};",
+                    nt_cs_type
                 )?;
-            }
-            TypeEntrails::Enum => {
-                if let Some(prod_type_id) = type_info.production_types.get(&prod_num) {
-                    let prod_type_symbol = type_info.symbol_table.symbol_as_type(*prod_type_id);
-                    let nt_name = nt_symbol.inner_name();
-                    let variant_record_name = type_info
-                        .symbol_table
-                        .members(nt_type_id)?
-                        .iter()
-                        .find_map(|member| {
-                            let variant = type_info.symbol_table.symbol_as_type(*member);
-                            if let TypeEntrails::EnumVariant(inner) = variant.entrails() {
-                                if *inner == *prod_type_id {
-                                    Some(Self::enum_variant_record_name(
-                                        &nt_name,
-                                        type_info.symbol_table.name(*member),
-                                    ))
-                                } else {
-                                    None
-                                }
-                            } else {
-                                None
-                            }
-                        });
+                writeln!(source, "            }}")?;
 
-                    if let Some(variant_record_name) = variant_record_name {
-                        match prod_type_symbol.entrails() {
-                            TypeEntrails::Struct => {
-                                let prod_members = Self::non_clipped_members(
-                                    *prod_type_id,
-                                    &type_info.symbol_table,
-                                )?;
+                writeln!(
+                    source,
+                    "            if (children.Length == {} + 1 && children[{}] is List<{}> previous) {{",
+                    item_arity, item_arity, nt_cs_type
+                )?;
+                writeln!(
+                    source,
+                    "                var item = {};",
+                    Self::emit_struct_ctor(nt_type_id, &type_info.symbol_table, "0")?
+                )?;
+                writeln!(
+                    source,
+                    "                var items = new List<{}>();",
+                    nt_cs_type
+                )?;
+                writeln!(source, "                items.Add(item);")?;
+                writeln!(source, "                items.AddRange(previous);")?;
+                writeln!(source, "                return items;")?;
+                writeln!(source, "            }}")?;
+            }
+        }
+
+        if !is_collection_helper {
+            let map_symbol = type_info.symbol_table.symbol_as_type(map_type_id);
+            match map_symbol.entrails() {
+                TypeEntrails::Vec(inner) => {
+                    let inner_type = Self::to_cs_type(*inner, &type_info.symbol_table)?;
+                    writeln!(
+                        source,
+                        "            if (children.Length == 0) return new List<{}>();",
+                        inner_type
+                    )?;
+                    writeln!(
+                        source,
+                        "            if (children.Length == 1 && children[0] is List<{}> directValue) return directValue;",
+                        inner_type
+                    )?;
+                    writeln!(
+                        source,
+                        "            var items = new List<{}>();",
+                        inner_type
+                    )?;
+                    writeln!(source, "            foreach (var child in children) {{")?;
+                    writeln!(
+                        source,
+                        "                if (child is List<{}> existing) items.AddRange(existing);",
+                        inner_type
+                    )?;
+                    writeln!(source, "            }}")?;
+                    writeln!(source, "            foreach (var child in children) {{")?;
+                    writeln!(
+                        source,
+                        "                if (child is List<{}>) continue;",
+                        inner_type
+                    )?;
+                    writeln!(source, "                try {{")?;
+                    writeln!(
+                        source,
+                        "                    items.Add(ConvertValue<{}>(child));",
+                        inner_type
+                    )?;
+                    writeln!(
+                        source,
+                        "                }} catch (InvalidCastException) {{ }}"
+                    )?;
+                    writeln!(source, "            }}")?;
+                    writeln!(
+                        source,
+                        "            if (items.Count > 0 || children.Length == 0) return items;"
+                    )?;
+                }
+                TypeEntrails::Struct => {
+                    let members = Self::non_clipped_members(map_type_id, &type_info.symbol_table)?;
+                    let nt_name = map_symbol.inner_name();
+                    if members.is_empty() {
+                        writeln!(source, "            return new {}();", nt_name)?;
+                    } else if members.len() == 1 {
+                        let member = type_info.symbol_table.symbol_as_instance(members[0]);
+                        let member_type = type_info.symbol_table.symbol_as_type(member.type_id());
+                        let member_name = Self::member_property_name(
+                            &nt_name,
+                            type_info.symbol_table.name(member.my_id()),
+                        );
+                        match (function.sem, member_type.entrails()) {
+                            (ProductionAttribute::OptionalNone, _) => {
                                 writeln!(
                                     source,
-                                    "            if (children.Length == {}) {{",
-                                    prod_members.len()
+                                    "            if (children.Length == 0) return new {}(default!);",
+                                    nt_name
                                 )?;
-                                writeln!(
-                                    source,
-                                    "                var value = {};",
-                                    Self::emit_struct_ctor(
-                                        *prod_type_id,
-                                        &type_info.symbol_table,
-                                        "0"
-                                    )?
-                                )?;
-                                writeln!(
-                                    source,
-                                    "                return new {}(value);",
-                                    variant_record_name
-                                )?;
-                                writeln!(source, "            }}")?;
                             }
-                            _ => {
+                            (ProductionAttribute::OptionalSome, _) => {
                                 let value_expr = Self::child_to_value_expr(
-                                    *prod_type_id,
+                                    member.type_id(),
                                     &type_info.symbol_table,
                                     "children[0]",
                                 )?;
                                 writeln!(
                                     source,
                                     "            if (children.Length == 1) return new {}({});",
-                                    variant_record_name, value_expr
+                                    nt_name, value_expr
                                 )?;
+                            }
+                            (ProductionAttribute::CollectionStart, TypeEntrails::Vec(inner)) => {
+                                let inner_type = Self::to_cs_type(*inner, &type_info.symbol_table)?;
+                                let value_expr = Self::child_to_value_expr(
+                                    *inner,
+                                    &type_info.symbol_table,
+                                    "children[0]",
+                                )?;
+                                writeln!(
+                                    source,
+                                    "            if (children.Length == 1) return new {}(new List<{}> {{ {} }});",
+                                    nt_name, inner_type, value_expr
+                                )?;
+                            }
+                            (ProductionAttribute::AddToCollection, TypeEntrails::Vec(inner)) => {
+                                let inner_type = Self::to_cs_type(*inner, &type_info.symbol_table)?;
+                                let value_expr = Self::child_to_value_expr(
+                                    *inner,
+                                    &type_info.symbol_table,
+                                    "children[1]",
+                                )?;
+                                writeln!(
+                                    source,
+                                    "            if (children.Length == 2 && children[0] is {} previous) {{",
+                                    nt_name
+                                )?;
+                                writeln!(
+                                    source,
+                                    "                var items = new List<{}>();",
+                                    inner_type
+                                )?;
+                                writeln!(
+                                    source,
+                                    "                if (previous.{} != null) items.AddRange(previous.{});",
+                                    member_name, member_name
+                                )?;
+                                writeln!(source, "                items.Add({});", value_expr)?;
+                                writeln!(source, "                return new {}(items);", nt_name)?;
+                                writeln!(source, "            }}")?;
+                            }
+                            _ => {}
+                        }
+                    }
+
+                    writeln!(
+                        source,
+                        "            if (children.Length == {} ) return {};",
+                        members.len(),
+                        Self::emit_struct_ctor(map_type_id, &type_info.symbol_table, "0")?
+                    )?;
+                    writeln!(
+                        source,
+                        "            if (children.Length == 1 && children[0] is {} directValue) return directValue;",
+                        nt_name
+                    )?;
+                }
+                TypeEntrails::Enum => {
+                    if let Some(prod_type_id) = type_info.production_types.get(&prod_num) {
+                        let prod_type_symbol = type_info.symbol_table.symbol_as_type(*prod_type_id);
+                        let nt_name = map_symbol.inner_name();
+                        let variant_record_name = type_info
+                            .symbol_table
+                            .members(map_type_id)?
+                            .iter()
+                            .find_map(|member| {
+                                let variant = type_info.symbol_table.symbol_as_type(*member);
+                                if let TypeEntrails::EnumVariant(inner) = variant.entrails() {
+                                    if *inner == *prod_type_id {
+                                        Some(Self::enum_variant_record_name(
+                                            &nt_name,
+                                            type_info.symbol_table.name(*member),
+                                        ))
+                                    } else {
+                                        None
+                                    }
+                                } else {
+                                    None
+                                }
+                            });
+
+                        if let Some(variant_record_name) = variant_record_name {
+                            match prod_type_symbol.entrails() {
+                                TypeEntrails::Struct => {
+                                    let prod_members = Self::non_clipped_members(
+                                        *prod_type_id,
+                                        &type_info.symbol_table,
+                                    )?;
+                                    writeln!(
+                                        source,
+                                        "            if (children.Length == {}) {{",
+                                        prod_members.len()
+                                    )?;
+                                    writeln!(
+                                        source,
+                                        "                var value = {};",
+                                        Self::emit_struct_ctor(
+                                            *prod_type_id,
+                                            &type_info.symbol_table,
+                                            "0"
+                                        )?
+                                    )?;
+                                    writeln!(
+                                        source,
+                                        "                return new {}(value);",
+                                        variant_record_name
+                                    )?;
+                                    writeln!(source, "            }}")?;
+                                }
+                                _ => {
+                                    let value_expr = Self::child_to_value_expr(
+                                        *prod_type_id,
+                                        &type_info.symbol_table,
+                                        "children[0]",
+                                    )?;
+                                    writeln!(
+                                        source,
+                                        "            if (children.Length == 1) return new {}({});",
+                                        variant_record_name, value_expr
+                                    )?;
+                                }
                             }
                         }
                     }
+                    writeln!(
+                        source,
+                        "            if (children.Length == 1 && children[0] is {} directValue) return directValue;",
+                        map_cs_type
+                    )?;
                 }
-                writeln!(
-                    source,
-                    "            if (children.Length == 1 && children[0] is {} directValue) return directValue;",
-                    nt_cs_type
-                )?;
-            }
-            _ => {
-                let value_expr =
-                    Self::child_to_value_expr(nt_type_id, &type_info.symbol_table, "children[0]")?;
-                writeln!(
-                    source,
-                    "            if (children.Length == 1) return {};",
-                    value_expr
-                )?;
+                _ => {
+                    let value_expr = Self::child_to_value_expr(
+                        map_type_id,
+                        &type_info.symbol_table,
+                        "children[0]",
+                    )?;
+                    writeln!(
+                        source,
+                        "            if (children.Length == 1) return {};",
+                        value_expr
+                    )?;
+                }
             }
         }
 
@@ -563,16 +690,39 @@ impl<'a> CSUserTraitGenerator<'a> {
         writeln!(source, "        /// <inheritdoc/>")?;
         writeln!(
             source,
-            "        public virtual void CallSemanticActionForProductionNumber(int productionNumber, object[] children) {{"
+            "        public virtual object CallSemanticActionForProductionNumber(int productionNumber, object[] children) {{"
         )?;
         writeln!(source, "            switch (productionNumber) {{")?;
         for (i, _) in self.grammar_config.cfg.pr.iter().enumerate() {
+            let action_id = *type_info
+                .adapter_actions
+                .get(&i)
+                .ok_or_else(|| anyhow!("Missing adapter action for production {}", i))?;
+            let function = type_info.symbol_table.symbol_as_function(action_id)?;
+            let non_terminal = function.non_terminal;
             let action_name = self.action_name(i);
-            writeln!(
-                source,
-                "                case {}: {}(children); break;",
-                i, action_name
-            )?;
+            let map_method = format!("Map{}", action_name);
+            let typed_method_name = if type_info.get_user_action(&non_terminal).is_ok() {
+                Some(format!(
+                    "On{}",
+                    NamingHelper::to_upper_camel_case(&non_terminal)
+                ))
+            } else {
+                None
+            };
+            if let Some(typed_method_name) = typed_method_name {
+                writeln!(
+                    source,
+                    "                case {}: {{ var value = {}(children); {}(value); return value; }}",
+                    i, map_method, typed_method_name
+                )?;
+            } else {
+                writeln!(
+                    source,
+                    "                case {}: return {}(children);",
+                    i, map_method
+                )?;
+            }
         }
         writeln!(
             source,

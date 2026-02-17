@@ -2,6 +2,7 @@ use crate::analysis::LookaheadDFA;
 use crate::analysis::compiled_la_dfa::CompiledDFA;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
 use crate::generators::{GrammarConfig, NamingHelper};
+use crate::grammar::SymbolAttribute;
 use crate::{LRParseTable, Symbol, Terminal};
 use anyhow::Result;
 use parol_runtime::TerminalIndex;
@@ -132,7 +133,7 @@ fn generate_productions(
         writeln!(source, "            new Production(")?;
         writeln!(source, "                {},", lhs)?;
         writeln!(source, "                new ParseItem[] {{")?;
-        for s in pr.get_r().iter().rev() {
+        for s in pr.get_r() {
             match s {
                 Symbol::N(n, ..) => {
                     writeln!(
@@ -141,10 +142,16 @@ fn generate_productions(
                         get_non_terminal_index(n)
                     )?;
                 }
-                Symbol::T(Terminal::Trm(t, .., l0)) => {
+                Symbol::T(Terminal::Trm(t, _, _, attr, _, _, l0)) => {
+                    let parse_type = if *attr == SymbolAttribute::Clipped {
+                        "ParseType.C"
+                    } else {
+                        "ParseType.T"
+                    };
                     writeln!(
                         source,
-                        "                    new ParseItem(ParseType.T, {}),",
+                        "                    new ParseItem({}, {}),",
+                        parse_type,
                         get_terminal_index(t, l0)
                     )?;
                 }
