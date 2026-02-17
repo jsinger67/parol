@@ -1,0 +1,11 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="GenerateParser" BeforeTargets="BeforeCompile;CoreCompile" Inputs="json_parser_csharp.par" Outputs="JsonParserCsharpParser.cs;IJsonParserCsharpActions.cs">
+    <Exec Command="parol -f json_parser_csharp.par -p JsonParserCsharpParser.cs -a IJsonParserCsharpActions.cs -t JsonParserCsharp -m JsonParserCsharp -l c-sharp" />
+    <ItemGroup>
+      <Compile Remove="JsonParserCsharpParser.cs" />
+      <Compile Include="JsonParserCsharpParser.cs" />
+      <Compile Remove="IJsonParserCsharpActions.cs" />
+      <Compile Include="IJsonParserCsharpActions.cs" />
+    </ItemGroup>
+  </Target>
+</Project>
