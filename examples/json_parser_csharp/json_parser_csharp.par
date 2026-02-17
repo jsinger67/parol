@@ -1,6 +1,8 @@
 %start Json
 %title "Json grammar"
 %comment "Derived from http://json.org for parol by Joerg Singer."
+%nt_type String = JsonParserCsharp::JsonString
+%nt_type Number = JsonParserCsharp::JsonNumber
 
 %%
 
@@ -28,6 +30,6 @@ Value
     | 'null'^
     ;
 
-String: /"(\\.|[^"\\])*"/ : JsonParserCsharp::JsonString;
+String: /"(\\.|[^"\\])*"/;
 
-Number: /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?[0-9]+)?/ : JsonParserCsharp::JsonNumber;
+Number: /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?[0-9]+)?/;

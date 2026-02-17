@@ -17,6 +17,11 @@ public readonly struct CalcNumber
         Value = long.Parse(token.Text);
     }
 
+    public CalcNumber(Number number)
+    {
+        Value = long.Parse(number.NumberValue.Text);
+    }
+
     public static implicit operator long(CalcNumber number) => number.Value;
 
     public override string ToString() => Value.ToString();

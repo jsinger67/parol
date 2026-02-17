@@ -206,9 +206,9 @@ namespace CalcCsharp
             };
         }
 
-        private static long ParseNumber(Number number)
+        private static long ParseNumber(CalcNumber number)
         {
-            return number.NumberValue.Value;
+            return number.Value;
         }
 
         private long LookupVariable(string name)

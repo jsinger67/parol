@@ -2,6 +2,7 @@
 %title "Example grammar of an expression evaluator"
 %comment "To demonstrate use of lists, operator precedence, operator associativity"
 %line_comment "//"
+%nt_type Number = CalcCsharp::CalcNumber
 
 %%
 
@@ -89,7 +90,7 @@ Factor
     | "\("^ LogicalOr "\)"^
     ;
 
-Number: "0|[1-9][0-9]*" : CalcCsharp::CalcNumber;
+Number: "0|[1-9][0-9]*";
 
 IdRef: Id;
 

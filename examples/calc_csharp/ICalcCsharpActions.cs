@@ -117,7 +117,7 @@ namespace CalcCsharp {
     public sealed record Negate(Minus Minus);
 
     // Type derived for non-terminal Number
-    public sealed record Number(CalcCsharp.CalcNumber NumberValue);
+    public sealed record Number(Token NumberValue);
 
     // Type derived for non-terminal Plus
     public sealed record Plus(Token PlusValue);
@@ -159,7 +159,7 @@ namespace CalcCsharp {
     public sealed record AddOpMinus(Minus Minus);
 
     // Type derived for production 54
-    public sealed record FactorNumber(Number Number);
+    public sealed record FactorNumber(global::CalcCsharp.CalcNumber Number);
 
     // Type derived for production 55
     public sealed record FactorIdRef(IdRef IdRef);
@@ -564,7 +564,7 @@ namespace CalcCsharp {
 
         /// <summary>
         /// Semantic action for production 54:
-        /// Factor: Number; 
+        /// Factor: Number : CalcCsharp::CalcNumber ; 
         /// </summary>
         void Factor0(object[] children);
 
@@ -1860,7 +1860,7 @@ namespace CalcCsharp {
 
         /// <summary>
         /// Semantic action for production 54:
-        /// Factor: Number; 
+        /// Factor: Number : CalcCsharp::CalcNumber ; 
         /// </summary>
         public virtual void Factor0(object[] children) {
             var value = MapFactor0(children);
@@ -1870,11 +1870,11 @@ namespace CalcCsharp {
         private static Factor MapFactor0(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
-                var value = new FactorNumber((Number)children[0 + 0]);
+                var value = new FactorNumber(ConvertValue<global::CalcCsharp.CalcNumber>(children[0 + 0]));
                 return new FactorNumberVariant(value);
             }
             if (children.Length == 1 && children[0] is Factor directValue) return directValue;
-            throw new InvalidOperationException("Unsupported C# mapping for production 54 (Factor: Number;)");
+            throw new InvalidOperationException("Unsupported C# mapping for production 54 (Factor: Number : CalcCsharp::CalcNumber ;)");
         }
 
         /// <summary>
@@ -1945,7 +1945,7 @@ namespace CalcCsharp {
 
         private static Number MapNumber(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
-            if (children.Length == 1 ) return new Number(ConvertValue<CalcCsharp.CalcNumber>(children[0 + 0]));
+            if (children.Length == 1 ) return new Number((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is Number directValue) return directValue;
             throw new InvalidOperationException("Unsupported C# mapping for production 58 (Number: \"0|[1-9][0-9]*\";)");
         }

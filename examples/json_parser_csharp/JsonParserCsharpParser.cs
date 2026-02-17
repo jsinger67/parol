@@ -477,7 +477,7 @@ namespace JsonParserCsharp {
                 new ParseItem[] {
                 }
             ),
-            // 6 - Pair: String ':'^ /* Clipped */ Value;
+            // 6 - Pair: String : JsonParserCsharp::JsonString  ':'^ /* Clipped */ Value;
             new Production(
                 8,
                 new ParseItem[] {
@@ -525,14 +525,14 @@ namespace JsonParserCsharp {
                 new ParseItem[] {
                 }
             ),
-            // 12 - Value: String;
+            // 12 - Value: String : JsonParserCsharp::JsonString ;
             new Production(
                 10,
                 new ParseItem[] {
                     new ParseItem(ParseType.N, 9),
                 }
             ),
-            // 13 - Value: Number;
+            // 13 - Value: Number : JsonParserCsharp::JsonNumber ;
             new Production(
                 10,
                 new ParseItem[] {

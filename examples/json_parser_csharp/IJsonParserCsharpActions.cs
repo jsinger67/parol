@@ -21,7 +21,7 @@ namespace JsonParserCsharp {
     public sealed record Json(Value Value);
 
     // Type derived for non-terminal Number
-    public sealed record Number(JsonParserCsharp.JsonNumber NumberValue);
+    public sealed record Number(Token NumberValue);
 
     // Type derived for non-terminal Object
     public sealed record Object(ObjectSuffix ObjectSuffix);
@@ -38,7 +38,7 @@ namespace JsonParserCsharp {
     public sealed record Pair(String String, Value Value);
 
     // Type derived for non-terminal String
-    public sealed record String(JsonParserCsharp.JsonString StringValue);
+    public sealed record String(Token StringValue);
 
     // Type derived for non-terminal Value
     public abstract record Value;
@@ -139,7 +139,7 @@ namespace JsonParserCsharp {
 
         /// <summary>
         /// Semantic action for production 6:
-        /// Pair: String ':'^ /* Clipped */ Value; 
+        /// Pair: String : JsonParserCsharp::JsonString  ':'^ /* Clipped */ Value; 
         /// </summary>
         void Pair(object[] children);
 
@@ -175,13 +175,13 @@ namespace JsonParserCsharp {
 
         /// <summary>
         /// Semantic action for production 12:
-        /// Value: String; 
+        /// Value: String : JsonParserCsharp::JsonString ; 
         /// </summary>
         void Value0(object[] children);
 
         /// <summary>
         /// Semantic action for production 13:
-        /// Value: Number; 
+        /// Value: Number : JsonParserCsharp::JsonNumber ; 
         /// </summary>
         void Value1(object[] children);
 
@@ -443,7 +443,7 @@ namespace JsonParserCsharp {
 
         /// <summary>
         /// Semantic action for production 6:
-        /// Pair: String ':'^ /* Clipped */ Value; 
+        /// Pair: String : JsonParserCsharp::JsonString  ':'^ /* Clipped */ Value; 
         /// </summary>
         public virtual void Pair(object[] children) {
             var value = MapPair(children);
@@ -452,9 +452,9 @@ namespace JsonParserCsharp {
 
         private static Pair MapPair(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
-            if (children.Length == 2 ) return new Pair((String)children[0 + 0], (Value)children[0 + 1]);
+            if (children.Length == 2 ) return new Pair(ConvertValue<String>(children[0 + 0]), (Value)children[0 + 1]);
             if (children.Length == 1 && children[0] is Pair directValue) return directValue;
-            throw new InvalidOperationException("Unsupported C# mapping for production 6 (Pair: String ':'^ /* Clipped */ Value;)");
+            throw new InvalidOperationException("Unsupported C# mapping for production 6 (Pair: String : JsonParserCsharp::JsonString  ':'^ /* Clipped */ Value;)");
         }
 
         /// <summary>
@@ -552,7 +552,7 @@ namespace JsonParserCsharp {
 
         /// <summary>
         /// Semantic action for production 12:
-        /// Value: String; 
+        /// Value: String : JsonParserCsharp::JsonString ; 
         /// </summary>
         public virtual void Value0(object[] children) {
             var value = MapValue0(children);
@@ -562,16 +562,16 @@ namespace JsonParserCsharp {
         private static Value MapValue0(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
-                var value = new ValueString((String)children[0 + 0]);
+                var value = new ValueString(ConvertValue<String>(children[0 + 0]));
                 return new ValueStringVariant(value);
             }
             if (children.Length == 1 && children[0] is Value directValue) return directValue;
-            throw new InvalidOperationException("Unsupported C# mapping for production 12 (Value: String;)");
+            throw new InvalidOperationException("Unsupported C# mapping for production 12 (Value: String : JsonParserCsharp::JsonString ;)");
         }
 
         /// <summary>
         /// Semantic action for production 13:
-        /// Value: Number; 
+        /// Value: Number : JsonParserCsharp::JsonNumber ; 
         /// </summary>
         public virtual void Value1(object[] children) {
             var value = MapValue1(children);
@@ -581,11 +581,11 @@ namespace JsonParserCsharp {
         private static Value MapValue1(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
-                var value = new ValueNumber((Number)children[0 + 0]);
+                var value = new ValueNumber(ConvertValue<Number>(children[0 + 0]));
                 return new ValueNumberVariant(value);
             }
             if (children.Length == 1 && children[0] is Value directValue) return directValue;
-            throw new InvalidOperationException("Unsupported C# mapping for production 13 (Value: Number;)");
+            throw new InvalidOperationException("Unsupported C# mapping for production 13 (Value: Number : JsonParserCsharp::JsonNumber ;)");
         }
 
         /// <summary>
@@ -694,7 +694,7 @@ namespace JsonParserCsharp {
 
         private static String MapString(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
-            if (children.Length == 1 ) return new String(ConvertValue<JsonParserCsharp.JsonString>(children[0 + 0]));
+            if (children.Length == 1 ) return new String((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is String directValue) return directValue;
             throw new InvalidOperationException("Unsupported C# mapping for production 19 (String: /\"(\\\\.|[^\"\\\\])*\"/;)");
         }
@@ -710,7 +710,7 @@ namespace JsonParserCsharp {
 
         private static Number MapNumber(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
-            if (children.Length == 1 ) return new Number(ConvertValue<JsonParserCsharp.JsonNumber>(children[0 + 0]));
+            if (children.Length == 1 ) return new Number((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is Number directValue) return directValue;
             throw new InvalidOperationException("Unsupported C# mapping for production 20 (Number: /-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][-+]?[0-9]+)?/;)");
         }
