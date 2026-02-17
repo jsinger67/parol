@@ -407,14 +407,14 @@ Number
 {
     public sealed class CustomValue
     {
-        public Number Number { get; }
+        public Value Value { get; }
 
-        public CustomValue(Number number)
+        public CustomValue(Value value)
         {
-            Number = number;
+            Value = value;
         }
 
-        public override string ToString() => Number.ToString();
+        public override string ToString() => Value.ToString();
     }
 }
 "#,
@@ -440,6 +440,21 @@ Number
             && generated_actions.contains("IValueConverter ValueConverter")
             && generated_actions.contains("GeneratedValueConverter")
             && generated_actions.contains("RuntimeValueConverter.Convert")
+    );
+    assert!(
+        generated_actions
+            .contains("public sealed record CsNtType(global::CsNtType.CustomValue Value);")
+            || generated_actions
+                .contains("public sealed record CsNtType(CsNtType.CustomValue Value);")
+            || generated_actions.contains("public sealed record CsNtType(CustomValue Value);")
+    );
+    assert!(
+        generated_actions
+            .contains("new CsNtType(ConvertValue<global::CsNtType.CustomValue>(children[0 + 0]))")
+            || generated_actions
+                .contains("new CsNtType(ConvertValue<CsNtType.CustomValue>(children[0 + 0]))")
+            || generated_actions
+                .contains("new CsNtType(ConvertValue<CustomValue>(children[0 + 0]))")
     );
 
     // 6. Run parse with matching input and verify success path
@@ -606,7 +621,7 @@ namespace CsNtTypeOverride
         {
             public bool TryConvert(object value, Type targetType, out object? convertedValue)
             {
-                if (targetType == typeof(CustomValue) && value is Number)
+                if (targetType == typeof(CustomValue) && value is Value)
                 {
                     convertedValue = new CustomValue("override");
                     return true;
@@ -719,11 +734,11 @@ Number
 {
     public sealed class CustomValue
     {
-        public Number Number { get; }
+        public Value Value { get; }
 
-        public CustomValue(Number number)
+        public CustomValue(Value value)
         {
-            Number = number;
+            Value = value;
         }
     }
 }

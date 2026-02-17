@@ -1,4 +1,4 @@
-use super::symbol_table::{MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails};
+use super::symbol_table::{SymbolId, SymbolTable, TypeEntrails};
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 use crate::GrammarTypeInfo;
 use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
@@ -78,17 +78,21 @@ impl<'a> CSUserTraitGenerator<'a> {
             TypeEntrails::Box(inner)
             | TypeEntrails::Ref(inner)
             | TypeEntrails::Surrogate(inner)
-            | TypeEntrails::EnumVariant(inner)
-            | TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(inner), _) => {
-                Self::to_cs_type(*inner, symbol_table)
-            }
+            | TypeEntrails::EnumVariant(inner) => Self::to_cs_type(*inner, symbol_table),
             TypeEntrails::Vec(inner) => {
                 Ok(format!("List<{}>", Self::to_cs_type(*inner, symbol_table)?))
             }
             TypeEntrails::Option(inner) => Self::to_cs_type(*inner, symbol_table),
-            TypeEntrails::UserDefinedType(_, user_defined_type) => Ok(user_defined_type
-                .get_module_scoped_name()
-                .replace("::", ".")),
+            TypeEntrails::UserDefinedType(_, user_defined_type) => {
+                let cs_type = user_defined_type
+                    .get_module_scoped_name()
+                    .replace("::", ".");
+                if cs_type.contains('.') {
+                    Ok(format!("global::{cs_type}"))
+                } else {
+                    Ok(cs_type)
+                }
+            }
             TypeEntrails::Struct | TypeEntrails::Enum | TypeEntrails::Trait => {
                 Ok(type_symbol.inner_name())
             }
