@@ -26,5 +26,6 @@ on your changes.
 - Also run `cargo clippy` (found [here](https://github.com/Manishearth/rust-clippy/))
 on your changes and fix all warnings if possible.
 - It would be nice if you do a spell check. It is not required but encouraged.
+- For C# examples, don't commit IDE solution files in `examples` (for example `.sln`/`.slnx`); keep only the project files (for example `.csproj`).
 - Don't forget to add yourself to the to the list of Contributors in the README! This is also
 not required, but it is very much encouraged!

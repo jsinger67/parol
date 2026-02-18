@@ -11,6 +11,8 @@ From the repository root, execute:
 dotnet run --project .\examples\json_parser_csharp\json_parser_csharp.csproj -- examples/json/JsonParserTest.json
 ```
 
+Visual Studio users can open `json_parser_csharp.csproj` directly; a solution file is intentionally not tracked for this single-project example.
+
 You can also use smaller inputs in `examples/json` (for example `object.json`, `array.json`, `number.json`).
 
 ## Conversion principle (%nt_type mapping)

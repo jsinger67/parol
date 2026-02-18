@@ -35,3 +35,7 @@ Cargo.lock
 **/[Bb]in/
 **/[Oo]bj/
 !crates/parol/src/bin/
+
+# Example IDE solution files
+/examples/**/*.sln
+/examples/**/*.slnx
