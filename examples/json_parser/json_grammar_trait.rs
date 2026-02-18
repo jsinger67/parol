@@ -271,7 +271,7 @@ pub struct Pair<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct String<'t> {
-    pub string: Token<'t>, /* "(\\.|[^"])*" */
+    pub string: Token<'t>, /* "(\\.|[^"\\])*" */
 }
 
 ///
@@ -713,7 +713,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// `String: /"(\\.|[^"])*"/;`
+    /// `String: /"(\\.|[^"\\])*"/;`
     ///
     #[parol_runtime::function_name::named]
     fn string(&mut self, string: &ParseTreeType<'t>) -> Result<()> {

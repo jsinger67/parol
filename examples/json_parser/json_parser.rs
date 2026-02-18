@@ -50,7 +50,7 @@ scanner! {
             token r"true" => 11; // "True"
             token r"false" => 12; // "False"
             token r"null" => 13; // "Null"
-            token r#""(\\.|[^"])*""# => 14; // "String"
+            token r#""(\\.|[^"\\])*""# => 14; // "String"
             token r"-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?" => 15; // "Number"
             token r"." => 16; // "Error"
         }
@@ -255,7 +255,7 @@ pub const PRODUCTIONS: &[Production; 21] = &[
         lhs: 10,
         production: &[ParseType::T(13)],
     },
-    // 19 - String: /"(\\.|[^"])*"/;
+    // 19 - String: /"(\\.|[^"\\])*"/;
     Production {
         lhs: 9,
         production: &[ParseType::T(14)],

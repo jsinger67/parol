@@ -40,10 +40,11 @@ fn main() -> ExitCode {
             Ok(_) => {
                 let elapsed_time = now.elapsed();
                 if args.len() > 2 && args[2] == "-q" {
+                    println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                     ExitCode::SUCCESS
                 } else {
-                    println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                     println!("Success!\n{}", json_grammar);
+                    println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                     ExitCode::SUCCESS
                 }
             }
