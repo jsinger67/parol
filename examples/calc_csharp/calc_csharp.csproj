@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="!Exists('..\..\..\parol-dotnet\src\Parol.Runtime\Parol.Runtime.csproj')">
-    <PackageReference Include="Parol.Runtime" Version="1.0.0" />
+    <PackageReference Include="Parol.Runtime" Version="0.1.1" />
   </ItemGroup>
 
   <Import Project="parol.targets" />
