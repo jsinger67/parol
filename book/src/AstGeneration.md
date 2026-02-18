@@ -235,6 +235,13 @@ Here, the scanned text of the token is accessed using the `text` method of the `
 By implementing `TryFrom` traits for your user types, you can easily integrate them into the parse
 process.
 
+For C#, the concept is equivalent, but conversion is expressed with constructors. In practice, you
+provide constructors on your custom types that accept the generated source types used by the mapping
+layer (for example `Token`, or a generated non-terminal wrapper type when `%nt_type` is used).
+See [calc_csharp](https://github.com/jsinger67/parol/tree/main/examples/calc_csharp) and
+[json_parser_csharp](https://github.com/jsinger67/parol/tree/main/examples/json_parser_csharp) for
+complete C# examples.
+
 Several examples are available to help you become familiar with this concept. You may also review
 the [basic interpreter example](https://github.com/jsinger67/parol/tree/main/examples/basic_interpreter).
 

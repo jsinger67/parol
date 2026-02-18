@@ -1,8 +1,11 @@
-# Questions and answers
+# Questions and Answers
 
-## Q: I get stack overflow in compiler generated trait's like `Drop`, `Clone` and `Debug`
+## Q: I get stack overflow in compiler-generated traits like `Drop`, `Clone`, and `Debug`
 A: The reason is most likely a deeply nested structure generated during parsing. There are two
-advices which could lead to working solution:
+recommendations that can lead to a working solution:
+
+> The `Drop`/`Clone`/`Debug` naming is Rust-specific, but the grammar advice below also helps in C#
+> if deeply recursive grammar shapes cause stack overflows at runtime.
 
 1. Avoid 'plain' recursions in your grammar like this (for LL(k) grammars):
 ```parol
@@ -47,14 +50,14 @@ pub struct ListItem<'t> {
     pub number: Box<Number<'t>>,
 }
 ```
-2. Implement the problematic traits by yourself and avoid the recursion by using a loop instead.
-I can't give a general advice here, but there are plenty examples out there that cover this topic
+2. Implement the problematic traits yourself and avoid recursion by using a loop instead.
+I cannot give general advice here, but there are plenty of examples that cover this topic
 thoroughly.
 
-## Q: I get strange errors while commissioning my new grammar and can't figure out what the problem is
-A: Consider the following advices
+## Q: I get strange errors while developing my new grammar and cannot figure out the problem
+A: Consider the following recommendations:
 
-### Break down the problem with a least input as possible
+### Break down the problem with as little input as possible
 
 This will limit the possible error location and also minimize the amount of traces to scrutinize.
 
@@ -63,17 +66,20 @@ This will limit the possible error location and also minimize the amount of trac
 The process of error recovery will surely shroud the original error location.
 Therefore it is advisable to temporarily disable it.
 
-Use Builder API (`disable_recovery()`) or command line argument (`--disable-recovery`).
+Use the Builder API (`disable_recovery()`) or the command-line argument (`--disable-recovery`).
 
 ### Enable traces
 
-In all projects that were generated with `parol new` the env_logger is built in. First activate all
-traces. I'll show the principle in powershell because this will work on Windows as well as on Linux
+In all projects generated with `parol new`, `env_logger` is built in. First activate all traces.
+I will show the principle in PowerShell because this works on Windows as well as on Linux.
+
+> The `RUST_LOG` examples below are for Rust projects. In C#, use your application's logging setup
+> and inspect generated parser/action code similarly when tracing parse behavior.
 
 ```powershell
 $env:RUST_LOG="trace"
 ```
-Then run your scenario and examine the output. If necessary restrict the traces further by tweaking
+Then run your scenario and examine the output. If necessary, restrict the traces further by tweaking
 the RUST_LOG variable, e.g. for parser and scanner internals use this:
 ```powershell
 $env:RUST_LOG="parol_runtime=trace"
@@ -85,8 +91,8 @@ $env:RUST_LOG="parol_runtime::parser=trace"
 $env:RUST_LOG="parol_runtime::lr_parser=trace"
 ```
 * Examine the traces from the beginning to pin down the first occurrence of the problem
-* Often the problems are related to wrong terminal definitions or terminal conflicts or evens
-scanner state related problems, therefore
+* Often problems are related to incorrect terminal definitions, terminal conflicts, or even
+scanner-state-related issues. Therefore:
     * Check for token types attached to the tokens provided during parse, the numbers can be found
     in the generated parser
     * Check the current scanner state and if the tokens are valid there
@@ -109,7 +115,10 @@ Don't forget to import the `InnerAttributes` into your `build.rs`:
 use parol::{build::Builder, InnerAttributes, ParolErrorReporter};
 ```
 
-Another way to avoid this waring is to modify your grammar such that the lengths of the right-hand
+> This warning and the `clippy` suppression are Rust-specific. For C#, prefer reducing very long
+> RHS productions by factoring grammar rules, as described below.
+
+Another way to avoid this warning is to modify your grammar such that the lengths of the right-hand
 sides of your productions are decreased. Therefore examine the productions that correlate to the
 functions where the warnings occur. Then consider to factor out parts of the RHS into separate
 productions.

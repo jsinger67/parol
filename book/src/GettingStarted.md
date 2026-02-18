@@ -29,7 +29,7 @@ include `~/.cargo/bin`.
 
 For a visual introduction, watch the [introductory video](https://youtu.be/TJMwMqD4XSo) on YouTube.
 
-## Generate a Crate with `parol`
+## Generate a Project with `parol`
 
 Use the `parol new` subcommand to create a new project:
 
@@ -37,12 +37,31 @@ Use the `parol new` subcommand to create a new project:
 parol new --bin --path ./my_grammar
 ```
 
+For C#, use:
+
+```shell
+parol new --bin -L c-sharp --path ./my_grammar_cs
+```
+
+The generated C# project references `Parol.Runtime` from NuGet by default.
+Practical C# examples are available in
+[calc_csharp](https://github.com/jsinger67/parol/tree/main/examples/calc_csharp)
+and
+[json_parser_csharp](https://github.com/jsinger67/parol/tree/main/examples/json_parser_csharp).
+
 Change into the new project folder and start the initial build. `parol` will generate two files from
 the initial grammar definition.
 
 ```shell
 cd ./my_grammar
 cargo build
+```
+
+For C#, use the C# project folder and build with:
+
+```shell
+cd ./my_grammar_cs
+dotnet build
 ```
 
 > You can safely ignore the `#[warn(unused_imports)]` warning for now. It will disappear as the
@@ -74,6 +93,9 @@ of `cargo build` will trigger `parol` to regenerate the derived sources automati
 `my_grammar.par` has changed.
 
 **This is all you need to set up a working development environment.**
+
+For documentation editing conventions, see the
+[Writing Style Guide](./UsefulTips.md#writing-style-guide).
 
 > ## VS Code Extension and Language Server
 > 

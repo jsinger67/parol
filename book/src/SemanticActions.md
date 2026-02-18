@@ -1,4 +1,4 @@
-# Semantic actions
+# Semantic Actions
 
 The `parol` parser generator creates traits with functions that represent semantic actions.
 The generated parser then calls these functions at parse time at the appropriate points with correct
@@ -13,14 +13,16 @@ pub trait <NameOfYourGrammar>GrammarTrait<'t> {
 }
 ```
 
+For C#, the same concept is generated as an interface and a base class. The interface is named
+`I<NameOfYourGrammar>Actions`, and the base class is named `<NameOfYourGrammar>Actions` with
+overridable methods for each non-terminal.
+
 The lifetime parameter `<'t>` can be left out if the types used don't hold references to the scanned
 text. This is automatically deduced.
 
-Eventually your grammar processing item implements this trait and can overwrite those functions of
-the trait in which it is interested in.
+Your grammar processing item implements this trait and can override the functions it needs.
 
-It doesn't need to implement all trait functions because the trait is created in a way where all of
-its functions have default implementations.
+It does not need to implement all trait functions, because all of them have default implementations.
 
 All semantic actions are generated for non-terminals of your input grammar, and are typed accordingly.
 
@@ -28,13 +30,12 @@ The `parol` parser generator creates a trait with functions that represent seman
 the semantic actions are typed and they are generated for the *non-terminals of your input grammar*
 instead of for *productions of the [expanded grammar](AstGeneration.html#the-expanded-grammar)*.
 
-You therefore don't have to mess around with `ParseTreeType` although you still encounter items of
-type `Token`. Also the expanded version of your grammar is much less of interest for you.
+You therefore do not have to work directly with `ParseTreeType`, although you still encounter items
+of type `Token`. Also, the expanded version of your grammar is much less relevant in day-to-day use.
 
-`parol`'s great merit is that it can generate an adapter layer automatically that provides the
-conversion to typed grammar items. Indeed I carved out some simple rules that can be applied
-universally to provide this layer of abstraction by generating the production bound semantic
-actions accordingly.
+`parol`'s great merit is that it can automatically generate an adapter layer that provides
+conversion to typed grammar items. This layer follows simple, universal rules by generating the
+production-bound semantic actions accordingly.
 
 This and the automatic AST type inference are the most outstanding properties of `parol`.
 
@@ -81,7 +82,7 @@ impl<'t> CalcGrammarTrait<'t> for CalcGrammar<'t> {
 }
 ```
 
-But what is the advantage of implementing only the start symbols's semantic action? Well, since the
+But what is the advantage of implementing only the start symbol's semantic action? Since the
 start symbol is the root node of each and every concrete parse tree, we know that the generated type
 for it should comprise the complete input as the result of the parsing.
 
@@ -145,7 +146,7 @@ that belongs to the grammar defined by
 [calc.par](https://github.com/jsinger67/parol/blob/main/examples/calc/calc.par).
 
 You then only have to evaluate the content of this value as done in this calculator example.
-I recommend to study this example more deeply and the approach will become obvious to you.
+I recommend studying this example more deeply; the approach will then become obvious.
 
 As mentioned earlier the implementation can be found here:
 [calc_grammar.rs](https://github.com/jsinger67/parol/blob/main/examples/calc/calc_grammar.rs).

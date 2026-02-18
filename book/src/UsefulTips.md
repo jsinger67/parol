@@ -1,8 +1,14 @@
 # Useful Tips
 
+See also: [Summary](./SUMMARY.md).
+
 ## Build Performance
 
 To optimize build performance when using `parol`'s [Builder](https://github.com/jsinger67/parol/blob/main/crates/parol/src/build.rs) API in your `build.rs` script, add the following overrides to your `Cargo.toml` file:
+
+> This subsection is Rust-specific (`build.rs`/Cargo). For C# projects generated with
+> `parol new -L c-sharp`, parser generation is integrated into the project build and does not use
+> `build.rs` or Cargo profile overrides.
 
 ```toml
 # Optimized build performance
@@ -47,3 +53,20 @@ Alternatively, you can use LALR(1) grammars without sacrificing the convenience 
 `parol` currently does not provide special support for this phase, except for detecting left recursions in your grammar.
 
 Support for removing direct left recursions may be provided in the future.
+
+## Writing Style Guide
+
+Use this guide for consistent edits across book chapters:
+
+- Use short, direct sentences in active voice. Prefer “Use X” over “X should be used.”
+- Keep terminology consistent: use “non-terminal,” “terminal,” “scanner state,” “semantic action,”
+  and “grammar processing” uniformly.
+- Prefer formal wording over contractions in technical prose (for example, “do not,” “cannot,”
+  and “it is”).
+- Separate language-specific guidance explicitly. Label Rust-specific and C#-specific notes clearly.
+- Introduce commands with a one-line purpose, then show the command block. Explain the expected
+  outcome in one sentence afterward.
+- Keep examples minimal and progressive: one concept per example, followed by a short sentence
+  explaining why it matters.
+- Use heading style consistently in Title Case, and keep section flow predictable:
+  concept → example → result → next step.

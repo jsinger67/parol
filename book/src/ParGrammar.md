@@ -1,13 +1,14 @@
-# The syntax of `parol`'s Grammar description
+# The Syntax of `parol`'s Grammar Description
 
-I provide the definition of the PAR grammar in PAR grammar [itself](https://github.com/jsinger67/parol/blob/main/crates/parol/src/parser/parol.par).
+The definition of the PAR grammar is provided in the PAR grammar
+[itself](https://github.com/jsinger67/parol/blob/main/crates/parol/src/parser/parol.par).
 
-This grammar is quite concise and most programmers should be familiar with it. But there are several
-specialties which will be described here. First please notice the built-in support for language
+This grammar is concise and most programmers should be familiar with it. However, there are several
+specifics described here. First, note the built-in support for language
 comments.
 
-Using the `%line_comment` and `%block_comment` constructs you can easily define your language's
-comments. For example you can define comments like it's done in the calc example
+Using `%line_comment` and `%block_comment`, you can easily define your language's comments. For
+example, you can define comments as in the calc example
 `calc.par`:
 
 ```parol
@@ -15,23 +16,22 @@ comments. For example you can define comments like it's done in the calc example
 %block_comment  "/\*" "\*/"
 ```
 
-You can supply more than one of these two comment declarations. They will all be considered as valid
+You can supply more than one of these two comment declarations. They are all considered valid
 comments.
 
-As opposed to EBNF you use C-like line comments starting with two slashes (//) and bock comments
+In contrast to EBNF, you use C-like line comments starting with two slashes (//) and block comments
 (/\* ... \*/) in PAR files. This is a result of the close relationship between PAR grammar and
 bison's grammar.
 
-`parol` doesn't simply discard language comments. They are provided during
-parse process via a new method `<UserType>GrammarTrait::on_comment` which is called for each
-single comment in order of their appearance each time before the parser consumes a normal token from
-token stream.
-The method is default implemented and the user have to provide an own implementation if she is
-interested in language comments.
+`parol` does not simply discard language comments. They are provided during parsing via a new method
+`<UserType>GrammarTrait::on_comment`, which is called for each comment in order of appearance each
+time before the parser consumes a normal token from the token stream.
+The method has a default implementation, and users only need to provide their own implementation if
+they are interested in language comments.
 
-This is a minimal support but can greatly improve the usability.
+This is minimal support, but it can greatly improve usability.
 
-## Defining the grammar type
+## Defining the Grammar Type
 
 In the global header section you can define the grammar type you want to use in your grammar
 description.
@@ -42,27 +42,28 @@ The default grammar type is LL(k) and can be omitted.
 %grammar_type 'LL(k)'
 ```
 
-You have the option to use LALR(1) grammar type this way.
+You can define the grammar type as LALR(1) this way:
 
 ```parol
 %grammar_type 'LALR(1)'
 ```
 
-## Case sensitivity
+## Case Sensitivity
 
-Non-terminals are treated case sensitive, i. e. "list" and "List" are different symbols. But it is
-not encouraged to rely on this in your grammar definition. It is much better to keep a consistent
-style on casing in your description.
+Non-terminals are treated as case-sensitive, i.e., "list" and "List" are different symbols. However,
+it is not recommended to rely on this in your grammar definition. It is much better to keep
+capitalization consistent throughout your grammar.
 
 ## Sections
 
-`parols`'s input language consists of two sections divided by the `%%` token. Above there are
-declarations of which only the first `%start` declaration is mandatory. It declares the start symbol
-of your grammar.
-The second section below the `%%` token contains the actual grammar description in form of several
+`parol`'s input language consists of two sections divided by the `%%` token. Above it are
+declarations, of which only the first `%start` declaration is mandatory. It declares the start
+symbol of your grammar.
+The second section below the `%%` token contains the actual grammar description in the form of
+several
 productions. At least one production must exist.
 
-## The start symbol
+## The Start Symbol
 
 It is important to note that the start symbol of the grammar must always be declared with the
 `%start` declaration. It is the very first declaration in the PAR file.
@@ -71,7 +72,7 @@ It is important to note that the start symbol of the grammar must always be decl
 %start Grammar
 ```
 
-## Scanner control
+## Scanner Control
 
 <!-- markdownlint-disable no-inline-html -->
 A scanner (aka lexer) is automatically created from all used terminal symbols. Terminal symbols can
@@ -81,15 +82,15 @@ also be associated with different scanner states. See section
 
 ### Newline handling
 
-The scanner per default skips newlines automatically. To suppress this use the `%auto_newline_off`
+The scanner skips newlines automatically by default. To suppress this, use the `%auto_newline_off`
 directive.
-With this you have to handle newline tokens on your own in your grammar.
+In that case, you must handle newline tokens yourself in your grammar.
 
 ### Whitespace handling
 
-The scanner also per default skips whitespace automatically. To suppress this use the `%auto_ws_off`
+The scanner also skips whitespace automatically by default. To suppress this, use the `%auto_ws_off`
 directive.
-With this you have to handle whitespace tokens on your own in your grammar.
+In that case, you must handle whitespace tokens yourself in your grammar.
 
 ### Open scanner states
 
@@ -118,7 +119,7 @@ See also the new example `allow_unmatched`.
 
 The names of the terminals are deduced from the content of the terminal itself. For instance, for a
 terminal ":=" it creates the terminal name "ColonEqu", see generated parser for Oberon-0. If you
-want this name to be more expressive, you can dedicate a separate production to the terminal, lets
+want this name to be more expressive, you can dedicate a separate production to the terminal, let's
 say:
 
 ```parol
@@ -134,8 +135,8 @@ that instructs the name generation to name the terminal "Assign".
 allowed.
 
 * The **string syntax** (`"..."`). These terminals are treated as if they were **regular expressions.**
-* The **single quoted** string literals (`'..'`) are **literals or raw strings**. The user doesn't
-need to escape any regex meta character. This is used when you don't want to deal with regexes and
+* The **single quoted** string literals (`'..'`) are **literals or raw strings**. The user does not
+need to escape any regex meta character. This is used when you do not want to deal with regexes and
 only use plain text. E.g.: `BlockBegin: '{'`
 * The **regular expression strings** (`/../`), behaves exactly like the double quoted string, i.e.
 they are treated as **regular expressions** but this style better conveys the intent. E.g.:
@@ -203,8 +204,8 @@ Defining _If_ before _Ident_ ensures the correct priority.
 
 #### Context aware terminals
 
-You can also specify whether or whether not a certain token should follow your terminal.
-To achieve this you can use the two lookahead operators `?=` and `?!`. They in principle work like
+You can also specify whether or not a certain token should follow your terminal.
+To achieve this, you can use the two lookahead operators `?=` and `?!`. They work in principle like
 similar operators provided by some regex engines. The scanner only tests for the existence or
 absence of the specified regular expression on the right-hand side of these operators and if the
 constraint holds it only matches the left-hand side. The right-hand side is not consumed.
@@ -230,9 +231,9 @@ For details, please see <a href="#scanner-states">Scanner states</a> below.
 #### Conclusion
 
 ❗ These four mechanisms, **longest match rule**, **priority by order**, **lookahead expressions**
-and **using multiple scanner states** gives you control over terminal conflicts.
+and **using multiple scanner states** give you control over terminal conflicts.
 
-### Terminals that matches an empty string
+### Terminals That Match an Empty String
 
 Please note that terminals should always match non-empty text portions. This means that you have to
 avoid terminals like this:
@@ -275,7 +276,7 @@ description thereby holding the principle of strict separation of grammar descri
 processing in semantic actions. This means no scanner switching in your code, but in the grammar
 description. Only because of this rapid prototyping is possible.
 
-### The Default scanner state INITIAL
+### The Default Scanner State INITIAL
 
 INITIAL is the name of the default scanner state 0. Its behavior is defined with `ScannerDirectives`
 in the global `Declaration` section, such as:
@@ -374,7 +375,7 @@ need to understand the internal configuration of `scnr2`.
 ### Omitting grammar symbols from the AST
 
 You can suffix grammar symbols (terminals and non-terminals) with a cut operator (`^`). This
-instructs `parol` to not propagate them to the AST.
+instructs `parol` not to propagate them to the AST.
 
 ```parol
 Group: '('^ Alternations ')'^;
@@ -385,14 +386,18 @@ The AST type for the symbol `Group` will then only contain a member for the non-
 
 ### Assigning user types to grammar symbols
 
-You can specify a user type to be inserted into the AST structure at the place where the symbol
-would otherwise had the originally generated type.
+You can specify a user type to be inserted into the AST structure where the symbol would otherwise
+have the originally generated type.
 Add after a grammar symbol a colon followed by a user type name to instruct `parol` to use this type
 instead. In your language implementation you have to provide fallible conversions from references of
 the original generated types (`&T`) to your types (`U`) by implementing the trait
 `TryFrom<&T> for U`.
 
-An examples can be found in the `list` example.
+In C#, the same mapping is achieved with constructors on your custom types. The constructors accept
+the generated source types (for example `Token` for terminals, or generated non-terminal wrapper
+types), and `parol` invokes these conversions in the generated mapping layer.
+
+An example can be found in the `list` example.
 
 ```rust
 impl<'t> TryFrom<&Token<'t>> for Number {
@@ -426,10 +431,9 @@ This is done like in the following example:
 %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
 ```
 
-It is similar to the already available `%user_type` with what you could define an alias for a
-user defined type which in turn you could apply to single symbols on the right-hand side of
-grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
-non-terminals much easier.
+It is similar to `%user_type`, where you can define an alias for a user-defined type and then apply
+it to individual symbols on the right-hand side of grammar productions. `%nt_type` cannot be used on
+terminals, but it makes applying mappings to non-terminals much easier.
 Here is the old version used in `parol` itself before (only partial)
 ```parol
 %user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
@@ -450,12 +454,15 @@ Prolog
 : StartDeclaration { Declaration } { ScannerState }
 ;
 ```
-The non-terminal `ScannerState` was automatically defined the be converted to `ScannerConfig`.
+The non-terminal `ScannerState` is automatically converted to `ScannerConfig`.
 
-It is semantically completely identical to use `%user_type` and the application of it to each
-occurrence of the non-terminal in the grammar explicitly.
+It is semantically identical to using `%user_type` and applying it explicitly to each occurrence of
+the non-terminal in the grammar.
 
-### User defined terminal type
+This also applies to C#: `%nt_type` is usually the preferred way to define non-terminal mappings once
+at grammar level, instead of repeating per-production annotations.
+
+### User-Defined Terminal Type
 
 As of version 3.0 you can easily define a user type to which each occurrence of a terminal should be
 automatically converted to.
@@ -493,9 +500,9 @@ ScannerSwitch
     | "%pop" '(' ')'
     ;
 ```
-All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
+All terminals are automatically converted to `crate::parol_ls_grammar::OwnedToken`.
 
-### Define user defined member names
+### Define user-defined member names
 
 As of version 3.0 you can specify for each symbol on the right-hand side of a production how its
 corresponding member in the generated struct should be named.
@@ -512,7 +519,7 @@ Declaration :
 In this example the member for Identifier in the production will be named `nt_name` and the member
 for UserTypeName will receive the name `nt_type` in the generated struct type for this production.
 
-## Semantic actions
+## Semantic Actions
 
 Semantic actions are strictly separated from your grammar description.
 You will use a generated trait with default implementations for each non-terminal of your grammar.

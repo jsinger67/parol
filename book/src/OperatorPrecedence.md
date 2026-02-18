@@ -81,9 +81,9 @@ includes otherwise discarded tokens like spaces.***
 
 ## How do I implement the grammar processing?
 
-You should have a look at the example [calc](https://github.com/jsinger67/parol/tree/main/examples/calc).
+You should take a look at the example [calc](https://github.com/jsinger67/parol/tree/main/examples/calc).
 
-Basically, the grammar processing is implemented in the `calc_grammar.rs`.
+Basically, grammar processing is implemented in `calc_grammar.rs`.
 
 The struct `CalcGrammar` contains a collection of variables and their values called `env`.
 It also contains a stack of values that holds the intermediate results during the calculation:
@@ -98,7 +98,7 @@ Now you can implement selected semantic actions from the `PrecedenceGrammarTrait
 generated `src\precedence_grammar_trait.rs`. It contains all available semantic actions which are
 bound to non-terminals.
 
-To implement for instance the `variable` action, copy the `fn variable...` block into the
+To implement, for instance, the `variable` action, copy the `fn variable...` block into
 ```rust
 impl<'t> PrecedenceGrammarTrait<'t> for PrecedenceGrammar<'t> {
 
@@ -123,7 +123,7 @@ impl<'t> PrecedenceGrammarTrait<'t> for PrecedenceGrammar<'t> {
 ```
 
 Now you can handle any variable. Because our grammar has no assignment yet, the function is simple.
-It tries to retrieve the variables value from the `env`. If the variable is not found in the `env`
+It tries to retrieve the variable's value from `env`. If the variable is not found in `env`,
 it creates a new entry with default value 0. Then it pushes this value on the `calc_results` vector
 for later processing:
 
@@ -147,7 +147,8 @@ for later processing:
 
 Don't forget to `use` the type `Variable` from the module `precedence_grammar_trait`.
 
-To see the results modify the Display implementation of `PrecedenceGrammar` to show the intermediate
+To see the results, modify the `Display` implementation of `PrecedenceGrammar` to show the
+intermediate
 results and the environment.
 
 ```rust
@@ -187,8 +188,8 @@ Env
 x = 0
 ```
 
-As expected the variable `x` has been inserted into the environment with default value 0.
-The Value 0 is still on the stack.
+As expected, the variable `x` has been inserted into the environment with default value 0.
+The value 0 is still on the stack.
 
 Now the next step could be to implement the semantic action for non-terminal `Literal`:
 
@@ -221,13 +222,13 @@ Env
 x = 0
 ```
 
-Now I think you could continue on your own. Implement the unary and binary operations by taking one
-or two top most numbers from the calculation stack and push the result on the stack again.
-If all is implemented correctly the end result of the calculation should be laying as single value
+Now you can continue on your own. Implement the unary and binary operations by taking one
+or two topmost numbers from the calculation stack and pushing the result onto the stack again.
+If everything is implemented correctly, the end result of the calculation should lie as a single value
 on top of the calculation stack.
 
-`-1 + x * 5` should the result into `-1 + 0 * 5` => `-1`.
+`-1 + x * 5` should result in `-1 + 0 * 5` => `-1`.
 
-Now you could add assignments to your Grammar to be able to use variables to store and access values.
+Now you can add assignments to your grammar to store and access values in variables.
 Allow the grammar to contain multiple operations and remove assigned values from the calculation
 stack.
