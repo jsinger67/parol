@@ -6,7 +6,7 @@ Cargo.lock
 .vscode/*.*
 
 # Visual Studio
-.vs/**
+**/.vs/**
 *.diagsession
 
 # Ionide

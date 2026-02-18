@@ -37,14 +37,14 @@ namespace JsonParserCsharp
             };
         }
 
-        private static string RenderString(String value)
+        private static string RenderString(JsonString value)
         {
-            return value.StringValue.Text;
+            return value.Text;
         }
 
-        private static string RenderNumber(Number value)
+        private static string RenderNumber(JsonNumber value)
         {
-            return value.NumberValue.Text;
+            return value.Text;
         }
 
         private static string RenderObject(Object @object)

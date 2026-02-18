@@ -16,5 +16,10 @@ public readonly struct JsonNumber
         Text = token.Text;
     }
 
+    public JsonNumber(Number value)
+    {
+        Text = value.NumberValue.Text;
+    }
+
     public override string ToString() => Text;
 }

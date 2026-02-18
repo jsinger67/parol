@@ -35,7 +35,7 @@ namespace JsonParserCsharp {
     public sealed record ObjectSuffixRBraceVariant(ObjectSuffixRBrace Value) : ObjectSuffix;
 
     // Type derived for non-terminal Pair
-    public sealed record Pair(String String, Value Value);
+    public sealed record Pair(global::JsonParserCsharp.JsonString String, Value Value);
 
     // Type derived for non-terminal String
     public sealed record String(Token StringValue);
@@ -63,10 +63,10 @@ namespace JsonParserCsharp {
     public sealed record ArraySuffixRBracket();
 
     // Type derived for production 12
-    public sealed record ValueString(String String);
+    public sealed record ValueString(global::JsonParserCsharp.JsonString String);
 
     // Type derived for production 13
-    public sealed record ValueNumber(Number Number);
+    public sealed record ValueNumber(global::JsonParserCsharp.JsonNumber Number);
 
     // Type derived for production 14
     public sealed record ValueObject(Object Object);
@@ -452,7 +452,7 @@ namespace JsonParserCsharp {
 
         private static Pair MapPair(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
-            if (children.Length == 2 ) return new Pair(ConvertValue<String>(children[0 + 0]), (Value)children[0 + 1]);
+            if (children.Length == 2 ) return new Pair(ConvertValue<global::JsonParserCsharp.JsonString>(children[0 + 0]), (Value)children[0 + 1]);
             if (children.Length == 1 && children[0] is Pair directValue) return directValue;
             throw new InvalidOperationException("Unsupported C# mapping for production 6 (Pair: String : JsonParserCsharp::JsonString  ':'^ /* Clipped */ Value;)");
         }
@@ -562,7 +562,7 @@ namespace JsonParserCsharp {
         private static Value MapValue0(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
-                var value = new ValueString(ConvertValue<String>(children[0 + 0]));
+                var value = new ValueString(ConvertValue<global::JsonParserCsharp.JsonString>(children[0 + 0]));
                 return new ValueStringVariant(value);
             }
             if (children.Length == 1 && children[0] is Value directValue) return directValue;
@@ -581,7 +581,7 @@ namespace JsonParserCsharp {
         private static Value MapValue1(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
-                var value = new ValueNumber(ConvertValue<Number>(children[0 + 0]));
+                var value = new ValueNumber(ConvertValue<global::JsonParserCsharp.JsonNumber>(children[0 + 0]));
                 return new ValueNumberVariant(value);
             }
             if (children.Length == 1 && children[0] is Value directValue) return directValue;
