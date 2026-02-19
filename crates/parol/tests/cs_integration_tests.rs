@@ -94,8 +94,33 @@ fn with_parol_path() -> Result<String> {
         .join("target")
         .join("debug");
 
-    let path = std::env::var("PATH").unwrap_or_default();
-    Ok(format!("{};{}", parol_bin_dir.display(), path))
+    let mut path_entries = vec![parol_bin_dir];
+    if let Some(existing) = std::env::var_os("PATH") {
+        path_entries.extend(std::env::split_paths(&existing));
+    }
+
+    let joined = std::env::join_paths(path_entries)?;
+    Ok(joined.to_string_lossy().into_owned())
+}
+
+#[test]
+fn test_with_parol_path_prepends_binary_dir() -> Result<()> {
+    let expected_parol_bin_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .join("target")
+        .join("debug");
+
+    let joined_path = with_parol_path()?;
+    let path_entries: Vec<_> =
+        std::env::split_paths(&std::ffi::OsString::from(joined_path)).collect();
+
+    assert!(!path_entries.is_empty(), "PATH must not be empty");
+    assert_eq!(path_entries[0], expected_parol_bin_dir);
+
+    Ok(())
 }
 
 fn dotnet_build(project_path: &std::path::Path, path: &str) -> Result<std::process::Output> {
