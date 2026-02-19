@@ -243,7 +243,8 @@ fn clean_build_artifacts(sub: &str) {
 fn snapshot_lib() {
     let path = tempdir().unwrap();
 
-    Command::new("parol")
+    Command::cargo_bin("parol")
+        .unwrap()
         .current_dir(&path)
         .args(["new", "--lib", "--path", "lib", "--name", "snapshot_lib"])
         .assert()
@@ -256,7 +257,8 @@ fn snapshot_lib() {
 #[ignore = "Can fail depending on the cargo version used."]
 fn snapshot_bin() {
     let path = tempdir().unwrap();
-    Command::new("parol")
+    Command::cargo_bin("parol")
+        .unwrap()
         .current_dir(&path)
         .args(["new", "--bin", "--path", "bin", "--name", "snapshot_bin"])
         .assert()
@@ -268,7 +270,8 @@ fn snapshot_bin() {
 #[test]
 fn snapshot_csharp() {
     let path = tempdir().unwrap();
-    Command::new("parol")
+    Command::cargo_bin("parol")
+        .unwrap()
         .current_dir(&path)
         .args([
             "new",
