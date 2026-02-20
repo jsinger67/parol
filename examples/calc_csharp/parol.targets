@@ -1,6 +1,21 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ParolCommand Condition="'$(ParolCommand)' == ''">parol</ParolCommand>
+  </PropertyGroup>
+
+  <Target Name="CheckParol" BeforeTargets="GenerateParser">
+    <Exec Command="$(ParolCommand) --version" IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="ParolExitCode" />
+    </Exec>
+    <PropertyGroup>
+      <ParolAvailable Condition="'$(ParolExitCode)' == '0'">true</ParolAvailable>
+      <ParolAvailable Condition="'$(ParolAvailable)' == ''">false</ParolAvailable>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="GenerateParser" BeforeTargets="BeforeCompile;CoreCompile" Inputs="calc_csharp.par" Outputs="CalcCsharpParser.cs;ICalcCsharpActions.cs">
-    <Exec Command="parol -f calc_csharp.par -p CalcCsharpParser.cs -a ICalcCsharpActions.cs -t CalcCsharp -m CalcCsharp -l c-sharp" />
+    <Exec Condition="'$(ParolAvailable)' == 'true'" Command="$(ParolCommand) -f calc_csharp.par -p CalcCsharpParser.cs -a ICalcCsharpActions.cs -t CalcCsharp -m CalcCsharp -l c-sharp" />
+    <Warning Condition="'$(ParolAvailable)' != 'true'" Text="Skipping parser generation because '$(ParolCommand)' is not available. Using checked-in generated sources." />
     <ItemGroup>
       <Compile Remove="CalcCsharpParser.cs" />
       <Compile Include="CalcCsharpParser.cs" />

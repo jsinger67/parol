@@ -23,3 +23,14 @@ This example demonstrates the recommended modern type-mapping approach:
 - Conversion happens through generated mapping/runtime conversion by using constructible target types.
 
 In this example, `CalcNumber` provides constructors from `Token` and `Number` and stores the parsed `long` value.
+
+## CI note
+
+The project file imports `parol.targets`, which generates parser sources only when `parol` is available.
+If `parol` is not on `PATH` (for example in CodeQL builds), generation is skipped with a warning and the checked-in generated files are used.
+
+To use a custom executable path/name, pass:
+
+```powershell
+dotnet build .\examples\calc_csharp\calc_csharp.csproj /p:ParolCommand=parol
+```

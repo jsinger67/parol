@@ -24,3 +24,14 @@ This example demonstrates the recommended modern type-mapping approach:
 - Grammar declaration: `%nt_type Number = JsonParserCsharp::JsonNumber`
 - `JsonString` and `JsonNumber` conversion types are included in the example.
 - Conversion happens through generated mapping/runtime conversion by using constructible target types.
+
+## CI note
+
+The project file imports `parol.targets`, which generates parser sources only when `parol` is available.
+If `parol` is not on `PATH` (for example in CodeQL builds), generation is skipped with a warning and the checked-in generated files are used.
+
+To use a custom executable path/name, pass:
+
+```powershell
+dotnet build .\examples\json_parser_csharp\json_parser_csharp.csproj /p:ParolCommand=parol
+```
