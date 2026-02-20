@@ -90,7 +90,7 @@
     "@types/vscode": "^1.109.0",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.7.2-7",
-    "esbuild": "^0.27.0",
+    "esbuild": "^0.27.3",
     "eslint": "^10.0.1",
     "prettier": "^3.8.1"
   },
