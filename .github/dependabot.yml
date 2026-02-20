@@ -32,3 +32,11 @@ updates:
       time: "22:00"
     open-pull-requests-limit: 10
     target-branch: "release3.1"
+  - package-ecosystem: npm
+    directory: "/tools/parol-vscode"
+    schedule:
+      interval: weekly
+      time: "20:30"
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "minimatch"
