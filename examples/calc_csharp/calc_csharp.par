@@ -2,6 +2,7 @@
 %title "Example grammar of an expression evaluator"
 %comment "To demonstrate use of lists, operator precedence, operator associativity"
 %line_comment "//"
+%block_comment  "/\*" "\*/"
 %nt_type Number = CalcCsharp::CalcNumber
 
 %%

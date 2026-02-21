@@ -105,56 +105,76 @@ namespace CalcCsharp {
                 },
                 new Dfa(new DfaState[] {
                     new DfaState(
-                        new DfaTransition?[] { new DfaTransition(6), new DfaTransition(19), new DfaTransition(28), new DfaTransition(29), new DfaTransition(8), new DfaTransition(26), new DfaTransition(1), new DfaTransition(21), new DfaTransition(22), new DfaTransition(24), new DfaTransition(27), new DfaTransition(5), new DfaTransition(25), new DfaTransition(11), new DfaTransition(12), new DfaTransition(13), new DfaTransition(16), new DfaTransition(4), new DfaTransition(17), new DfaTransition(20), new DfaTransition(7), new DfaTransition(30) },
+                        new DfaTransition?[] { new DfaTransition(10), new DfaTransition(24), new DfaTransition(33), new DfaTransition(34), new DfaTransition(12), new DfaTransition(31), new DfaTransition(5), new DfaTransition(26), new DfaTransition(27), new DfaTransition(30), new DfaTransition(32), new DfaTransition(9), new DfaTransition(29), new DfaTransition(16), new DfaTransition(17), new DfaTransition(18), new DfaTransition(21), new DfaTransition(8), new DfaTransition(22), new DfaTransition(25), new DfaTransition(11), new DfaTransition(35) },
                         new AcceptData[] {
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, new DfaTransition(2), null, null, null, null, null, null, null, null, null, null, new DfaTransition(3), null, null, null, null },
+                        new DfaTransition?[] { new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(3), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1) },
                         new AcceptData[] {
-                            new AcceptData(11, 9, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+                        new DfaTransition?[] { new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(3), new DfaTransition(1), new DfaTransition(1), new DfaTransition(4), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1) },
                         new AcceptData[] {
-                            new AcceptData(9, 7, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+                        new DfaTransition?[] { new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(3), new DfaTransition(1), new DfaTransition(1), new DfaTransition(15), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1), new DfaTransition(1) },
                         new AcceptData[] {
-                            new AcceptData(7, 5, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(18), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(2), null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(7, 5, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(3), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, new DfaTransition(6), null, null, null, null, null, null, null, null, null, null, new DfaTransition(7), null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(15, 13, new Lookahead.None()),
+                            new AcceptData(11, 10, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
                         new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(22, 20, new Lookahead.None()),
+                            new AcceptData(9, 8, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(3), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(22, 20, new Lookahead.None()),
+                            new AcceptData(7, 6, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(18), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(23), null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(22, 20, new Lookahead.None()),
+                            new AcceptData(7, 6, new Lookahead.None()),
+                        }
+                    ),
+                    new DfaState(
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(7), null, null, null, null },
+                        new AcceptData[] {
+                            new AcceptData(15, 14, new Lookahead.None()),
+                        }
+                    ),
+                    new DfaState(
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+                        new AcceptData[] {
+                            new AcceptData(22, 21, new Lookahead.None()),
+                        }
+                    ),
+                    new DfaState(
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(7), null, null, null, null },
+                        new AcceptData[] {
+                            new AcceptData(22, 21, new Lookahead.None()),
+                        }
+                    ),
+                    new DfaState(
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(23), null, null, null, null },
+                        new AcceptData[] {
+                            new AcceptData(22, 21, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
@@ -164,111 +184,117 @@ namespace CalcCsharp {
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { new DfaTransition(10), new DfaTransition(10), new DfaTransition(9), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10), new DfaTransition(10) },
+                        new DfaTransition?[] { new DfaTransition(14), new DfaTransition(14), new DfaTransition(13), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14), new DfaTransition(14) },
                         new AcceptData[] {
                             new AcceptData(3, 2, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(2), null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(20, 18, new Lookahead.None()),
-                        }
-                    ),
-                    new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(12), new DfaTransition(12), null, null, null, null, null, null, null },
-                        new AcceptData[] {
-                            new AcceptData(20, 18, new Lookahead.None()),
+                            new AcceptData(4, 3, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
                         new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(5, 3, new Lookahead.None()),
+                            new AcceptData(20, 19, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(3), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(17), new DfaTransition(17), null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(12, 10, new Lookahead.None()),
+                            new AcceptData(20, 19, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
                         new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(13, 11, new Lookahead.None()),
+                            new AcceptData(5, 4, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(14), new DfaTransition(15), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(7), null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(13, 11, new Lookahead.None()),
-                        }
-                    ),
-                    new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(15), new DfaTransition(14), null, null, null },
-                        new AcceptData[] {
-                            new AcceptData(13, 11, new Lookahead.None()),
+                            new AcceptData(12, 11, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
                         new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(6, 4, new Lookahead.None()),
+                            new AcceptData(13, 12, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, new DfaTransition(19), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(19), new DfaTransition(20), null, null, null, null },
+                        new AcceptData[] {
+                            new AcceptData(13, 12, new Lookahead.None()),
+                        }
+                    ),
+                    new DfaState(
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(20), new DfaTransition(19), null, null, null },
+                        new AcceptData[] {
+                            new AcceptData(13, 12, new Lookahead.None()),
+                        }
+                    ),
+                    new DfaState(
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+                        new AcceptData[] {
+                            new AcceptData(6, 5, new Lookahead.None()),
+                        }
+                    ),
+                    new DfaState(
+                        new DfaTransition?[] { null, new DfaTransition(24), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
                             new AcceptData(2, 1, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(20), new DfaTransition(20), null, null, null, null, new DfaTransition(20), null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(25), new DfaTransition(25), null, null, null, null, new DfaTransition(25), null, null },
                         new AcceptData[] {
-                            new AcceptData(21, 19, new Lookahead.None()),
+                            new AcceptData(21, 20, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
                         new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(18, 16, new Lookahead.None()),
+                            new AcceptData(18, 17, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
                         new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(19, 17, new Lookahead.None()),
+                            new AcceptData(19, 18, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
                         new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(16, 14, new Lookahead.None()),
+                            new AcceptData(16, 15, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, new DfaTransition(23), null, null, null, null, null, null, null, new DfaTransition(3), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, new DfaTransition(1), null, null, new DfaTransition(14), null, null, null, null, new DfaTransition(7), null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(17, 15, new Lookahead.None()),
+                            new AcceptData(17, 16, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(10), null, null, null, null, new DfaTransition(3), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, new DfaTransition(28), null, null, null, null, null, null, null, new DfaTransition(7), null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(17, 15, new Lookahead.None()),
+                            new AcceptData(17, 16, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(3), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(7), null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(17, 15, new Lookahead.None()),
+                            new AcceptData(17, 16, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(3), null, null, null, null },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(7), null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(14, 12, new Lookahead.None()),
+                            new AcceptData(14, 13, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
@@ -278,21 +304,21 @@ namespace CalcCsharp {
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, new DfaTransition(28), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
+                        new DfaTransition?[] { null, null, new DfaTransition(33), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
                             new AcceptData(1, 0, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
-                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(3), null, null, null, new DfaTransition(31) },
+                        new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DfaTransition(7), null, null, null, new DfaTransition(36) },
                         new AcceptData[] {
-                            new AcceptData(10, 8, new Lookahead.None()),
+                            new AcceptData(10, 9, new Lookahead.None()),
                         }
                     ),
                     new DfaState(
                         new DfaTransition?[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null },
                         new AcceptData[] {
-                            new AcceptData(8, 6, new Lookahead.None()),
+                            new AcceptData(8, 7, new Lookahead.None()),
                         }
                     ),
                 })
