@@ -4,7 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use assert_cmd::Command;
+use assert_cmd::{Command, cargo::cargo_bin_cmd};
 use owo_colors::OwoColorize;
 use tempfile::tempdir;
 
@@ -243,8 +243,7 @@ fn clean_build_artifacts(sub: &str) {
 fn snapshot_lib() {
     let path = tempdir().unwrap();
 
-    Command::cargo_bin("parol")
-        .unwrap()
+    cargo_bin_cmd!("parol")
         .current_dir(&path)
         .args(["new", "--lib", "--path", "lib", "--name", "snapshot_lib"])
         .assert()
@@ -257,8 +256,7 @@ fn snapshot_lib() {
 #[ignore = "Can fail depending on the cargo version used."]
 fn snapshot_bin() {
     let path = tempdir().unwrap();
-    Command::cargo_bin("parol")
-        .unwrap()
+    cargo_bin_cmd!("parol")
         .current_dir(&path)
         .args(["new", "--bin", "--path", "bin", "--name", "snapshot_bin"])
         .assert()
@@ -270,8 +268,7 @@ fn snapshot_bin() {
 #[test]
 fn snapshot_csharp() {
     let path = tempdir().unwrap();
-    Command::cargo_bin("parol")
-        .unwrap()
+    cargo_bin_cmd!("parol")
         .current_dir(&path)
         .args([
             "new",
