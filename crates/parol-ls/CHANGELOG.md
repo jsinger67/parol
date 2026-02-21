@@ -12,7 +12,10 @@ file.
   * Replaced implicit parent-scope dependencies with explicit internal imports
   * Kept `Format` as the only outward formatter API
 * Added centralized formatting settings alignment with `parol-vscode` plus sync checks.
-* No intended user-visible formatting behavior changes.
+* No intended user-visible formatting behavior changes, except the following ones:
+  * Keep top-level (possibly wrapped inside [], (), and {}) alternatives aligned after ':'
+  * Split top-level (possibly wrapped) alternatives with '|' on aligned new lines when max. line lenght is exeeded.
+  * For wrapped top-level alternatives keep wrapper token and first alternative on same line as production colon.
 
 ## 4.2.0 - 2026-01-04
 
