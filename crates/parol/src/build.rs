@@ -588,6 +588,16 @@ impl GrammarGenerator<'_> {
         self.listener
             .on_initial_grammar_parse(&syntax_tree, &input, &parol_grammar)?;
         self.grammar_config = Some(GrammarConfig::try_from(parol_grammar)?);
+
+        let grammar_config = self.grammar_config.as_ref().unwrap();
+        if self.builder.language == crate::config::Language::CSharp
+            && grammar_config.grammar_type == GrammarType::LALR1
+        {
+            return Err(parol!(
+                "C# code generation currently supports only LL(k) grammars; %grammar_type 'LALR(1)' is not implemented yet"
+            ));
+        }
+
         self.state = Some(State::Parsed);
         Ok(())
     }

@@ -69,6 +69,9 @@ the start symbol of your grammar which is called after the whole input string is
 function then is called with a parameter that comprises the complete structure of the parsed
 document.
 
+Currently, C# code generation supports only LL(k) grammars. `%grammar_type 'LALR(1)'` is
+explicitly rejected until C# LALR(1) parser generation is implemented.
+
 The parser calls the interface trait's functions via a separately generated adapter automatically
 during the process of parsing.
 

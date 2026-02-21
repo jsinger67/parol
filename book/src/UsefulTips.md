@@ -48,7 +48,9 @@ Also, optimize your grammar for a minimal number of productions. Consider these 
 
 If you have a historical grammar definition that is left-recursive (common in Yacc/Bison grammar descriptions), allow extra time and effort to convert it to a right-recursive form.
 
-Alternatively, you can use LALR(1) grammars without sacrificing the convenience of `parol`. See the [grammar type specification](https://jsinger67.github.io/ParGrammar.html#defining-the-grammar-type).
+Alternatively, in Rust projects you can use LALR(1) grammars without sacrificing the convenience of
+`parol`. See the [grammar type specification](https://jsinger67.github.io/ParGrammar.html#defining-the-grammar-type).
+For C#, parser generation currently supports only LL(k) grammars.
 
 `parol` currently does not provide special support for this phase, except for detecting left recursions in your grammar.
 

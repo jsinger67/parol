@@ -48,6 +48,9 @@ You can define the grammar type as LALR(1) this way:
 %grammar_type 'LALR(1)'
 ```
 
+> Note for C#: C# code generation currently supports only LL(k) grammars.
+> `%grammar_type 'LALR(1)'` is rejected until C# LALR(1) parser generation is implemented.
+
 ## Case Sensitivity
 
 Non-terminals are treated as case-sensitive, i.e., "list" and "List" are different symbols. However,

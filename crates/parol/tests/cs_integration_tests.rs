@@ -22,6 +22,13 @@ fn run_parol(args: &[&str]) -> Result<std::process::ExitStatus> {
         .map_err(|e| anyhow!(e))
 }
 
+fn run_parol_output(args: &[&str]) -> Result<std::process::Output> {
+    Command::new(binary_path!("parol"))
+        .args(args)
+        .output()
+        .map_err(|e| anyhow!(e))
+}
+
 fn cs_runtime_build_lock() -> &'static Mutex<()> {
     static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
     LOCK.get_or_init(|| Mutex::new(()))
@@ -119,6 +126,54 @@ fn test_with_parol_path_prepends_binary_dir() -> Result<()> {
 
     assert!(!path_entries.is_empty(), "PATH must not be empty");
     assert_eq!(path_entries[0], expected_parol_bin_dir);
+
+    Ok(())
+}
+
+#[test]
+fn test_csharp_lalr1_is_rejected_early() -> Result<()> {
+    let temp_dir = tempdir()?;
+    let grammar_path = temp_dir.path().join("lalr_for_csharp.par");
+
+    fs::write(
+        &grammar_path,
+        r#"%start S
+%grammar_type 'LALR(1)'
+
+%%
+
+S: "a";
+"#,
+    )?;
+
+    let parser_path = temp_dir.path().join("Parser.cs");
+    let actions_path = temp_dir.path().join("IGrammarActions.cs");
+
+    let output = run_parol_output(&[
+        "-f",
+        grammar_path.to_str().unwrap(),
+        "-p",
+        parser_path.to_str().unwrap(),
+        "-a",
+        actions_path.to_str().unwrap(),
+        "-t",
+        "Grammar",
+        "-m",
+        "Grammar",
+        "-l",
+        "c-sharp",
+    ])?;
+
+    assert!(
+        !output.status.success(),
+        "Expected parol to fail for C# + LALR(1), but it succeeded"
+    );
+
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        stderr.contains("C# code generation currently supports only LL(k) grammars")
+            && stderr.contains("%grammar_type 'LALR(1)'")
+    );
 
     Ok(())
 }

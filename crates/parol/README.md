@@ -46,6 +46,8 @@ You can override the `ValueConverter` property in a derived actions class to pro
 grammar-specific conversions.
 The .NET SDK is only required for C# generation/build workflows. Rust-only workflows do not
 require .NET, and C# integration tests are skipped automatically when `dotnet` is not available.
+Currently, C# code generation supports only LL(k) grammars. `%grammar_type 'LALR(1)'` is
+explicitly rejected until C# LALR(1) parser generation is implemented.
 
 The parser calls the interface trait's functions via a separately generated adapter automatically
 during the process of parsing.
