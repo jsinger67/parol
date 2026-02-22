@@ -1331,7 +1331,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "4.2.1"
+version = "4.3.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -1359,7 +1359,7 @@ version = "1.0.0"
 
 [[package]]
 name = "parol_runtime"
-version = "4.2.0"
+version = "4.3.0"
 dependencies = [
  "anyhow",
  "codespan-reporting",

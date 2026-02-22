@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.0 - 2026-02-22
+
+* Switch to scnr2 0.5.0 and other package version updates
+
 ## 4.2.0 - 2026-01-04
 
 * Fix: Improve error recovery strategy by applying a more sophisticated token stream synchronization

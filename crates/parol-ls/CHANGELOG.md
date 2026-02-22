@@ -5,7 +5,7 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## 4.2.1 - Not released yet
+## 4.3.0 - 2026-02-22
 
 * Completed formatter refactoring:
   * Split formatter implementation into focused modules (logic, traits, tests)
