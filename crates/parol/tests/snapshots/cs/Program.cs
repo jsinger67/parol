@@ -16,7 +16,7 @@ namespace SnapshotCs
 
             string fileName = args[0];
             string input = File.ReadAllText(fileName);
-            var actions = new SnapshotCsActions();
+            ISnapshotCsActions actions = new SnapshotCsActions();
 
             try
             {
