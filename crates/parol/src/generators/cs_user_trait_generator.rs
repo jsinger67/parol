@@ -298,11 +298,13 @@ impl<'a> CSUserTraitGenerator<'a> {
             let item_arity = item_members.len();
             let is_empty_production = self.grammar_config.cfg.pr[prod_num].get_r().is_empty();
 
-            writeln!(
-                source,
-                "            if (children.Length == 0) return new List<{}>();",
-                nt_cs_type
-            )?;
+            if is_empty_production {
+                writeln!(
+                    source,
+                    "            if (children.Length == 0) return new List<{}>();",
+                    nt_cs_type
+                )?;
+            }
             writeln!(
                 source,
                 "            if (children.Length == 1 && children[0] is List<{}> directValue) return directValue;",
@@ -400,9 +402,7 @@ impl<'a> CSUserTraitGenerator<'a> {
                 TypeEntrails::Struct => {
                     let members = Self::non_clipped_members(map_type_id, &type_info.symbol_table)?;
                     let nt_name = map_symbol.inner_name();
-                    if members.is_empty() {
-                        writeln!(source, "            return new {}();", nt_name)?;
-                    } else if members.len() == 1 {
+                    if members.len() == 1 {
                         let member = type_info.symbol_table.symbol_as_instance(members[0]);
                         let member_type = type_info.symbol_table.symbol_as_type(member.type_id());
                         let member_name = Self::member_property_name(

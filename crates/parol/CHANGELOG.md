@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.1 - Not yet released
+
+* Fixed C# user action mapping generation for clipped-symbol productions to avoid emitting unreachable code (e.g. CS0162 warnings).
+
 ## 4.3.0 - 2026-02-22
 
 * Added multi-language support to `parol new` via the `--language` (`-L`) flag.

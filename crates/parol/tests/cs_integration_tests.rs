@@ -178,6 +178,61 @@ S: "a";
     Ok(())
 }
 
+#[test]
+fn test_csharp_clipped_symbols_do_not_generate_unreachable_code_patterns() -> Result<()> {
+    let temp_dir = tempdir()?;
+    let grammar_path = temp_dir.path().join("clipped_codegen.par");
+
+    fs::write(
+        &grammar_path,
+        r#"%start ClippedCodegen
+%title "Clipped codegen regression"
+
+%%
+
+ClippedCodegen: Items;
+Items: { Op };
+Op: /(?i)or/^;
+"#,
+    )?;
+
+    let parser_path = temp_dir.path().join("ClippedCodegenParser.cs");
+    let actions_path = temp_dir.path().join("IClippedCodegenActions.cs");
+
+    let status = run_parol(&[
+        "-f",
+        grammar_path.to_str().unwrap(),
+        "-p",
+        parser_path.to_str().unwrap(),
+        "-a",
+        actions_path.to_str().unwrap(),
+        "-t",
+        "ClippedCodegen",
+        "-m",
+        "ClippedCodegen",
+        "-l",
+        "c-sharp",
+    ])?;
+    assert!(status.success(), "parol generation failed");
+
+    let generated_actions = fs::read_to_string(actions_path)?;
+    let normalized = generated_actions.replace("\r\n", "\n");
+
+    assert!(
+        !normalized
+            .contains("return new Op();\n            if (children.Length == 0 ) return new Op();"),
+        "Generated actions contain an unconditional return followed by unreachable mapping checks"
+    );
+    assert!(
+        !normalized.contains(
+            "private static List<ItemsList> MapItemsList0(object[] children) {\n            if (children == null) throw new ArgumentNullException(nameof(children));\n            if (children.Length == 0) return new List<ItemsList>();"
+        ),
+        "Generated non-empty list helper still contains an eager empty-list branch"
+    );
+
+    Ok(())
+}
+
 fn dotnet_build(project_path: &std::path::Path, path: &str) -> Result<std::process::Output> {
     Command::new("dotnet")
         .current_dir(project_path)
