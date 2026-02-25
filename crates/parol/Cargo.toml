@@ -32,7 +32,7 @@ petgraph = { workspace = true }
 rand = "0.9.2"
 rand_regex = "0.18.1"
 regex = { workspace = true }
-regex-syntax = "0.8.9"
+regex-syntax = "0.8.10"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 syn = { version = "2", default-features = false, features = [
