@@ -1,7 +1,7 @@
 use crate::{Cfg, Pr, Symbol, Terminal};
 use anyhow::{Result, anyhow};
 use parol_runtime::log::trace;
-use rand::Rng;
+use rand::RngExt;
 use std::collections::HashMap;
 use thiserror::Error;
 
