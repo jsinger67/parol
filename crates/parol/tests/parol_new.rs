@@ -66,7 +66,7 @@ fn copy_directory_contents<P: AsRef<Path>>(
 
         if file_type.is_dir() {
             // Skip .git directories and other artifacts we don't want to copy
-            if file_name == ".git" || file_name == "target" {
+            if file_name == ".git" || file_name == "target" || file_name == "obj" {
                 continue;
             }
 
@@ -95,6 +95,43 @@ fn copy_directory_contents<P: AsRef<Path>>(
     Ok(())
 }
 
+fn copy_directory_for_diff<P: AsRef<Path>>(
+    source: P,
+    target: P,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let source = source.as_ref();
+    let target = target.as_ref();
+
+    if !target.exists() {
+        fs::create_dir_all(target)?;
+    }
+
+    for entry in fs::read_dir(source)? {
+        let entry = entry?;
+        let file_type = entry.file_type()?;
+        let source_path = entry.path();
+        let file_name = entry.file_name();
+        let target_path = target.join(&file_name);
+
+        if file_type.is_dir() {
+            if file_name == ".git" || file_name == "target" || file_name == "obj" {
+                continue;
+            }
+            copy_directory_for_diff(&source_path, &target_path)?;
+        } else if file_type.is_file() {
+            if file_name == "Cargo.lock" {
+                continue;
+            }
+            if let Some(parent) = target_path.parent() {
+                fs::create_dir_all(parent)?;
+            }
+            fs::copy(&source_path, &target_path)?;
+        }
+    }
+
+    Ok(())
+}
+
 fn snapshot_path(name: &str) -> PathBuf {
     let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
     Path::new(&manifest_dir)
@@ -113,14 +150,10 @@ where
     L: AsRef<Path>,
     R: AsRef<Path>,
 {
-    let cargo_lock = actual.as_ref().join("Cargo.lock");
-    if cargo_lock.exists() {
-        fs::remove_file(cargo_lock).unwrap();
-    }
-    let git_dir = actual.as_ref().join(".git");
-    if git_dir.exists() {
-        fs::remove_dir_all(git_dir).unwrap();
-    }
+    let actual_for_diff = tempdir().unwrap();
+    let expected_for_diff = tempdir().unwrap();
+    copy_directory_for_diff(actual.as_ref(), actual_for_diff.path()).unwrap();
+    copy_directory_for_diff(expected.as_ref(), expected_for_diff.path()).unwrap();
 
     let local_package_version = concat!("parol = \"", env!("CARGO_PKG_VERSION"), "\"");
 
@@ -202,7 +235,7 @@ where
 
         let output = std::process::Command::new("git")
             .args(["diff", "--no-index"])
-            .args([actual.as_ref(), expected.as_ref()])
+            .args([actual_for_diff.path(), expected_for_diff.path()])
             .output()
             .unwrap();
         write_command_output(&output);
@@ -220,7 +253,7 @@ where
         // If not in pre-release mode we assert on diffs.
         let diff = Command::new("git")
             .args(["diff", "--no-index"])
-            .args([actual.as_ref(), expected.as_ref()])
+            .args([actual_for_diff.path(), expected_for_diff.path()])
             .assert();
 
         let output = diff.get_output();
