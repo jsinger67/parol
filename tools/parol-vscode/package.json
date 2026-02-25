@@ -9,7 +9,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "publisher": "jsinger67",
   "description": "Language extension for `parol`",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "repository": {
     "url": "https://github.com/jsinger67/parol.git",
     "type": "git",
@@ -17,7 +17,7 @@
   },
   "icon": "icons/parol-vscode.png",
   "engines": {
-    "vscode": "^1.103.0"
+    "vscode": "^1.109.0"
   },
   "keywords": [
     "Parol",
@@ -86,6 +86,8 @@
     "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
+    "@typescript-eslint/parser": "^8.47.0",
     "@types/node": "^25.3.0",
     "@types/vscode": "^1.109.0",
     "@vscode/test-electron": "^2.5.2",
@@ -103,7 +105,7 @@
     "build-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --target=node16",
     "build": "npm run build-base -- --sourcemap",
     "watch": "npm run build-base -- --sourcemap --watch",
-    "lint": "npm run check-config-sync && prettier --check . && eslint -c .eslintrc.js --ext ts ./src ./tests",
-    "fix": "prettier --write . && eslint -c .eslintrc.js --ext ts ./src ./tests --fix"
+    "lint": "npm run check-config-sync && prettier --check . && eslint ./src",
+    "fix": "prettier --write . && eslint ./src --fix"
   }
 }

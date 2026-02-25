@@ -18,7 +18,7 @@ export interface ParolLsExtensionApi {
 export const log = new (class {
   private enabled = true;
   private readonly output = vscode.window.createOutputChannel(
-    "Parol Language Client"
+    "Parol Language Client",
   );
 
   setEnabled(yes: boolean): void {
@@ -56,7 +56,7 @@ export const log = new (class {
 export type ParolDocument = vscode.TextDocument & { languageId: "parol" };
 
 export function isParolDocument(
-  document: vscode.TextDocument
+  document: vscode.TextDocument,
 ): document is ParolDocument {
   return document.languageId === "parol" && document.uri.scheme === "file";
 }
@@ -66,32 +66,31 @@ export async function activate(context: vscode.ExtensionContext) {
   // so we do it ourselves.
   return await tryActivate(context).catch((err) => {
     void vscode.window.showErrorMessage(
-      `Cannot activate parol-ls: ${err.message}`
+      `Cannot activate parol-ls: ${err.message}`,
     );
     throw err;
   });
 }
 
 async function tryActivate(
-  context: vscode.ExtensionContext
+  context: vscode.ExtensionContext,
 ): Promise<ParolLsExtensionApi> {
   const serverPath = await bootstrap().catch((err) => {
     let message = "bootstrap error. ";
 
     message +=
-      'Parol Language Server is not installed. Please consider to install it to improve your experience.';
-    message +=
-      '  `cargo install --force parol-ls`';
+      "Parol Language Server is not installed. Please consider to install it to improve your experience.";
+    message += "  `cargo install --force parol-ls`";
 
     log.error("Bootstrap error", err);
     throw new Error(message);
   });
 
-  let config = new Config();
+  const config = new Config();
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
-  let serverOptions: lc.ServerOptions = {
+  const serverOptions: lc.ServerOptions = {
     run: {
       command: serverPath,
       transport: { kind: TransportKind.socket, port: 7061 },
@@ -118,7 +117,7 @@ async function tryActivate(
     "parolLanguageServer",
     "Parol Language Server",
     serverOptions,
-    clientOptions
+    clientOptions,
   );
 
   vscode.workspace.onDidChangeConfiguration(
@@ -129,11 +128,11 @@ async function tryActivate(
       });
     },
     null,
-    context.subscriptions
+    context.subscriptions,
   );
 
   // Start the client. This will also launch the server
-  client.start();
+  void client.start();
 
   return {
     client: client,
@@ -176,7 +175,7 @@ function checkForServerUpdate(version: string) {
     log.warn("Version check failed. Missing `cargo`?");
     return;
   }
-  for (let line of res.output) {
+  for (const line of res.output) {
     if (line) {
       const match = line.match(/parol-ls\s*=\s*"(?<ver>.*?)"/);
       if (match) {
@@ -191,7 +190,7 @@ function checkForServerUpdate(version: string) {
                   `The latest available version at crates.io is ${ver}.\n` +
                   `You can update it by calling:\n` +
                   "`cargo install --force parol-ls`",
-                "Ok"
+                "Ok",
               )
               .then(() => {}, console.error);
           }

@@ -49,7 +49,8 @@ This check also runs in CI via the dedicated workflow
 Maintainer note: `@vscode/vsce` currently depends on `minimatch@^3.0.3` upstream, so `minimatch` is intentionally ignored in Dependabot for this package until upstream migrates.
 
 Changes regarding the Language Server can be viewed here:
-* [CHANGELOG parol-ls](./crates/parol-ls/CHANGELOG.md)
+
+- [CHANGELOG parol-ls](./crates/parol-ls/CHANGELOG.md)
 
 <!-- markdownlint-disable Inline HTML -->
 <br>
