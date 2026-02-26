@@ -2,11 +2,32 @@ use std::{
     fs,
     io::Write,
     path::{Path, PathBuf},
+    sync::OnceLock,
 };
 
 use assert_cmd::{Command, cargo::cargo_bin_cmd};
 use owo_colors::OwoColorize;
 use tempfile::tempdir;
+
+fn dotnet_available() -> bool {
+    static AVAILABLE: OnceLock<bool> = OnceLock::new();
+    *AVAILABLE.get_or_init(|| {
+        std::process::Command::new("dotnet")
+            .arg("--version")
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false)
+    })
+}
+
+fn skip_if_no_dotnet(test_name: &str) -> bool {
+    if dotnet_available() {
+        false
+    } else {
+        eprintln!("Skipping {test_name}: dotnet SDK not found in PATH");
+        true
+    }
+}
 
 /// Check if snapshots should be updated based on environment variable
 fn should_update_snapshots() -> bool {
@@ -300,6 +321,10 @@ fn snapshot_bin() {
 
 #[test]
 fn snapshot_csharp() {
+    if skip_if_no_dotnet("snapshot_csharp") {
+        return;
+    }
+
     let path = tempdir().unwrap();
     cargo_bin_cmd!("parol")
         .current_dir(&path)
