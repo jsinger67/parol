@@ -48,12 +48,14 @@ scnr2_generate = { workspace = true }
 tempfile = "3"
 lalry = "0.1.0"
 rustc-hash = "2.1.1"
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "default-tls"], optional = true }
 
 [features]
 default = ["build"]
 profiling = []
 # Includes logic for invoking from build.rs script
 build = []
+analysis-benchmark-net = ["dep:reqwest"]
 
 [[bin]]
 name = "parol"
@@ -119,6 +121,7 @@ harness = false
 [[bench]]
 name = "analysis_benchmark"
 harness = false
+required-features = ["analysis-benchmark-net"]
 
 [dev-dependencies]
 assert_cmd = "2.1"
@@ -128,4 +131,3 @@ predicates = "3.1.4"
 quickcheck = "1.1.0"
 quickcheck_macros = "1.2.0"
 tempfile = "3"
-reqwest = { version = "0.13", features = ["blocking"] }
