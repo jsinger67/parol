@@ -1,4 +1,4 @@
-use super::symbol_table::{SymbolId, SymbolTable, TypeEntrails};
+use super::symbol_table::{MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails};
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 use crate::GrammarTypeInfo;
 use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
@@ -142,6 +142,49 @@ impl<'a> CSUserTraitGenerator<'a> {
             .collect::<Vec<_>>())
     }
 
+    fn is_runtime_skipped_member(member_id: SymbolId, symbol_table: &SymbolTable) -> bool {
+        let member = symbol_table.symbol_as_instance(member_id);
+        if member.sem() != SymbolAttribute::Clipped {
+            return false;
+        }
+
+        let member_type = symbol_table.symbol_as_type(member.type_id());
+        matches!(
+            member_type.entrails(),
+            TypeEntrails::Clipped(MetaSymbolKind::Token)
+        )
+    }
+
+    fn runtime_child_count(type_id: SymbolId, symbol_table: &SymbolTable) -> Result<usize> {
+        Ok(symbol_table
+            .members(type_id)?
+            .iter()
+            .filter(|member_id| !Self::is_runtime_skipped_member(**member_id, symbol_table))
+            .count())
+    }
+
+    fn child_slot_indices_for_non_clipped_members(
+        type_id: SymbolId,
+        symbol_table: &SymbolTable,
+    ) -> Result<Vec<usize>> {
+        let mut child_index = 0usize;
+        let mut result = Vec::new();
+
+        for member_id in symbol_table.members(type_id)? {
+            let member = symbol_table.symbol_as_instance(*member_id);
+
+            if member.sem() != SymbolAttribute::Clipped {
+                result.push(child_index);
+            }
+
+            if !Self::is_runtime_skipped_member(*member_id, symbol_table) {
+                child_index += 1;
+            }
+        }
+
+        Ok(result)
+    }
+
     fn emit_struct_type(
         source: &mut String,
         type_id: SymbolId,
@@ -226,10 +269,15 @@ impl<'a> CSUserTraitGenerator<'a> {
             return Ok(format!("new {}()", type_symbol.inner_name()));
         }
 
+        let child_slots = Self::child_slot_indices_for_non_clipped_members(type_id, symbol_table)?;
+
         let mut values = Vec::with_capacity(members.len());
         for (member_index, member_id) in members.iter().enumerate() {
             let member = symbol_table.symbol_as_instance(*member_id);
-            let child_expr = format!("children[{} + {}]", start_index_expr, member_index);
+            let child_expr = format!(
+                "children[{} + {}]",
+                start_index_expr, child_slots[member_index]
+            );
             values.push(Self::child_to_value_expr(
                 member.type_id(),
                 symbol_table,
@@ -294,8 +342,7 @@ impl<'a> CSUserTraitGenerator<'a> {
         )?;
 
         if is_collection_helper {
-            let item_members = Self::non_clipped_members(nt_type_id, &type_info.symbol_table)?;
-            let item_arity = item_members.len();
+            let item_arity = Self::runtime_child_count(nt_type_id, &type_info.symbol_table)?;
             let is_empty_production = self.grammar_config.cfg.pr[prod_num].get_r().is_empty();
 
             if is_empty_production {
@@ -400,8 +447,10 @@ impl<'a> CSUserTraitGenerator<'a> {
                     )?;
                 }
                 TypeEntrails::Struct => {
-                    let members = Self::non_clipped_members(map_type_id, &type_info.symbol_table)?;
+                    let runtime_child_count =
+                        Self::runtime_child_count(map_type_id, &type_info.symbol_table)?;
                     let nt_name = map_symbol.inner_name();
+                    let members = Self::non_clipped_members(map_type_id, &type_info.symbol_table)?;
                     if members.len() == 1 {
                         let member = type_info.symbol_table.symbol_as_instance(members[0]);
                         let member_type = type_info.symbol_table.symbol_as_type(member.type_id());
@@ -475,7 +524,7 @@ impl<'a> CSUserTraitGenerator<'a> {
                     writeln!(
                         source,
                         "            if (children.Length == {} ) return {};",
-                        members.len(),
+                        runtime_child_count,
                         Self::emit_struct_ctor(map_type_id, &type_info.symbol_table, "0")?
                     )?;
                     writeln!(
@@ -511,14 +560,14 @@ impl<'a> CSUserTraitGenerator<'a> {
                         if let Some(variant_record_name) = variant_record_name {
                             match prod_type_symbol.entrails() {
                                 TypeEntrails::Struct => {
-                                    let prod_members = Self::non_clipped_members(
+                                    let prod_runtime_child_count = Self::runtime_child_count(
                                         *prod_type_id,
                                         &type_info.symbol_table,
                                     )?;
                                     writeln!(
                                         source,
                                         "            if (children.Length == {}) {{",
-                                        prod_members.len()
+                                        prod_runtime_child_count
                                     )?;
                                     writeln!(
                                         source,

@@ -233,6 +233,55 @@ Op: /(?i)or/^;
     Ok(())
 }
 
+#[test]
+fn test_csharp_clipped_non_terminal_mapping_uses_runtime_child_positions() -> Result<()> {
+    let temp_dir = tempdir()?;
+    let grammar_path = temp_dir.path().join("clipped_non_terminal.par");
+
+    fs::write(
+        &grammar_path,
+        r#"%start Start
+%title "Clipped non-terminal mapping regression"
+
+%%
+
+Start: Pair;
+Pair: Left^ Right;
+Left: 'l';
+Right: 'r';
+"#,
+    )?;
+
+    let parser_path = temp_dir.path().join("ClippedNonTerminalParser.cs");
+    let actions_path = temp_dir.path().join("IClippedNonTerminalActions.cs");
+
+    let status = run_parol(&[
+        "-f",
+        grammar_path.to_str().unwrap(),
+        "-p",
+        parser_path.to_str().unwrap(),
+        "-a",
+        actions_path.to_str().unwrap(),
+        "-t",
+        "ClippedNonTerminal",
+        "-m",
+        "ClippedNonTerminal",
+        "-l",
+        "c-sharp",
+    ])?;
+    assert!(status.success(), "parol generation failed");
+
+    let generated_actions = fs::read_to_string(actions_path)?;
+    let normalized = generated_actions.replace("\r\n", "\n");
+
+    assert!(
+        normalized.contains("if (children.Length == 2 ) return new Pair((Right)children[0 + 1]);"),
+        "Expected Pair mapping to use runtime child arity and skip clipped non-terminal value in constructor argument indexing"
+    );
+
+    Ok(())
+}
+
 fn dotnet_build(project_path: &std::path::Path, path: &str) -> Result<std::process::Output> {
     Command::new("dotnet")
         .current_dir(project_path)
