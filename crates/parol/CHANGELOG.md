@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Fixed C# user action mapping generation for clipped-symbol productions to avoid emitting unreachable code (e.g. CS0162 warnings).
 * Fixed `parol new` snapshot tests to exclude generated folder from snapshot comparison.
+* Fixed Dependabot security alerts by updating aws-lc-rs/aws-lc-sys versions
 
 ## 4.3.0 - 2026-02-22
 
