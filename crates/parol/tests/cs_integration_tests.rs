@@ -1194,13 +1194,16 @@ namespace CsNtTypeOverride
 
     let program_path = project_path.join("Program.cs");
     let program_content = fs::read_to_string(&program_path)?;
-    fs::write(
-        &program_path,
-        program_content.replace(
+    let updated_program_content = program_content
+        .replace(
             "ICsNtTypeOverrideActions actions = new CsNtTypeOverrideUserActions();",
             "ICsNtTypeOverrideActions actions = new CustomActions();",
-        ),
-    )?;
+        )
+        .replace(
+            "CsNtTypeOverrideActions actions = new CsNtTypeOverrideUserActions();",
+            "CsNtTypeOverrideActions actions = new CustomActions();",
+        );
+    fs::write(&program_path, updated_program_content)?;
 
     // 5. Use local runtime if available
     ensure_local_runtime_reference(&project_path, project_name)?;
