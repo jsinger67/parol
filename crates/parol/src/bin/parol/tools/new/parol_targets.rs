@@ -14,7 +14,7 @@ impl std::fmt::Display for ParolTargetsData<'_> {
             f,
             r#"<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="GenerateParser" BeforeTargets="BeforeCompile;CoreCompile" Inputs="{grammar_name}.par" Outputs="{grammar_name}Parser.cs;I{grammar_name}Actions.cs">
-    <Exec Command="parol -f {grammar_name}.par -p {grammar_name}Parser.cs -a I{grammar_name}Actions.cs -t {grammar_name} -m {grammar_name} -l c-sharp" />
+    <Exec Command="parol -f {grammar_name}.par -e {grammar_name}Exp.par -p {grammar_name}Parser.cs -a I{grammar_name}Actions.cs -t {grammar_name} -m {grammar_name} -l c-sharp" />
     <ItemGroup>
       <Compile Remove="{grammar_name}Parser.cs" />
       <Compile Include="{grammar_name}Parser.cs" />

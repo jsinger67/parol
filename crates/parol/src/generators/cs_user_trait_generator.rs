@@ -333,6 +333,11 @@ impl<'a> CSUserTraitGenerator<'a> {
 
         writeln!(
             source,
+            "        // Mapping method for production {}: {}",
+            prod_num, self.grammar_config.cfg.pr[prod_num]
+        )?;
+        writeln!(
+            source,
             "        private static {} {}(object[] children) {{",
             map_cs_type, map_method
         )?;
@@ -722,21 +727,15 @@ impl<'a> CSUserTraitGenerator<'a> {
                 .get(&non_terminal)
                 .ok_or_else(|| anyhow!("Missing non-terminal type for {}", non_terminal))?;
             let nt_cs_type = Self::to_cs_type(nt_type_id, &type_info.symbol_table)?;
+            writeln!(
+                source,
+                "        /// User action for non-terminal {}.",
+                non_terminal
+            )?;
             let method_name = format!("On{}", NamingHelper::to_upper_camel_case(&non_terminal));
             writeln!(source, "        void {}({} arg);", method_name, nt_cs_type)?;
             writeln!(source)?;
         }
-
-        for (i, pr) in self.grammar_config.cfg.pr.iter().enumerate() {
-            let action_name = self.action_name(i);
-            writeln!(source, "        /// <summary>")?;
-            writeln!(source, "        /// Semantic action for production {}:", i)?;
-            writeln!(source, "        /// {} ", pr)?;
-            writeln!(source, "        /// </summary>")?;
-            writeln!(source, "        void {}(object[] children);", action_name)?;
-            writeln!(source)?;
-        }
-
         writeln!(source, "    }}")?;
         writeln!(source)?;
 
@@ -892,7 +891,7 @@ impl<'a> CSUserTraitGenerator<'a> {
             writeln!(source, "        /// <summary>")?;
             writeln!(
                 source,
-                "        /// User-facing action for non-terminal {}.",
+                "        /// Default implementation of user-facing action for non-terminal {}.",
                 non_terminal
             )?;
             writeln!(source, "        /// </summary>")?;
@@ -904,38 +903,7 @@ impl<'a> CSUserTraitGenerator<'a> {
             writeln!(source)?;
         }
 
-        for (i, pr) in self.grammar_config.cfg.pr.iter().enumerate() {
-            let action_name = self.action_name(i);
-            let action_id = *type_info
-                .adapter_actions
-                .get(&i)
-                .ok_or_else(|| anyhow!("Missing adapter action for production {}", i))?;
-            let function = type_info.symbol_table.symbol_as_function(action_id)?;
-            let non_terminal = function.non_terminal;
-            let map_method = format!("Map{}", action_name);
-            let typed_method_name = if type_info.get_user_action(&non_terminal).is_ok() {
-                Some(format!(
-                    "On{}",
-                    NamingHelper::to_upper_camel_case(&non_terminal)
-                ))
-            } else {
-                None
-            };
-
-            writeln!(source, "        /// <summary>")?;
-            writeln!(source, "        /// Semantic action for production {}:", i)?;
-            writeln!(source, "        /// {} ", pr)?;
-            writeln!(source, "        /// </summary>")?;
-            writeln!(
-                source,
-                "        public virtual void {}(object[] children) {{",
-                action_name
-            )?;
-            writeln!(source, "            var value = {}(children);", map_method)?;
-            if let Some(typed_method_name) = typed_method_name {
-                writeln!(source, "            {}(value);", typed_method_name)?;
-            }
-            writeln!(source, "        }}")?;
+        for (i, _) in self.grammar_config.cfg.pr.iter().enumerate() {
             writeln!(source)?;
             self.emit_action_mapping_method(&mut source, i, type_info)?;
             writeln!(source)?;

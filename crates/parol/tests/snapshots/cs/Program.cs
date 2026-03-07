@@ -6,6 +6,7 @@ namespace SnapshotCs
 {
     class Program
     {
+        // Parses a file provided on the command line and prints the semantic result.
         static void Main(string[] args)
         {
             if (args.Length < 1)
@@ -15,8 +16,10 @@ namespace SnapshotCs
             }
 
             string fileName = args[0];
+            // Read the full input so the parser can process it in one pass.
             string input = File.ReadAllText(fileName);
-            ISnapshotCsActions actions = new SnapshotCsActions();
+            // User actions collect the typed parse result during semantic callbacks.
+            ISnapshotCsActions actions = new SnapshotCsUserActions();
 
             try
             {

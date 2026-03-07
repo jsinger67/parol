@@ -440,8 +440,8 @@ fn test_csharp_scaffold_uses_pascal_case_actions_file_name() -> Result<()> {
     assert!(status.success(), "parol new failed");
 
     assert!(
-        project_path.join("CsFileNamesActions.cs").exists(),
-        "Expected PascalCase scaffold action file name"
+        project_path.join("CsFileNamesUserActions.cs").exists(),
+        "Expected PascalCase scaffold user actions file name"
     );
     assert!(
         !project_path.join("cs_file_names_actions.cs").exists(),
@@ -1040,7 +1040,7 @@ namespace CsTTypeFail
     fs::write(
         &program_path,
         program_content.replace(
-            "ICsTTypeFailActions actions = new CsTTypeFailActions();",
+            "ICsTTypeFailActions actions = new CsTTypeFailUserActions();",
             "ICsTTypeFailActions actions = new CustomActions();",
         ),
     )?;
@@ -1197,7 +1197,7 @@ namespace CsNtTypeOverride
     fs::write(
         &program_path,
         program_content.replace(
-            "ICsNtTypeOverrideActions actions = new CsNtTypeOverrideActions();",
+            "ICsNtTypeOverrideActions actions = new CsNtTypeOverrideUserActions();",
             "ICsNtTypeOverrideActions actions = new CustomActions();",
         ),
     )?;
@@ -1332,7 +1332,7 @@ namespace CsNtTypeNull
     fs::write(
         &program_path,
         program_content.replace(
-            "ICsNtTypeNullActions actions = new CsNtTypeNullActions();",
+            "ICsNtTypeNullActions actions = new CsNtTypeNullUserActions();",
             "ICsNtTypeNullActions actions = new CustomActions();",
         ),
     )?;

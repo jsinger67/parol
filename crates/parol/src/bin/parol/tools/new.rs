@@ -332,15 +332,21 @@ fn generate_grammar_rs(creation_data: &CreationData) -> Result<()> {
 fn generate_test_txt(creation_data: &CreationData) -> Result<()> {
     let mut test_file = creation_data.path.clone();
     test_file.push("test.txt");
-    let test_content = "\
+    let run_command = if creation_data.language == parol::Language::Rust {
+        "cargo run test.txt"
+    } else {
+        "dotnet run test.txt"
+    };
+    let test_content = format!(
+        "\
 // To run the test please issue:
-// cargo run ./test.txt
+// {run_command}
 
     Hello world!
 
 // End
 "
-    .to_string();
+    );
     fs::write(test_file, test_content).context("Error writing test file!")?;
 
     Ok(())
@@ -431,7 +437,7 @@ fn generate_program_cs(creation_data: &CreationData) -> Result<()> {
 fn generate_actions_cs(creation_data: &CreationData) -> Result<()> {
     let mut actions_file_out = creation_data.path.clone();
     let user_type_name = NmHlp::to_upper_camel_case(creation_data.crate_name);
-    actions_file_out.push(format!("{}Actions.cs", user_type_name));
+    actions_file_out.push(format!("{}UserActions.cs", user_type_name));
     let actions_data = ActionsCsDataBuilder::default()
         .grammar_name(creation_data.grammar_name.clone())
         .user_type_name(user_type_name.as_str())

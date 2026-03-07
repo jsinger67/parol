@@ -25,6 +25,7 @@ namespace {user_type_name}
 {{
     class Program
     {{
+        // Parses a file provided on the command line and prints the semantic result.
         static void Main(string[] args)
         {{
             if (args.Length < 1)
@@ -34,8 +35,10 @@ namespace {user_type_name}
             }}
 
             string fileName = args[0];
+            // Read the full input so the parser can process it in one pass.
             string input = File.ReadAllText(fileName);
-            I{grammar_name}Actions actions = new {grammar_name}Actions();
+            // User actions collect the typed parse result during semantic callbacks.
+            I{grammar_name}Actions actions = new {grammar_name}UserActions();
 
             try
             {{
