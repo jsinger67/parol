@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace JsonParserCsharp
 {
-    public sealed class JsonRenderActions : JsonParserCsharpActions
+    public sealed class JsonParserCsharpUserActions : JsonParserCsharpActions
     {
         private Json? _json;
 

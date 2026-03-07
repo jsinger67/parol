@@ -16,7 +16,7 @@ namespace CalcCsharp
 
             string fileName = args[0];
             string input = File.ReadAllText(fileName);
-            ICalcCsharpActions actions = new CalcEvaluatorActions();
+            ICalcCsharpActions actions = new CalcCsharpUserActions();
 
             try
             {

@@ -34,7 +34,7 @@ namespace JsonParserCsharp
 
                 for (int i = 0; i < iterations; i++)
                 {
-                    actions = new JsonRenderActions();
+                    actions = new JsonParserCsharpUserActions();
                     Stopwatch parseWatch = Stopwatch.StartNew();
 
                     try

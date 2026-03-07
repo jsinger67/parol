@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * feat(csharp): update file naming conventions for C# scaffolding and add integration tests
 * fix: update Rust snapshot in parol_new tests
 * feat(dotnet): enhance project name handling and add csproj snapshot
+* feat(csharp): enhance user action handling and update generated file comments
+* feat(csharp): adjust examples to new scaffolding scheme
 
 ## 4.3.1 - 2026-03-04
 

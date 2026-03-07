@@ -7,7 +7,7 @@ using Parol.Runtime;
 
 namespace CalcCsharp
 {
-    public sealed class CalcEvaluatorActions : CalcCsharpActions
+    public sealed class CalcCsharpUserActions : CalcCsharpActions
     {
         private readonly List<long> _calcResults = [];
         private readonly SortedDictionary<string, long> _env = new(StringComparer.Ordinal);
