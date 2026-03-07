@@ -38,7 +38,7 @@ namespace {user_type_name}
             // Read the full input so the parser can process it in one pass.
             string input = File.ReadAllText(fileName);
             // User actions collect the typed parse result during semantic callbacks.
-            I{grammar_name}Actions actions = new {grammar_name}UserActions();
+            {grammar_name}Actions actions = new {grammar_name}UserActions();
 
             try
             {{

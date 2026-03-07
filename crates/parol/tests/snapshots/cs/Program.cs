@@ -19,7 +19,7 @@ namespace SnapshotCs
             // Read the full input so the parser can process it in one pass.
             string input = File.ReadAllText(fileName);
             // User actions collect the typed parse result during semantic callbacks.
-            ISnapshotCsActions actions = new SnapshotCsUserActions();
+            SnapshotCsActions actions = new SnapshotCsUserActions();
 
             try
             {

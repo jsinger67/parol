@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * feat(dotnet): enhance project name handling and add csproj snapshot
 * feat(csharp): enhance user action handling and update generated file comments
 * feat(csharp): adjust examples to new scaffolding scheme
+* fix: improve action type in generated C# program files
 
 ## 4.3.1 - 2026-03-04
 
