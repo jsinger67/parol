@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.2 - Not yet released
+
+* feat(csharp): add warning header to generated C# files and corresponding test
+* fix: update generated file comments to clarify manual editing restrictions
+* feat(csharp): update file naming conventions for C# scaffolding and add integration tests
+
 ## 4.3.1 - 2026-03-04
 
 * Fixed C# user action mapping generation for clipped-symbol productions to avoid emitting unreachable code (e.g. CS0162 warnings).

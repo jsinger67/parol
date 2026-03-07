@@ -222,8 +222,13 @@ fn generate_build_rs(creation_data: &CreationData) -> Result<()> {
 
 fn generate_grammar_par(creation_data: &CreationData) -> Result<()> {
     let mut grammar_file_out = creation_data.path.clone();
-    grammar_file_out.push(format!("{}.par", creation_data.crate_name));
     let grammar_name = NmHlp::to_upper_camel_case(creation_data.crate_name);
+    let grammar_file_name = if creation_data.language == parol::Language::CSharp {
+        format!("{}.par", grammar_name)
+    } else {
+        format!("{}.par", creation_data.crate_name)
+    };
+    grammar_file_out.push(grammar_file_name);
     let terminal_name = if grammar_name == "HelloWorld" {
         "HelloWorldTerminal"
     } else {
@@ -424,11 +429,8 @@ fn generate_program_cs(creation_data: &CreationData) -> Result<()> {
 
 fn generate_actions_cs(creation_data: &CreationData) -> Result<()> {
     let mut actions_file_out = creation_data.path.clone();
-    actions_file_out.push(format!(
-        "{}_actions.cs",
-        NmHlp::to_lower_snake_case(creation_data.crate_name)
-    ));
     let user_type_name = NmHlp::to_upper_camel_case(creation_data.crate_name);
+    actions_file_out.push(format!("{}Actions.cs", user_type_name));
     let actions_data = ActionsCsDataBuilder::default()
         .grammar_name(creation_data.grammar_name.clone())
         .user_type_name(user_type_name.as_str())
@@ -443,7 +445,7 @@ fn generate_parol_targets(creation_data: &CreationData) -> Result<()> {
     let mut targets_file_out = creation_data.path.clone();
     targets_file_out.push("parol.targets");
     let targets_data = ParolTargetsDataBuilder::default()
-        .crate_name(creation_data.crate_name)
+        ._crate_name(creation_data.crate_name)
         .grammar_name(creation_data.grammar_name.clone())
         .build()?;
     let targets_source = format!("{targets_data}");

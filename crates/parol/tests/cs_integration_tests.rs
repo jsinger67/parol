@@ -110,6 +110,26 @@ fn with_parol_path() -> Result<String> {
     Ok(joined.to_string_lossy().into_owned())
 }
 
+fn pascal_case(input: &str) -> String {
+    input
+        .split('_')
+        .filter(|part| !part.is_empty())
+        .map(|part| {
+            let mut chars = part.chars();
+            match chars.next() {
+                Some(first) => {
+                    first.to_uppercase().collect::<String>() + &chars.as_str().to_lowercase()
+                }
+                None => String::new(),
+            }
+        })
+        .collect::<String>()
+}
+
+fn csharp_grammar_path(project_path: &std::path::Path, project_name: &str) -> PathBuf {
+    project_path.join(format!("{}.par", pascal_case(project_name)))
+}
+
 #[test]
 fn test_with_parol_path_prepends_binary_dir() -> Result<()> {
     let expected_parol_bin_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -394,6 +414,37 @@ fn test_csharp_end_to_end() -> Result<()> {
 }
 
 #[test]
+fn test_csharp_scaffold_uses_pascal_case_actions_file_name() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_scaffold_uses_pascal_case_actions_file_name") {
+        return Ok(());
+    }
+
+    let temp_dir = tempdir()?;
+    let project_path = temp_dir.path().join("cs_file_names");
+
+    let status = run_parol(&[
+        "new",
+        "--path",
+        project_path.to_str().unwrap(),
+        "-b",
+        "-L",
+        "c-sharp",
+    ])?;
+    assert!(status.success(), "parol new failed");
+
+    assert!(
+        project_path.join("CsFileNamesActions.cs").exists(),
+        "Expected PascalCase scaffold action file name"
+    );
+    assert!(
+        !project_path.join("cs_file_names_actions.cs").exists(),
+        "Did not expect snake_case scaffold action file name"
+    );
+
+    Ok(())
+}
+
+#[test]
 fn test_csharp_typed_generation_with_alternations() -> Result<()> {
     if skip_if_no_dotnet("test_csharp_typed_generation_with_alternations") {
         return Ok(());
@@ -419,7 +470,7 @@ fn test_csharp_typed_generation_with_alternations() -> Result<()> {
     assert!(status.success(), "parol new failed");
 
     // 2. Replace grammar with one that enforces multi-alternation non-terminal types
-    let grammar_path = project_path.join(format!("{}.par", project_name));
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
     fs::write(
         &grammar_path,
         r#"%start CsTyped
@@ -505,7 +556,7 @@ fn test_csharp_typed_generation_with_list_and_optional() -> Result<()> {
     assert!(status.success(), "parol new failed");
 
     // 2. Replace grammar with list + optional constructs
-    let grammar_path = project_path.join(format!("{}.par", project_name));
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
     fs::write(
         &grammar_path,
         r#"%start CsListOpt
@@ -609,7 +660,7 @@ fn test_csharp_typed_generation_with_nt_type_conversion() -> Result<()> {
     assert!(status.success(), "parol new failed");
 
     // 2. Replace grammar with a non-terminal user type mapping
-    let grammar_path = project_path.join(format!("{}.par", project_name));
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
     fs::write(
         &grammar_path,
         r#"%start CsNtType
@@ -794,7 +845,7 @@ fn test_csharp_t_type_terminal_conversion_is_applied() -> Result<()> {
     assert!(status.success(), "parol new failed");
 
     // 2. Replace grammar with a terminal user type mapping
-    let grammar_path = project_path.join(format!("{}.par", project_name));
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
     fs::write(
         &grammar_path,
         r#"%start CsTType
@@ -909,7 +960,7 @@ fn test_csharp_t_type_null_input_conversion_is_rejected() -> Result<()> {
     assert!(status.success(), "parol new failed");
 
     // 2. Replace grammar with a terminal user type mapping
-    let grammar_path = project_path.join(format!("{}.par", project_name));
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
     fs::write(
         &grammar_path,
         r#"%start CsTTypeFail
@@ -1058,7 +1109,7 @@ fn test_csharp_nt_type_custom_value_converter_override_is_used() -> Result<()> {
     assert!(status.success(), "parol new failed");
 
     // 2. Replace grammar with a non-terminal user type mapping
-    let grammar_path = project_path.join(format!("{}.par", project_name));
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
     fs::write(
         &grammar_path,
         r#"%start CsNtTypeOverride
@@ -1200,7 +1251,7 @@ fn test_csharp_nt_type_null_input_conversion_is_rejected() -> Result<()> {
     assert!(status.success(), "parol new failed");
 
     // 2. Replace grammar with a non-terminal user type mapping
-    let grammar_path = project_path.join(format!("{}.par", project_name));
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
     fs::write(
         &grammar_path,
         r#"%start CsNtTypeNull
