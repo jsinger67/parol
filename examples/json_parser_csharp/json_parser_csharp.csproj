@@ -7,11 +7,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup Condition="Exists('..\..\..\parol-dotnet\src\Parol.Runtime\Parol.Runtime.csproj')">
-    <ProjectReference Include="..\..\..\parol-dotnet\src\Parol.Runtime\Parol.Runtime.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="!Exists('..\..\..\parol-dotnet\src\Parol.Runtime\Parol.Runtime.csproj')">
+  <ItemGroup>
     <PackageReference Include="Parol.Runtime" Version="0.1.1" />
   </ItemGroup>
 
