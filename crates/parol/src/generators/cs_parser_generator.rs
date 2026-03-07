@@ -85,12 +85,12 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     writeln!(source, "        /// </summary>")?;
     writeln!(
         source,
-        "        public static readonly string[] NonTerminalNames = {{"
+        "        public static readonly string[] NonTerminalNames = ["
     )?;
     for name in &non_terminals {
         writeln!(source, "            \"{}\",", name)?;
     }
-    writeln!(source, "        }};")?;
+    writeln!(source, "        ];")?;
     writeln!(source)?;
 
     // Lookahead Automata
@@ -123,28 +123,28 @@ fn generate_lookahead_automata(
     writeln!(source, "        /// </summary>")?;
     writeln!(
         source,
-        "        public static readonly LookaheadDfa[] LookaheadAutomata = {{"
+        "        public static readonly LookaheadDfa[] LookaheadAutomata = ["
     )?;
     for (i, nt_name) in non_terminals.iter().enumerate() {
         if let Some(dfa) = la_dfa.get(*nt_name) {
             let compiled_dfa = CompiledDFA::from_lookahead_dfa(dfa);
             writeln!(source, "            /* {} - \"{}\" */", i, nt_name)?;
-            writeln!(source, "            new LookaheadDfa(")?;
+            writeln!(source, "            new(")?;
             writeln!(source, "                {},", compiled_dfa.prod0)?;
-            writeln!(source, "                new Trans[] {{")?;
+            writeln!(source, "                [")?;
             for t in &compiled_dfa.transitions {
                 writeln!(
                     source,
-                    "                    new Trans({}, {}, {}, {}),",
+                    "                    new({}, {}, {}, {}),",
                     t.from_state, t.term, t.to_state, t.prod_num
                 )?;
             }
-            writeln!(source, "                }},")?;
+            writeln!(source, "                ],")?;
             writeln!(source, "                {} // k", compiled_dfa.k)?;
             writeln!(source, "            ),")?;
         }
     }
-    writeln!(source, "        }};")?;
+    writeln!(source, "        ];")?;
     Ok(())
 }
 
@@ -172,20 +172,20 @@ fn generate_productions(
     writeln!(source, "        /// </summary>")?;
     writeln!(
         source,
-        "        public static readonly Production[] Productions = {{"
+        "        public static readonly Production[] Productions = ["
     )?;
     for (i, pr) in grammar_config.cfg.pr.iter().enumerate() {
         let lhs = get_non_terminal_index(pr.get_n_str());
         writeln!(source, "            // {} - {}", i, pr)?;
         writeln!(source, "            new Production(")?;
         writeln!(source, "                {},", lhs)?;
-        writeln!(source, "                new ParseItem[] {{")?;
+        writeln!(source, "                [")?;
         for s in pr.get_r() {
             match s {
                 Symbol::N(n, ..) => {
                     writeln!(
                         source,
-                        "                    new ParseItem(ParseType.N, {}),",
+                        "                    new(ParseType.N, {}),",
                         get_non_terminal_index(n)
                     )?;
                 }
@@ -197,7 +197,7 @@ fn generate_productions(
                     };
                     writeln!(
                         source,
-                        "                    new ParseItem({}, {}),",
+                        "                    new({}, {}),",
                         parse_type,
                         get_terminal_index(t, l0)
                     )?;
@@ -205,10 +205,10 @@ fn generate_productions(
                 _ => panic!("Unexpected symbol type in production!"),
             }
         }
-        writeln!(source, "                }}")?;
+        writeln!(source, "                ]")?;
         writeln!(source, "            ),")?;
     }
-    writeln!(source, "        }};")?;
+    writeln!(source, "        ];")?;
     Ok(())
 }
 

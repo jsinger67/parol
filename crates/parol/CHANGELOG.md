@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * feat(csharp): enhance user action handling and update generated file comments
 * feat(csharp): adjust examples to new scaffolding scheme
 * fix: improve action type in generated C# program files
+* fix: update array syntax from braces to brackets in C# generator files
 
 ## 4.3.1 - 2026-03-04
 

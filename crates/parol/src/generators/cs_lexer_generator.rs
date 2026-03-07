@@ -140,12 +140,12 @@ pub fn generate_scanner_data<C: CommonGeneratorConfig>(
     writeln!(source, "        /// </summary>")?;
     writeln!(
         source,
-        "        public static readonly string[] TerminalNames = {{"
+        "        public static readonly string[] TerminalNames = ["
     )?;
     for name in &terminal_names {
         writeln!(source, "            \"{}\",", name)?;
     }
-    writeln!(source, "        }};")?;
+    writeln!(source, "        ];")?;
     writeln!(source)?;
 
     // Match Function
@@ -246,37 +246,37 @@ fn generate_scanner_mode(
     dfa: &Dfa,
     num_classes: usize,
 ) -> Result<()> {
-    writeln!(source, "            new ScannerMode(")?;
+    writeln!(source, "            new(")?;
     writeln!(source, "                \"{}\",", mode.name)?;
 
     // Transitions
-    writeln!(source, "                new Transition[] {{")?;
+    writeln!(source, "                [")?;
     for t in &mode.transitions {
         match t {
             TransitionToNumericMode::SetMode(token_type, target) => {
                 writeln!(
                     source,
-                    "                    new Transition(TransitionType.SetMode, {}, {}),",
+                    "                    new(TransitionType.SetMode, {}, {}),",
                     token_type, target
                 )?;
             }
             TransitionToNumericMode::PushMode(token_type, target) => {
                 writeln!(
                     source,
-                    "                    new Transition(TransitionType.PushMode, {}, {}),",
+                    "                    new(TransitionType.PushMode, {}, {}),",
                     token_type, target
                 )?;
             }
             TransitionToNumericMode::PopMode(token_type) => {
                 writeln!(
                     source,
-                    "                    new Transition(TransitionType.PopMode, {}),",
+                    "                    new(TransitionType.PopMode, {}),",
                     token_type
                 )?;
             }
         }
     }
-    writeln!(source, "                }},")?;
+    writeln!(source, "                ],")?;
 
     // DFA
     generate_dfa(source, dfa, num_classes)?;
@@ -286,19 +286,19 @@ fn generate_scanner_mode(
 }
 
 fn generate_dfa(source: &mut String, dfa: &Dfa, num_classes: usize) -> Result<()> {
-    writeln!(source, "                new Dfa(new DfaState[] {{")?;
+    writeln!(source, "                new Dfa([")?;
     for state in &dfa.states {
         writeln!(source, "                    new DfaState(")?;
 
         // Transitions
-        write!(source, "                        new DfaTransition?[] {{ ")?;
+        write!(source, "                        [ ")?;
         let mut transition_opts = vec![None; num_classes];
         for t in &state.transitions {
             transition_opts[t.elementary_interval_index.as_usize()] = Some(t.target.as_usize());
         }
         for (i, opt) in transition_opts.iter().enumerate() {
             if let Some(target) = opt {
-                write!(source, "new DfaTransition({})", target)?;
+                write!(source, "new({})", target)?;
             } else {
                 write!(source, "null")?;
             }
@@ -306,25 +306,25 @@ fn generate_dfa(source: &mut String, dfa: &Dfa, num_classes: usize) -> Result<()
                 write!(source, ", ")?;
             }
         }
-        writeln!(source, " }},")?;
+        writeln!(source, " ],")?;
 
         // Accept Data
-        writeln!(source, "                        new AcceptData[] {{")?;
+        writeln!(source, "                        [")?;
         for ad in &state.accept_data {
             write!(
                 source,
-                "                            new AcceptData({}, {}, ",
+                "                            new({}, {}, ",
                 ad.terminal_type.as_usize(),
                 ad.priority
             )?;
             generate_lookahead(source, &ad.lookahead, num_classes)?;
             writeln!(source, "),")?;
         }
-        writeln!(source, "                        }}")?;
+        writeln!(source, "                        ]")?;
 
         writeln!(source, "                    ),")?;
     }
-    writeln!(source, "                }})")?;
+    writeln!(source, "                ])")?;
     Ok(())
 }
 
