@@ -370,13 +370,14 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
 }
 
 fn apply_dotnet(creation_data: &CreationData) -> Result<()> {
+    let project_name = NmHlp::to_upper_camel_case(creation_data.crate_name);
     // Call the `dotnet new console` command
     Command::new("dotnet")
         .args([
             "new",
             "console",
             "-n",
-            creation_data.crate_name,
+            project_name.as_str(),
             "-o",
             creation_data
                 .path
@@ -402,7 +403,7 @@ fn generate_dotnet_project(creation_data: &CreationData) -> Result<()> {
 
 fn generate_csproj(creation_data: &CreationData) -> Result<()> {
     let mut csproj_file_out = creation_data.path.clone();
-    csproj_file_out.push(format!("{}.csproj", creation_data.crate_name));
+    csproj_file_out.push(format!("{}.csproj", creation_data.grammar_name));
     let csproj_data = CsProjCsDataBuilder::default()
         ._crate_name(creation_data.crate_name)
         .build()?;

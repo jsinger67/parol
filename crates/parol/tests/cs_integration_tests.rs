@@ -66,7 +66,14 @@ fn ensure_local_runtime_reference(
     project_path: &std::path::Path,
     project_name: &str,
 ) -> Result<()> {
-    let csproj_path = project_path.join(format!("{}.csproj", project_name));
+    let csproj_path = {
+        let snake_case = project_path.join(format!("{}.csproj", project_name));
+        if snake_case.exists() {
+            snake_case
+        } else {
+            project_path.join(format!("{}.csproj", pascal_case(project_name)))
+        }
+    };
     let mut csproj_content = fs::read_to_string(&csproj_path)?;
 
     let runtime_project_path = runtime_project_path();
