@@ -6,4 +6,10 @@
 %%
 
 // Start symbol
-SnapshotLib: "Hello world!";
+SnapshotLib
+    : [ HelloWorld ]
+    ;
+
+HelloWorld
+    : "Hello world!"
+    ;

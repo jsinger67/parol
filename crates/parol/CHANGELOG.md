@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * feat(csharp): add warning header to generated C# files and corresponding test
 * fix: update generated file comments to clarify manual editing restrictions
 * feat(csharp): update file naming conventions for C# scaffolding and add integration tests
+* fix: update Rust snapshot in parol_new tests
 
 ## 4.3.1 - 2026-03-04
 

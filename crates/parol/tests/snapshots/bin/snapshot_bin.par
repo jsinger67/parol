@@ -6,4 +6,10 @@
 %%
 
 // Start symbol
-SnapshotBin: "Hello world!";
+SnapshotBin
+    : [ HelloWorld ]
+    ;
+
+HelloWorld
+    : "Hello world!"
+    ;
