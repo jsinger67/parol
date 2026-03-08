@@ -19,7 +19,7 @@ impl std::fmt::Display for CsProjCsData<'_> {
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Parol.Runtime" Version="0.1.1" />
+    <PackageReference Include="Parol.Runtime" Version="0.1.2" />
   </ItemGroup>
 
   <Import Project="parol.targets" />

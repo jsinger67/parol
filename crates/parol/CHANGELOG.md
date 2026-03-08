@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* fix: update Parol.Runtime package version to 0.1.2 in project files and adjust parser method signature
+
 ## 4.3.2 - 2026-03-07
 
 * feat(csharp): add warning header to generated C# files and corresponding test

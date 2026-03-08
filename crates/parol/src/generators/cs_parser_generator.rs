@@ -281,7 +281,10 @@ fn generate_parse_methods(
         "            var tokens = Scanner.Scan(input, fileName, {}Data.MatchFunction, {}Data.ScannerModes);",
         scanner_type_name, scanner_type_name
     )?;
-    writeln!(source, "            parser.Parse(tokens, userActions);")?;
+    writeln!(
+        source,
+        "            parser.Parse(tokens, userActions, fileName);"
+    )?;
     writeln!(source, "        }}")?;
 
     Ok(())
