@@ -642,6 +642,98 @@ Number
 }
 
 #[test]
+fn test_csharp_optional_none_mapping_with_multi_member_struct() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_optional_none_mapping_with_multi_member_struct") {
+        return Ok(());
+    }
+
+    let _guard = cs_runtime_build_lock()
+        .lock()
+        .unwrap_or_else(|e| e.into_inner());
+
+    let temp_dir = tempdir()?;
+    let project_path = temp_dir.path().join("cs_optional_multi");
+    let project_name = "cs_optional_multi";
+
+    let status = run_parol(&[
+        "new",
+        "--path",
+        project_path.to_str().unwrap(),
+        "-b",
+        "-L",
+        "c-sharp",
+    ])?;
+    assert!(status.success(), "parol new failed");
+
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
+    fs::write(
+        &grammar_path,
+        r#"%start CsOptionalMulti
+%title "CsOptionalMulti grammar"
+%comment "C# OptionalNone multi-member mapping regression grammar"
+%line_comment "//"
+
+%%
+
+CsOptionalMulti
+    : PairOpt
+    ;
+
+PairOpt
+    : [ A B ]
+    ;
+
+A
+    : "a"
+    ;
+
+B
+    : "b"
+    ;
+"#,
+    )?;
+
+    ensure_local_runtime_reference(&project_path, project_name)?;
+
+    let new_path = with_parol_path()?;
+    let output = dotnet_build(&project_path, &new_path)?;
+    if !output.status.success() {
+        eprintln!("stdout: {}", String::from_utf8_lossy(&output.stdout));
+        eprintln!("stderr: {}", String::from_utf8_lossy(&output.stderr));
+    }
+    assert!(output.status.success(), "dotnet build failed");
+
+    let generated_actions = fs::read_to_string(project_path.join("ICsOptionalMultiActions.cs"))?;
+    assert!(
+        generated_actions.contains("private static PairOpt0 MapPairOpt0_1(object[] children)")
+            && generated_actions
+                .contains("if (children.Length == 0) return new PairOpt0(default!, default!);")
+    );
+
+    fs::write(project_path.join("test.txt"), "")?;
+    let run_output = Command::new("dotnet")
+        .current_dir(&project_path)
+        .args(["run", "--", "test.txt"])
+        .env("PATH", &new_path)
+        .output()
+        .map_err(|e| anyhow!(e))?;
+
+    if !run_output.status.success() {
+        eprintln!("stdout: {}", String::from_utf8_lossy(&run_output.stdout));
+        eprintln!("stderr: {}", String::from_utf8_lossy(&run_output.stderr));
+    }
+    assert!(run_output.status.success(), "dotnet run failed");
+
+    let stdout = String::from_utf8_lossy(&run_output.stdout);
+    assert!(
+        stdout.contains("Success!"),
+        "Expected successful parse output"
+    );
+
+    Ok(())
+}
+
+#[test]
 fn test_csharp_typed_generation_with_nt_type_conversion() -> Result<()> {
     if skip_if_no_dotnet("test_csharp_typed_generation_with_nt_type_conversion") {
         return Ok(());

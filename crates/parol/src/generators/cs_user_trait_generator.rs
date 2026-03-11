@@ -291,6 +291,26 @@ impl<'a> CSUserTraitGenerator<'a> {
         ))
     }
 
+    fn emit_struct_default_ctor(type_id: SymbolId, symbol_table: &SymbolTable) -> Result<String> {
+        let type_symbol = symbol_table.symbol_as_type(type_id);
+        if !matches!(type_symbol.entrails(), TypeEntrails::Struct) {
+            return Err(anyhow!(
+                "Expected struct type for default constructor generation"
+            ));
+        }
+        let members = Self::non_clipped_members(type_id, symbol_table)?;
+        if members.is_empty() {
+            return Ok(format!("new {}()", type_symbol.inner_name()));
+        }
+
+        let defaults = vec!["default!"; members.len()];
+        Ok(format!(
+            "new {}({})",
+            type_symbol.inner_name(),
+            defaults.join(", ")
+        ))
+    }
+
     fn emit_action_mapping_method(
         &self,
         source: &mut String,
@@ -456,6 +476,25 @@ impl<'a> CSUserTraitGenerator<'a> {
                         Self::runtime_child_count(map_type_id, &type_info.symbol_table)?;
                     let nt_name = map_symbol.inner_name();
                     let members = Self::non_clipped_members(map_type_id, &type_info.symbol_table)?;
+                    let is_empty_production =
+                        self.grammar_config.cfg.pr[prod_num].get_r().is_empty();
+
+                    if is_empty_production {
+                        writeln!(
+                            source,
+                            "            if (children.Length == 0) return {};",
+                            Self::emit_struct_default_ctor(map_type_id, &type_info.symbol_table)?
+                        )?;
+                    }
+
+                    if function.sem == ProductionAttribute::OptionalNone {
+                        writeln!(
+                            source,
+                            "            if (children.Length == 0) return {};",
+                            Self::emit_struct_default_ctor(map_type_id, &type_info.symbol_table)?
+                        )?;
+                    }
+
                     if members.len() == 1 {
                         let member = type_info.symbol_table.symbol_as_instance(members[0]);
                         let member_type = type_info.symbol_table.symbol_as_type(member.type_id());
