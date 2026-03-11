@@ -1355,7 +1355,7 @@ namespace CalcCsharp {
             );
 
             var tokens = Scanner.Scan(input, fileName, CalcCsharpScannerData.MatchFunction, CalcCsharpScannerData.ScannerModes);
-            parser.Parse(tokens, userActions);
+            parser.Parse(tokens, userActions, fileName);
         }
     }
 }

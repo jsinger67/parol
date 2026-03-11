@@ -646,7 +646,7 @@ namespace JsonParserCsharp {
             );
 
             var tokens = Scanner.Scan(input, fileName, JsonParserCsharpScannerData.MatchFunction, JsonParserCsharpScannerData.ScannerModes);
-            parser.Parse(tokens, userActions);
+            parser.Parse(tokens, userActions, fileName);
         }
     }
 }
