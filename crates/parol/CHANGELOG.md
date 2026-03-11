@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * fix: update Parol.Runtime package version to 0.1.2 in project files and adjust parser method signature
 * fix(csharp): handle empty productions for struct-mapped non-terminals in generated action mappers (e.g. `ExprOpt: ;`) to avoid runtime "Unsupported C# mapping" errors
+* fix(csharp): handle empty struct-production mappings without duplicate guards in generated action mappers
 
 ## 4.3.2 - 2026-03-07
 

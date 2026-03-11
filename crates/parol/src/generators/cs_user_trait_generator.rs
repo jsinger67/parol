@@ -478,16 +478,10 @@ impl<'a> CSUserTraitGenerator<'a> {
                     let members = Self::non_clipped_members(map_type_id, &type_info.symbol_table)?;
                     let is_empty_production =
                         self.grammar_config.cfg.pr[prod_num].get_r().is_empty();
+                    let needs_empty_struct_mapping =
+                        is_empty_production || function.sem == ProductionAttribute::OptionalNone;
 
-                    if is_empty_production {
-                        writeln!(
-                            source,
-                            "            if (children.Length == 0) return {};",
-                            Self::emit_struct_default_ctor(map_type_id, &type_info.symbol_table)?
-                        )?;
-                    }
-
-                    if function.sem == ProductionAttribute::OptionalNone {
+                    if needs_empty_struct_mapping {
                         writeln!(
                             source,
                             "            if (children.Length == 0) return {};",
@@ -503,13 +497,6 @@ impl<'a> CSUserTraitGenerator<'a> {
                             type_info.symbol_table.name(member.my_id()),
                         );
                         match (function.sem, member_type.entrails()) {
-                            (ProductionAttribute::OptionalNone, _) => {
-                                writeln!(
-                                    source,
-                                    "            if (children.Length == 0) return new {}(default!);",
-                                    nt_name
-                                )?;
-                            }
                             (ProductionAttribute::OptionalSome, _) => {
                                 let value_expr = Self::child_to_value_expr(
                                     member.type_id(),
