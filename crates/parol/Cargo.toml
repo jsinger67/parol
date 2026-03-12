@@ -15,7 +15,7 @@ exclude = ["/tests", "/data", "/bindings"]
 
 [dependencies]
 anyhow = { workspace = true }
-assert_cmd = "2.1"
+assert_cmd = "2.2"
 bitflags = "2.11.0"
 cfg-if = "1.0.4"
 clap = { workspace = true }
@@ -133,7 +133,7 @@ harness = false
 [dev-dependencies]
 criterion = "0.8.2"
 pretty_assertions = "1.4"
-assert_cmd = "2.1"
+assert_cmd = "2.2"
 tempfile = "3"
 quickcheck = "1.0.3"
 quickcheck_macros = "1.2.0"
