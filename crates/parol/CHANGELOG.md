@@ -5,11 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 4.3.3 - 2026-03-14
 
-* fix: update Parol.Runtime package version to 0.1.2 in project files and adjust parser method signature
-* fix(csharp): handle empty productions for struct-mapped non-terminals in generated action mappers (e.g. `ExprOpt: ;`) to avoid runtime "Unsupported C# mapping" errors
-* fix(csharp): handle empty struct-production mappings without duplicate guards in generated action mappers
+* fix: update Parol.Runtime package version to 0.1.2 in project files and adjust parser method
+signature
+* fix(csharp): handle empty productions for struct-mapped non-terminals in generated action mappers
+(e.g. `ExprOpt: ;`) to avoid runtime "Unsupported C# mapping" errors
+* fix(csharp): handle empty struct-production mappings without duplicate guards in generated action
+mappers
 
 ## 4.3.2 - 2026-03-07
 
@@ -25,7 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.3.1 - 2026-03-04
 
-* Fixed C# user action mapping generation for clipped-symbol productions to avoid emitting unreachable code (e.g. CS0162 warnings).
+* Fixed C# user action mapping generation for clipped-symbol productions to avoid emitting
+unreachable code (e.g. CS0162 warnings).
 * Fixed C# code generation when non-terminals are clipped.
 * Fixed `parol new` snapshot tests to exclude generated folder from snapshot comparison.
 * Fixed Dependabot security alerts by updating aws-lc-rs/aws-lc-sys versions.
