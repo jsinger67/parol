@@ -1,4 +1,4 @@
-use super::symbol_table::{MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails};
+use super::symbol_table::{MetaSymbolKind, SymbolId, SymbolKind, SymbolTable, TypeEntrails};
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 use crate::GrammarTypeInfo;
 use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
@@ -43,6 +43,17 @@ impl<'a> CSUserTraitGenerator<'a> {
                 .unwrap_or(0);
             NamingHelper::to_upper_camel_case(&format!("{}_{}", non_terminal, rel_idx))
         }
+    }
+
+    fn map_method_name(&self, prod_index: usize) -> String {
+        format!("Map{}_P{}", self.action_name(prod_index), prod_index)
+    }
+
+    fn is_instance_member(symbol_id: SymbolId, symbol_table: &SymbolTable) -> bool {
+        matches!(
+            symbol_table.symbol(symbol_id).kind(),
+            SymbolKind::Instance(_)
+        )
     }
 
     fn escape_cs_string(value: &str) -> String {
@@ -132,6 +143,9 @@ impl<'a> CSUserTraitGenerator<'a> {
             .members(type_id)?
             .iter()
             .filter_map(|m| {
+                if !Self::is_instance_member(*m, symbol_table) {
+                    return None;
+                }
                 let member = symbol_table.symbol_as_instance(*m);
                 if member.sem() == SymbolAttribute::Clipped {
                     None
@@ -143,6 +157,10 @@ impl<'a> CSUserTraitGenerator<'a> {
     }
 
     fn is_runtime_skipped_member(member_id: SymbolId, symbol_table: &SymbolTable) -> bool {
+        if !Self::is_instance_member(member_id, symbol_table) {
+            return true;
+        }
+
         let member = symbol_table.symbol_as_instance(member_id);
         if member.sem() != SymbolAttribute::Clipped {
             return false;
@@ -171,6 +189,9 @@ impl<'a> CSUserTraitGenerator<'a> {
         let mut result = Vec::new();
 
         for member_id in symbol_table.members(type_id)? {
+            if !Self::is_instance_member(*member_id, symbol_table) {
+                continue;
+            }
             let member = symbol_table.symbol_as_instance(*member_id);
 
             if member.sem() != SymbolAttribute::Clipped {
@@ -338,18 +359,23 @@ impl<'a> CSUserTraitGenerator<'a> {
             || non_terminal.ends_with("_list"))
             && has_empty_alternative;
         let list_action_fallback = action_name.ends_with("List0") || action_name.ends_with("List1");
-        let is_collection_helper = matches!(
+        let collection_helper_candidate = matches!(
             production_attribute,
             ProductionAttribute::CollectionStart | ProductionAttribute::AddToCollection
         ) || list_shape_fallback
             || list_action_fallback;
+        let is_collection_helper = collection_helper_candidate
+            && matches!(
+                type_info.symbol_table.symbol_as_type(nt_type_id).entrails(),
+                TypeEntrails::Struct
+            );
         let map_type_id = nt_type_id;
         let map_cs_type = if is_collection_helper {
             format!("List<{}>", nt_cs_type)
         } else {
             Self::to_cs_type(map_type_id, &type_info.symbol_table)?
         };
-        let map_method = format!("Map{}", action_name);
+        let map_method = self.map_method_name(prod_num);
 
         writeln!(
             source,
@@ -791,8 +817,7 @@ impl<'a> CSUserTraitGenerator<'a> {
                 .ok_or_else(|| anyhow!("Missing adapter action for production {}", i))?;
             let function = type_info.symbol_table.symbol_as_function(action_id)?;
             let non_terminal = function.non_terminal;
-            let action_name = self.action_name(i);
-            let map_method = format!("Map{}", action_name);
+            let map_method = self.map_method_name(i);
             let typed_method_name = if type_info.get_user_action(&non_terminal).is_ok() {
                 Some(format!(
                     "On{}",

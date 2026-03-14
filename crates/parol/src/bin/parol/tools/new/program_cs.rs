@@ -23,7 +23,7 @@ using {user_type_name};
 
 namespace {user_type_name}
 {{
-    class Program
+    class {grammar_name}App
     {{
         // Parses a file provided on the command line and prints the semantic result.
         static void Main(string[] args)

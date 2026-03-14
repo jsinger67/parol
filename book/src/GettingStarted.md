@@ -49,8 +49,8 @@ Practical C# examples are available in
 and
 [json_parser_csharp](https://github.com/jsinger67/parol/tree/main/examples/json_parser_csharp).
 
-Currently, C# code generation supports only LL(k) grammars.
-`%grammar_type 'LALR(1)'` is rejected until C# LALR(1) parser generation is implemented.
+C# code generation supports LL(k) and LALR(1) grammars.
+You can use `%grammar_type 'LALR(1)'` in C# projects as well.
 
 Change into the new project folder and start the initial build. `parol` will generate two files from
 the initial grammar definition.

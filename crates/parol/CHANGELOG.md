@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.4 - 2026-03-14
+
+* fix: update Parol.Runtime package version to 0.1.3 in project files
+* feat(csharp): add LALR(1) parser generation support and corresponding LR parser runtime support in Parol.Runtime
+
 ## 4.3.3 - 2026-03-14
 
 * fix: update Parol.Runtime package version to 0.1.2 in project files and adjust parser method

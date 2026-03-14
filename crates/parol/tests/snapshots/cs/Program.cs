@@ -4,7 +4,7 @@ using SnapshotCs;
 
 namespace SnapshotCs
 {
-    class Program
+    class SnapshotCsApp
     {
         // Parses a file provided on the command line and prints the semantic result.
         static void Main(string[] args)

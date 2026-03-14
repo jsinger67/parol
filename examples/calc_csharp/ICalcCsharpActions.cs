@@ -285,67 +285,67 @@ namespace CalcCsharp {
         /// <inheritdoc/>
         public virtual object CallSemanticActionForProductionNumber(int productionNumber, object[] children) {
             switch (productionNumber) {
-                case 0: { var value = MapCalc(children); OnCalc(value); return value; }
-                case 1: return MapCalcList0(children);
-                case 2: return MapCalcList1(children);
-                case 3: { var value = MapEqualityOp(children); OnEqualityOp(value); return value; }
-                case 4: { var value = MapAssignOp(children); OnAssignOp(value); return value; }
-                case 5: { var value = MapLogicalOrOp(children); OnLogicalOrOp(value); return value; }
-                case 6: { var value = MapLogicalAndOp(children); OnLogicalAndOp(value); return value; }
-                case 7: { var value = MapBitwiseOrOp(children); OnBitwiseOrOp(value); return value; }
-                case 8: { var value = MapBitwiseAndOp(children); OnBitwiseAndOp(value); return value; }
-                case 9: { var value = MapBitwiseShiftOp(children); OnBitwiseShiftOp(value); return value; }
-                case 10: { var value = MapRelationalOp(children); OnRelationalOp(value); return value; }
-                case 11: { var value = MapPlus(children); OnPlus(value); return value; }
-                case 12: { var value = MapMinus(children); OnMinus(value); return value; }
-                case 13: { var value = MapPowOp(children); OnPowOp(value); return value; }
-                case 14: { var value = MapMultOp(children); OnMultOp(value); return value; }
-                case 15: { var value = MapInstruction0(children); OnInstruction(value); return value; }
-                case 16: { var value = MapInstruction1(children); OnInstruction(value); return value; }
-                case 17: { var value = MapAssignItem(children); OnAssignItem(value); return value; }
-                case 18: { var value = MapAssignment(children); OnAssignment(value); return value; }
-                case 19: return MapAssignmentList0(children);
-                case 20: return MapAssignmentList1(children);
-                case 21: { var value = MapLogicalOr(children); OnLogicalOr(value); return value; }
-                case 22: return MapLogicalOrList0(children);
-                case 23: return MapLogicalOrList1(children);
-                case 24: { var value = MapLogicalAnd(children); OnLogicalAnd(value); return value; }
-                case 25: return MapLogicalAndList0(children);
-                case 26: return MapLogicalAndList1(children);
-                case 27: { var value = MapBitwiseOr(children); OnBitwiseOr(value); return value; }
-                case 28: return MapBitwiseOrList0(children);
-                case 29: return MapBitwiseOrList1(children);
-                case 30: { var value = MapBitwiseAnd(children); OnBitwiseAnd(value); return value; }
-                case 31: return MapBitwiseAndList0(children);
-                case 32: return MapBitwiseAndList1(children);
-                case 33: { var value = MapEquality(children); OnEquality(value); return value; }
-                case 34: return MapEqualityList0(children);
-                case 35: return MapEqualityList1(children);
-                case 36: { var value = MapRelational(children); OnRelational(value); return value; }
-                case 37: return MapRelationalList0(children);
-                case 38: return MapRelationalList1(children);
-                case 39: { var value = MapBitwiseShift(children); OnBitwiseShift(value); return value; }
-                case 40: return MapBitwiseShiftList0(children);
-                case 41: return MapBitwiseShiftList1(children);
-                case 42: { var value = MapAddOp0(children); OnAddOp(value); return value; }
-                case 43: { var value = MapAddOp1(children); OnAddOp(value); return value; }
-                case 44: { var value = MapSumm(children); OnSumm(value); return value; }
-                case 45: return MapSummList0(children);
-                case 46: return MapSummList1(children);
-                case 47: { var value = MapMult(children); OnMult(value); return value; }
-                case 48: return MapMultList0(children);
-                case 49: return MapMultList1(children);
-                case 50: { var value = MapPower(children); OnPower(value); return value; }
-                case 51: return MapPowerList0(children);
-                case 52: return MapPowerList1(children);
-                case 53: { var value = MapNegate(children); OnNegate(value); return value; }
-                case 54: { var value = MapFactor0(children); OnFactor(value); return value; }
-                case 55: { var value = MapFactor1(children); OnFactor(value); return value; }
-                case 56: { var value = MapFactor2(children); OnFactor(value); return value; }
-                case 57: { var value = MapFactor3(children); OnFactor(value); return value; }
-                case 58: { var value = MapNumber(children); OnNumber(value); return value; }
-                case 59: { var value = MapIdRef(children); OnIdRef(value); return value; }
-                case 60: { var value = MapId(children); OnId(value); return value; }
+                case 0: { var value = MapCalc_P0(children); OnCalc(value); return value; }
+                case 1: return MapCalcList0_P1(children);
+                case 2: return MapCalcList1_P2(children);
+                case 3: { var value = MapEqualityOp_P3(children); OnEqualityOp(value); return value; }
+                case 4: { var value = MapAssignOp_P4(children); OnAssignOp(value); return value; }
+                case 5: { var value = MapLogicalOrOp_P5(children); OnLogicalOrOp(value); return value; }
+                case 6: { var value = MapLogicalAndOp_P6(children); OnLogicalAndOp(value); return value; }
+                case 7: { var value = MapBitwiseOrOp_P7(children); OnBitwiseOrOp(value); return value; }
+                case 8: { var value = MapBitwiseAndOp_P8(children); OnBitwiseAndOp(value); return value; }
+                case 9: { var value = MapBitwiseShiftOp_P9(children); OnBitwiseShiftOp(value); return value; }
+                case 10: { var value = MapRelationalOp_P10(children); OnRelationalOp(value); return value; }
+                case 11: { var value = MapPlus_P11(children); OnPlus(value); return value; }
+                case 12: { var value = MapMinus_P12(children); OnMinus(value); return value; }
+                case 13: { var value = MapPowOp_P13(children); OnPowOp(value); return value; }
+                case 14: { var value = MapMultOp_P14(children); OnMultOp(value); return value; }
+                case 15: { var value = MapInstruction0_P15(children); OnInstruction(value); return value; }
+                case 16: { var value = MapInstruction1_P16(children); OnInstruction(value); return value; }
+                case 17: { var value = MapAssignItem_P17(children); OnAssignItem(value); return value; }
+                case 18: { var value = MapAssignment_P18(children); OnAssignment(value); return value; }
+                case 19: return MapAssignmentList0_P19(children);
+                case 20: return MapAssignmentList1_P20(children);
+                case 21: { var value = MapLogicalOr_P21(children); OnLogicalOr(value); return value; }
+                case 22: return MapLogicalOrList0_P22(children);
+                case 23: return MapLogicalOrList1_P23(children);
+                case 24: { var value = MapLogicalAnd_P24(children); OnLogicalAnd(value); return value; }
+                case 25: return MapLogicalAndList0_P25(children);
+                case 26: return MapLogicalAndList1_P26(children);
+                case 27: { var value = MapBitwiseOr_P27(children); OnBitwiseOr(value); return value; }
+                case 28: return MapBitwiseOrList0_P28(children);
+                case 29: return MapBitwiseOrList1_P29(children);
+                case 30: { var value = MapBitwiseAnd_P30(children); OnBitwiseAnd(value); return value; }
+                case 31: return MapBitwiseAndList0_P31(children);
+                case 32: return MapBitwiseAndList1_P32(children);
+                case 33: { var value = MapEquality_P33(children); OnEquality(value); return value; }
+                case 34: return MapEqualityList0_P34(children);
+                case 35: return MapEqualityList1_P35(children);
+                case 36: { var value = MapRelational_P36(children); OnRelational(value); return value; }
+                case 37: return MapRelationalList0_P37(children);
+                case 38: return MapRelationalList1_P38(children);
+                case 39: { var value = MapBitwiseShift_P39(children); OnBitwiseShift(value); return value; }
+                case 40: return MapBitwiseShiftList0_P40(children);
+                case 41: return MapBitwiseShiftList1_P41(children);
+                case 42: { var value = MapAddOp0_P42(children); OnAddOp(value); return value; }
+                case 43: { var value = MapAddOp1_P43(children); OnAddOp(value); return value; }
+                case 44: { var value = MapSumm_P44(children); OnSumm(value); return value; }
+                case 45: return MapSummList0_P45(children);
+                case 46: return MapSummList1_P46(children);
+                case 47: { var value = MapMult_P47(children); OnMult(value); return value; }
+                case 48: return MapMultList0_P48(children);
+                case 49: return MapMultList1_P49(children);
+                case 50: { var value = MapPower_P50(children); OnPower(value); return value; }
+                case 51: return MapPowerList0_P51(children);
+                case 52: return MapPowerList1_P52(children);
+                case 53: { var value = MapNegate_P53(children); OnNegate(value); return value; }
+                case 54: { var value = MapFactor0_P54(children); OnFactor(value); return value; }
+                case 55: { var value = MapFactor1_P55(children); OnFactor(value); return value; }
+                case 56: { var value = MapFactor2_P56(children); OnFactor(value); return value; }
+                case 57: { var value = MapFactor3_P57(children); OnFactor(value); return value; }
+                case 58: { var value = MapNumber_P58(children); OnNumber(value); return value; }
+                case 59: { var value = MapIdRef_P59(children); OnIdRef(value); return value; }
+                case 60: { var value = MapId_P60(children); OnId(value); return value; }
                 default: throw new ArgumentException($"Invalid production number {productionNumber}");
             }
         }
@@ -548,7 +548,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 0: Calc: CalcList /* Vec */;
-        private static Calc MapCalc(object[] children) {
+        private static Calc MapCalc_P0(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Calc((List<CalcList>)children[0 + 0]);
             if (children.Length == 1 && children[0] is Calc directValue) return directValue;
@@ -557,7 +557,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 1: CalcList: Instruction ";"^ /* Clipped */ CalcList;
-        private static List<CalcList> MapCalcList0(object[] children) {
+        private static List<CalcList> MapCalcList0_P1(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<CalcList> directValue) return directValue;
             if (children.Length == 1) {
@@ -576,7 +576,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 2: CalcList: ;
-        private static List<CalcList> MapCalcList1(object[] children) {
+        private static List<CalcList> MapCalcList1_P2(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<CalcList>();
             if (children.Length == 1 && children[0] is List<CalcList> directValue) return directValue;
@@ -585,7 +585,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 3: EqualityOp: "==|!=";
-        private static EqualityOp MapEqualityOp(object[] children) {
+        private static EqualityOp MapEqualityOp_P3(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new EqualityOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is EqualityOp directValue) return directValue;
@@ -594,7 +594,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 4: AssignOp: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
-        private static AssignOp MapAssignOp(object[] children) {
+        private static AssignOp MapAssignOp_P4(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new AssignOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is AssignOp directValue) return directValue;
@@ -603,7 +603,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 5: LogicalOrOp: "\|\|";
-        private static LogicalOrOp MapLogicalOrOp(object[] children) {
+        private static LogicalOrOp MapLogicalOrOp_P5(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new LogicalOrOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is LogicalOrOp directValue) return directValue;
@@ -612,7 +612,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 6: LogicalAndOp: "&&";
-        private static LogicalAndOp MapLogicalAndOp(object[] children) {
+        private static LogicalAndOp MapLogicalAndOp_P6(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new LogicalAndOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is LogicalAndOp directValue) return directValue;
@@ -621,7 +621,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 7: BitwiseOrOp: "\|";
-        private static BitwiseOrOp MapBitwiseOrOp(object[] children) {
+        private static BitwiseOrOp MapBitwiseOrOp_P7(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new BitwiseOrOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is BitwiseOrOp directValue) return directValue;
@@ -630,7 +630,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 8: BitwiseAndOp: "&";
-        private static BitwiseAndOp MapBitwiseAndOp(object[] children) {
+        private static BitwiseAndOp MapBitwiseAndOp_P8(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new BitwiseAndOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is BitwiseAndOp directValue) return directValue;
@@ -639,7 +639,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 9: BitwiseShiftOp: "<<|>>";
-        private static BitwiseShiftOp MapBitwiseShiftOp(object[] children) {
+        private static BitwiseShiftOp MapBitwiseShiftOp_P9(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new BitwiseShiftOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is BitwiseShiftOp directValue) return directValue;
@@ -648,7 +648,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 10: RelationalOp: "<=|<|>=|>";
-        private static RelationalOp MapRelationalOp(object[] children) {
+        private static RelationalOp MapRelationalOp_P10(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new RelationalOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is RelationalOp directValue) return directValue;
@@ -657,7 +657,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 11: Plus: "\+";
-        private static Plus MapPlus(object[] children) {
+        private static Plus MapPlus_P11(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Plus((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is Plus directValue) return directValue;
@@ -666,7 +666,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 12: Minus: "-";
-        private static Minus MapMinus(object[] children) {
+        private static Minus MapMinus_P12(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Minus((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is Minus directValue) return directValue;
@@ -675,7 +675,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 13: PowOp: "\*\*";
-        private static PowOp MapPowOp(object[] children) {
+        private static PowOp MapPowOp_P13(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new PowOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is PowOp directValue) return directValue;
@@ -684,7 +684,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 14: MultOp: "\*|/|%";
-        private static MultOp MapMultOp(object[] children) {
+        private static MultOp MapMultOp_P14(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new MultOp((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is MultOp directValue) return directValue;
@@ -693,7 +693,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 15: Instruction: Assignment;
-        private static Instruction MapInstruction0(object[] children) {
+        private static Instruction MapInstruction0_P15(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new InstructionAssignment((Assignment)children[0 + 0]);
@@ -705,7 +705,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 16: Instruction: LogicalOr;
-        private static Instruction MapInstruction1(object[] children) {
+        private static Instruction MapInstruction1_P16(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new InstructionLogicalOr((LogicalOr)children[0 + 0]);
@@ -717,7 +717,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 17: AssignItem: Id AssignOp;
-        private static AssignItem MapAssignItem(object[] children) {
+        private static AssignItem MapAssignItem_P17(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new AssignItem((Id)children[0 + 0], (AssignOp)children[0 + 1]);
             if (children.Length == 1 && children[0] is AssignItem directValue) return directValue;
@@ -726,7 +726,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 18: Assignment: AssignItem AssignmentList /* Vec */ LogicalOr;
-        private static Assignment MapAssignment(object[] children) {
+        private static Assignment MapAssignment_P18(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 3 ) return new Assignment((AssignItem)children[0 + 0], (List<AssignmentList>)children[0 + 1], (LogicalOr)children[0 + 2]);
             if (children.Length == 1 && children[0] is Assignment directValue) return directValue;
@@ -735,7 +735,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 19: AssignmentList: AssignItem AssignmentList;
-        private static List<AssignmentList> MapAssignmentList0(object[] children) {
+        private static List<AssignmentList> MapAssignmentList0_P19(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<AssignmentList> directValue) return directValue;
             if (children.Length == 1) {
@@ -754,7 +754,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 20: AssignmentList: ;
-        private static List<AssignmentList> MapAssignmentList1(object[] children) {
+        private static List<AssignmentList> MapAssignmentList1_P20(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<AssignmentList>();
             if (children.Length == 1 && children[0] is List<AssignmentList> directValue) return directValue;
@@ -763,7 +763,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 21: LogicalOr: LogicalAnd LogicalOrList /* Vec */;
-        private static LogicalOr MapLogicalOr(object[] children) {
+        private static LogicalOr MapLogicalOr_P21(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new LogicalOr((LogicalAnd)children[0 + 0], (List<LogicalOrList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is LogicalOr directValue) return directValue;
@@ -772,7 +772,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 22: LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList;
-        private static List<LogicalOrList> MapLogicalOrList0(object[] children) {
+        private static List<LogicalOrList> MapLogicalOrList0_P22(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<LogicalOrList> directValue) return directValue;
             if (children.Length == 2) {
@@ -791,7 +791,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 23: LogicalOrList: ;
-        private static List<LogicalOrList> MapLogicalOrList1(object[] children) {
+        private static List<LogicalOrList> MapLogicalOrList1_P23(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<LogicalOrList>();
             if (children.Length == 1 && children[0] is List<LogicalOrList> directValue) return directValue;
@@ -800,7 +800,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 24: LogicalAnd: BitwiseOr LogicalAndList /* Vec */;
-        private static LogicalAnd MapLogicalAnd(object[] children) {
+        private static LogicalAnd MapLogicalAnd_P24(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new LogicalAnd((BitwiseOr)children[0 + 0], (List<LogicalAndList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is LogicalAnd directValue) return directValue;
@@ -809,7 +809,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 25: LogicalAndList: LogicalAndOp BitwiseOr LogicalAndList;
-        private static List<LogicalAndList> MapLogicalAndList0(object[] children) {
+        private static List<LogicalAndList> MapLogicalAndList0_P25(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<LogicalAndList> directValue) return directValue;
             if (children.Length == 2) {
@@ -828,7 +828,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 26: LogicalAndList: ;
-        private static List<LogicalAndList> MapLogicalAndList1(object[] children) {
+        private static List<LogicalAndList> MapLogicalAndList1_P26(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<LogicalAndList>();
             if (children.Length == 1 && children[0] is List<LogicalAndList> directValue) return directValue;
@@ -837,7 +837,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 27: BitwiseOr: BitwiseAnd BitwiseOrList /* Vec */;
-        private static BitwiseOr MapBitwiseOr(object[] children) {
+        private static BitwiseOr MapBitwiseOr_P27(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new BitwiseOr((BitwiseAnd)children[0 + 0], (List<BitwiseOrList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is BitwiseOr directValue) return directValue;
@@ -846,7 +846,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 28: BitwiseOrList: BitwiseOrOp BitwiseAnd BitwiseOrList;
-        private static List<BitwiseOrList> MapBitwiseOrList0(object[] children) {
+        private static List<BitwiseOrList> MapBitwiseOrList0_P28(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<BitwiseOrList> directValue) return directValue;
             if (children.Length == 2) {
@@ -865,7 +865,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 29: BitwiseOrList: ;
-        private static List<BitwiseOrList> MapBitwiseOrList1(object[] children) {
+        private static List<BitwiseOrList> MapBitwiseOrList1_P29(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<BitwiseOrList>();
             if (children.Length == 1 && children[0] is List<BitwiseOrList> directValue) return directValue;
@@ -874,7 +874,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 30: BitwiseAnd: Equality BitwiseAndList /* Vec */;
-        private static BitwiseAnd MapBitwiseAnd(object[] children) {
+        private static BitwiseAnd MapBitwiseAnd_P30(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new BitwiseAnd((Equality)children[0 + 0], (List<BitwiseAndList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is BitwiseAnd directValue) return directValue;
@@ -883,7 +883,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 31: BitwiseAndList: BitwiseAndOp Equality BitwiseAndList;
-        private static List<BitwiseAndList> MapBitwiseAndList0(object[] children) {
+        private static List<BitwiseAndList> MapBitwiseAndList0_P31(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<BitwiseAndList> directValue) return directValue;
             if (children.Length == 2) {
@@ -902,7 +902,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 32: BitwiseAndList: ;
-        private static List<BitwiseAndList> MapBitwiseAndList1(object[] children) {
+        private static List<BitwiseAndList> MapBitwiseAndList1_P32(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<BitwiseAndList>();
             if (children.Length == 1 && children[0] is List<BitwiseAndList> directValue) return directValue;
@@ -911,7 +911,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 33: Equality: Relational EqualityList /* Vec */;
-        private static Equality MapEquality(object[] children) {
+        private static Equality MapEquality_P33(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new Equality((Relational)children[0 + 0], (List<EqualityList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is Equality directValue) return directValue;
@@ -920,7 +920,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 34: EqualityList: EqualityOp Relational EqualityList;
-        private static List<EqualityList> MapEqualityList0(object[] children) {
+        private static List<EqualityList> MapEqualityList0_P34(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<EqualityList> directValue) return directValue;
             if (children.Length == 2) {
@@ -939,7 +939,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 35: EqualityList: ;
-        private static List<EqualityList> MapEqualityList1(object[] children) {
+        private static List<EqualityList> MapEqualityList1_P35(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<EqualityList>();
             if (children.Length == 1 && children[0] is List<EqualityList> directValue) return directValue;
@@ -948,7 +948,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 36: Relational: BitwiseShift RelationalList /* Vec */;
-        private static Relational MapRelational(object[] children) {
+        private static Relational MapRelational_P36(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new Relational((BitwiseShift)children[0 + 0], (List<RelationalList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is Relational directValue) return directValue;
@@ -957,7 +957,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 37: RelationalList: RelationalOp BitwiseShift RelationalList;
-        private static List<RelationalList> MapRelationalList0(object[] children) {
+        private static List<RelationalList> MapRelationalList0_P37(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<RelationalList> directValue) return directValue;
             if (children.Length == 2) {
@@ -976,7 +976,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 38: RelationalList: ;
-        private static List<RelationalList> MapRelationalList1(object[] children) {
+        private static List<RelationalList> MapRelationalList1_P38(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<RelationalList>();
             if (children.Length == 1 && children[0] is List<RelationalList> directValue) return directValue;
@@ -985,7 +985,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 39: BitwiseShift: Summ BitwiseShiftList /* Vec */;
-        private static BitwiseShift MapBitwiseShift(object[] children) {
+        private static BitwiseShift MapBitwiseShift_P39(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new BitwiseShift((Summ)children[0 + 0], (List<BitwiseShiftList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is BitwiseShift directValue) return directValue;
@@ -994,7 +994,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 40: BitwiseShiftList: BitwiseShiftOp Summ BitwiseShiftList;
-        private static List<BitwiseShiftList> MapBitwiseShiftList0(object[] children) {
+        private static List<BitwiseShiftList> MapBitwiseShiftList0_P40(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<BitwiseShiftList> directValue) return directValue;
             if (children.Length == 2) {
@@ -1013,7 +1013,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 41: BitwiseShiftList: ;
-        private static List<BitwiseShiftList> MapBitwiseShiftList1(object[] children) {
+        private static List<BitwiseShiftList> MapBitwiseShiftList1_P41(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<BitwiseShiftList>();
             if (children.Length == 1 && children[0] is List<BitwiseShiftList> directValue) return directValue;
@@ -1022,7 +1022,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 42: AddOp: Plus;
-        private static AddOp MapAddOp0(object[] children) {
+        private static AddOp MapAddOp0_P42(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new AddOpPlus((Plus)children[0 + 0]);
@@ -1034,7 +1034,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 43: AddOp: Minus;
-        private static AddOp MapAddOp1(object[] children) {
+        private static AddOp MapAddOp1_P43(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new AddOpMinus((Minus)children[0 + 0]);
@@ -1046,7 +1046,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 44: Summ: Mult SummList /* Vec */;
-        private static Summ MapSumm(object[] children) {
+        private static Summ MapSumm_P44(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new Summ((Mult)children[0 + 0], (List<SummList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is Summ directValue) return directValue;
@@ -1055,7 +1055,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 45: SummList: AddOp Mult SummList;
-        private static List<SummList> MapSummList0(object[] children) {
+        private static List<SummList> MapSummList0_P45(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<SummList> directValue) return directValue;
             if (children.Length == 2) {
@@ -1074,7 +1074,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 46: SummList: ;
-        private static List<SummList> MapSummList1(object[] children) {
+        private static List<SummList> MapSummList1_P46(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<SummList>();
             if (children.Length == 1 && children[0] is List<SummList> directValue) return directValue;
@@ -1083,7 +1083,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 47: Mult: Power MultList /* Vec */;
-        private static Mult MapMult(object[] children) {
+        private static Mult MapMult_P47(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new Mult((Power)children[0 + 0], (List<MultList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is Mult directValue) return directValue;
@@ -1092,7 +1092,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 48: MultList: MultOp Power MultList;
-        private static List<MultList> MapMultList0(object[] children) {
+        private static List<MultList> MapMultList0_P48(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<MultList> directValue) return directValue;
             if (children.Length == 2) {
@@ -1111,7 +1111,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 49: MultList: ;
-        private static List<MultList> MapMultList1(object[] children) {
+        private static List<MultList> MapMultList1_P49(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<MultList>();
             if (children.Length == 1 && children[0] is List<MultList> directValue) return directValue;
@@ -1120,7 +1120,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 50: Power: Factor PowerList /* Vec */;
-        private static Power MapPower(object[] children) {
+        private static Power MapPower_P50(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new Power((Factor)children[0 + 0], (List<PowerList>)children[0 + 1]);
             if (children.Length == 1 && children[0] is Power directValue) return directValue;
@@ -1129,7 +1129,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 51: PowerList: PowOp Factor PowerList;
-        private static List<PowerList> MapPowerList0(object[] children) {
+        private static List<PowerList> MapPowerList0_P51(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<PowerList> directValue) return directValue;
             if (children.Length == 2) {
@@ -1148,7 +1148,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 52: PowerList: ;
-        private static List<PowerList> MapPowerList1(object[] children) {
+        private static List<PowerList> MapPowerList1_P52(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<PowerList>();
             if (children.Length == 1 && children[0] is List<PowerList> directValue) return directValue;
@@ -1157,7 +1157,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 53: Negate: Minus;
-        private static Negate MapNegate(object[] children) {
+        private static Negate MapNegate_P53(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Negate((Minus)children[0 + 0]);
             if (children.Length == 1 && children[0] is Negate directValue) return directValue;
@@ -1166,7 +1166,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 54: Factor: Number : CalcCsharp::CalcNumber ;
-        private static Factor MapFactor0(object[] children) {
+        private static Factor MapFactor0_P54(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new FactorNumber(ConvertValue<global::CalcCsharp.CalcNumber>(children[0 + 0]));
@@ -1178,7 +1178,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 55: Factor: IdRef;
-        private static Factor MapFactor1(object[] children) {
+        private static Factor MapFactor1_P55(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new FactorIdRef((IdRef)children[0 + 0]);
@@ -1190,7 +1190,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 56: Factor: Negate Factor;
-        private static Factor MapFactor2(object[] children) {
+        private static Factor MapFactor2_P56(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2) {
                 var value = new FactorNegateFactor((Negate)children[0 + 0], (Factor)children[0 + 1]);
@@ -1202,7 +1202,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 57: Factor: "\("^ /* Clipped */ LogicalOr "\)"^ /* Clipped */;
-        private static Factor MapFactor3(object[] children) {
+        private static Factor MapFactor3_P57(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new FactorLParenLogicalOrRParen((LogicalOr)children[0 + 0]);
@@ -1214,7 +1214,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 58: Number: "0|[1-9][0-9]*";
-        private static Number MapNumber(object[] children) {
+        private static Number MapNumber_P58(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Number((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is Number directValue) return directValue;
@@ -1223,7 +1223,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 59: IdRef: Id;
-        private static IdRef MapIdRef(object[] children) {
+        private static IdRef MapIdRef_P59(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new IdRef((Id)children[0 + 0]);
             if (children.Length == 1 && children[0] is IdRef directValue) return directValue;
@@ -1232,7 +1232,7 @@ namespace CalcCsharp {
 
 
         // Mapping method for production 60: Id: "[a-zA-Z_][a-zA-Z0-9_]*";
-        private static Id MapId(object[] children) {
+        private static Id MapId_P60(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Id((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is Id directValue) return directValue;

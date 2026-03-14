@@ -123,27 +123,27 @@ namespace JsonParserCsharp {
         /// <inheritdoc/>
         public virtual object CallSemanticActionForProductionNumber(int productionNumber, object[] children) {
             switch (productionNumber) {
-                case 0: { var value = MapJson(children); OnJson(value); return value; }
-                case 1: { var value = MapObject(children); OnObject(value); return value; }
-                case 2: return MapObjectSuffix0(children);
-                case 3: return MapObjectSuffix1(children);
-                case 4: return MapObjectList0(children);
-                case 5: return MapObjectList1(children);
-                case 6: { var value = MapPair(children); OnPair(value); return value; }
-                case 7: { var value = MapArray(children); OnArray(value); return value; }
-                case 8: return MapArraySuffix0(children);
-                case 9: return MapArraySuffix1(children);
-                case 10: return MapArrayList0(children);
-                case 11: return MapArrayList1(children);
-                case 12: { var value = MapValue0(children); OnValue(value); return value; }
-                case 13: { var value = MapValue1(children); OnValue(value); return value; }
-                case 14: { var value = MapValue2(children); OnValue(value); return value; }
-                case 15: { var value = MapValue3(children); OnValue(value); return value; }
-                case 16: { var value = MapValue4(children); OnValue(value); return value; }
-                case 17: { var value = MapValue5(children); OnValue(value); return value; }
-                case 18: { var value = MapValue6(children); OnValue(value); return value; }
-                case 19: { var value = MapString(children); OnString(value); return value; }
-                case 20: { var value = MapNumber(children); OnNumber(value); return value; }
+                case 0: { var value = MapJson_P0(children); OnJson(value); return value; }
+                case 1: { var value = MapObject_P1(children); OnObject(value); return value; }
+                case 2: return MapObjectSuffix0_P2(children);
+                case 3: return MapObjectSuffix1_P3(children);
+                case 4: return MapObjectList0_P4(children);
+                case 5: return MapObjectList1_P5(children);
+                case 6: { var value = MapPair_P6(children); OnPair(value); return value; }
+                case 7: { var value = MapArray_P7(children); OnArray(value); return value; }
+                case 8: return MapArraySuffix0_P8(children);
+                case 9: return MapArraySuffix1_P9(children);
+                case 10: return MapArrayList0_P10(children);
+                case 11: return MapArrayList1_P11(children);
+                case 12: { var value = MapValue0_P12(children); OnValue(value); return value; }
+                case 13: { var value = MapValue1_P13(children); OnValue(value); return value; }
+                case 14: { var value = MapValue2_P14(children); OnValue(value); return value; }
+                case 15: { var value = MapValue3_P15(children); OnValue(value); return value; }
+                case 16: { var value = MapValue4_P16(children); OnValue(value); return value; }
+                case 17: { var value = MapValue5_P17(children); OnValue(value); return value; }
+                case 18: { var value = MapValue6_P18(children); OnValue(value); return value; }
+                case 19: { var value = MapString_P19(children); OnString(value); return value; }
+                case 20: { var value = MapNumber_P20(children); OnNumber(value); return value; }
                 default: throw new ArgumentException($"Invalid production number {productionNumber}");
             }
         }
@@ -221,7 +221,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 0: Json: Value;
-        private static Json MapJson(object[] children) {
+        private static Json MapJson_P0(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Json((Value)children[0 + 0]);
             if (children.Length == 1 && children[0] is Json directValue) return directValue;
@@ -230,7 +230,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 1: Object: '{'^ /* Clipped */ ObjectSuffix;
-        private static Object MapObject(object[] children) {
+        private static Object MapObject_P1(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Object((ObjectSuffix)children[0 + 0]);
             if (children.Length == 1 && children[0] is Object directValue) return directValue;
@@ -239,7 +239,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 2: ObjectSuffix: Pair ObjectList /* Vec */ '}'^ /* Clipped */;
-        private static ObjectSuffix MapObjectSuffix0(object[] children) {
+        private static ObjectSuffix MapObjectSuffix0_P2(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2) {
                 var value = new ObjectSuffixPairObjectListRBrace((Pair)children[0 + 0], (List<ObjectList>)children[0 + 1]);
@@ -251,7 +251,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 3: ObjectSuffix: '}'^ /* Clipped */;
-        private static ObjectSuffix MapObjectSuffix1(object[] children) {
+        private static ObjectSuffix MapObjectSuffix1_P3(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) {
                 var value = new ObjectSuffixRBrace();
@@ -263,7 +263,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 4: ObjectList: ','^ /* Clipped */ Pair ObjectList;
-        private static List<ObjectList> MapObjectList0(object[] children) {
+        private static List<ObjectList> MapObjectList0_P4(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<ObjectList> directValue) return directValue;
             if (children.Length == 1) {
@@ -282,7 +282,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 5: ObjectList: ;
-        private static List<ObjectList> MapObjectList1(object[] children) {
+        private static List<ObjectList> MapObjectList1_P5(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<ObjectList>();
             if (children.Length == 1 && children[0] is List<ObjectList> directValue) return directValue;
@@ -291,7 +291,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 6: Pair: String : JsonParserCsharp::JsonString  ':'^ /* Clipped */ Value;
-        private static Pair MapPair(object[] children) {
+        private static Pair MapPair_P6(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2 ) return new Pair(ConvertValue<global::JsonParserCsharp.JsonString>(children[0 + 0]), (Value)children[0 + 1]);
             if (children.Length == 1 && children[0] is Pair directValue) return directValue;
@@ -300,7 +300,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 7: Array: '['^ /* Clipped */ ArraySuffix;
-        private static Array MapArray(object[] children) {
+        private static Array MapArray_P7(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Array((ArraySuffix)children[0 + 0]);
             if (children.Length == 1 && children[0] is Array directValue) return directValue;
@@ -309,7 +309,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 8: ArraySuffix: Value ArrayList /* Vec */ ']'^ /* Clipped */;
-        private static ArraySuffix MapArraySuffix0(object[] children) {
+        private static ArraySuffix MapArraySuffix0_P8(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 2) {
                 var value = new ArraySuffixValueArrayListRBracket((Value)children[0 + 0], (List<ArrayList>)children[0 + 1]);
@@ -321,7 +321,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 9: ArraySuffix: ']'^ /* Clipped */;
-        private static ArraySuffix MapArraySuffix1(object[] children) {
+        private static ArraySuffix MapArraySuffix1_P9(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) {
                 var value = new ArraySuffixRBracket();
@@ -333,7 +333,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 10: ArrayList: ','^ /* Clipped */ Value ArrayList;
-        private static List<ArrayList> MapArrayList0(object[] children) {
+        private static List<ArrayList> MapArrayList0_P10(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 && children[0] is List<ArrayList> directValue) return directValue;
             if (children.Length == 1) {
@@ -352,7 +352,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 11: ArrayList: ;
-        private static List<ArrayList> MapArrayList1(object[] children) {
+        private static List<ArrayList> MapArrayList1_P11(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) return new List<ArrayList>();
             if (children.Length == 1 && children[0] is List<ArrayList> directValue) return directValue;
@@ -361,7 +361,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 12: Value: String : JsonParserCsharp::JsonString ;
-        private static Value MapValue0(object[] children) {
+        private static Value MapValue0_P12(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new ValueString(ConvertValue<global::JsonParserCsharp.JsonString>(children[0 + 0]));
@@ -373,7 +373,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 13: Value: Number : JsonParserCsharp::JsonNumber ;
-        private static Value MapValue1(object[] children) {
+        private static Value MapValue1_P13(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new ValueNumber(ConvertValue<global::JsonParserCsharp.JsonNumber>(children[0 + 0]));
@@ -385,7 +385,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 14: Value: Object;
-        private static Value MapValue2(object[] children) {
+        private static Value MapValue2_P14(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new ValueObject((Object)children[0 + 0]);
@@ -397,7 +397,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 15: Value: Array;
-        private static Value MapValue3(object[] children) {
+        private static Value MapValue3_P15(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1) {
                 var value = new ValueArray((Array)children[0 + 0]);
@@ -409,7 +409,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 16: Value: 'true'^ /* Clipped */;
-        private static Value MapValue4(object[] children) {
+        private static Value MapValue4_P16(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) {
                 var value = new ValueTrue();
@@ -421,7 +421,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 17: Value: 'false'^ /* Clipped */;
-        private static Value MapValue5(object[] children) {
+        private static Value MapValue5_P17(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) {
                 var value = new ValueFalse();
@@ -433,7 +433,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 18: Value: 'null'^ /* Clipped */;
-        private static Value MapValue6(object[] children) {
+        private static Value MapValue6_P18(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 0) {
                 var value = new ValueNull();
@@ -445,7 +445,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 19: String: /"(\\.|[^"\\])*"/;
-        private static String MapString(object[] children) {
+        private static String MapString_P19(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new String((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is String directValue) return directValue;
@@ -454,7 +454,7 @@ namespace JsonParserCsharp {
 
 
         // Mapping method for production 20: Number: /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?[0-9]+)?/;
-        private static Number MapNumber(object[] children) {
+        private static Number MapNumber_P20(object[] children) {
             if (children == null) throw new ArgumentNullException(nameof(children));
             if (children.Length == 1 ) return new Number((Token)children[0 + 0]);
             if (children.Length == 1 && children[0] is Number directValue) return directValue;

@@ -158,7 +158,7 @@ fn test_with_parol_path_prepends_binary_dir() -> Result<()> {
 }
 
 #[test]
-fn test_csharp_lalr1_is_rejected_early() -> Result<()> {
+fn test_csharp_lalr1_generation_is_supported() -> Result<()> {
     let temp_dir = tempdir()?;
     let grammar_path = temp_dir.path().join("lalr_for_csharp.par");
 
@@ -192,14 +192,169 @@ S: "a";
     ])?;
 
     assert!(
-        !output.status.success(),
-        "Expected parol to fail for C# + LALR(1), but it succeeded"
+        output.status.success(),
+        "Expected parol to support C# + LALR(1), but generation failed"
+    );
+
+    let parser_source = fs::read_to_string(parser_path)?;
+    assert!(
+        parser_source.contains("public static readonly LRParseTable ParseTable")
+            && parser_source.contains("var parser = new LRParser(")
+            && parser_source.contains("public static readonly LRProduction[] Productions")
+    );
+
+    Ok(())
+}
+
+#[test]
+fn test_csharp_lalr1_enum_list_shape_does_not_panic() -> Result<()> {
+    let temp_dir = tempdir()?;
+    let grammar_path = temp_dir.path().join("lalr_enum_list_shape.par");
+
+    fs::write(
+        &grammar_path,
+        r#"%start EnumListRegression
+%grammar_type 'LALR(1)'
+
+%%
+
+EnumListRegression
+  : WeirdList
+  ;
+
+WeirdList
+  : "a"
+  | "b" "c"
+  |
+  ;
+"#,
+    )?;
+
+    let parser_path = temp_dir.path().join("EnumListRegressionParser.cs");
+    let actions_path = temp_dir.path().join("IEnumListRegressionActions.cs");
+
+    let output = run_parol_output(&[
+        "-f",
+        grammar_path.to_str().unwrap(),
+        "-p",
+        parser_path.to_str().unwrap(),
+        "-a",
+        actions_path.to_str().unwrap(),
+        "-t",
+        "EnumListRegression",
+        "-m",
+        "EnumListRegression",
+        "-l",
+        "c-sharp",
+    ])?;
+
+    assert!(
+        output.status.success(),
+        "Expected C# LALR generation to succeed for enum-backed *List non-terminals with empty alternatives"
     );
 
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(
-        stderr.contains("C# code generation currently supports only LL(k) grammars")
-            && stderr.contains("%grammar_type 'LALR(1)'")
+        !stderr.contains("Ain't no instance")
+            && !stderr.contains("is not an instance")
+            && !stderr.contains("Expected struct type for constructor generation"),
+        "Expected no symbol-table/struct-constructor panic diagnostics in stderr"
+    );
+
+    let generated_actions = fs::read_to_string(actions_path)?;
+    assert!(
+        generated_actions.contains("private static WeirdList MapWeirdList0_P")
+            && generated_actions.contains("private static WeirdList MapWeirdList1_P")
+            && generated_actions.contains("private static WeirdList MapWeirdList2_P")
+    );
+    assert!(
+        !generated_actions.contains("private static List<WeirdList> MapWeirdList"),
+        "Enum-backed list-shaped non-terminal must not be forced into collection-helper List<T> mapping"
+    );
+
+    Ok(())
+}
+
+#[test]
+fn test_csharp_lalr1_end_to_end() -> Result<()> {
+    if skip_if_no_dotnet("test_csharp_lalr1_end_to_end") {
+        return Ok(());
+    }
+
+    let _guard = cs_runtime_build_lock()
+        .lock()
+        .unwrap_or_else(|e| e.into_inner());
+
+    let temp_dir = tempdir()?;
+    let project_path = temp_dir.path().join("cs_lalr");
+    let project_name = "cs_lalr";
+
+    let status = run_parol(&[
+        "new",
+        "--path",
+        project_path.to_str().unwrap(),
+        "-b",
+        "-L",
+        "c-sharp",
+    ])?;
+    assert!(status.success(), "parol new failed");
+
+    let grammar_path = csharp_grammar_path(&project_path, project_name);
+    fs::write(
+        &grammar_path,
+        r#"%start CsLalr
+%grammar_type 'LALR(1)'
+%line_comment "//"
+
+%%
+
+CsLalr
+    : Expr
+    ;
+
+Expr
+    : Expr "x" Term
+    | Term
+    ;
+
+Term
+    : Number
+    ;
+
+Number
+    : "n"
+    ;
+"#,
+    )?;
+
+    ensure_local_runtime_reference(&project_path, project_name)?;
+
+    let new_path = with_parol_path()?;
+    let build_output = dotnet_build(&project_path, &new_path)?;
+    if !build_output.status.success() {
+        eprintln!("stdout: {}", String::from_utf8_lossy(&build_output.stdout));
+        eprintln!("stderr: {}", String::from_utf8_lossy(&build_output.stderr));
+    }
+    assert!(build_output.status.success(), "dotnet build failed");
+
+    fs::write(project_path.join("test.txt"), "nxnxn")?;
+    let run_output = Command::new("dotnet")
+        .current_dir(&project_path)
+        .args(["run", "--", "test.txt"])
+        .env("PATH", &new_path)
+        .output()
+        .map_err(|e| anyhow!(e))?;
+
+    if !run_output.status.success() {
+        eprintln!("stdout: {}", String::from_utf8_lossy(&run_output.stdout));
+        eprintln!("stderr: {}", String::from_utf8_lossy(&run_output.stderr));
+    }
+    assert!(run_output.status.success(), "dotnet run failed");
+
+    let stdout = String::from_utf8_lossy(&run_output.stdout);
+    assert!(
+        stdout.contains("Success!"),
+        "Expected successful parse output"
     );
 
     Ok(())
@@ -525,8 +680,8 @@ Number
             && generated_actions.contains("void OnAlt(Alt arg);")
     );
     assert!(
-        generated_actions.contains("private static Alt MapAlt0(object[] children)")
-            && generated_actions.contains("private static Alt MapAlt1(object[] children)")
+        generated_actions.contains("private static Alt MapAlt0_P")
+            && generated_actions.contains("private static Alt MapAlt1_P")
     );
 
     let generated_parser = fs::read_to_string(project_path.join("CsTypedParser.cs"))?;
@@ -616,10 +771,8 @@ Number
 
     // Repetition support in expanded grammar mapper types
     assert!(
-        generated_actions
-            .contains("private static List<ItemsList> MapItemsList0(object[] children)")
-            && generated_actions
-                .contains("private static List<ItemsList> MapItemsList1(object[] children)")
+        generated_actions.contains("private static List<ItemsList> MapItemsList0_P")
+            && generated_actions.contains("private static List<ItemsList> MapItemsList1_P")
     );
     assert!(
         generated_actions.contains("new List<ItemsList>()")
@@ -628,10 +781,8 @@ Number
 
     // Optional support in expanded grammar mapper types
     assert!(
-        generated_actions
-            .contains("private static MaybeHelloOpt MapMaybeHelloOpt0(object[] children)")
-            && generated_actions
-                .contains("private static MaybeHelloOpt MapMaybeHelloOpt1(object[] children)")
+        generated_actions.contains("private static MaybeHelloOpt MapMaybeHelloOpt0_P")
+            && generated_actions.contains("private static MaybeHelloOpt MapMaybeHelloOpt1_P")
     );
     assert!(
         generated_actions.contains("children.Length == 0")
@@ -705,7 +856,7 @@ B
 
     let generated_actions = fs::read_to_string(project_path.join("ICsOptionalMultiActions.cs"))?;
     assert!(
-        generated_actions.contains("private static PairOpt0 MapPairOpt0_1(object[] children)")
+        generated_actions.contains("private static PairOpt0 MapPairOpt0_1_P")
             && generated_actions
                 .contains("if (children.Length == 0) return new PairOpt0(default!, default!);")
     );
