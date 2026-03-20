@@ -46,7 +46,9 @@ npm run check-config-sync
 This check also runs in CI via the dedicated workflow
 `Parol VSCode Config Sync`.
 
-Maintainer note: `@vscode/vsce` currently depends on `minimatch@^3.0.3` upstream, so `minimatch` is intentionally ignored in Dependabot for this package until upstream migrates.
+Maintainer note: `@vscode/vsce` currently depends on `minimatch@^3.0.3` upstream. The resolved
+lockfile version is currently `minimatch@3.1.5` (patched), and `minimatch` is intentionally ignored
+in Dependabot for this package until upstream migrates.
 
 Changes regarding the Language Server can be viewed here:
 
