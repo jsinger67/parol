@@ -5,10 +5,14 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## v0.5.5 - Not yet released
+## v0.5.5 - 2026-03-20
 
 - Fix vulnerability warning CVE-2026-26996 (transitive `minimatch` ReDoS)
-  - Updated dependencies and lockfile to patched versions
+  - Updated transitive `minimatch` from 3.1.2 to 3.1.5
+- Fix additional Dependabot vulnerability warnings in transitive dependencies
+  - Updated `lodash` from 4.17.21 to 4.17.23
+  - Updated `qs` from 6.14.1 to 6.14.2
+  - Updated `flatted` from 3.3.3 to 3.4.2
 
 ## v0.5.4 - 2025-12-31
 
