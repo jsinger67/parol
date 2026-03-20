@@ -5,31 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.3.5 -
+
+* Bump version to 4.3.5 and update Parol.Runtime references in C# project genrator
+
 ## 4.3.4 - 2026-03-14
 
-* fix: update Parol.Runtime package version to 0.1.3 in project files
-* feat(csharp): add LALR(1) parser generation support and corresponding LR parser runtime support in Parol.Runtime
+* Update Parol.Runtime package version to 0.1.3 in project files
+* Add LALR(1) C# parser generation support and corresponding LR parser runtime support in
+Parol.Runtime
 
 ## 4.3.3 - 2026-03-14
 
-* fix: update Parol.Runtime package version to 0.1.2 in project files and adjust parser method
+* Update Parol.Runtime package version to 0.1.2 in project files and adjust parser method
 signature
-* fix(csharp): handle empty productions for struct-mapped non-terminals in generated action mappers
+* Handle empty productions for struct-mapped non-terminals in generated action mappers
 (e.g. `ExprOpt: ;`) to avoid runtime "Unsupported C# mapping" errors
-* fix(csharp): handle empty struct-production mappings without duplicate guards in generated action
-mappers
+* Handle empty struct-production mappings without duplicate guards in generated action mappers
 
 ## 4.3.2 - 2026-03-07
 
-* feat(csharp): add warning header to generated C# files and corresponding test
-* fix: update generated file comments to clarify manual editing restrictions
-* feat(csharp): update file naming conventions for C# scaffolding and add integration tests
-* fix: update Rust snapshot in parol_new tests
-* feat(dotnet): enhance project name handling and add csproj snapshot
-* feat(csharp): enhance user action handling and update generated file comments
-* feat(csharp): adjust examples to new scaffolding scheme
-* fix: improve action type in generated C# program files
-* fix: update array syntax from braces to brackets in C# generator files
+* Add warning header to generated C# files and corresponding test
+* Update generated file comments to clarify manual editing restrictions
+* Update file naming conventions for C# scaffolding and add integration tests
+* Update Rust snapshot in parol_new tests
+* Enhance project name handling and add csproj snapshot
+* Enhance user action handling and update generated file comments
+* Adjust C# examples to new scaffolding scheme
+* Improve action type in generated C# program files
+* Update array syntax from braces to brackets in C# generator files
 
 ## 4.3.1 - 2026-03-04
 
