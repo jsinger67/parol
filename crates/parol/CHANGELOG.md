@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 4.3.5 -
 
 * Bump version to 4.3.5 and update Parol.Runtime references in C# project genrator
+* Fix security alert [#42](https://github.com/jsinger67/parol/security/dependabot/42): `GHSA-394x-vwmw-crm3`
+and Fix security alert [#43](https://github.com/jsinger67/parol/security/dependabot/43): `GHSA-9f94-5g5w-gf6r` 
+  * aws-lc-rs 1.16.1 -> 1.16.2
+  * aws-lc-sys 0.38.0 -> 0.39.0
 
 ## 4.3.4 - 2026-03-14
 
