@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.3.5 - 2026-03-21
 
-* Update Parol.Runtime to 0.2.0 to support C# LALR(1) parsers in runtime.
+* Update Parol.Runtime to 0.2.0 which supports multiple dotnet target frameworks now.
 * Fix security alert [#42](https://github.com/jsinger67/parol/security/dependabot/42): `GHSA-394x-vwmw-crm3`
 and Fix security alert [#43](https://github.com/jsinger67/parol/security/dependabot/43): `GHSA-9f94-5g5w-gf6r` 
   * aws-lc-rs 1.16.1 -> 1.16.2
