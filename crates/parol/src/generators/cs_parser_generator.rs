@@ -1,12 +1,16 @@
 use crate::analysis::LookaheadDFA;
 use crate::analysis::compiled_la_dfa::CompiledDFA;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
+use crate::generators::parser_ir::{
+    ProductionIR,
+    ProductionSymbolIR,
+    build_production_ir,
+    find_start_symbol_index as parser_ir_find_start_symbol_index,
+    ordered_non_terminal_names as parser_ir_ordered_non_terminal_names,
+};
 use crate::generators::{GrammarConfig, NamingHelper};
-use crate::grammar::SymbolAttribute;
-use crate::{LRAction, LRParseTable, Symbol, Terminal};
+use crate::{LRAction, LRParseTable};
 use anyhow::Result;
-use parol_runtime::TerminalIndex;
-use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write;
 
@@ -18,10 +22,19 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     la_dfa: &BTreeMap<String, LookaheadDFA>,
     _ast_type_has_lifetime: bool,
 ) -> Result<String> {
+    generate_parser_source_internal(grammar_config, config, la_dfa)
+}
+
+fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorConfig>(
+    grammar_config: &GrammarConfig,
+    config: &C,
+    la_dfa: &BTreeMap<String, LookaheadDFA>,
+) -> Result<String> {
     let mut source = String::new();
 
-    let original_non_terminals = grammar_config.cfg.get_non_terminal_set();
-    let non_terminals = original_non_terminals.iter().collect::<Vec<_>>();
+    let non_terminal_names = parser_ir_ordered_non_terminal_names(grammar_config);
+        let start_symbol_index = parser_ir_find_start_symbol_index(&non_terminal_names, grammar_config)?;
+    let non_terminals = non_terminal_names.iter().collect::<Vec<_>>();
 
     let parser_type_name = NamingHelper::to_upper_camel_case(config.user_type_name()) + "Parser";
 
@@ -97,12 +110,12 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     generate_lookahead_automata(&mut source, la_dfa, &non_terminals)?;
     writeln!(source)?;
 
-    // Productions
-    generate_productions(&mut source, grammar_config, &non_terminals)?;
+        let production_ir = build_production_ir(grammar_config, &non_terminal_names)?;
+        generate_productions(&mut source, grammar_config, &production_ir)?;
     writeln!(source)?;
 
     // Parse Methods
-    generate_parse_methods(&mut source, grammar_config, config, &parser_type_name)?;
+    generate_parse_methods(&mut source, config, &parser_type_name, start_symbol_index)?;
 
     writeln!(source, "    }}")?;
     writeln!(source, "}}")?;
@@ -150,20 +163,9 @@ fn generate_lookahead_automata(
 
 fn generate_productions(
     source: &mut String,
-    grammar_config: &GrammarConfig,
-    non_terminals: &[&String],
+    _grammar_config: &GrammarConfig,
+    production_ir: &[ProductionIR],
 ) -> Result<()> {
-    let terminals = grammar_config.cfg.get_ordered_terminals();
-    let get_non_terminal_index = |nt: &str| non_terminals.iter().position(|n| *n == nt).unwrap();
-    let get_terminal_index =
-        |tr: &str, l: &Option<crate::parser::parol_grammar::LookaheadExpression>| {
-            terminals
-                .iter()
-                .position(|(t, _, look, _)| *t == tr && look == l)
-                .unwrap() as TerminalIndex
-                + FIRST_USER_TOKEN
-        };
-
     writeln!(source, "        /// <summary>")?;
     writeln!(
         source,
@@ -174,23 +176,22 @@ fn generate_productions(
         source,
         "        public static readonly Production[] Productions = ["
     )?;
-    for (i, pr) in grammar_config.cfg.pr.iter().enumerate() {
-        let lhs = get_non_terminal_index(pr.get_n_str());
-        writeln!(source, "            // {} - {}", i, pr)?;
+    for p in production_ir {
+        writeln!(source, "            // {} - {}", p.production_index, p.text)?;
         writeln!(source, "            new Production(")?;
-        writeln!(source, "                {},", lhs)?;
+        writeln!(source, "                {},", p.lhs_index)?;
         writeln!(source, "                [")?;
-        for s in pr.get_r() {
+        for s in &p.rhs {
             match s {
-                Symbol::N(n, ..) => {
+                ProductionSymbolIR::NonTerminal(index) => {
                     writeln!(
                         source,
                         "                    new(ParseType.N, {}),",
-                        get_non_terminal_index(n)
+                        index
                     )?;
                 }
-                Symbol::T(Terminal::Trm(t, _, _, attr, _, _, l0)) => {
-                    let parse_type = if *attr == SymbolAttribute::Clipped {
+                ProductionSymbolIR::Terminal { index, clipped } => {
+                    let parse_type = if *clipped {
                         "ParseType.C"
                     } else {
                         "ParseType.T"
@@ -199,10 +200,9 @@ fn generate_productions(
                         source,
                         "                    new({}, {}),",
                         parse_type,
-                        get_terminal_index(t, l0)
+                        index
                     )?;
                 }
-                _ => panic!("Unexpected symbol type in production!"),
             }
         }
         writeln!(source, "                ]")?;
@@ -214,22 +214,15 @@ fn generate_productions(
 
 fn generate_parse_methods(
     source: &mut String,
-    grammar_config: &GrammarConfig,
     config: &impl CommonGeneratorConfig,
     _parser_type_name: &str,
+    start_symbol_index: usize,
 ) -> Result<()> {
     let scanner_type_name = NamingHelper::to_upper_camel_case(config.user_type_name()) + "Scanner";
     let actions_interface_name = format!(
         "I{}Actions",
         NamingHelper::to_upper_camel_case(config.user_type_name())
     );
-    let start_symbol_index = grammar_config
-        .cfg
-        .get_non_terminal_set()
-        .iter()
-        .position(|n| *n == grammar_config.cfg.get_start_symbol())
-        .unwrap();
-
     writeln!(source, "        /// <summary>")?;
     writeln!(
         source,
@@ -298,10 +291,21 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
     parse_table: &LRParseTable,
     _ast_type_has_lifetime: bool,
 ) -> Result<String> {
+    generate_lalr1_parser_source_internal(grammar_config, config, parse_table)
+}
+
+fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorConfig>(
+    grammar_config: &GrammarConfig,
+    config: &C,
+    parse_table: &LRParseTable,
+) -> Result<String> {
     let mut source = String::new();
 
-    let original_non_terminals = grammar_config.cfg.get_non_terminal_set();
-    let non_terminals = original_non_terminals.iter().collect::<Vec<_>>();
+    let non_terminal_names = parser_ir_ordered_non_terminal_names(grammar_config);
+    let start_symbol_index =
+        parser_ir_find_start_symbol_index(&non_terminal_names, grammar_config)?;
+    let non_terminals = non_terminal_names.iter().collect::<Vec<_>>();
+    let production_ir = build_production_ir(grammar_config, &non_terminal_names)?;
 
     let parser_type_name = NamingHelper::to_upper_camel_case(config.user_type_name()) + "Parser";
 
@@ -367,20 +371,13 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
         source,
         "        public static readonly LRProduction[] Productions = ["
     )?;
-    for (i, pr) in grammar_config.cfg.pr.iter().enumerate() {
-        let lhs = non_terminals
-            .iter()
-            .position(|n| **n == pr.get_n())
-            .expect("Non-terminal must exist in non-terminal set");
-        writeln!(source, "            // {} - {}", i, pr)?;
-        writeln!(source, "            new LRProduction({}, [", lhs)?;
-        for s in pr.get_r() {
+    for p in &production_ir {
+        writeln!(source, "            // {} - {}", p.production_index, p.text)?;
+        writeln!(source, "            new LRProduction({}, [", p.lhs_index)?;
+        for s in &p.rhs {
             let is_semantic_child = match s {
-                Symbol::N(..) => true,
-                Symbol::T(Terminal::Trm(_, _, _, attr, _, _, _)) => {
-                    *attr != SymbolAttribute::Clipped
-                }
-                _ => false,
+                ProductionSymbolIR::NonTerminal(..) => true,
+                ProductionSymbolIR::Terminal { clipped, .. } => !*clipped,
             };
             writeln!(
                 source,
@@ -396,7 +393,7 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
     emit_lalr_parse_table(&mut source, parse_table)?;
     writeln!(source)?;
 
-    emit_lalr_parse_methods(&mut source, grammar_config, config, &parser_type_name)?;
+    emit_lalr_parse_methods(&mut source, config, &parser_type_name, start_symbol_index)?;
 
     writeln!(source, "    }}")?;
     writeln!(source, "}}")?;
@@ -487,22 +484,15 @@ fn render_lalr_action(action: &LRAction) -> String {
 
 fn emit_lalr_parse_methods(
     source: &mut String,
-    grammar_config: &GrammarConfig,
     config: &impl CommonGeneratorConfig,
     _parser_type_name: &str,
+    start_symbol_index: usize,
 ) -> Result<()> {
     let scanner_type_name = NamingHelper::to_upper_camel_case(config.user_type_name()) + "Scanner";
     let actions_interface_name = format!(
         "I{}Actions",
         NamingHelper::to_upper_camel_case(config.user_type_name())
     );
-    let start_symbol_index = grammar_config
-        .cfg
-        .get_non_terminal_set()
-        .iter()
-        .position(|n| *n == grammar_config.cfg.get_start_symbol())
-        .unwrap();
-
     writeln!(source, "        /// <summary>")?;
     writeln!(
         source,

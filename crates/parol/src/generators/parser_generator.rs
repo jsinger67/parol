@@ -4,10 +4,15 @@ use crate::analysis::lalr1_parse_table::LR1State;
 use crate::analysis::lookahead_dfa::CompiledProductionIndex;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
 use crate::conversions::dot::render_dfa_dot_string;
+use crate::generators::parser_ir::{
+    ProductionIR, ProductionSymbolIR, build_production_ir,
+    find_start_symbol_index as parser_ir_find_start_symbol_index,
+    ordered_non_terminal_names as parser_ir_ordered_non_terminal_names,
+};
 use crate::generators::{GrammarConfig, NamingHelper};
 use crate::parser::parol_grammar::LookaheadExpression;
-use crate::{LRAction, LRParseTable, Pr, Symbol, Terminal};
-use anyhow::{Result, anyhow};
+use crate::{LRAction, LRParseTable};
+use anyhow::Result;
 use parol_runtime::lexer::{
     BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE,
 };
@@ -109,44 +114,27 @@ struct Production {
 }
 
 impl Production {
-    fn from_cfg_production(
-        pr: &Pr,
-        prod_num: usize,
-        non_terminals: &[&str],
-        terminals: &[(&str, Option<LookaheadExpression>)],
-    ) -> Self {
-        let get_non_terminal_index =
-            |nt: &str| non_terminals.iter().position(|n| *n == nt).unwrap();
-        let get_terminal_index = |tr: &str, l: &Option<LookaheadExpression>| {
-            terminals
-                .iter()
-                .position(|t| t.0 == tr && t.1 == *l)
-                .unwrap() as TerminalIndex
-                + FIRST_USER_TOKEN
-        };
-        let lhs = get_non_terminal_index(pr.get_n_str());
-        let production =
-            pr.get_r()
-                .iter()
-                .rev()
-                .fold(StrVec::new(4).first_line_no_indent(), |mut acc, s| {
-                    match s {
-                        Symbol::N(n, ..) => {
-                            acc.push(format!("ParseType::N({}),", get_non_terminal_index(n)))
-                        }
-                        Symbol::T(Terminal::Trm(t, .., l0)) => {
-                            acc.push(format!("ParseType::T({}),", get_terminal_index(t, l0)))
-                        }
-                        _ => panic!("Unexpected symbol type in production!"),
+    fn from_ir(production_ir: &ProductionIR) -> Self {
+        let lhs = production_ir.lhs_index;
+        let production = production_ir.rhs.iter().rev().fold(
+            StrVec::new(4).first_line_no_indent(),
+            |mut acc, s| {
+                match s {
+                    ProductionSymbolIR::NonTerminal(index) => {
+                        acc.push(format!("ParseType::N({index}),"))
                     }
-                    acc
-                });
-        let prod_string = format!("{pr}");
+                    ProductionSymbolIR::Terminal { index, .. } => {
+                        acc.push(format!("ParseType::T({index}),"))
+                    }
+                }
+                acc
+            },
+        );
         Self {
             lhs,
             production,
-            prod_num,
-            prod_string,
+            prod_num: production_ir.production_index,
+            prod_string: production_ir.text.clone(),
         }
     }
 }
@@ -179,17 +167,14 @@ struct LRProduction {
 }
 
 impl LRProduction {
-    fn from_cfg_production(pr: &Pr, prod_num: usize, non_terminals: &[&str]) -> Self {
-        let get_non_terminal_index =
-            |nt: &str| non_terminals.iter().position(|n| *n == nt).unwrap();
-        let lhs = get_non_terminal_index(pr.get_n_str());
-        let len = pr.get_r().iter().count();
-        let prod_string = format!("{pr}");
+    fn from_ir(production_ir: &ProductionIR) -> Self {
+        let lhs = production_ir.lhs_index;
+        let len = production_ir.rhs.len();
         Self {
             lhs,
             len,
-            prod_num,
-            prod_string,
+            prod_num: production_ir.production_index,
+            prod_string: production_ir.text.clone(),
         }
     }
 }
@@ -598,26 +583,43 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     la_dfa: &BTreeMap<String, LookaheadDFA>,
     ast_type_has_lifetime: bool,
 ) -> Result<String> {
-    let terminals = get_terminals(grammar_config);
+    generate_parser_source_internal(
+        grammar_config,
+        lexer_source,
+        config,
+        la_dfa,
+        ast_type_has_lifetime,
+    )
+}
+
+fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorConfig>(
+    grammar_config: &GrammarConfig,
+    lexer_source: &str,
+    config: &C,
+    la_dfa: &BTreeMap<String, LookaheadDFA>,
+    ast_type_has_lifetime: bool,
+) -> Result<String> {
     let original_non_terminals = grammar_config.cfg.get_non_terminal_set();
     let non_terminal_count = original_non_terminals.len();
     let width = (non_terminal_count as f32).log10() as usize + 1;
 
-    let non_terminals = original_non_terminals.iter().collect::<Vec<_>>();
+    let non_terminal_names = parser_ir_ordered_non_terminal_names(grammar_config);
     let start_symbol_index: usize =
-        find_start_symbol_index(non_terminals.as_slice(), grammar_config)?;
+        parser_ir_find_start_symbol_index(&non_terminal_names, grammar_config)?;
 
-    let non_terminals = non_terminals
-        .iter()
-        .enumerate()
-        .fold(StrVec::new(4), |mut acc, (i, n)| {
-            acc.push(format!(r#"/* {i:width$} */ "{n}","#));
-            acc
-        });
+    let non_terminals =
+        non_terminal_names
+            .iter()
+            .enumerate()
+            .fold(StrVec::new(4), |mut acc, (i, n)| {
+                acc.push(format!(r#"/* {i:width$} */ "{n}","#));
+                acc
+            });
 
     let dfa_source = generate_dfa_source(la_dfa);
 
-    let productions = generate_productions(grammar_config, &original_non_terminals, &terminals);
+    let production_ir = build_production_ir(grammar_config, &non_terminal_names)?;
+    let productions = generate_productions(&production_ir);
 
     let max_k = grammar_config.lookahead_size;
 
@@ -652,21 +654,6 @@ fn get_terminals(grammar_config: &GrammarConfig) -> Vec<(&str, Option<LookaheadE
         .collect::<Vec<(&str, Option<LookaheadExpression>)>>()
 }
 
-fn find_start_symbol_index(
-    non_terminals: &[&String],
-    grammar_config: &GrammarConfig,
-) -> Result<usize, anyhow::Error> {
-    non_terminals
-        .iter()
-        .position(|n| *n == grammar_config.cfg.get_start_symbol())
-        .ok_or_else(|| {
-            anyhow!(
-                "Start symbol '{}' is not part of the given grammar!",
-                grammar_config.cfg.get_start_symbol()
-            )
-        })
-}
-
 fn get_scanner_module_name<C: CommonGeneratorConfig>(config: &C) -> String {
     let scanner_module_name = NamingHelper::to_lower_snake_case(config.user_type_name());
     scanner_module_name + "_scanner"
@@ -691,13 +678,32 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
     parse_table: &LRParseTable,
     ast_type_has_lifetime: bool,
 ) -> Result<String> {
+    generate_lalr1_parser_source_internal(
+        grammar_config,
+        lexer_source,
+        config,
+        parse_table,
+        ast_type_has_lifetime,
+    )
+}
+
+fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorConfig>(
+    grammar_config: &GrammarConfig,
+    lexer_source: &str,
+    config: &C,
+    parse_table: &LRParseTable,
+    ast_type_has_lifetime: bool,
+) -> Result<String> {
     let terminals = get_terminals(grammar_config);
     let original_non_terminals = grammar_config.cfg.get_non_terminal_set();
     let non_terminal_count = original_non_terminals.len();
     let width = (non_terminal_count as f32).log10() as usize + 1;
 
-    let non_terminals = original_non_terminals.iter().collect::<Vec<_>>();
-    let start_symbol_index: usize = find_start_symbol_index(&non_terminals, grammar_config)?;
+    let non_terminal_names = parser_ir_ordered_non_terminal_names(grammar_config);
+    let start_symbol_index: usize =
+        parser_ir_find_start_symbol_index(&non_terminal_names, grammar_config)?;
+
+    let non_terminals = non_terminal_names.iter().collect::<Vec<_>>();
 
     let non_terminals_with_index_comment =
         non_terminals
@@ -707,7 +713,8 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
                 acc.push(format!(r#"/* {i:width$} */ "{n}","#));
                 acc
             });
-    let productions = generate_lr_productions(grammar_config, &original_non_terminals);
+    let production_ir = build_production_ir(grammar_config, &non_terminal_names)?;
+    let productions = generate_lr_productions(&production_ir);
 
     let user_type_life_time = if ast_type_has_lifetime { "<'t>" } else { "" };
 
@@ -909,27 +916,13 @@ fn generate_dfa_source(la_dfa: &BTreeMap<String, LookaheadDFA>) -> String {
     format!("{dfas}")
 }
 
-fn generate_productions(
-    grammar_config: &GrammarConfig,
-    non_terminals: &BTreeSet<String>,
-    terminals: &[(&str, Option<LookaheadExpression>)],
-) -> String {
-    let non_terminals = non_terminals
-        .iter()
-        .map(|n| n.as_str())
-        .collect::<Vec<&str>>();
-    let production_count = grammar_config.cfg.pr.len();
-    let productions =
-        grammar_config
-            .cfg
-            .pr
-            .iter()
-            .enumerate()
-            .fold(String::new(), |mut acc, (i, p)| {
-                let production = Production::from_cfg_production(p, i, &non_terminals, terminals);
-                acc.push_str(format!("{production}").as_str());
-                acc
-            });
+fn generate_productions(production_ir: &[ProductionIR]) -> String {
+    let production_count = production_ir.len();
+    let productions = production_ir.iter().fold(String::new(), |mut acc, p| {
+        let production = Production::from_ir(p);
+        acc.push_str(format!("{production}").as_str());
+        acc
+    });
 
     let productions = Productions {
         production_count,
@@ -939,26 +932,13 @@ fn generate_productions(
     format!("{productions}")
 }
 
-fn generate_lr_productions(
-    grammar_config: &GrammarConfig,
-    non_terminals: &BTreeSet<String>,
-) -> String {
-    let non_terminals = non_terminals
-        .iter()
-        .map(|n| n.as_str())
-        .collect::<Vec<&str>>();
-    let production_count = grammar_config.cfg.pr.len();
-    let productions =
-        grammar_config
-            .cfg
-            .pr
-            .iter()
-            .enumerate()
-            .fold(String::new(), |mut acc, (i, p)| {
-                let production = LRProduction::from_cfg_production(p, i, &non_terminals);
-                acc.push_str(format!("{production}").as_str());
-                acc
-            });
+fn generate_lr_productions(production_ir: &[ProductionIR]) -> String {
+    let production_count = production_ir.len();
+    let productions = production_ir.iter().fold(String::new(), |mut acc, p| {
+        let production = LRProduction::from_ir(p);
+        acc.push_str(format!("{production}").as_str());
+        acc
+    });
 
     let productions = LRProductions {
         production_count,

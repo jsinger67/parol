@@ -1,5 +1,5 @@
 use crate::generators::{GrammarConfig, NamingHelper, generate_terminal_name};
-use crate::parser::parol_grammar::ScannerStateSwitch;
+use crate::generators::lexer_ir::{build_scanner_mode_data, ScannerModeBuildData};
 use crate::{CommonGeneratorConfig, generate_name};
 use anyhow::Result;
 use parol_runtime::TerminalIndex;
@@ -7,28 +7,19 @@ use parol_runtime::TerminalIndex;
 use crate::StrVec;
 use std::fmt::Debug;
 
-// Regular expression + terminal index + optional lookahead expression + generated token name
-type TerminalMapping = (String, TerminalIndex, Option<(bool, String)>, String);
-// Scanner transition is a tuple of terminal index and the name of the next scanner mode
-type ScannerTransition = (TerminalIndex, ScannerStateSwitch);
-
 #[derive(Debug, Default)]
 struct ScannerBuildInfo {
     scanner_name: String,
-    terminal_mappings: Vec<TerminalMapping>,
-    transitions: Vec<ScannerTransition>,
+    terminal_mappings: Vec<crate::generators::lexer_ir::TerminalMapping>,
+    transitions: Vec<crate::generators::lexer_ir::ScannerTransition>,
 }
 
 impl ScannerBuildInfo {
-    fn from_scanner_build_info(
-        terminal_mappings: Vec<TerminalMapping>,
-        transitions: Vec<ScannerTransition>,
-        scanner_name: String,
-    ) -> Self {
+    fn from_mode_data(mode_data: ScannerModeBuildData) -> Self {
         Self {
-            scanner_name,
-            terminal_mappings,
-            transitions,
+            scanner_name: mode_data.scanner_name,
+            terminal_mappings: mode_data.terminal_mappings,
+            transitions: mode_data.transitions,
         }
     }
 }
@@ -61,50 +52,25 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
     grammar_config: &GrammarConfig,
     config: &C,
 ) -> Result<String> {
-    let original_augmented_terminals = grammar_config.generate_augmented_terminals();
+    let terminal_names = generate_terminal_names(grammar_config);
+    generate_lexer_source_with_terminal_names(grammar_config, config, &terminal_names)
+}
 
-    let terminal_count = original_augmented_terminals.len();
+pub(crate) fn generate_lexer_source_with_terminal_names<C: CommonGeneratorConfig>(
+    grammar_config: &GrammarConfig,
+    config: &C,
+    terminal_names: &[String],
+) -> Result<String> {
+    let terminal_count = terminal_names.len();
     let width = (terminal_count as f32).log10() as usize + 1;
 
-    let terminal_names =
-        original_augmented_terminals
-            .iter()
-            .enumerate()
-            .fold(Vec::new(), |mut acc, (i, e)| {
-                let n = generate_name(
-                    acc.iter(),
-                    generate_terminal_name(
-                        &e.0,
-                        Some(i as TerminalIndex),
-                        e.1.as_ref(),
-                        &grammar_config.cfg,
-                    ),
-                );
-                acc.push(n);
-                acc
-            });
+    let mode_data = build_scanner_mode_data(grammar_config, terminal_names)?;
 
     let macro_start =
         StrVec::from_iter(vec![format!("\n    {} {{", get_scanner_type_name(config))]);
-    let mut scanner_macro = grammar_config
-        .scanner_configurations
-        .iter()
-        .map(|sc| {
-            sc.generate_build_information(grammar_config, &terminal_names)
-                .map(|(r, t)| (r, t, sc.scanner_name.clone()))
-        })
-        .collect::<Result<
-            Vec<(
-                Vec<TerminalMapping>,
-                Vec<ScannerTransition>,
-                String,
-            )>,
-            anyhow::Error,
-        >>()?
+    let mut scanner_macro = mode_data
         .into_iter()
-        .map(|(terminal_mappings, transitions, scanner_name)| {
-            ScannerBuildInfo::from_scanner_build_info(terminal_mappings, transitions, scanner_name)
-        })
+        .map(ScannerBuildInfo::from_mode_data)
         .fold(macro_start, |mut acc, e| {
             acc.push(format!("{e}"));
             acc

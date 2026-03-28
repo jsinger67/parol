@@ -1,6 +1,6 @@
 use crate::CommonGeneratorConfig;
 use crate::generators::{GrammarConfig, NamingHelper};
-use crate::parser::parol_grammar::ScannerStateSwitch;
+use crate::generators::lexer_ir::build_scanner_mode_data;
 use anyhow::Result;
 use scnr2_generate::character_classes::CharacterClasses;
 use scnr2_generate::dfa::Dfa;
@@ -16,6 +16,16 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
     grammar_config: &GrammarConfig,
     config: &C,
 ) -> Result<String> {
+    let terminal_names =
+        crate::generators::lexer_generator::generate_terminal_names(grammar_config);
+    generate_lexer_source_with_terminal_names(grammar_config, config, &terminal_names)
+}
+
+pub(crate) fn generate_lexer_source_with_terminal_names<C: CommonGeneratorConfig>(
+    grammar_config: &GrammarConfig,
+    config: &C,
+    terminal_names: &[String],
+) -> Result<String> {
     let mut source = String::new();
     let _scanner_type_name = NamingHelper::to_upper_camel_case(config.user_type_name()) + "Scanner";
 
@@ -25,7 +35,11 @@ pub fn generate_lexer_source<C: CommonGeneratorConfig>(
     writeln!(source)?;
     writeln!(source, "namespace {} {{", config.user_type_name())?;
 
-    source.push_str(&generate_scanner_data(grammar_config, config)?);
+    source.push_str(&generate_scanner_data_with_terminal_names(
+        grammar_config,
+        config,
+        terminal_names,
+    )?);
 
     writeln!(source, "}}")?;
 
@@ -39,17 +53,28 @@ pub fn generate_scanner_data<C: CommonGeneratorConfig>(
 ) -> Result<String> {
     let terminal_names =
         crate::generators::lexer_generator::generate_terminal_names(grammar_config);
+    generate_scanner_data_with_terminal_names(grammar_config, config, &terminal_names)
+}
+
+pub(crate) fn generate_scanner_data_with_terminal_names<C: CommonGeneratorConfig>(
+    grammar_config: &GrammarConfig,
+    config: &C,
+    terminal_names: &[String],
+) -> Result<String> {
+    let mode_data = build_scanner_mode_data(grammar_config, terminal_names)
+        .map_err(|e| anyhow::anyhow!(e.to_string()))?;
+    let mode_indices = mode_data
+        .iter()
+        .enumerate()
+        .map(|(i, mode)| (mode.scanner_name.clone(), i))
+        .collect::<std::collections::HashMap<_, _>>();
 
     let mut scanner_modes = Vec::new();
-    for sc in &grammar_config.scanner_configurations {
-        let sc_name = &sc.scanner_name;
-
-        let (terminal_mappings, scnr_transitions) = sc
-            .generate_build_information(grammar_config, &terminal_names)
-            .map_err(|e| anyhow::anyhow!(e.to_string()))?;
+    for mode in mode_data {
+        let sc_name = &mode.scanner_name;
 
         let mut patterns = Vec::new();
-        for (rx, terminal_index, lookahead, _) in terminal_mappings {
+        for (rx, terminal_index, lookahead, _) in mode.terminal_mappings {
             let scnr_lookahead =
                 match lookahead {
                     Some((true, pattern)) => ScnrLookahead::positive(pattern)
@@ -64,25 +89,17 @@ pub fn generate_scanner_data<C: CommonGeneratorConfig>(
         }
 
         let mut transitions = Vec::new();
-        for (terminal_index, state_switch) in scnr_transitions {
+        for (terminal_index, state_switch) in mode.transitions {
             let transition = match state_switch {
-                ScannerStateSwitch::SwitchPush(mode_name, _) => {
-                    let mode_index = grammar_config
-                        .scanner_configurations
-                        .iter()
-                        .position(|s| s.scanner_name == mode_name)
-                        .unwrap();
+                crate::parser::parol_grammar::ScannerStateSwitch::SwitchPush(mode_name, _) => {
+                    let mode_index = *mode_indices.get(mode_name.as_str()).unwrap();
                     TransitionToNumericMode::PushMode(terminal_index as usize, mode_index)
                 }
-                ScannerStateSwitch::SwitchPop(_) => {
+                crate::parser::parol_grammar::ScannerStateSwitch::SwitchPop(_) => {
                     TransitionToNumericMode::PopMode(terminal_index as usize)
                 }
-                ScannerStateSwitch::Switch(mode_name, _) => {
-                    let mode_index = grammar_config
-                        .scanner_configurations
-                        .iter()
-                        .position(|s| s.scanner_name == mode_name)
-                        .unwrap();
+                crate::parser::parol_grammar::ScannerStateSwitch::Switch(mode_name, _) => {
+                    let mode_index = *mode_indices.get(mode_name.as_str()).unwrap();
                     TransitionToNumericMode::SetMode(terminal_index as usize, mode_index)
                 }
             };
@@ -142,7 +159,7 @@ pub fn generate_scanner_data<C: CommonGeneratorConfig>(
         source,
         "        public static readonly string[] TerminalNames = ["
     )?;
-    for name in &terminal_names {
+    for name in terminal_names {
         writeln!(source, "            \"{}\",", name)?;
     }
     writeln!(source, "        ];")?;
