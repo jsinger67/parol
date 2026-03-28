@@ -225,20 +225,47 @@ S: "a" ?= "b" | "a";
             let non_terminal_names = ordered_non_terminal_names(&grammar_config);
             let production_ir = build_production_ir(&grammar_config, &non_terminal_names)?;
 
-            let mut terminal_indices = production_ir
+            anyhow::ensure!(
+                production_ir.len() == 2,
+                "Expected exactly two productions for test grammar"
+            );
+
+            let lookahead_terminal_index = grammar_config
+                .cfg
+                .get_ordered_terminals()
                 .iter()
-                .flat_map(|p| p.rhs.iter())
-                .filter_map(|s| match s {
-                    ProductionSymbolIR::Terminal { index, .. } => Some(*index),
-                    _ => None,
-                })
-                .collect::<Vec<_>>();
-            terminal_indices.sort_unstable();
-            terminal_indices.dedup();
+                .position(|(t, _, l, _)| *t == "a" && l.is_some())
+                .map(|i| i as TerminalIndex + FIRST_USER_TOKEN)
+                .ok_or_else(|| anyhow!("Failed to resolve lookahead terminal index"))?;
+            let plain_terminal_index = grammar_config
+                .cfg
+                .get_ordered_terminals()
+                .iter()
+                .position(|(t, _, l, _)| *t == "a" && l.is_none())
+                .map(|i| i as TerminalIndex + FIRST_USER_TOKEN)
+                .ok_or_else(|| anyhow!("Failed to resolve plain terminal index"))?;
 
             anyhow::ensure!(
-                terminal_indices.len() >= 2,
-                "Expected at least two distinct terminal indices for lookahead-distinguished terminal"
+                lookahead_terminal_index != plain_terminal_index,
+                "Lookahead and plain terminals must resolve to different indices"
+            );
+
+            let first_index = match production_ir[0].rhs.as_slice() {
+                [ProductionSymbolIR::Terminal { index, .. }] => *index,
+                _ => anyhow::bail!("Unexpected RHS for first production"),
+            };
+            let second_index = match production_ir[1].rhs.as_slice() {
+                [ProductionSymbolIR::Terminal { index, .. }] => *index,
+                _ => anyhow::bail!("Unexpected RHS for second production"),
+            };
+
+            anyhow::ensure!(
+                first_index == lookahead_terminal_index,
+                "First production should use lookahead-specific terminal index"
+            );
+            anyhow::ensure!(
+                second_index == plain_terminal_index,
+                "Second production should use plain terminal index"
             );
             Ok::<(), anyhow::Error>(())
         })();
