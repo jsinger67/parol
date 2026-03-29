@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 4.4.0 - Unreleased
 
 * Add new `parol export` subcommand to emit language-agnostic parser export models as JSON
   for both LL(k) and LALR(1) grammars.
