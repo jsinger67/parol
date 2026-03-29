@@ -1,0 +1,236 @@
+# Export Model Contract
+
+This chapter defines the contract for external tools that consume `parol export` output.
+
+## Goal
+
+The export model is meant to provide language-agnostic grammar facts that are sufficient to build
+parser/scanner generators in other ecosystems.
+
+The contract intentionally separates two concerns:
+
+- Export model: grammar-derived, algorithm-specific facts
+- External consumer config: generation policy and runtime behavior choices
+
+## Boundary: What belongs in export
+
+The export payload contains data that is intrinsic to the grammar and parser construction:
+
+- parser algorithm kind (`Llk` or `Lalr1`)
+- ordered non-terminals and start symbol index
+- production list and RHS symbol structure
+- LL(k) lookahead automata or LALR(1) parse table
+- scanner terminals, states, comments, transitions, and lookahead expressions
+- production datatype metadata derived from grammar type analysis
+
+This data is considered portable across target languages.
+
+## Boundary: What does not belong in export
+
+Configuration that is policy-driven or target-runtime specific should be provided by the external
+tool, not embedded as language-independent export metadata.
+
+Typical examples:
+
+- enabling/disabling recovery in generated runtime wiring
+- parse tree omission or parse tree construction strategy
+- naming/style conventions in generated target-language code
+- file/project layout and scaffolding preferences
+- target-specific runtime integration flags
+
+Keeping these settings outside the core export keeps the schema stable and avoids coupling to one
+runtime style.
+
+## Versioning and compatibility
+
+The export schema version is carried in `ParserExportModel.version`.
+
+Compatibility expectations for consumers:
+
+- reject unsupported future versions explicitly
+- accept known versions exactly
+- treat unknown top-level fields as non-breaking when possible
+- treat missing required fields for a known version as an error
+
+Recommended consumer strategy:
+
+1. Read `version` first.
+2. Dispatch to a version-specific decoder.
+3. Validate required sections for the selected algorithm.
+4. Apply external consumer config after model decoding.
+
+## Minimum required sections per algorithm
+
+Required for all versions currently supported by `parol` export:
+
+- `version`
+- `algorithm`
+- `non_terminal_names`
+- `start_symbol_index`
+- `productions`
+- `scanner`
+- `production_datatypes`
+
+Additional required section by algorithm:
+
+- `Llk`: `lookahead_automata` required, `lalr_parse_table` must be `null`
+- `Lalr1`: `lalr_parse_table` required, `lookahead_automata` should be empty
+
+## Minimal JSON examples
+
+The following examples are intentionally reduced to illustrate the contract shape, not full
+real-world content.
+
+### LL(k) export example
+
+```json
+{
+	"version": 1,
+	"algorithm": "Llk",
+	"non_terminal_names": ["Start"],
+	"start_symbol_index": 0,
+	"productions": [
+		{
+			"production_index": 0,
+			"lhs_index": 0,
+			"rhs": [],
+			"text": "Start: ;"
+		}
+	],
+	"lookahead_automata": [
+		{
+			"non_terminal_index": 0,
+			"non_terminal_name": "Start",
+			"prod0": 0,
+			"k": 0,
+			"transitions": []
+		}
+	],
+	"lalr_parse_table": null,
+	"scanner": {
+		"terminals": [],
+		"scanner_states": [
+			{
+				"scanner_state": 0,
+				"scanner_name": "INITIAL",
+				"line_comments": [],
+				"block_comments": [],
+				"auto_newline": true,
+				"auto_ws": true,
+				"allow_unmatched": false,
+				"transitions": []
+			}
+		]
+	},
+	"production_datatypes": [
+		{
+			"production_index": 0,
+			"non_terminal_name": "Start",
+			"production_attribute": "None",
+			"type_name": "StartEmpty",
+			"type_kind": "Struct",
+			"rust_type": "StartEmpty",
+			"members": []
+		}
+	]
+}
+```
+
+### LALR(1) export example
+
+```json
+{
+	"version": 1,
+	"algorithm": "Lalr1",
+	"non_terminal_names": ["Start"],
+	"start_symbol_index": 0,
+	"productions": [
+		{
+			"production_index": 0,
+			"lhs_index": 0,
+			"rhs": [],
+			"text": "Start: ;"
+		}
+	],
+	"lookahead_automata": [],
+	"lalr_parse_table": {
+		"actions": ["Accept"],
+		"states": [
+			{
+				"actions": [],
+				"gotos": []
+			}
+		]
+	},
+	"scanner": {
+		"terminals": [],
+		"scanner_states": [
+			{
+				"scanner_state": 0,
+				"scanner_name": "INITIAL",
+				"line_comments": [],
+				"block_comments": [],
+				"auto_newline": true,
+				"auto_ws": true,
+				"allow_unmatched": false,
+				"transitions": []
+			}
+		]
+	},
+	"production_datatypes": [
+		{
+			"production_index": 0,
+			"non_terminal_name": "Start",
+			"production_attribute": "None",
+			"type_name": "StartEmpty",
+			"type_kind": "Struct",
+			"rust_type": "StartEmpty",
+			"members": []
+		}
+	]
+}
+```
+
+## External config contract (consumer side)
+
+Consumers should define their own explicit config input (CLI flags, file, or API params) for
+policy decisions. A minimal cross-language config typically includes:
+
+- recovery mode and limits
+- parse tree strategy
+- naming/casing policy
+- output layout and file naming
+- optional runtime integration switches
+
+This config is intentionally separate from parser export JSON.
+
+Example consumer config (outside export JSON):
+
+```json
+{
+	"recovery": {
+		"enabled": true,
+		"max_sync_tokens": 64
+	},
+	"parse_tree": {
+		"mode": "omit"
+	},
+	"naming": {
+		"type_case": "PascalCase",
+		"member_case": "snake_case"
+	},
+	"output": {
+		"directory": "./generated",
+		"single_file": false
+	}
+}
+```
+
+## Reproducibility note
+
+If you need exact reproducibility of generated output, persist both:
+
+- parser export JSON
+- consumer config used during generation
+
+Optionally record tool and schema provenance in your own metadata layer.
