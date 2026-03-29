@@ -34,10 +34,20 @@ pub(crate) mod lexer_backend;
 
 /// Module with the parser generator
 pub mod parser_generator;
-pub use parser_generator::{generate_lalr1_parser_source, generate_parser_source};
+pub use parser_generator::{
+    generate_lalr1_parser_export_model, generate_lalr1_parser_source, generate_parser_export_model,
+    generate_parser_export_model_from_grammar, generate_parser_source,
+};
 
-/// Internal parser generation IR used by language backends
+/// Internal parser backend context and algorithm dispatch types
 pub(crate) mod parser_ir;
+
+/// Internal language-specific parser render helpers
+pub(crate) mod parser_render_ir;
+
+/// Internal language-agnostic parser model for portable IR evolution
+pub(crate) mod parser_model;
+pub use parser_model::{PARSER_EXPORT_MODEL_VERSION, ParserAlgorithmKindModel, ParserExportModel};
 
 /// Internal language backends for parser generation
 pub(crate) mod parser_backend;

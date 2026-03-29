@@ -1,24 +1,23 @@
+use crate::LRParseTable;
 use crate::analysis::LookaheadDFA;
 use crate::analysis::compiled_la_dfa::CompiledDFA;
-use crate::analysis::lalr1_parse_table::LR1State;
 use crate::analysis::lookahead_dfa::CompiledProductionIndex;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
-use crate::conversions::dot::render_dfa_dot_string;
-use crate::generators::parser_ir::{
-    ProductionIR, ProductionSymbolIR, build_production_ir,
-    find_start_symbol_index as parser_ir_find_start_symbol_index,
-    ordered_non_terminal_names as parser_ir_ordered_non_terminal_names,
+use crate::generators::parser_model::{
+    LookaheadAutomatonModel as LookaheadAutomatonIR, ProductionModel as ProductionIR,
+    ProductionSymbolModel as ProductionSymbolIR, build_export_model_for_lalr,
+    build_export_model_for_llk, build_lookahead_automata_model, build_production_model,
+    find_start_symbol_index as parser_model_find_start_symbol_index,
+};
+use crate::generators::parser_render_ir::{
+    LalrProductionRenderIR, build_lalr_production_render_ir, build_non_terminal_metadata_ir,
+    build_rust_lalr_parse_table_render_ir, build_terminal_label_map,
 };
 use crate::generators::{GrammarConfig, NamingHelper};
+use crate::parser::GrammarType;
 use crate::parser::parol_grammar::LookaheadExpression;
-use crate::{LRAction, LRParseTable};
 use anyhow::Result;
-use parol_runtime::lexer::{
-    BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE,
-};
-use parol_runtime::log::trace;
-use parol_runtime::{NonTerminalIndex, TerminalIndex};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 use crate::StrVec;
 use std::fmt::Debug;
@@ -33,11 +32,7 @@ pub(crate) struct Dfa {
 }
 
 impl Dfa {
-    fn from_la_dfa(la_dfa: &LookaheadDFA, nt_index: usize, nt_name: String) -> Self {
-        let compiled_dfa = CompiledDFA::from_lookahead_dfa(la_dfa);
-        Dfa::from_compiled_dfa(compiled_dfa, nt_index, nt_name)
-    }
-
+    #[allow(dead_code)]
     pub(crate) fn from_compiled_dfa(
         compiled_dfa: CompiledDFA,
         nt_index: usize,
@@ -62,6 +57,29 @@ impl Dfa {
             k,
             nt_index,
             nt_name,
+        }
+    }
+
+    fn from_ir(automaton_ir: &LookaheadAutomatonIR) -> Self {
+        let prod0 = automaton_ir.prod0;
+        let transitions = automaton_ir.transitions.iter().fold(
+            StrVec::new(4).first_line_no_indent(),
+            |mut acc, t| {
+                acc.push(format!(
+                    "Trans({}, {}, {}, {}),",
+                    t.from_state, t.term, t.to_state, t.prod_num
+                ));
+                acc
+            },
+        );
+        let k = automaton_ir.k;
+
+        Self {
+            prod0,
+            transitions,
+            k,
+            nt_index: automaton_ir.non_terminal_index,
+            nt_name: automaton_ir.non_terminal_name.clone(),
         }
     }
 }
@@ -167,14 +185,14 @@ struct LRProduction {
 }
 
 impl LRProduction {
-    fn from_ir(production_ir: &ProductionIR) -> Self {
-        let lhs = production_ir.lhs_index;
-        let len = production_ir.rhs.len();
+    fn from_render_ir(production_render_ir: &LalrProductionRenderIR) -> Self {
+        let lhs = production_render_ir.lhs_index;
+        let len = production_render_ir.rhs_len;
         Self {
             lhs,
             len,
-            prod_num: production_ir.production_index,
-            prod_string: production_ir.text.clone(),
+            prod_num: production_render_ir.production_index,
+            prod_string: production_render_ir.text.clone(),
         }
     }
 }
@@ -592,6 +610,20 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     )
 }
 
+///
+/// Builds a language-agnostic export model for LL(k) parser generation.
+///
+/// This function expects precomputed lookahead DFAs.
+/// Prefer this over `generate_parser_export_model_from_grammar` when you already
+/// have DFAs to avoid duplicate analysis work.
+///
+pub fn generate_parser_export_model(
+    grammar_config: &GrammarConfig,
+    la_dfa: &BTreeMap<String, LookaheadDFA>,
+) -> Result<crate::generators::ParserExportModel> {
+    build_export_model_for_llk(grammar_config, la_dfa)
+}
+
 fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     grammar_config: &GrammarConfig,
     lexer_source: &str,
@@ -599,26 +631,25 @@ fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorCon
     la_dfa: &BTreeMap<String, LookaheadDFA>,
     ast_type_has_lifetime: bool,
 ) -> Result<String> {
-    let original_non_terminals = grammar_config.cfg.get_non_terminal_set();
-    let non_terminal_count = original_non_terminals.len();
-    let width = (non_terminal_count as f32).log10() as usize + 1;
-
-    let non_terminal_names = parser_ir_ordered_non_terminal_names(grammar_config);
+    let non_terminal_metadata = build_non_terminal_metadata_ir(grammar_config);
+    let non_terminal_names = non_terminal_metadata.names;
+    let non_terminal_count = non_terminal_names.len();
     let start_symbol_index: usize =
-        parser_ir_find_start_symbol_index(&non_terminal_names, grammar_config)?;
+        parser_model_find_start_symbol_index(&non_terminal_names, grammar_config)?;
 
     let non_terminals =
-        non_terminal_names
-            .iter()
-            .enumerate()
-            .fold(StrVec::new(4), |mut acc, (i, n)| {
-                acc.push(format!(r#"/* {i:width$} */ "{n}","#));
+        non_terminal_metadata
+            .indexed_rows
+            .into_iter()
+            .fold(StrVec::new(4), |mut acc, row| {
+                acc.push(row);
                 acc
             });
 
-    let dfa_source = generate_dfa_source(la_dfa);
+    let lookahead_automata_ir = build_lookahead_automata_model(la_dfa, &non_terminal_names);
+    let dfa_source = generate_dfa_source(&lookahead_automata_ir);
 
-    let production_ir = build_production_ir(grammar_config, &non_terminal_names)?;
+    let production_ir = build_production_model(grammar_config, &non_terminal_names)?;
     let productions = generate_productions(&production_ir);
 
     let max_k = grammar_config.lookahead_size;
@@ -687,6 +718,61 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
     )
 }
 
+///
+/// Builds a language-agnostic export model for LALR(1) parser generation.
+///
+/// This function expects a precomputed LALR(1) parse table.
+/// Prefer this over `generate_parser_export_model_from_grammar` when you already
+/// have the parse table to avoid duplicate analysis work.
+///
+pub fn generate_lalr1_parser_export_model(
+    grammar_config: &GrammarConfig,
+    parse_table: &LRParseTable,
+) -> Result<crate::generators::ParserExportModel> {
+    build_export_model_for_lalr(grammar_config, parse_table)
+}
+
+///
+/// Builds a language-agnostic export model for the given grammar.
+///
+/// For LL(k) grammars this function computes lookahead DFAs using `max_lookahead`.
+/// For LALR(1) grammars it computes the parse table and ignores `max_lookahead`.
+///
+/// Use this function when you only have a [`GrammarConfig`] and want one entry point
+/// for both parser algorithms.
+///
+/// ```no_run
+/// # use anyhow::Result;
+/// # fn example() -> Result<()> {
+/// let grammar_config = parol::obtain_grammar_config(
+///     "crates/parol/tests/data/arg_tests/generate.par",
+///     false,
+/// )?;
+/// let model = parol::generate_parser_export_model_from_grammar(&grammar_config, 5)?;
+/// assert_eq!(model.version, parol::generators::PARSER_EXPORT_MODEL_VERSION);
+/// # Ok(())
+/// # }
+/// ```
+///
+/// If you already computed lookahead DFAs or an LALR(1) parse table, prefer
+/// [`generate_parser_export_model`] or [`generate_lalr1_parser_export_model`]
+/// to avoid duplicate analysis work.
+pub fn generate_parser_export_model_from_grammar(
+    grammar_config: &GrammarConfig,
+    max_lookahead: usize,
+) -> Result<crate::generators::ParserExportModel> {
+    match grammar_config.grammar_type {
+        GrammarType::LLK => {
+            let lookahead_dfas = crate::calculate_lookahead_dfas(grammar_config, max_lookahead)?;
+            generate_parser_export_model(grammar_config, &lookahead_dfas)
+        }
+        GrammarType::LALR1 => {
+            let parse_table = crate::calculate_lalr1_parse_table(grammar_config)?.0;
+            generate_lalr1_parser_export_model(grammar_config, &parse_table)
+        }
+    }
+}
+
 fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     grammar_config: &GrammarConfig,
     lexer_source: &str,
@@ -695,25 +781,23 @@ fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGenera
     ast_type_has_lifetime: bool,
 ) -> Result<String> {
     let terminals = get_terminals(grammar_config);
-    let original_non_terminals = grammar_config.cfg.get_non_terminal_set();
-    let non_terminal_count = original_non_terminals.len();
-    let width = (non_terminal_count as f32).log10() as usize + 1;
-
-    let non_terminal_names = parser_ir_ordered_non_terminal_names(grammar_config);
+    let non_terminal_metadata = build_non_terminal_metadata_ir(grammar_config);
+    let non_terminal_names = non_terminal_metadata.names;
+    let non_terminal_count = non_terminal_names.len();
     let start_symbol_index: usize =
-        parser_ir_find_start_symbol_index(&non_terminal_names, grammar_config)?;
+        parser_model_find_start_symbol_index(&non_terminal_names, grammar_config)?;
 
     let non_terminals = non_terminal_names.iter().collect::<Vec<_>>();
 
     let non_terminals_with_index_comment =
-        non_terminals
-            .iter()
-            .enumerate()
-            .fold(StrVec::new(4), |mut acc, (i, n)| {
-                acc.push(format!(r#"/* {i:width$} */ "{n}","#));
+        non_terminal_metadata
+            .indexed_rows
+            .into_iter()
+            .fold(StrVec::new(4), |mut acc, row| {
+                acc.push(row);
                 acc
             });
-    let production_ir = build_production_ir(grammar_config, &non_terminal_names)?;
+    let production_ir = build_production_model(grammar_config, &non_terminal_names)?;
     let productions = generate_lr_productions(&production_ir);
 
     let user_type_life_time = if ast_type_has_lifetime { "<'t>" } else { "" };
@@ -743,52 +827,75 @@ fn generate_parse_table_source(
     terminals: &[(&str, Option<LookaheadExpression>)],
     non_terminals: &[&String],
 ) -> String {
-    // Create a terminal resolver function
-    let tr = |ti: TerminalIndex| {
-        if ti >= FIRST_USER_TOKEN {
-            terminals[(ti - FIRST_USER_TOKEN) as usize].0
-        } else {
-            match ti {
-                EOI => "<$>",
-                NEW_LINE => "<NL>",
-                WHITESPACE => "<WS>",
-                LINE_COMMENT => "<LC>",
-                BLOCK_COMMENT => "<BC>",
-                _ => unreachable!(),
-            }
-        }
-    };
-
-    // Create a non-terminal resolver function
-    let nr = |ni: usize| non_terminals[ni].as_str();
-
-    let actions = parse_table
-        .states
+    let terminal_labels = build_terminal_label_map(terminals);
+    let non_terminal_names = non_terminals
         .iter()
-        .fold(BTreeSet::<LRAction>::new(), |mut acc, s| {
-            s.actions.iter().for_each(|(_, a)| {
-                acc.insert(a.clone());
+        .map(|n| (*n).clone())
+        .collect::<Vec<_>>();
+    let render_ir =
+        build_rust_lalr_parse_table_render_ir(parse_table, &terminal_labels, &non_terminal_names);
+
+    let actions =
+        render_ir
+            .actions
+            .iter()
+            .enumerate()
+            .fold(String::new(), |mut acc, (i, action_source)| {
+                acc.push_str(format!("/* {} */ {}, ", i, action_source).as_str());
+                acc
             });
-            acc
-        });
 
-    // Sorted array of actions
-    let actions_array = actions.iter().cloned().collect::<Vec<_>>();
-
-    let actions = actions_array
-        .iter()
-        .enumerate()
-        .fold(String::new(), |mut acc, (i, a)| {
-            acc.push_str(format!("/* {} */ {}, ", i, generate_source_for_action(a, nr)).as_str());
-            acc
-        });
-
-    let states = parse_table
+    let states = render_ir
         .states
         .iter()
-        .enumerate()
-        .fold(String::new(), |mut acc, (i, s)| {
-            acc.push_str(&generate_source_for_lrstate(s, i, &actions_array, &tr, &nr));
+        .fold(String::new(), |mut acc, state| {
+            let state_actions = format!(
+                "&[{}]",
+                state
+                    .actions
+                    .iter()
+                    .map(|a| {
+                        format!(
+                            r#"
+        ({}, {}) /* '{}' => {} */"#,
+                            a.terminal, a.action_index, a.terminal_label, a.action_comment
+                        )
+                    })
+                    .collect::<Vec<String>>()
+                    .join(", ")
+            );
+
+            let state_gotos = if state.gotos.is_empty() {
+                "&[]".to_string()
+            } else {
+                format!(
+                    "&[{}]",
+                    state
+                        .gotos
+                        .iter()
+                        .map(|g| {
+                            format!(
+                                r#"
+                ({}, {}) /* {} => {} */"#,
+                                g.non_terminal, g.goto_state, g.non_terminal_name, g.goto_state,
+                            )
+                        })
+                        .collect::<Vec<String>>()
+                        .join(", ")
+                )
+            };
+
+            acc.push_str(
+                format!(
+                    r#"
+        // State {}
+        LR1State {{
+            actions: {},
+            gotos: {} }}"#,
+                    state.state_index, state_actions, state_gotos
+                )
+                .as_str(),
+            );
             acc.push(',');
             acc
         });
@@ -796,117 +903,16 @@ fn generate_parse_table_source(
     format!("LRParseTable {{ actions: &[{actions}], states: &[{states}] }}",)
 }
 
-fn generate_source_for_lrstate<'a>(
-    state: &'a LR1State,
-    state_num: usize,
-    actions_array: &[LRAction],
-    tr: &impl Fn(TerminalIndex) -> &'a str,
-    nr: &impl Fn(NonTerminalIndex) -> &'a str,
-) -> String {
-    format!(
-        r#"
-        // State {}
-        LR1State {{
-            actions: {},
-            gotos: {} }}"#,
-        state_num,
-        generate_source_for_actions(state, actions_array, tr, nr),
-        generate_source_for_gotos(state, nr)
-    )
-}
-
-fn generate_source_for_actions<'a>(
-    state: &LR1State,
-    actions_array: &[LRAction],
-    tr: &impl Fn(TerminalIndex) -> &'a str,
-    nr: &impl Fn(NonTerminalIndex) -> &'a str,
-) -> String {
-    format!(
-        r#"&[{}]"#,
-        state
-            .actions
+fn generate_dfa_source(lookahead_automata_ir: &[LookaheadAutomatonIR]) -> String {
+    let lookahead_dfa_s =
+        lookahead_automata_ir
             .iter()
-            .map(|(t, a)| {
-                format!(
-                    r#"
-        ({}, {}) /* '{}' => {} */"#,
-                    t,
-                    generate_source_for_action_ref(a, actions_array),
-                    tr(*t),
-                    generate_action_comment(a, nr)
-                )
-            })
-            .collect::<Vec<String>>()
-            .join(", ")
-    )
-}
-
-fn generate_source_for_gotos<'a>(
-    state: &LR1State,
-    nr: &impl Fn(NonTerminalIndex) -> &'a str,
-) -> String {
-    if state.gotos.is_empty() {
-        return "&[]".to_string();
-    }
-    format!(
-        r#"&[{}]"#,
-        state
-            .gotos
-            .iter()
-            .map(|(n, s)| {
-                format!(
-                    r#"
-                ({}, {}) /* {} => {} */"#,
-                    n,
-                    s,
-                    nr(*n),
-                    s,
-                )
-            })
-            .collect::<Vec<String>>()
-            .join(", ")
-    )
-}
-
-fn generate_source_for_action<'a>(
-    action: &LRAction,
-    nr: impl Fn(NonTerminalIndex) -> &'a str,
-) -> String {
-    match action {
-        LRAction::Shift(s) => format!("LRAction::Shift({s})"),
-        LRAction::Reduce(n, p) => format!("LRAction::Reduce({} /* {} */, {})", n, nr(*n), p),
-        LRAction::Accept => "LRAction::Accept".to_string(),
-    }
-}
-
-fn generate_source_for_action_ref(action: &LRAction, actions_array: &[LRAction]) -> String {
-    let index = actions_array.iter().position(|a| a == action).unwrap();
-    format!("{index}")
-}
-
-fn generate_action_comment<'a>(
-    action: &LRAction,
-    nr: impl Fn(NonTerminalIndex) -> &'a str,
-) -> String {
-    match action {
-        LRAction::Shift(s) => format!("LRAction::Shift({s})"),
-        LRAction::Reduce(n, p) => format!("LRAction::Reduce({}, {})", nr(*n), p),
-        LRAction::Accept => "LRAction::Accept".to_string(),
-    }
-}
-
-fn generate_dfa_source(la_dfa: &BTreeMap<String, LookaheadDFA>) -> String {
-    let lookahead_dfa_s = la_dfa
-        .iter()
-        .enumerate()
-        .fold(StrVec::new(0), |mut acc, (i, (n, d))| {
-            trace!("{d}");
-            trace!("{}", render_dfa_dot_string(d, n));
-            let dfa = Dfa::from_la_dfa(d, i, n.clone());
-            acc.push(format!("{dfa}"));
-            acc
-        });
-    let dfa_count = la_dfa.len();
+            .fold(StrVec::new(0), |mut acc, automaton_ir| {
+                let dfa = Dfa::from_ir(automaton_ir);
+                acc.push(format!("{dfa}"));
+                acc
+            });
+    let dfa_count = lookahead_automata_ir.len();
 
     let dfas = Dfas {
         dfa_count,
@@ -933,12 +939,15 @@ fn generate_productions(production_ir: &[ProductionIR]) -> String {
 }
 
 fn generate_lr_productions(production_ir: &[ProductionIR]) -> String {
-    let production_count = production_ir.len();
-    let productions = production_ir.iter().fold(String::new(), |mut acc, p| {
-        let production = LRProduction::from_ir(p);
-        acc.push_str(format!("{production}").as_str());
-        acc
-    });
+    let production_render_ir = build_lalr_production_render_ir(production_ir);
+    let production_count = production_render_ir.len();
+    let productions = production_render_ir
+        .iter()
+        .fold(String::new(), |mut acc, p| {
+            let production = LRProduction::from_render_ir(p);
+            acc.push_str(format!("{production}").as_str());
+            acc
+        });
 
     let productions = LRProductions {
         production_count,

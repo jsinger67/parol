@@ -37,6 +37,7 @@ declare_tools!(
     calculate_k_tuples,
     decidable,
     deduce_types,
+    export,
     first,
     follow,
     format,

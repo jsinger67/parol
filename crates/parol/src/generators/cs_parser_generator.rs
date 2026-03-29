@@ -1,17 +1,19 @@
+use crate::LRParseTable;
 use crate::analysis::LookaheadDFA;
-use crate::analysis::compiled_la_dfa::CompiledDFA;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
-use crate::generators::parser_ir::{
-    ProductionIR,
-    ProductionSymbolIR,
-    build_production_ir,
-    find_start_symbol_index as parser_ir_find_start_symbol_index,
-    ordered_non_terminal_names as parser_ir_ordered_non_terminal_names,
+use crate::generators::parser_model::{
+    LookaheadAutomatonModel as LookaheadAutomatonIR, ProductionModel as ProductionIR,
+    build_lookahead_automata_model, build_production_model,
+    find_start_symbol_index as parser_model_find_start_symbol_index,
+};
+use crate::generators::parser_render_ir::{
+    build_csharp_lalr_parse_table_section_render_ir, build_csharp_llk_production_render_ir,
+    build_csharp_non_terminal_names_render_ir, build_lalr_production_render_ir,
+    build_non_terminal_metadata_ir, build_terminal_label_map,
 };
 use crate::generators::{GrammarConfig, NamingHelper};
-use crate::{LRAction, LRParseTable};
 use anyhow::Result;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 use std::fmt::Write;
 
 /// Generates the parser part of the parser output file for C# (LL(k)).
@@ -32,9 +34,12 @@ fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorCon
 ) -> Result<String> {
     let mut source = String::new();
 
-    let non_terminal_names = parser_ir_ordered_non_terminal_names(grammar_config);
-        let start_symbol_index = parser_ir_find_start_symbol_index(&non_terminal_names, grammar_config)?;
-    let non_terminals = non_terminal_names.iter().collect::<Vec<_>>();
+    let non_terminal_metadata = build_non_terminal_metadata_ir(grammar_config);
+    let non_terminal_names = non_terminal_metadata.names;
+    let start_symbol_index =
+        parser_model_find_start_symbol_index(&non_terminal_names, grammar_config)?;
+    let non_terminal_names_render_ir =
+        build_csharp_non_terminal_names_render_ir(&non_terminal_names);
 
     let parser_type_name = NamingHelper::to_upper_camel_case(config.user_type_name()) + "Parser";
 
@@ -100,18 +105,19 @@ fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorCon
         source,
         "        public static readonly string[] NonTerminalNames = ["
     )?;
-    for name in &non_terminals {
-        writeln!(source, "            \"{}\",", name)?;
+    for row in &non_terminal_names_render_ir.rows {
+        writeln!(source, "            {}", row)?;
     }
     writeln!(source, "        ];")?;
     writeln!(source)?;
 
     // Lookahead Automata
-    generate_lookahead_automata(&mut source, la_dfa, &non_terminals)?;
+    let lookahead_automata_ir = build_lookahead_automata_model(la_dfa, &non_terminal_names);
+    generate_lookahead_automata(&mut source, &lookahead_automata_ir)?;
     writeln!(source)?;
 
-        let production_ir = build_production_ir(grammar_config, &non_terminal_names)?;
-        generate_productions(&mut source, grammar_config, &production_ir)?;
+    let production_ir = build_production_model(grammar_config, &non_terminal_names)?;
+    generate_productions(&mut source, grammar_config, &production_ir)?;
     writeln!(source)?;
 
     // Parse Methods
@@ -125,8 +131,7 @@ fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorCon
 
 fn generate_lookahead_automata(
     source: &mut String,
-    la_dfa: &BTreeMap<String, LookaheadDFA>,
-    non_terminals: &[&String],
+    lookahead_automata_ir: &[LookaheadAutomatonIR],
 ) -> Result<()> {
     writeln!(source, "        /// <summary>")?;
     writeln!(
@@ -138,24 +143,25 @@ fn generate_lookahead_automata(
         source,
         "        public static readonly LookaheadDfa[] LookaheadAutomata = ["
     )?;
-    for (i, nt_name) in non_terminals.iter().enumerate() {
-        if let Some(dfa) = la_dfa.get(*nt_name) {
-            let compiled_dfa = CompiledDFA::from_lookahead_dfa(dfa);
-            writeln!(source, "            /* {} - \"{}\" */", i, nt_name)?;
-            writeln!(source, "            new(")?;
-            writeln!(source, "                {},", compiled_dfa.prod0)?;
-            writeln!(source, "                [")?;
-            for t in &compiled_dfa.transitions {
-                writeln!(
-                    source,
-                    "                    new({}, {}, {}, {}),",
-                    t.from_state, t.term, t.to_state, t.prod_num
-                )?;
-            }
-            writeln!(source, "                ],")?;
-            writeln!(source, "                {} // k", compiled_dfa.k)?;
-            writeln!(source, "            ),")?;
+    for automaton_ir in lookahead_automata_ir {
+        writeln!(
+            source,
+            "            /* {} - \"{}\" */",
+            automaton_ir.non_terminal_index, automaton_ir.non_terminal_name
+        )?;
+        writeln!(source, "            new(")?;
+        writeln!(source, "                {},", automaton_ir.prod0)?;
+        writeln!(source, "                [")?;
+        for transition in &automaton_ir.transitions {
+            writeln!(
+                source,
+                "                    new({}, {}, {}, {}),",
+                transition.from_state, transition.term, transition.to_state, transition.prod_num
+            )?;
         }
+        writeln!(source, "                ],")?;
+        writeln!(source, "                {} // k", automaton_ir.k)?;
+        writeln!(source, "            ),")?;
     }
     writeln!(source, "        ];")?;
     Ok(())
@@ -166,6 +172,8 @@ fn generate_productions(
     _grammar_config: &GrammarConfig,
     production_ir: &[ProductionIR],
 ) -> Result<()> {
+    let production_render_ir = build_csharp_llk_production_render_ir(production_ir);
+
     writeln!(source, "        /// <summary>")?;
     writeln!(
         source,
@@ -176,34 +184,13 @@ fn generate_productions(
         source,
         "        public static readonly Production[] Productions = ["
     )?;
-    for p in production_ir {
+    for p in &production_render_ir {
         writeln!(source, "            // {} - {}", p.production_index, p.text)?;
         writeln!(source, "            new Production(")?;
         writeln!(source, "                {},", p.lhs_index)?;
         writeln!(source, "                [")?;
-        for s in &p.rhs {
-            match s {
-                ProductionSymbolIR::NonTerminal(index) => {
-                    writeln!(
-                        source,
-                        "                    new(ParseType.N, {}),",
-                        index
-                    )?;
-                }
-                ProductionSymbolIR::Terminal { index, clipped } => {
-                    let parse_type = if *clipped {
-                        "ParseType.C"
-                    } else {
-                        "ParseType.T"
-                    };
-                    writeln!(
-                        source,
-                        "                    new({}, {}),",
-                        parse_type,
-                        index
-                    )?;
-                }
-            }
+        for symbol_source in &p.symbols {
+            writeln!(source, "                    {},", symbol_source)?;
         }
         writeln!(source, "                ]")?;
         writeln!(source, "            ),")?;
@@ -301,11 +288,14 @@ fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGenera
 ) -> Result<String> {
     let mut source = String::new();
 
-    let non_terminal_names = parser_ir_ordered_non_terminal_names(grammar_config);
+    let non_terminal_metadata = build_non_terminal_metadata_ir(grammar_config);
+    let non_terminal_names = non_terminal_metadata.names;
     let start_symbol_index =
-        parser_ir_find_start_symbol_index(&non_terminal_names, grammar_config)?;
-    let non_terminals = non_terminal_names.iter().collect::<Vec<_>>();
-    let production_ir = build_production_ir(grammar_config, &non_terminal_names)?;
+        parser_model_find_start_symbol_index(&non_terminal_names, grammar_config)?;
+    let non_terminal_names_render_ir =
+        build_csharp_non_terminal_names_render_ir(&non_terminal_names);
+    let production_ir = build_production_model(grammar_config, &non_terminal_names)?;
+    let production_render_ir = build_lalr_production_render_ir(&production_ir);
 
     let parser_type_name = NamingHelper::to_upper_camel_case(config.user_type_name()) + "Parser";
 
@@ -355,8 +345,8 @@ fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGenera
         source,
         "        public static readonly string[] NonTerminalNames = ["
     )?;
-    for name in &non_terminals {
-        writeln!(source, "            \"{}\",", name)?;
+    for row in &non_terminal_names_render_ir.rows {
+        writeln!(source, "            {}", row)?;
     }
     writeln!(source, "        ];")?;
     writeln!(source)?;
@@ -371,18 +361,14 @@ fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGenera
         source,
         "        public static readonly LRProduction[] Productions = ["
     )?;
-    for p in &production_ir {
+    for p in &production_render_ir {
         writeln!(source, "            // {} - {}", p.production_index, p.text)?;
         writeln!(source, "            new LRProduction({}, [", p.lhs_index)?;
-        for s in &p.rhs {
-            let is_semantic_child = match s {
-                ProductionSymbolIR::NonTerminal(..) => true,
-                ProductionSymbolIR::Terminal { clipped, .. } => !*clipped,
-            };
+        for is_semantic_child in &p.semantic_children {
             writeln!(
                 source,
                 "                {},",
-                if is_semantic_child { "true" } else { "false" }
+                if *is_semantic_child { "true" } else { "false" }
             )?;
         }
         writeln!(source, "            ]),")?;
@@ -390,7 +376,12 @@ fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGenera
     writeln!(source, "        ];")?;
     writeln!(source)?;
 
-    emit_lalr_parse_table(&mut source, parse_table)?;
+    emit_lalr_parse_table(
+        &mut source,
+        grammar_config,
+        parse_table,
+        &non_terminal_names,
+    )?;
     writeln!(source)?;
 
     emit_lalr_parse_methods(&mut source, config, &parser_type_name, start_symbol_index)?;
@@ -401,18 +392,24 @@ fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGenera
     Ok(source)
 }
 
-fn emit_lalr_parse_table(source: &mut String, parse_table: &LRParseTable) -> Result<()> {
-    let actions = parse_table
-        .states
+fn emit_lalr_parse_table(
+    source: &mut String,
+    grammar_config: &GrammarConfig,
+    parse_table: &LRParseTable,
+    non_terminal_names: &[String],
+) -> Result<()> {
+    let terminals = grammar_config
+        .cfg
+        .get_ordered_terminals()
         .iter()
-        .fold(BTreeSet::<LRAction>::new(), |mut acc, s| {
-            s.actions.iter().for_each(|(_, a)| {
-                acc.insert(a.clone());
-            });
-            acc
-        })
-        .into_iter()
+        .map(|(t, _, l, _)| (*t, l.clone()))
         .collect::<Vec<_>>();
+    let terminal_labels = build_terminal_label_map(&terminals);
+    let parse_table_render_ir = build_csharp_lalr_parse_table_section_render_ir(
+        parse_table,
+        &terminal_labels,
+        non_terminal_names,
+    );
 
     writeln!(source, "        /// <summary>")?;
     writeln!(
@@ -426,62 +423,20 @@ fn emit_lalr_parse_table(source: &mut String, parse_table: &LRParseTable) -> Res
     )?;
 
     writeln!(source, "            [")?;
-    for (i, action) in actions.iter().enumerate() {
-        writeln!(
-            source,
-            "                /* {} */ {},",
-            i,
-            render_lalr_action(action)
-        )?;
+    for action_row in &parse_table_render_ir.action_rows {
+        writeln!(source, "                {}", action_row)?;
     }
     writeln!(source, "            ],")?;
 
     writeln!(source, "            [")?;
-    for (state_num, state) in parse_table.states.iter().enumerate() {
-        writeln!(source, "                // State {}", state_num)?;
-        writeln!(source, "                new LR1State(")?;
-
-        writeln!(source, "                    [")?;
-        for (terminal, action) in &state.actions {
-            let action_index = actions
-                .iter()
-                .position(|a| a == action)
-                .expect("Action must exist in global action list");
-            writeln!(
-                source,
-                "                        new LRActionRef({}, {}),",
-                terminal, action_index
-            )?;
-        }
-        writeln!(source, "                    ],")?;
-
-        writeln!(source, "                    [")?;
-        for (non_terminal, goto_state) in &state.gotos {
-            writeln!(
-                source,
-                "                        new LRGoto({}, {}),",
-                non_terminal, goto_state
-            )?;
-        }
-        writeln!(source, "                    ]")?;
-        writeln!(source, "                ),")?;
+    for state_row in &parse_table_render_ir.state_rows {
+        writeln!(source, "{}", state_row)?;
     }
     writeln!(source, "            ]")?;
     writeln!(source, "        );")?;
 
     Ok(())
 }
-
-fn render_lalr_action(action: &LRAction) -> String {
-    match action {
-        LRAction::Shift(state) => format!("new LRAction.Shift({})", state),
-        LRAction::Reduce(non_terminal, production) => {
-            format!("new LRAction.Reduce({}, {})", non_terminal, production)
-        }
-        LRAction::Accept => "new LRAction.Accept()".to_string(),
-    }
-}
-
 fn emit_lalr_parse_methods(
     source: &mut String,
     config: &impl CommonGeneratorConfig,
