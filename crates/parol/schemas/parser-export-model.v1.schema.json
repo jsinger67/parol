@@ -1,0 +1,690 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/jsinger67/parol/main/crates/parol/schemas/parser-export-model.v1.schema.json",
+  "title": "parol ParserExportModel v1",
+  "description": "Language-agnostic parser export model emitted by `parol export`.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "algorithm",
+    "non_terminal_names",
+    "start_symbol_index",
+    "productions",
+    "lookahead_automata",
+    "lalr_parse_table",
+    "scanner",
+    "production_datatypes"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "algorithm": {
+      "$ref": "#/$defs/parserAlgorithmKind"
+    },
+    "non_terminal_names": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "start_symbol_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "productions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/production"
+      }
+    },
+    "lookahead_automata": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/lookaheadAutomaton"
+      }
+    },
+    "lalr_parse_table": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/lalrParseTable"
+        }
+      ]
+    },
+    "scanner": {
+      "$ref": "#/$defs/scanner"
+    },
+    "production_datatypes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/productionDatatype"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "algorithm": {
+            "const": "Llk"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lookahead_automata": {
+            "minItems": 1
+          },
+          "lalr_parse_table": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "algorithm": {
+            "const": "Lalr1"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lookahead_automata": {
+            "maxItems": 0
+          },
+          "lalr_parse_table": {
+            "$ref": "#/$defs/lalrParseTable"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "parserAlgorithmKind": {
+      "type": "string",
+      "enum": [
+        "Llk",
+        "Lalr1"
+      ]
+    },
+    "terminalKind": {
+      "type": "string",
+      "enum": [
+        "Legacy",
+        "Regex",
+        "Raw"
+      ]
+    },
+    "symbolAttribute": {
+      "type": "string",
+      "enum": [
+        "None",
+        "RepetitionAnchor",
+        "Option",
+        "Clipped"
+      ]
+    },
+    "productionAttribute": {
+      "type": "string",
+      "enum": [
+        "None",
+        "CollectionStart",
+        "AddToCollection",
+        "OptionalSome",
+        "OptionalNone"
+      ]
+    },
+    "typeKind": {
+      "type": "string",
+      "enum": [
+        "None",
+        "Token",
+        "Box",
+        "Ref",
+        "Surrogate",
+        "Struct",
+        "Enum",
+        "EnumVariant",
+        "Vec",
+        "Trait",
+        "Function",
+        "Option",
+        "Clipped",
+        "UserDefinedType"
+      ]
+    },
+    "productionSymbol": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "NonTerminal"
+          ],
+          "properties": {
+            "NonTerminal": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "Terminal"
+          ],
+          "properties": {
+            "Terminal": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "index",
+                "clipped"
+              ],
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "clipped": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "production": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "production_index",
+        "lhs_index",
+        "rhs",
+        "text"
+      ],
+      "properties": {
+        "production_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lhs_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rhs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/productionSymbol"
+          }
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "lookaheadTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from_state",
+        "term",
+        "to_state",
+        "prod_num"
+      ],
+      "properties": {
+        "from_state": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "term": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "to_state": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prod_num": {
+          "type": "integer"
+        }
+      }
+    },
+    "lookaheadAutomaton": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "non_terminal_index",
+        "non_terminal_name",
+        "prod0",
+        "k",
+        "transitions"
+      ],
+      "properties": {
+        "non_terminal_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "non_terminal_name": {
+          "type": "string"
+        },
+        "prod0": {
+          "type": "integer"
+        },
+        "k": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/lookaheadTransition"
+          }
+        }
+      }
+    },
+    "lalrAction": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "Shift"
+          ],
+          "properties": {
+            "Shift": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "Reduce"
+          ],
+          "properties": {
+            "Reduce": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        {
+          "type": "string",
+          "const": "Accept"
+        }
+      ]
+    },
+    "lalrState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actions",
+        "gotos"
+      ],
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "items": false
+          }
+        },
+        "gotos": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              }
+            ],
+            "items": false
+          }
+        }
+      }
+    },
+    "lalrParseTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actions",
+        "states"
+      ],
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/lalrAction"
+          }
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/lalrState"
+          }
+        }
+      }
+    },
+    "lookaheadExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "is_positive",
+        "pattern",
+        "expanded_pattern",
+        "kind"
+      ],
+      "properties": {
+        "is_positive": {
+          "type": "boolean"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "expanded_pattern": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/terminalKind"
+        }
+      }
+    },
+    "scannerTerminal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "pattern",
+        "expanded_pattern",
+        "kind",
+        "lookahead",
+        "scanner_states",
+        "scanner_state_names"
+      ],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "expanded_pattern": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/terminalKind"
+        },
+        "lookahead": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/lookaheadExpression"
+            }
+          ]
+        },
+        "scanner_states": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "scanner_state_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scannerTransitionKind": {
+      "type": "string",
+      "enum": [
+        "Enter",
+        "Push",
+        "Pop"
+      ]
+    },
+    "scannerTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "terminal_index",
+        "kind",
+        "target_scanner_state",
+        "target_scanner_name"
+      ],
+      "properties": {
+        "terminal_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kind": {
+          "$ref": "#/$defs/scannerTransitionKind"
+        },
+        "target_scanner_state": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ]
+        },
+        "target_scanner_name": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    "scannerState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scanner_state",
+        "scanner_name",
+        "line_comments",
+        "block_comments",
+        "auto_newline",
+        "auto_ws",
+        "allow_unmatched",
+        "transitions"
+      ],
+      "properties": {
+        "scanner_state": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scanner_name": {
+          "type": "string"
+        },
+        "line_comments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "block_comments": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "items": false
+          }
+        },
+        "auto_newline": {
+          "type": "boolean"
+        },
+        "auto_ws": {
+          "type": "boolean"
+        },
+        "allow_unmatched": {
+          "type": "boolean"
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scannerTransition"
+          }
+        }
+      }
+    },
+    "scanner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "terminals",
+        "scanner_states"
+      ],
+      "properties": {
+        "terminals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scannerTerminal"
+          }
+        },
+        "scanner_states": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/scannerState"
+          }
+        }
+      }
+    },
+    "productionTypeMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "member_name",
+        "symbol_attribute",
+        "description",
+        "used",
+        "type_name",
+        "type_kind",
+        "rust_type"
+      ],
+      "properties": {
+        "member_name": {
+          "type": "string"
+        },
+        "symbol_attribute": {
+          "$ref": "#/$defs/symbolAttribute"
+        },
+        "description": {
+          "type": "string"
+        },
+        "used": {
+          "type": "boolean"
+        },
+        "type_name": {
+          "type": "string"
+        },
+        "type_kind": {
+          "$ref": "#/$defs/typeKind"
+        },
+        "rust_type": {
+          "type": "string"
+        }
+      }
+    },
+    "productionDatatype": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "production_index",
+        "non_terminal_name",
+        "production_attribute",
+        "type_name",
+        "type_kind",
+        "rust_type",
+        "members"
+      ],
+      "properties": {
+        "production_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "non_terminal_name": {
+          "type": "string"
+        },
+        "production_attribute": {
+          "$ref": "#/$defs/productionAttribute"
+        },
+        "type_name": {
+          "type": "string"
+        },
+        "type_kind": {
+          "$ref": "#/$defs/typeKind"
+        },
+        "rust_type": {
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/productionTypeMember"
+          }
+        }
+      }
+    }
+  }
+}

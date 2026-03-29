@@ -186,7 +186,9 @@ A book explains some internals and the practical use of `parol` in detail. It is
 progress but should be considered as the central documentation.
 
 For external generators, see the
-[Export Model Contract](../../book/src/ExportModelContract.md) chapter.
+[Export Model Contract](./book/src/ExportModelContract.md) chapter.
+Machine-readable schema (v1):
+[parser-export-model.v1.schema.json](./crates/parol/schemas/parser-export-model.v1.schema.json)
 
 ### [The video](https://youtu.be/TJMwMqD4XSo)
 
