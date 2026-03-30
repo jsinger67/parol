@@ -206,7 +206,7 @@ fn main() -> Result<std::process::ExitCode> {
 fn post_process_args(args: &mut CliArgs) {
     if matches!(
         args.subcommand.as_ref(),
-        Some(&tools::ToolsSubcommands::generate(_))
+        Some(&tools::ToolsSubcommands::generate(_)) | Some(&tools::ToolsSubcommands::export(_))
     ) {
         // We really don't want any output other than the generated source.
         // Thus we set the quite flag implicitly.
@@ -222,6 +222,7 @@ fn extract_file_name(args: &CliArgs) -> Option<PathBuf> {
             tools::ToolsSubcommands::calculate_k_tuples(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::decidable(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::deduce_types(args) => args.grammar_file.clone(),
+            tools::ToolsSubcommands::export(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::first(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::follow(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::format(args) => Some(args.grammar_file.clone()),

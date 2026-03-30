@@ -39,3 +39,9 @@ Cargo.lock
 # Example IDE solution files
 /examples/**/*.sln
 /examples/**/*.slnx
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.egg-info/

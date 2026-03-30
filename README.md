@@ -69,8 +69,14 @@ the start symbol of your grammar which is called after the whole input string is
 function then is called with a parameter that comprises the complete structure of the parsed
 document.
 
-Currently, C# code generation supports only LL(k) grammars. `%grammar_type 'LALR(1)'` is
-explicitly rejected until C# LALR(1) parser generation is implemented.
+For generated C# parsers this interface is emitted as `I<GrammarName>Actions` and extends
+`IUserActions` and `IProvidesValueConverter`. Generated actions include a default
+`GeneratedValueConverter` and delegate `%nt_type` conversions via `RuntimeValueConverter.Convert<T>`.
+You can override the `ValueConverter` property in a derived actions class to provide custom
+grammar-specific conversions.
+The .NET SDK is only required for C# generation/build workflows. Rust-only workflows do not
+require .NET, and C# integration tests are skipped automatically when `dotnet` is not available.
+C# code generation supports both LL(k) and `%grammar_type 'LALR(1)'` grammars.
 
 The parser calls the interface trait's functions via a separately generated adapter automatically
 during the process of parsing.
@@ -178,6 +184,11 @@ and [json_parser_csharp](https://github.com/jsinger67/parol/tree/main/examples/j
 
 A book explains some internals and the practical use of `parol` in detail. It is still a work in
 progress but should be considered as the central documentation.
+
+For external generators, see the
+[Export Model Contract](./book/src/ExportModelContract.md) chapter.
+Machine-readable schema (v1):
+[parser-export-model.v1.schema.json](./crates/parol/schemas/parser-export-model.v1.schema.json)
 
 ### [The video](https://youtu.be/TJMwMqD4XSo)
 

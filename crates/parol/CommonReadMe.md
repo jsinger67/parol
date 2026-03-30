@@ -136,6 +136,11 @@ and [json_parser_csharp](https://github.com/jsinger67/parol/tree/main/examples/j
 A book explains some internals and the practical use of `parol` in detail. It is still a work in
 progress but should be considered as the central documentation.
 
+For external generators, see the
+[Export Model Contract](../../book/src/ExportModelContract.md) chapter.
+Machine-readable schema (v1):
+[parser-export-model.v1.schema.json](./schemas/parser-export-model.v1.schema.json)
+
 ### [The video](https://youtu.be/TJMwMqD4XSo)
 
 This video explains the installation of `parol` and the language server to setup your working

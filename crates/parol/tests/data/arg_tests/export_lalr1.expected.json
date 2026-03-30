@@ -1,0 +1,277 @@
+{
+  "version": 1,
+  "algorithm": "Lalr1",
+  "non_terminal_names": [
+    "Start",
+    "StartList"
+  ],
+  "start_symbol_index": 0,
+  "productions": [
+    {
+      "production_index": 0,
+      "lhs_index": 0,
+      "rhs": [
+        {
+          "Terminal": {
+            "index": 5,
+            "clipped": false
+          }
+        },
+        {
+          "NonTerminal": 1
+        },
+        {
+          "Terminal": {
+            "index": 6,
+            "clipped": false
+          }
+        }
+      ],
+      "text": "Start: \"Var\" StartList /* Vec */ \"End\";"
+    },
+    {
+      "production_index": 1,
+      "lhs_index": 1,
+      "rhs": [
+        {
+          "NonTerminal": 1
+        },
+        {
+          "Terminal": {
+            "index": 7,
+            "clipped": false
+          }
+        }
+      ],
+      "text": "StartList: StartList /[a-z_][a-zA-Z0-9_]*/;"
+    },
+    {
+      "production_index": 2,
+      "lhs_index": 1,
+      "rhs": [],
+      "text": "StartList: ;"
+    }
+  ],
+  "lookahead_automata": [],
+  "lalr_parse_table": {
+    "actions": [
+      {
+        "Shift": 1
+      },
+      {
+        "Shift": 3
+      },
+      {
+        "Shift": 4
+      },
+      {
+        "Reduce": [
+          1,
+          1
+        ]
+      },
+      {
+        "Reduce": [
+          1,
+          2
+        ]
+      },
+      "Accept"
+    ],
+    "states": [
+      {
+        "actions": [
+          [
+            5,
+            0
+          ]
+        ],
+        "gotos": []
+      },
+      {
+        "actions": [
+          [
+            6,
+            4
+          ],
+          [
+            7,
+            4
+          ]
+        ],
+        "gotos": [
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "actions": [
+          [
+            6,
+            1
+          ],
+          [
+            7,
+            2
+          ]
+        ],
+        "gotos": []
+      },
+      {
+        "actions": [
+          [
+            0,
+            5
+          ]
+        ],
+        "gotos": []
+      },
+      {
+        "actions": [
+          [
+            6,
+            3
+          ],
+          [
+            7,
+            3
+          ]
+        ],
+        "gotos": []
+      }
+    ]
+  },
+  "scanner": {
+    "terminals": [
+      {
+        "index": 5,
+        "pattern": "Var",
+        "expanded_pattern": "Var",
+        "kind": "Legacy",
+        "lookahead": null,
+        "scanner_states": [
+          0
+        ],
+        "scanner_state_names": [
+          "INITIAL"
+        ]
+      },
+      {
+        "index": 6,
+        "pattern": "End",
+        "expanded_pattern": "End",
+        "kind": "Legacy",
+        "lookahead": null,
+        "scanner_states": [
+          0
+        ],
+        "scanner_state_names": [
+          "INITIAL"
+        ]
+      },
+      {
+        "index": 7,
+        "pattern": "[a-z_][a-zA-Z0-9_]*",
+        "expanded_pattern": "[a-z_][a-zA-Z0-9_]*",
+        "kind": "Regex",
+        "lookahead": null,
+        "scanner_states": [
+          0
+        ],
+        "scanner_state_names": [
+          "INITIAL"
+        ]
+      }
+    ],
+    "scanner_states": [
+      {
+        "scanner_state": 0,
+        "scanner_name": "INITIAL",
+        "line_comments": [],
+        "block_comments": [],
+        "auto_newline": true,
+        "auto_ws": true,
+        "allow_unmatched": false,
+        "transitions": []
+      }
+    ]
+  },
+  "production_datatypes": [
+    {
+      "production_index": 0,
+      "non_terminal_name": "Start",
+      "production_attribute": "None",
+      "type_name": "StartVarStartListEnd",
+      "type_kind": "Struct",
+      "rust_type": "StartVarStartListEnd<'t>",
+      "members": [
+        {
+          "member_name": "var",
+          "symbol_attribute": "None",
+          "description": "Var",
+          "used": true,
+          "type_name": "UNNAMED",
+          "type_kind": "Token",
+          "rust_type": "Token<'t>"
+        },
+        {
+          "member_name": "start_list",
+          "symbol_attribute": "RepetitionAnchor",
+          "description": "",
+          "used": true,
+          "type_name": "UNNAMED",
+          "type_kind": "Vec",
+          "rust_type": "Vec<StartList<'t>>"
+        },
+        {
+          "member_name": "end",
+          "symbol_attribute": "None",
+          "description": "End",
+          "used": true,
+          "type_name": "UNNAMED",
+          "type_kind": "Token",
+          "rust_type": "Token<'t>"
+        }
+      ]
+    },
+    {
+      "production_index": 1,
+      "non_terminal_name": "StartList",
+      "production_attribute": "AddToCollection",
+      "type_name": "StartListStartListLBracketAMinusZUnderscoreRBracketLBracketAMinusZAMinusZ0Minus9UnderscoreRBracketStar",
+      "type_kind": "Struct",
+      "rust_type": "StartListStartListLBracketAMinusZUnderscoreRBracketLBracketAMinusZAMinusZ0Minus9UnderscoreRBracketStar<'t>",
+      "members": [
+        {
+          "member_name": "start_list",
+          "symbol_attribute": "None",
+          "description": "",
+          "used": true,
+          "type_name": "UNNAMED",
+          "type_kind": "Box",
+          "rust_type": "Box<StartList<'t>>"
+        },
+        {
+          "member_name": "l_bracket_a_minus_z_underscore_r_bracket_l_bracket_a_minus_z_a_minus_z0_minus9_underscore_r_bracket_star",
+          "symbol_attribute": "None",
+          "description": "[a-z_][a-zA-Z0-9_]*",
+          "used": true,
+          "type_name": "UNNAMED",
+          "type_kind": "Token",
+          "rust_type": "Token<'t>"
+        }
+      ]
+    },
+    {
+      "production_index": 2,
+      "non_terminal_name": "StartList",
+      "production_attribute": "CollectionStart",
+      "type_name": "StartListStartListEmpty",
+      "type_kind": "Struct",
+      "rust_type": "StartListStartListEmpty",
+      "members": []
+    }
+  ]
+}

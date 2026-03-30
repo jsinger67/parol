@@ -1,6 +1,7 @@
 use assert_cmd::cargo::cargo_bin_cmd;
 use predicates::prelude::PredicateBooleanExt;
-use std::path::PathBuf;
+use std::fs;
+use std::path::{Path, PathBuf};
 
 #[test]
 fn test_help_argument() {
@@ -95,4 +96,48 @@ fn test_subcommand_left_factor() {
         .stderr(predicates::str::contains(
             "Only LL grammars are supported for sentence generation",
         ));
+}
+
+fn normalize_newlines(text: &str) -> String {
+    text.replace("\r\n", "\n")
+}
+
+fn assert_export_snapshot(grammar_file: &Path, expected_file: &Path, output_file: &Path) {
+    let _ = fs::remove_file(output_file);
+
+    cargo_bin_cmd!("parol")
+        .args([
+            "export",
+            "-f",
+            grammar_file.to_str().unwrap(),
+            "--pretty",
+            "-o",
+            output_file.to_str().unwrap(),
+        ])
+        .assert()
+        .success();
+
+    let expected = fs::read_to_string(expected_file).unwrap();
+    let actual = fs::read_to_string(output_file).unwrap();
+    assert_eq!(normalize_newlines(&expected), normalize_newlines(&actual));
+
+    fs::remove_file(output_file).unwrap();
+}
+
+#[test]
+fn test_subcommand_export_llk_snapshot() {
+    let grammar_file = PathBuf::from("tests/data/arg_tests/generate.par");
+    let expected_file = PathBuf::from("tests/data/arg_tests/export_llk.expected.json");
+    let output_file = PathBuf::from("tests/output_export_llk.json");
+
+    assert_export_snapshot(&grammar_file, &expected_file, &output_file);
+}
+
+#[test]
+fn test_subcommand_export_lalr1_snapshot() {
+    let grammar_file = PathBuf::from("tests/data/arg_tests/generate_lr.par");
+    let expected_file = PathBuf::from("tests/data/arg_tests/export_lalr1.expected.json");
+    let output_file = PathBuf::from("tests/output_export_lalr1.json");
+
+    assert_export_snapshot(&grammar_file, &expected_file, &output_file);
 }

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.4.0 - Unreleased
+
+* Add new `parol export` subcommand to emit language-agnostic parser export models as JSON
+  for both LL(k) and LALR(1) grammars.
+* Add unified public API `generate_parser_export_model_from_grammar` that selects the parser
+  algorithm automatically and builds a `ParserExportModel` directly from `GrammarConfig`.
+* Extend `ParserExportModel` with scanner metadata (scanner terminals, scanner states,
+  scanner directives, and scanner transitions) and bump export schema version to `2`.
+* Extend `ParserExportModel` with production datatype metadata derived from
+  `GrammarTypeInfo`'s symbol table (production output type kind, type name, members, and
+  semantic attributes) and bump export schema version to `3`.
+* Add deterministic export snapshot tests for the CLI (`generate.par` and `generate_lr.par`) and
+  direct API integration tests for unified vs precomputed export generation paths.
+
 ## 4.3.5 - 2026-03-21
 
 * Update Parol.Runtime to 0.2.0 which supports multiple dotnet target frameworks now.

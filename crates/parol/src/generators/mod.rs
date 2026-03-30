@@ -26,13 +26,41 @@ pub use language_generator::LanguageGenerator;
 pub mod lexer_generator;
 pub use lexer_generator::{generate_lexer_source, generate_terminal_names};
 
+/// Internal lexer generation IR used by language backends
+pub(crate) mod lexer_ir;
+
+/// Internal language backends for lexer generation
+pub(crate) mod lexer_backend;
+
 /// Module with the parser generator
 pub mod parser_generator;
-pub use parser_generator::{generate_lalr1_parser_source, generate_parser_source};
+pub use parser_generator::{
+    generate_lalr1_parser_export_model, generate_lalr1_parser_source, generate_parser_export_model,
+    generate_parser_export_model_from_grammar, generate_parser_source,
+};
+
+/// Internal parser backend context and algorithm dispatch types
+pub(crate) mod parser_ir;
+
+/// Internal language-specific parser render helpers
+pub(crate) mod parser_render_ir;
+
+/// Internal language-agnostic parser model for portable IR evolution
+pub(crate) mod parser_model;
+pub use parser_model::{PARSER_EXPORT_MODEL_VERSION, ParserAlgorithmKindModel, ParserExportModel};
+
+/// Internal language backends for parser generation
+pub(crate) mod parser_backend;
 
 /// Module with the user-trait generator
 pub mod user_trait_generator;
 pub use user_trait_generator::UserTraitGenerator;
+
+/// Internal user-trait generation IR used by language backends
+pub(crate) mod user_trait_ir;
+
+/// Internal language backends for user-trait generation
+pub(crate) mod user_trait_backend;
 
 /// Module with the code formatting function
 pub mod rust_code_formatter;

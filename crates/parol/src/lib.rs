@@ -64,7 +64,8 @@ pub use error_report::ParolErrorReporter;
 pub mod generators;
 pub use generators::{
     GrammarConfig, GrammarTypeInfo, LanguageGenerator, ScannerConfig, UserTraitGenerator,
-    check_and_transform_grammar, generate_lalr1_parser_source, generate_lexer_source,
+    check_and_transform_grammar, generate_lalr1_parser_export_model, generate_lalr1_parser_source,
+    generate_lexer_source, generate_parser_export_model, generate_parser_export_model_from_grammar,
     generate_parser_source, try_format,
 };
 
