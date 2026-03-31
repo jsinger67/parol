@@ -45,7 +45,7 @@ ume = "0.1"
 rayon = "1.11.0"
 tempfile = "3"
 lalry = "0.1.0"
-rustc-hash = "2.1.1"
+rustc-hash = "2.1.2"
 
 [features]
 default = ["build"]
