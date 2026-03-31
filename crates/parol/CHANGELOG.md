@@ -12,12 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Add unified public API `generate_parser_export_model_from_grammar` that selects the parser
   algorithm automatically and builds a `ParserExportModel` directly from `GrammarConfig`.
 * Extend `ParserExportModel` with scanner metadata (scanner terminals, scanner states,
-  scanner directives, and scanner transitions) and bump export schema version to `2`.
+  scanner directives, and scanner transitions).
 * Extend `ParserExportModel` with production datatype metadata derived from
   `GrammarTypeInfo`'s symbol table (production output type kind, type name, members, and
-  semantic attributes) and bump export schema version to `3`.
+  semantic attributes).
 * Add deterministic export snapshot tests for the CLI (`generate.par` and `generate_lr.par`) and
   direct API integration tests for unified vs precomputed export generation paths.
+* Set export schema version to `1`
 
 ## 4.3.5 - 2026-03-21
 
