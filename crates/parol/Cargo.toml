@@ -47,7 +47,7 @@ scnr2 = { workspace = true }
 scnr2_generate = { workspace = true }
 tempfile = "3"
 lalry = "0.1.0"
-rustc-hash = "2.1.1"
+rustc-hash = "2.1.2"
 reqwest = { version = "0.13", default-features = false, features = ["blocking", "default-tls"], optional = true }
 
 [features]
