@@ -15,7 +15,7 @@ underspecified, and understanding the root cause can still be challenging in pra
 ANTLR generates top-down recursive-descent parsers (with adaptive LL(*) prediction). As with other
 recursive-descent parsers, deeply nested inputs can hit call-stack limits (depending on target
 runtime and settings). For example, an expression with thousands of nested parentheses can trigger
-such an issue.[^1][^3]
+such an issue.[^1] [^3]
 
 Despite these differences, Bison generates deterministic parsers using finite automata, and ANTLR
 also uses deterministic finite automata to select the next production for a non-terminal.
@@ -71,5 +71,7 @@ and a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/paro
 resulting data structures also become deeply nested. Some compiler-generated trait implementations
 like `Debug`, `Clone`, or `Drop` can then cause stack overflows. This can be avoided by carefully
 implementing such traits yourself.
+
 [^2]: Bison manual: [Shift/Reduce Conflicts](https://www.gnu.org/software/bison/manual/html_node/Shift_002fReduce.html) and [Reduce/Reduce Conflicts](https://www.gnu.org/software/bison/manual/html_node/Reduce_002fReduce.html)
+
 [^3]: ANTLR v4 docs: [General FAQ (adaptive LL(*))](https://github.com/antlr/antlr4/blob/master/doc/faq/general.md) and [Left-recursive rules](https://github.com/antlr/antlr4/blob/master/doc/left-recursion.md)
