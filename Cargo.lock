@@ -1882,9 +1882,9 @@ dependencies = [
 
 [[package]]
 name = "scnr2_generate"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e6b30f88a8ab5674c296158f142a1735495be2ab20cea952ce582458e0a5440"
+checksum = "86f1cc260edf6a2062f101312b4c4d95407432cd54cd0fb531e3b3ff8d3e7b01"
 dependencies = [
  "log",
  "proc-macro2",
