@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.4.1 - Not yet released
+
+* Fix dependabot security alerts [#54](https://github.com/jsinger67/parol/security/dependabot/54) and
+  [#55](https://github.com/jsinger67/parol/security/dependabot/55) by updating following dependencies
+  * rand 0.10.0 -> 0.10.1
+  * rand 0.9.2 -> 0.9.3
+
 ## 4.4.0 - 2026-03-31
 
 * Add new `parol export` subcommand to emit language-agnostic parser export models as JSON
