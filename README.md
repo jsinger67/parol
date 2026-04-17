@@ -1,6 +1,7 @@
 <!-- markdownlint-disable first-line-h1 -->
 
 [![Rust](https://github.com/jsinger67/parol/actions/workflows/rust.yml/badge.svg)](https://github.com/jsinger67/parol/actions/workflows/rust.yml)
+[![Dependabot Security Agent](https://github.com/jsinger67/parol/actions/workflows/dependabot-security-agent.yml/badge.svg)](https://github.com/jsinger67/parol/actions/workflows/dependabot-security-agent.yml)
 [![Docs.rs](https://docs.rs/parol/badge.svg)](https://docs.rs/parol)
 [![Crates.io](https://img.shields.io/crates/v/parol.svg)](https://crates.io/crates/parol)
 
@@ -212,6 +213,26 @@ It receives fixes on branch `release3.1`
 Watch CHANGELOG closely and update when new releases are published.
 
 ## Dependencies
+
+## Security alert operations
+
+The repository contains an automated Dependabot security caretaker workflow:
+
+- [dependabot-security-agent.yml](./.github/workflows/dependabot-security-agent.yml)
+
+What it does:
+
+- runs daily and on manual dispatch
+- maintains an issue called "Dependabot Security Alerts Dashboard"
+- summarizes open Dependabot alerts by severity and ecosystem
+- updates Dependabot PRs with a targeted triage comment
+- marks the workflow as failed when critical alerts are open
+
+Suggested maintainer setup:
+
+- subscribe to GitHub Action failure notifications for this workflow
+- use the manual `workflow_dispatch` trigger after merging dependency updates
+- keep the generated dashboard issue open as the single triage board
 
 Please note that any necessary dependencies are automatically added to your new `parol` project if
 you use the `parol new` subcommand to create your new crate. The following sections are therefore

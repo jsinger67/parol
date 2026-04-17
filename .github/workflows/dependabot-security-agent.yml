@@ -1,0 +1,274 @@
+name: Dependabot Security Agent
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  security-events: read
+
+jobs:
+  dependabot-security-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Update Dependabot security dashboard issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const eventName = context.eventName;
+            const issueTitle = "Dependabot Security Alerts Dashboard";
+            const managedLabels = [
+              "dependencies",
+              "security",
+              "bot:dependabot-alerts"
+            ];
+
+            if (eventName === "pull_request_target" && context.actor !== "dependabot[bot]") {
+              core.info("Skipping PR event because actor is not dependabot[bot].");
+              return;
+            }
+
+            const pr = context.payload.pull_request;
+
+            async function ensureLabel(name, color, description) {
+              try {
+                await github.rest.issues.getLabel({ owner, repo, name });
+              } catch (error) {
+                if (error.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner,
+                    repo,
+                    name,
+                    color,
+                    description
+                  });
+                } else {
+                  throw error;
+                }
+              }
+            }
+
+            await ensureLabel("bot:dependabot-alerts", "0e8a16", "Managed by the Dependabot security agent workflow");
+
+            const alerts = await github.paginate(
+              "GET /repos/{owner}/{repo}/dependabot/alerts",
+              {
+                owner,
+                repo,
+                state: "open",
+                per_page: 100
+              }
+            );
+
+            const sevOrder = ["critical", "high", "medium", "low", "unknown"];
+            const sevCounts = { critical: 0, high: 0, medium: 0, low: 0, unknown: 0 };
+            const ecosystemCounts = new Map();
+
+            for (const a of alerts) {
+              const sev = (a.security_advisory?.severity || "unknown").toLowerCase();
+              sevCounts[sev] = (sevCounts[sev] || 0) + 1;
+
+              const eco = (a.dependency?.package?.ecosystem || "unknown").toLowerCase();
+              ecosystemCounts.set(eco, (ecosystemCounts.get(eco) || 0) + 1);
+            }
+
+            const sortedAlerts = alerts
+              .slice()
+              .sort((a, b) => {
+                const sa = sevOrder.indexOf((a.security_advisory?.severity || "unknown").toLowerCase());
+                const sb = sevOrder.indexOf((b.security_advisory?.severity || "unknown").toLowerCase());
+                if (sa !== sb) return sa - sb;
+                const ua = Date.parse(a.updated_at || "1970-01-01T00:00:00Z");
+                const ub = Date.parse(b.updated_at || "1970-01-01T00:00:00Z");
+                return ub - ua;
+              });
+
+            const ecosystemSummary = [...ecosystemCounts.entries()]
+              .sort((a, b) => b[1] - a[1])
+              .map(([eco, count]) => `- ${eco}: ${count}`)
+              .join("\n") || "- none";
+
+            const rows = sortedAlerts.slice(0, 30).map((a) => {
+              const severity = (a.security_advisory?.severity || "unknown").toLowerCase();
+              const pkg = a.dependency?.package?.name || "unknown";
+              const ecosystem = a.dependency?.package?.ecosystem || "unknown";
+              const ids = [
+                ...(a.security_advisory?.ghsa_id ? [a.security_advisory.ghsa_id] : []),
+                ...(a.security_advisory?.cve_id ? [a.security_advisory.cve_id] : [])
+              ].join(" / ") || "n/a";
+              const fixed = a.security_vulnerability?.first_patched_version?.identifier || "not fixed yet";
+              const manifest = (a.dependency?.manifest_path || "").replace(/\|/g, "\\|") || "n/a";
+              return `| ${severity} | ${ecosystem}:${pkg} | ${manifest} | ${ids} | ${fixed} | [view](${a.html_url}) |`;
+            }).join("\n");
+
+            const now = new Date().toISOString();
+            const body = [
+              "## Dependabot Security Alerts Dashboard",
+              "",
+              "This issue is maintained automatically by the Dependabot Security Agent workflow.",
+              "",
+              `Last refresh: ${now}`,
+              "",
+              "### Open Alerts",
+              `- Total: ${alerts.length}`,
+              `- Critical: ${sevCounts.critical || 0}`,
+              `- High: ${sevCounts.high || 0}`,
+              `- Medium: ${sevCounts.medium || 0}`,
+              `- Low: ${sevCounts.low || 0}`,
+              `- Unknown: ${sevCounts.unknown || 0}`,
+              "",
+              "### By Ecosystem",
+              ecosystemSummary,
+              "",
+              "### Top Open Alerts",
+              "| Severity | Dependency | Manifest | Advisory | First Patched | Link |",
+              "|---|---|---|---|---|---|",
+              rows || "| n/a | n/a | n/a | n/a | n/a | n/a |",
+              "",
+              "### Playbook",
+              "1. Triage critical and high alerts first.",
+              "2. Merge existing Dependabot PRs where CI passes.",
+              "3. For transitive vulnerabilities, update direct dependencies or toolchains.",
+              "4. If no fix exists, track with a risk-accepted comment and revisit weekly."
+            ].join("\n");
+
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: "open",
+              per_page: 100,
+              labels: managedLabels.join(",")
+            });
+
+            const existing = openIssues.find((i) => i.title === issueTitle && !i.pull_request);
+
+            let dashboardIssueNumber;
+            if (existing) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: existing.number,
+                title: issueTitle,
+                body,
+                labels: managedLabels
+              });
+              dashboardIssueNumber = existing.number;
+              core.info(`Updated issue #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner,
+                repo,
+                title: issueTitle,
+                body,
+                labels: managedLabels
+              });
+              dashboardIssueNumber = created.data.number;
+              core.info(`Created issue #${created.data.number}`);
+            }
+
+            if (eventName === "pull_request_target" && pr) {
+              const dashboardUrl = `https://github.com/${owner}/${repo}/issues/${dashboardIssueNumber}`;
+              const marker = "<!-- dependabot-security-agent-comment -->";
+              const title = pr.title || "";
+              const bumpMatch = title.match(/^Bump\s+(.+?)\s+from\s+.+?\s+to\s+.+?(?:\s+in\s+(.+))?$/i);
+              const dependencyFromTitle = bumpMatch?.[1]?.trim() || "";
+              const manifestFromTitle = bumpMatch?.[2]?.trim() || "";
+
+              const matchingAlerts = alerts.filter((a) => {
+                const depName = (a.dependency?.package?.name || "").toLowerCase();
+                const manifestPath = a.dependency?.manifest_path || "";
+                const depMatches = dependencyFromTitle
+                  ? depName === dependencyFromTitle.toLowerCase()
+                  : true;
+                const manifestMatches = manifestFromTitle
+                  ? manifestPath === manifestFromTitle || manifestPath.endsWith(manifestFromTitle)
+                  : true;
+                return depMatches && manifestMatches;
+              });
+
+              const prSevCounts = { critical: 0, high: 0, medium: 0, low: 0, unknown: 0 };
+              for (const a of matchingAlerts) {
+                const sev = (a.security_advisory?.severity || "unknown").toLowerCase();
+                prSevCounts[sev] = (prSevCounts[sev] || 0) + 1;
+              }
+
+              const prRows = matchingAlerts.slice(0, 10).map((a) => {
+                const severity = (a.security_advisory?.severity || "unknown").toLowerCase();
+                const pkg = a.dependency?.package?.name || "unknown";
+                const advisory = [
+                  ...(a.security_advisory?.ghsa_id ? [a.security_advisory.ghsa_id] : []),
+                  ...(a.security_advisory?.cve_id ? [a.security_advisory.cve_id] : [])
+                ].join(" / ") || "n/a";
+                return `- ${severity}: ${pkg} (${advisory}) [alert](${a.html_url})`;
+              }).join("\n");
+
+              const prComment = [
+                marker,
+                "## Dependabot Security Triage",
+                "",
+                `This PR was checked against open Dependabot security alerts for ${owner}/${repo}.`,
+                `- Matching alerts for this update: ${matchingAlerts.length}`,
+                `- Critical: ${prSevCounts.critical || 0}`,
+                `- High: ${prSevCounts.high || 0}`,
+                `- Medium: ${prSevCounts.medium || 0}`,
+                `- Low: ${prSevCounts.low || 0}`,
+                `- Unknown: ${prSevCounts.unknown || 0}`,
+                "",
+                matchingAlerts.length > 0 ? "### Matching Alerts" : "### Matching Alerts\nNo currently open alerts matched this PR title/manifests.",
+                prRows,
+                "",
+                `Full dashboard: ${dashboardUrl}`
+              ].join("\n");
+
+              const existingComments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number: pr.number,
+                per_page: 100
+              });
+
+              const botComment = existingComments.find((c) =>
+                c.user?.type === "Bot" && c.body?.includes(marker)
+              );
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: botComment.id,
+                  body: prComment
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: pr.number,
+                  body: prComment
+                });
+              }
+
+              const hasHighOrCritical = (prSevCounts.critical || 0) > 0 || (prSevCounts.high || 0) > 0;
+              if (hasHighOrCritical) {
+                await github.rest.issues.addLabels({
+                  owner,
+                  repo,
+                  issue_number: pr.number,
+                  labels: ["security"]
+                });
+              }
+            }
+
+            if ((sevCounts.critical || 0) > 0) {
+              core.setFailed(`Critical Dependabot alerts detected: ${sevCounts.critical}`);
+            }
