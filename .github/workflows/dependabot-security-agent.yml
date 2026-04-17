@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Update Dependabot security dashboard issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -61,15 +61,30 @@ jobs:
 
             await ensureLabel("bot:dependabot-alerts", "0e8a16", "Managed by the Dependabot security agent workflow");
 
-            const alerts = await github.paginate(
-              "GET /repos/{owner}/{repo}/dependabot/alerts",
-              {
-                owner,
-                repo,
-                state: "open",
-                per_page: 100
+            let alerts = [];
+            let alertAccessDenied = false;
+            try {
+              alerts = await github.paginate(
+                "GET /repos/{owner}/{repo}/dependabot/alerts",
+                {
+                  owner,
+                  repo,
+                  state: "open",
+                  per_page: 100
+                }
+              );
+            } catch (error) {
+              if (error.status === 403) {
+                alertAccessDenied = true;
+                core.warning(
+                  "GITHUB_TOKEN cannot read Dependabot alerts (needs vulnerability_alerts=read). " +
+                  "Dashboard issue will be updated with guidance."
+                );
+                alerts = [];
+              } else {
+                throw error;
               }
-            );
+            }
 
             const sevOrder = ["critical", "high", "medium", "low", "unknown"];
             const sevCounts = { critical: 0, high: 0, medium: 0, low: 0, unknown: 0 };
@@ -120,6 +135,15 @@ jobs:
               "",
               `Last refresh: ${now}`,
               "",
+              ...(alertAccessDenied
+                ? [
+                    "> [!WARNING]",
+                    "> This workflow run could not read Dependabot alerts with the current token.",
+                    "> The API requires vulnerability_alerts=read for the caller integration.",
+                    "> Enable a token with that permission and switch the workflow to use it.",
+                    ""
+                  ]
+                : []),
               "### Open Alerts",
               `- Total: ${alerts.length}`,
               `- Critical: ${sevCounts.critical || 0}`,
@@ -177,7 +201,7 @@ jobs:
               core.info(`Created issue #${created.data.number}`);
             }
 
-            if (eventName === "pull_request_target" && pr) {
+            if (!alertAccessDenied && eventName === "pull_request_target" && pr) {
               const dashboardUrl = `https://github.com/${owner}/${repo}/issues/${dashboardIssueNumber}`;
               const marker = "<!-- dependabot-security-agent-comment -->";
               const title = pr.title || "";
@@ -269,6 +293,6 @@ jobs:
               }
             }
 
-            if ((sevCounts.critical || 0) > 0) {
+            if (!alertAccessDenied && (sevCounts.critical || 0) > 0) {
               core.setFailed(`Critical Dependabot alerts detected: ${sevCounts.critical}`);
             }
