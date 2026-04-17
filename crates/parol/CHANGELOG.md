@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.4.1 - Not yet released
 
+* Fix Dependabot security alerts [#56](https://github.com/jsinger67/parol/security/dependabot/56) and
+  [#57](https://github.com/jsinger67/parol/security/dependabot/57) by updating `rustls-webpki`
+  0.103.10 -> 0.103.12 in `Cargo.lock`
+
 * Fix dependabot security alerts [#54](https://github.com/jsinger67/parol/security/dependabot/54) and
   [#55](https://github.com/jsinger67/parol/security/dependabot/55) by updating following dependencies
   * rand 0.10.0 -> 0.10.1
