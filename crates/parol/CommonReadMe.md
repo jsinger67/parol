@@ -163,6 +163,7 @@ It receives fixes on branch `release3.1`
 Watch CHANGELOG closely and update when new releases are published.
 
 ## Dependencies
+<!-- REPO_README_SUPPLEMENT -->
 
 Please note that any necessary dependencies are automatically added to your new `parol` project if
 you use the `parol new` subcommand to create your new crate. The following sections are therefore

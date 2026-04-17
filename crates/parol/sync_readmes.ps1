@@ -34,13 +34,36 @@ $filePath = [System.IO.Path]::Combine($scriptPath, "CommonReadMe.md")
 
 $nl = [Environment]::NewLine
 
-$commonContent = Get-Content $filePath -Raw -Encoding UTF8
+$commonContentTemplate = Get-Content $filePath -Raw -Encoding UTF8
+
+$repoSupplementPath = [System.IO.Path]::Combine($scriptPath, "RepositoryReadMeSupplement.md")
+$repoSupplement = if (Test-Path $repoSupplementPath) {
+    (Get-Content $repoSupplementPath -Raw -Encoding UTF8).Trim()
+}
+else {
+    ""
+}
+
+$repoSupplementMarker = "<!-- REPO_README_SUPPLEMENT -->"
+$crateContent = $commonContentTemplate.Replace($repoSupplementMarker + $nl, "")
+$repoContent = if ([string]::IsNullOrWhiteSpace($repoSupplement)) {
+    $commonContentTemplate.Replace($repoSupplementMarker + $nl, "")
+}
+else {
+    $commonContentTemplate.Replace($repoSupplementMarker, $repoSupplement)
+}
+
+# CommonReadMe uses crate-local links. Rewrite them for the repository README.
+$repoContent = $repoContent.Replace("(../../book/src/ExportModelContract.md)", "(./book/src/ExportModelContract.md)")
+$repoContent = $repoContent.Replace("(./schemas/parser-export-model.v1.schema.json)", "(./crates/parol/schemas/parser-export-model.v1.schema.json)")
 
 $startPattern = "Unfortunately there is no include directive available in Markdown -->"
-$commonContent = $startPattern + $nl + $nl + $commonContent
 
-$readmeFiles = [System.IO.Path]::Combine($scriptPath, "README.md"),
-[System.IO.Path]::Combine($scriptPath, "..", "..", "README.md")
+$crateCommonContent = $startPattern + $nl + $nl + $crateContent
+$repoCommonContent = $startPattern + $nl + $nl + $repoContent
+
+$crateReadme = [System.IO.Path]::Combine($scriptPath, "README.md")
+$repoReadme = [System.IO.Path]::Combine($scriptPath, "..", "..", "README.md")
 
 function takeWhile {
     param (
@@ -66,10 +89,10 @@ function takeWhile {
     }
 }
 
-$readmeFiles | ForEach-Object {
-    $readmeContent = Get-Content $_  | takeWhile -Predicate { $_ -ne $startPattern }
+@(@{ Path = $crateReadme; Content = $crateCommonContent }, @{ Path = $repoReadme; Content = $repoCommonContent }) | ForEach-Object {
+    $readmeContent = Get-Content $_.Path  | takeWhile -Predicate { $_ -ne $startPattern }
     
-    Set-Content $_ $readmeContent -Encoding UTF8
-    Add-Content $_ $commonContent -Encoding UTF8
+    Set-Content $_.Path $readmeContent -Encoding UTF8
+    Add-Content $_.Path $_.Content -Encoding UTF8
 }
 

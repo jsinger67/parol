@@ -213,7 +213,6 @@ It receives fixes on branch `release3.1`
 Watch CHANGELOG closely and update when new releases are published.
 
 ## Dependencies
-
 ## Security alert operations
 
 The repository contains an automated Dependabot security caretaker workflow:
