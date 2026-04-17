@@ -16,7 +16,7 @@ exclude = ["/tests", "/data", "/bindings"]
 [dependencies]
 anyhow = { workspace = true }
 assert_cmd = "2.2"
-bitflags = "2.11.0"
+bitflags = "2.11.1"
 cfg-if = "1.0.4"
 clap = { workspace = true }
 derive_builder = { version = "0.20.2" }
@@ -42,7 +42,7 @@ syntree_layout = { workspace = true }
 thiserror = { workspace = true }
 ts-rs = "12.0.1"
 ume = "0.1"
-rayon = "1.11.0"
+rayon = "1.12.0"
 scnr2 = { workspace = true }
 scnr2_generate = { workspace = true }
 tempfile = "3"
