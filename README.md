@@ -223,16 +223,17 @@ The repository contains an automated Dependabot security caretaker workflow:
 What it does:
 
 - runs daily and on manual dispatch
-- maintains an issue called "Dependabot Security Alerts Dashboard"
+- maintains an issue called "Dependabot Security Alerts Dashboard" when alerts exist
 - summarizes open Dependabot alerts by severity and ecosystem
-- updates Dependabot PRs with a targeted triage comment
+- updates Dependabot PRs (main/release branches) with a targeted triage comment
 - marks the workflow as failed when critical alerts are open
+- auto-closes the dashboard issue when alert count returns to zero
 
 Suggested maintainer setup:
 
 - subscribe to GitHub Action failure notifications for this workflow
 - use the manual `workflow_dispatch` trigger after merging dependency updates
-- keep the generated dashboard issue open as the single triage board
+- treat the generated dashboard issue as the single triage board while alerts are open
 
 Please note that any necessary dependencies are automatically added to your new `parol` project if
 you use the `parol new` subcommand to create your new crate. The following sections are therefore

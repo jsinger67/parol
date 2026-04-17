@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
   pull_request_target:
     types: [opened, reopened, synchronize]
+    branches: [main, release1.0, release2.2, release3.1]
 
 permissions:
   contents: read
@@ -23,6 +24,8 @@ jobs:
         uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.DEPENDABOT_ALERTS_TOKEN }}
+          retries: 3
+          retry-exempt-status-codes: 400,401,403,404,422
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -154,31 +157,60 @@ jobs:
             const existing = openIssues.find((i) => i.title === issueTitle && !i.pull_request);
 
             let dashboardIssueNumber;
-            if (existing) {
-              await github.rest.issues.update({
-                owner,
-                repo,
-                issue_number: existing.number,
-                title: issueTitle,
-                body,
-                labels: managedLabels
-              });
-              dashboardIssueNumber = existing.number;
-              core.info(`Updated issue #${existing.number}`);
+            if (alerts.length === 0) {
+              if (existing) {
+                const closedBody = [
+                  "## Dependabot Security Alerts Dashboard",
+                  "",
+                  "No open Dependabot security alerts remain.",
+                  "",
+                  `Last refresh: ${now}`,
+                  "",
+                  "This issue is auto-closed by the Dependabot Security Agent workflow and will be re-opened as a new dashboard issue when alerts appear again."
+                ].join("\n");
+
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: existing.number,
+                  title: issueTitle,
+                  body: closedBody,
+                  labels: managedLabels,
+                  state: "closed"
+                });
+                core.info(`Closed dashboard issue #${existing.number} because there are no open alerts.`);
+              } else {
+                core.info("No open alerts and no dashboard issue to close.");
+              }
             } else {
-              const created = await github.rest.issues.create({
-                owner,
-                repo,
-                title: issueTitle,
-                body,
-                labels: managedLabels
-              });
-              dashboardIssueNumber = created.data.number;
-              core.info(`Created issue #${created.data.number}`);
+              if (existing) {
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: existing.number,
+                  title: issueTitle,
+                  body,
+                  labels: managedLabels
+                });
+                dashboardIssueNumber = existing.number;
+                core.info(`Updated issue #${existing.number}`);
+              } else {
+                const created = await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body,
+                  labels: managedLabels
+                });
+                dashboardIssueNumber = created.data.number;
+                core.info(`Created issue #${created.data.number}`);
+              }
             }
 
             if (eventName === "pull_request_target" && pr) {
-              const dashboardUrl = `https://github.com/${owner}/${repo}/issues/${dashboardIssueNumber}`;
+              const dashboardUrl = dashboardIssueNumber
+                ? `https://github.com/${owner}/${repo}/issues/${dashboardIssueNumber}`
+                : `https://github.com/${owner}/${repo}/security/dependabot`;
               const marker = "<!-- dependabot-security-agent-comment -->";
               const title = pr.title || "";
               const bumpMatch = title.match(/^Bump\s+(.+?)\s+from\s+.+?\s+to\s+.+?(?:\s+in\s+(.+))?$/i);
