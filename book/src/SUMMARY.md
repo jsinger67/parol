@@ -11,3 +11,4 @@
 - [Semantic Actions](./SemanticActions.md)
 - [Useful Tips](./UsefulTips.md)
 - [Q&A](./QnA.md)
+- [Who uses Parol](./WhoUsesParol.md)
