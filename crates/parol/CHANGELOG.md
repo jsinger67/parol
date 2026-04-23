@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   * rand 0.10.0 -> 0.10.1
   * rand 0.9.2 -> 0.9.3
 
-* Fix dependabot security alerts [#54](https://github.com/jsinger67/parol/security/dependabot/58) and
+* Fix dependabot security alerts [#58](https://github.com/jsinger67/parol/security/dependabot/58) and
 associated issue [#1191](https://github.com/jsinger67/parol/issues/1191) regarding `parol-vscode`
 (GHSA-w5hq-g745-h8pq)
   * uuid 8.3.2 -> 14.0.0
