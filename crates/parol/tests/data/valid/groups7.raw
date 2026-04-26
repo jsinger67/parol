@@ -2,7 +2,7 @@
 
 %%
 
-Start: "x" StartGroup "y";
-StartGroup: "a";
-StartGroup: "b";
-StartGroup: "c";
+/* 0 */ Start: "x" StartGroup "y";
+/* 1 */ StartGroup: "a";
+/* 2 */ StartGroup: "b";
+/* 3 */ StartGroup: "c";

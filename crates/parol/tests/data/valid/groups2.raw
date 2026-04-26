@@ -2,6 +2,6 @@
 
 %%
 
-Start: StartGroup;
-StartGroup: "a";
-StartGroup: "b";
+/* 0 */ Start: StartGroup;
+/* 1 */ StartGroup: "a";
+/* 2 */ StartGroup: "b";

@@ -2,4 +2,4 @@
 
 %%
 
-Start: "a" "b"^ /* Clipped */;
+/* 0 */ Start: "a" "b"^ /* Clipped */;

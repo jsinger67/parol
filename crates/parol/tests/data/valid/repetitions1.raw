@@ -2,6 +2,6 @@
 
 %%
 
-Start: StartList /* Vec */;
-StartList /* Vec<T>::Push */: "a" StartList;
-StartList /* Vec<T>::New */: ;
+/* 0 */ Start: StartList /* Vec */;
+/* 1 */ StartList /* Vec<T>::Push */: "a" StartList;
+/* 2 */ StartList /* Vec<T>::New */: ;

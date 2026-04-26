@@ -2,6 +2,6 @@
 
 %%
 
-Start: "a";
-Start: "b";
-Start: "c";
+/* 0 */ Start: "a";
+/* 1 */ Start: "b";
+/* 2 */ Start: "c";

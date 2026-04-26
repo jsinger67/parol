@@ -2,7 +2,7 @@
 
 %%
 
-Start: "a";
-Start: "b";
-Start: "c";
-Start: "d";
+/* 0 */ Start: "a";
+/* 1 */ Start: "b";
+/* 2 */ Start: "c";
+/* 3 */ Start: "d";

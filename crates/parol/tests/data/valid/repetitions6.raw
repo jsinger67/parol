@@ -2,8 +2,8 @@
 
 %%
 
-Start: "x" StartList /* Vec */ "y";
-StartList /* Vec<T>::Push */: StartListGroup StartList;
-StartListGroup: "a";
-StartListGroup: "b";
-StartList /* Vec<T>::New */: ;
+/* 0 */ Start: "x" StartList /* Vec */ "y";
+/* 1 */ StartList /* Vec<T>::Push */: StartListGroup StartList;
+/* 2 */ StartListGroup: "a";
+/* 3 */ StartListGroup: "b";
+/* 4 */ StartList /* Vec<T>::New */: ;
