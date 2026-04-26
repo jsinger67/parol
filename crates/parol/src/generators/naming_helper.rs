@@ -88,10 +88,12 @@ impl NamingHelper {
     /// assert_eq!("nor_op_23", NmHlp::to_lower_snake_case("nor_op_23"));
     /// assert_eq!("r#type", NmHlp::to_lower_snake_case("type"));
     /// assert_eq!("r#type", NmHlp::to_lower_snake_case("r#type"));
+    /// assert_eq!("_0", NmHlp::to_lower_snake_case("0"));
+    /// assert_eq!("_123_a_b_c", NmHlp::to_lower_snake_case("123ABC"));
     /// ```
     pub fn to_lower_snake_case(name: &str) -> String {
         let mut last_char = '.';
-        Self::escape_rust_keyword(name.chars().fold(String::new(), |mut acc, c| {
+        let result = name.chars().fold(String::new(), |mut acc, c| {
             if acc.is_empty() {
                 acc.push(c.to_lowercase().next().unwrap())
             } else if c == '_' {
@@ -110,7 +112,13 @@ impl NamingHelper {
             }
             last_char = c;
             acc
-        }))
+        });
+        let result = if result.starts_with(|c: char| c.is_ascii_digit()) {
+            format!("_{result}")
+        } else {
+            result
+        };
+        Self::escape_rust_keyword(result)
     }
 
     ///

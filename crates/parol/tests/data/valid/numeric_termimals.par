@@ -1,0 +1,7 @@
+%start Start
+
+%%
+
+Start
+    : ( '0' | '1' | 'FALSE' | 'TRUE' )
+    ;

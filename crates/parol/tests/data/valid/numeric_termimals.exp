@@ -1,0 +1,9 @@
+%start Start
+
+%%
+
+/* 0 */ Start: StartGroup;
+/* 1 */ StartGroup: '0';
+/* 2 */ StartGroup: '1';
+/* 3 */ StartGroup: 'FALSE';
+/* 4 */ StartGroup: 'TRUE';
