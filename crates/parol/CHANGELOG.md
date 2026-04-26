@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.4.1 - Not yet released
 
+* Fix `generate_terminal_name`: prepend underscore to numeric terminal names in generate_terminal_name
+
 * Fix Dependabot security alerts [#56](https://github.com/jsinger67/parol/security/dependabot/56) and
   [#57](https://github.com/jsinger67/parol/security/dependabot/57) by updating `rustls-webpki`
   0.103.10 -> 0.103.12 in `Cargo.lock`

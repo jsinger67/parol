@@ -91,6 +91,8 @@ pub fn generate_terminal_name(
             });
         if name.is_empty() && !s.is_empty() {
             "Esc".to_owned()
+        } else if name.starts_with(|c: char| c.is_numeric()) {
+            format!("_{}", name)
         } else {
             name
         }
