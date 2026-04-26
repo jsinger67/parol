@@ -836,9 +836,10 @@ impl GrammarTypeInfo {
                         acc.push_str(&NmHlp::to_upper_camel_case(m.as_ref().unwrap_or(n)))
                     }
                     Symbol::T(Terminal::Trm(t, k, _, _, _, m, _)) => {
-                        acc.push_str(m.as_ref().unwrap_or(&NmHlp::to_upper_camel_case(
-                            &self.terminal_names[self.get_terminal_index(&k.expand(t))],
-                        )))
+                        let raw_name = m.as_deref().unwrap_or_else(|| {
+                            &self.terminal_names[self.get_terminal_index(&k.expand(t))]
+                        });
+                        acc.push_str(&NmHlp::to_upper_camel_case(raw_name));
                     }
                     _ => (),
                 }

@@ -827,6 +827,10 @@ fn generate_parse_table_source(
     terminals: &[(&str, Option<LookaheadExpression>)],
     non_terminals: &[&String],
 ) -> String {
+    fn sanitize_comment_text(text: &str) -> String {
+        text.replace("/*", "/\\*").replace("*/", "*\\/")
+    }
+
     let terminal_labels = build_terminal_label_map(terminals);
     let non_terminal_names = non_terminals
         .iter()
@@ -855,10 +859,12 @@ fn generate_parse_table_source(
                     .actions
                     .iter()
                     .map(|a| {
+                        let terminal_label = sanitize_comment_text(&a.terminal_label);
+                        let action_comment = sanitize_comment_text(&a.action_comment);
                         format!(
                             r#"
         ({}, {}) /* '{}' => {} */"#,
-                            a.terminal, a.action_index, a.terminal_label, a.action_comment
+                            a.terminal, a.action_index, terminal_label, action_comment
                         )
                     })
                     .collect::<Vec<String>>()

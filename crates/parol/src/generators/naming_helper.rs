@@ -139,30 +139,38 @@ impl NamingHelper {
     /// assert_eq!("PrologItem", NmHlp::to_upper_camel_case("PrologItem"));
     /// assert_eq!("AA", NmHlp::to_upper_camel_case("_a_a_"));
     /// assert_eq!("If", NmHlp::to_upper_camel_case("r#if"));
+    /// assert_eq!("_0", NmHlp::to_upper_camel_case("0"));
+    /// assert_eq!("_0", NmHlp::to_upper_camel_case("_0"));
     /// ```
     pub fn to_upper_camel_case(name: &str) -> String {
         // Handle raw identifiers are not allowed
         let is_raw = name.starts_with("r#");
         let mut up = true;
         let mut last_char = '.';
-        name.chars()
-            .skip(if is_raw { 2 } else { 0 })
-            .fold(String::new(), |mut acc, c| {
-                if c == '_' {
-                    up = true;
-                } else if up {
-                    if last_char.is_ascii_digit() && c.is_ascii_digit() {
-                        acc.push('_');
+        let result =
+            name.chars()
+                .skip(if is_raw { 2 } else { 0 })
+                .fold(String::new(), |mut acc, c| {
+                    if c == '_' {
+                        up = true;
+                    } else if up {
+                        if last_char.is_ascii_digit() && c.is_ascii_digit() {
+                            acc.push('_');
+                        }
+                        last_char = c.to_uppercase().next().unwrap();
+                        acc.push(last_char);
+                        up = false;
+                    } else {
+                        last_char = c;
+                        acc.push(last_char);
                     }
-                    last_char = c.to_uppercase().next().unwrap();
-                    acc.push(last_char);
-                    up = false;
-                } else {
-                    last_char = c;
-                    acc.push(last_char);
-                }
-                acc
-            })
+                    acc
+                });
+        if result.starts_with(|c: char| c.is_ascii_digit()) {
+            format!("_{result}")
+        } else {
+            result
+        }
         // Currently rust identifiers only start with a lowercase letter, thus we do not need to
         // check for rust keywords
         // if Self::is_rust_keyword(&result) {
