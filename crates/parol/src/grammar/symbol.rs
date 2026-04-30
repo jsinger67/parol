@@ -25,6 +25,46 @@ pub enum TerminalKind {
 }
 
 impl TerminalKind {
+    fn escape_raw_terminal(term: &str) -> String {
+        let mut escaped = String::with_capacity(term.len());
+        let mut chars = term.chars().peekable();
+
+        while let Some(ch) = chars.next() {
+            if ch == '\\' {
+                // Preserve Rust-regex style unicode escapes, e.g. "\\u{0027}".
+                let mut lookahead = chars.clone();
+                if matches!(lookahead.next(), Some('u')) && matches!(lookahead.next(), Some('{')) {
+                    let mut hex_digits = String::new();
+                    let mut is_valid_escape = false;
+
+                    for c in lookahead.by_ref() {
+                        if c == '}' {
+                            is_valid_escape = !hex_digits.is_empty();
+                            break;
+                        }
+                        if c.is_ascii_hexdigit() {
+                            hex_digits.push(c);
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if is_valid_escape {
+                        escaped.push_str("\\u{");
+                        escaped.push_str(&hex_digits);
+                        escaped.push('}');
+                        chars = lookahead;
+                        continue;
+                    }
+                }
+            }
+
+            escaped.push_str(regex::escape(&ch.to_string()).as_str());
+        }
+
+        escaped
+    }
+
     /// Retrieves the syntactic delimiter character
     pub fn delimiter(&self) -> char {
         match self {
@@ -95,8 +135,24 @@ impl TerminalKind {
     pub fn expand(&self, term: &str) -> String {
         match self {
             crate::TerminalKind::Legacy | crate::TerminalKind::Regex => term.to_string(),
-            crate::TerminalKind::Raw => regex::escape(term),
+            crate::TerminalKind::Raw => Self::escape_raw_terminal(term),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::TerminalKind;
+
+    #[test]
+    fn raw_term_expansion_preserves_unicode_escape_sequence() {
+        assert_eq!(TerminalKind::Raw.expand(r"\u{0027}"), r"\u{0027}");
+    }
+
+    #[test]
+    fn raw_term_expansion_keeps_escaping_meta_characters() {
+        assert_eq!(TerminalKind::Raw.expand("{"), r"\{");
+        assert_eq!(TerminalKind::Raw.expand(r"a+b"), r"a\+b");
     }
 }
 

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Fix `generate_terminal_name`: prepend underscore to numeric terminal names in generate_terminal_name
 
+* Fix scanner source generation for Unicode escapes in raw terminals (e.g. keep `\u{0027}` intact instead of generating escaped variants like `\\u\{0027\}`)
+
 * Fix comment generation: Generated comments in sources could have created invalid Rust code if terminals contained `*/`
 
 * Fix Dependabot security alerts [#56](https://github.com/jsinger67/parol/security/dependabot/56) and
