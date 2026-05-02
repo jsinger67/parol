@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.4.1 - Not yet released
 
+* Fix mixed block comment delimiter handling to avoid over-consuming adjacent comments
+  (e.g. `(** ... **)` followed by `(* ... *)`)
+
 * Fix `generate_terminal_name`: prepend underscore to numeric terminal names in generate_terminal_name
 
 * Fix scanner source generation for Unicode escapes in raw terminals (e.g. keep `\u{0027}` intact instead of generating escaped variants like `\\u\{0027\}`)
