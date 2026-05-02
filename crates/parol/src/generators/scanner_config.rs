@@ -205,83 +205,86 @@ impl ScannerConfig {
     /// For this we need to allow only sequences that do not start with a substring of the end
     /// of the comment. Since the end comment can be any string, we need to build an alternation
     /// of all possible substrings of the end comment.
-    /// If the comment end is "*/" the regular expression is:
-    /// `r"/\*([^*]|\*[^/])*\*/"`
+    /// If the comment end is "*/" we use a dedicated expression:
+    /// `r"/\*/?([^/]|[^*]/)*\*/"`
     fn format_block_comment(s: &str, e: &str) -> Result<String> {
-        // Special case for /* ... */ block comments
+        // This dedicated expression avoids over-consuming in the scanner backend for C-style
+        // block comments and still matches edge cases like /***/ and /****/.
         if s == r"/\*" && e == r"\*/" {
-            // Use improved regex to match /***/ and similar cases
             return Ok(r"/\*/?([^/]|[^*]/)*\*/".to_string());
         }
-        let len_with_escaped_chars = |s: &str| {
-            let mut prev = None;
-            s.chars()
-                .map(|c| {
-                    if c == '\\' && !matches!(prev, Some('\\')) {
-                        prev = Some(c);
-                        0
-                    } else {
-                        prev = Some(c);
-                        1
+
+        let split_escaped_atoms = |pattern: &str| -> Result<Vec<String>> {
+            let chars: Vec<char> = pattern.chars().collect();
+            let mut atoms = Vec::new();
+            let mut i = 0;
+            while i < chars.len() {
+                if chars[i] == '\\' {
+                    if i + 1 >= chars.len() {
+                        bail!("Block comment end contains dangling escape: '{}'.", pattern);
                     }
-                })
-                .sum::<usize>()
+                    atoms.push(format!(r"\{}", chars[i + 1]));
+                    i += 2;
+                } else {
+                    atoms.push(chars[i].to_string());
+                    i += 1;
+                }
+            }
+            Ok(atoms)
         };
-        Ok(match len_with_escaped_chars(e) {
-            0 => bail!("Block comment end is empty."),
-            1 => {
-                let c0 = if e.chars().nth(0).unwrap() == '\\' {
-                    if Self::must_escape_in_bracketed_expression(e.chars().nth(1).unwrap()) {
-                        e.to_string()
-                    } else {
-                        e.chars().nth(1).unwrap().escape_default().to_string()
-                    }
-                } else {
-                    e.to_string()
-                };
-                format!(r"{s}[^{c0}]*{e}")
+
+        let class_safe_atom = |atom: &str| -> String {
+            let mut chars = atom.chars();
+            let first = chars.next().unwrap();
+            let ch = if first == '\\' {
+                chars.next().unwrap()
+            } else {
+                first
+            };
+            if Self::must_escape_in_bracketed_expression(ch) {
+                format!(r"\{ch}")
+            } else {
+                ch.escape_default().to_string()
             }
-            2 => {
-                let (c0, c1) = if e.chars().nth(0).unwrap() == '\\' {
-                    (&e[0..2], &e[2..])
-                } else {
-                    (&e[0..1], &e[1..])
-                };
-                // We need to determine if the character is escaped or not, and if it is escaped
-                // whether it is a regex meta character or not.
-                // If it is a regex meta character we don't need to escape it in a bracket expression.
-                let c0c = if c0.len() > 1 {
-                    debug_assert_eq!(c0.chars().nth(0).unwrap(), '\\');
-                    // Determine if the character after the escape is a regex meta character
-                    if Self::must_escape_in_bracketed_expression(c0.chars().nth(1).unwrap()) {
-                        c0.to_string()
-                    } else {
-                        c0.chars().nth(1).unwrap().escape_default().to_string()
-                    }
-                } else {
-                    debug_assert_eq!(c0.len(), 1);
-                    c0.to_string()
-                };
-                let c1c = if c1.len() > 1 {
-                    debug_assert_eq!(c1.chars().nth(0).unwrap(), '\\');
-                    // Determine if the character after the escape is a regex meta character
-                    if Self::must_escape_in_bracketed_expression(c1.chars().nth(1).unwrap()) {
-                        c1.to_string()
-                    } else {
-                        c1.chars().nth(1).unwrap().escape_default().to_string()
-                    }
-                } else {
-                    debug_assert_eq!(c1.len(), 1);
-                    c1.to_string()
-                };
-                format!(r"{s}([^{c0c}]|{c0}[^{c1c}])*{e}")
-            }
-            _ => bail!(
-                r"Block comment end '{}' is too long. Maximum length is 2.
+        };
+
+        let atoms = split_escaped_atoms(e)?;
+        if atoms.is_empty() {
+            bail!("Block comment end is empty.");
+        }
+        if atoms.len() > 3 {
+            bail!(
+                r"Block comment end '{}' is too long. Maximum length is 3.
                 Consider using manual comment handling, maybe with different scanner modes.",
                 e
-            ),
-        })
+            );
+        }
+
+        if atoms.len() == 2 {
+            let (a0, a1) = (&atoms[0], &atoms[1]);
+            let (c0, c1) = (&class_safe_atom(a0), &class_safe_atom(a1));
+            // For delimiters like "*)" the simpler construction can consume across an earlier
+            // close when mixed with other block comment styles. This stricter construction avoids
+            // that by only allowing runs of the first end character when they are followed by a
+            // character that is neither the first nor second end character.
+            if a0 == a1 {
+                return Ok(format!(r"{s}([^{c0}]|{a0}[^{c1}])*{e}"));
+            }
+            let excluded = format!("{c0}{c1}");
+            return Ok(format!(
+                r"{s}[^{c0}]*({a0}+[^{excluded}][^{c0}]*)*{a0}+{a1}"
+            ));
+        }
+
+        let class_safe: Vec<String> = atoms.iter().map(|a| class_safe_atom(a)).collect();
+        let mut alternatives = Vec::with_capacity(atoms.len());
+        alternatives.push(format!(r"[^{}]", class_safe[0]));
+        for i in 1..atoms.len() {
+            let prefix = atoms[..i].join("");
+            alternatives.push(format!(r"{prefix}[^{}]", class_safe[i]));
+        }
+
+        Ok(format!(r"{s}({})*{e}", alternatives.join("|")))
     }
 
     fn must_escape_in_bracketed_expression(c: char) -> bool {
@@ -402,17 +405,32 @@ mod tests {
         let s = "--";
         let e = "--";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"--([^-]|-[^-])*--");
+        assert_eq!(r.unwrap(), r"--([^\-]|-[^\-])*--");
 
         let s = "#";
         let e = "#";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"#[^#]*#");
+        assert_eq!(r.unwrap(), r"#([^#])*#");
 
         let s = r"\{";
         let e = r"\}";
         let r = ScannerConfig::format_block_comment(s, e);
-        assert_eq!(r.unwrap(), r"\{[^}]*\}");
+        assert_eq!(r.unwrap(), r"\{([^}])*\}");
+
+        let s = r"\(\*";
+        let e = r"\*\)";
+        let r = ScannerConfig::format_block_comment(s, e);
+        assert_eq!(r.unwrap(), r"\(\*[^*]*(\*+[^*)][^*]*)*\*+\)");
+
+        let s = r"\(\(\(";
+        let e = r"\)\)\)";
+        let r = ScannerConfig::format_block_comment(s, e);
+        assert_eq!(r.unwrap(), r"\(\(\(([^)]|\)[^)]|\)\)[^)])*\)\)\)");
+
+        let s = "<";
+        let e = "abcd";
+        let r = ScannerConfig::format_block_comment(s, e);
+        assert!(r.is_err());
     }
 
     scan_test!(
@@ -526,4 +544,58 @@ mod tests {
         ],
         "Test 9: Complex edge cases with different block comment delimiters"
     );
+
+    scan_test!(
+        test_block_comment_double_star_parentheses,
+        scanner10,
+        Scanner10,
+        r"\(\*\*([^*]|\*[^*]|\*\*[^)])*\*\*\)",
+        "code (** a * b ** c **) more (***) text",
+        &[("(** a * b ** c **)", 5, 23)],
+        "Test 10: Block comment delimited by (** and **)"
+    );
+
+    scanner! {
+        Scanner11 {
+            mode M {
+                token r"\(\*\*([^*]|\*[^*]|\*\*[^)])*\*\*\)|\(\*[^*]*(\*+[^*)][^*]*)*\*+\)|/\*/?([^/]|[^*]/)*\*/|\{([^}])*\}" => 0;
+            }
+        }
+    }
+
+    #[test]
+    fn test_block_comment_mixed_delimiters_sequence() {
+        use scanner11::Scanner11 as S;
+        let scanner = S::new();
+        let input = "(** A **) (* B *) /* C */ { D }";
+        let matches = scanner.find_matches(input, 0).collect::<Vec<_>>();
+        const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[
+            ("(** A **)", 0, 9),
+            ("(* B *)", 10, 17),
+            ("/* C */", 18, 25),
+            ("{ D }", 26, 31),
+        ];
+        assert_eq!(
+            matches.len(),
+            EXPECTED_MATCHES.len(),
+            "Test 11: Mixed block comment delimiters in sequence: Unexpected match count exp: {:?}, act: {:?}",
+            format_expected_matches(EXPECTED_MATCHES),
+            format_matches(&matches, input)
+        );
+        for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+            assert_eq!(
+                matches[i].span.start, ma.1,
+                "Test 11: Match start does not match"
+            );
+            assert_eq!(
+                matches[i].span.end, ma.2,
+                "Test 11: Match end does not match"
+            );
+            assert_eq!(
+                &(input)[ma.1..ma.2],
+                ma.0,
+                "Test 11: Matched substring does not match expected"
+            );
+        }
+    }
 }
