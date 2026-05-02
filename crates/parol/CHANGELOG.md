@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 4.4.1 - Not yet released
 
+* Fix C# code generation for left-recursive list productions (LR grammars): the accumulated list
+  was looked up at the wrong `children` index and item members were constructed with the wrong
+  offset, causing an `InvalidOperationException` at parse time.
+
 * Fix mixed block comment delimiter handling to avoid over-consuming adjacent comments
   (e.g. `(** ... **)` followed by `(* ... *)`)
 

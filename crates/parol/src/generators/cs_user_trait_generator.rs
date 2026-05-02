@@ -395,6 +395,22 @@ impl<'a> CSUserTraitGenerator<'a> {
         if is_collection_helper {
             let item_arity = Self::runtime_child_count(nt_type_id, &type_info.symbol_table)?;
             let is_empty_production = self.grammar_config.cfg.pr[prod_num].get_r().is_empty();
+            // Detect left-recursive list: the non-terminal itself is the first symbol on the RHS.
+            // LR grammars produce `List: List Item...` (left-recursive), so the accumulated list
+            // is at children[0] and the new item members start at children[1].
+            // LL grammars produce `List: Item... List` (right-recursive), so the item members
+            // start at children[0] and the list is at children[item_arity].
+            let is_left_recursive = self.grammar_config.cfg.pr[prod_num]
+                .get_r()
+                .first()
+                .and_then(|s| s.get_n_ref())
+                .map(|n| n == non_terminal)
+                .unwrap_or(false);
+            let (list_index, item_start) = if is_left_recursive {
+                (0usize, "1")
+            } else {
+                (item_arity, "0")
+            };
 
             if is_empty_production {
                 writeln!(
@@ -429,20 +445,27 @@ impl<'a> CSUserTraitGenerator<'a> {
                 writeln!(
                     source,
                     "            if (children.Length == {} + 1 && children[{}] is List<{}> previous) {{",
-                    item_arity, item_arity, nt_cs_type
+                    item_arity, list_index, nt_cs_type
                 )?;
                 writeln!(
                     source,
                     "                var item = {};",
-                    Self::emit_struct_ctor(nt_type_id, &type_info.symbol_table, "0")?
+                    Self::emit_struct_ctor(nt_type_id, &type_info.symbol_table, item_start)?
                 )?;
                 writeln!(
                     source,
                     "                var items = new List<{}>();",
                     nt_cs_type
                 )?;
-                writeln!(source, "                items.Add(item);")?;
-                writeln!(source, "                items.AddRange(previous);")?;
+                if is_left_recursive {
+                    // Left-recursive: previous items come first, new item appended at the end.
+                    writeln!(source, "                items.AddRange(previous);")?;
+                    writeln!(source, "                items.Add(item);")?;
+                } else {
+                    // Right-recursive: new item comes first, previous items appended after.
+                    writeln!(source, "                items.Add(item);")?;
+                    writeln!(source, "                items.AddRange(previous);")?;
+                }
                 writeln!(source, "                return items;")?;
                 writeln!(source, "            }}")?;
             }
