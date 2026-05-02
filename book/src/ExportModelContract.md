@@ -2,6 +2,15 @@
 
 This chapter defines the contract for external tools that consume `parol export` output.
 
+## Video Introduction
+
+For a quick introduction on what parser model export can do for you, please watch the video
+[Parser Model Export](https://youtu.be/xHFlxVgq6GI) on YouTube.
+
+Also consider to visit the [The Parol Parser Generator](https://www.youtube.com/@user-b5n3l) YouTube
+channel. And if you don't want to miss new videos, please subscribe.
+
+
 ## Goal
 
 The export model is meant to provide language-agnostic grammar facts that are sufficient to build

@@ -29,6 +29,9 @@ include `~/.cargo/bin`.
 
 For a visual introduction, watch the [introductory video](https://youtu.be/TJMwMqD4XSo) on YouTube.
 
+Consider to visit the [The Parol Parser Generator](https://www.youtube.com/@user-b5n3l) YouTube
+channel. And if you don't want to miss new videos, please subscribe.
+
 ## Generate a Project with `parol`
 
 Use the `parol new` subcommand to create a new project:
@@ -67,8 +70,8 @@ cd ./my_grammar_cs
 dotnet build
 ```
 
-> You can safely ignore the `#[warn(unused_imports)]` warning for now. It will disappear as the
-grammar receives more content.
+> Please note, that there is a dedicated video on YouTube about
+[C# Parser Generation with Parol](https://youtu.be/cOMHdoxLiYg).
 
 Run the test with the generated parser:
 

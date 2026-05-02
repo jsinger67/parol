@@ -109,6 +109,11 @@ also provides a `minimize_boxed_types()` method for use in build scripts.
 
 `parol` determines where recursion cannot occur by analyzing the grammar structure.
 
+
+> Please note, that there is a dedicated video on YouTube about
+[Minimize boxed types in generated parsers](https://youtu.be/XKaA1OUdQyw).
+
+
 ## Managing AST Generation
 
 ### Omission of Elements
