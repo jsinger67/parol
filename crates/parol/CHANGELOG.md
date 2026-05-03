@@ -5,33 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 4.4.1 - Not yet released
+## 4.4.1 - 2026-05-03
 
 * Fix C# code generation for left-recursive list productions (LR grammars): the accumulated list
   was looked up at the wrong `children` index and item members were constructed with the wrong
   offset, causing an `InvalidOperationException` at parse time.
-
 * Fix mixed block comment delimiter handling to avoid over-consuming adjacent comments
   (e.g. `(** ... **)` followed by `(* ... *)`)
-
-* Fix `generate_terminal_name`: prepend underscore to numeric terminal names in generate_terminal_name
-
-* Fix scanner source generation for Unicode escapes in raw terminals (e.g. keep `\u{0027}` intact instead of generating escaped variants like `\\u\{0027\}`)
-
-* Fix comment generation: Generated comments in sources could have created invalid Rust code if terminals contained `*/`
-
+* Fix `generate_terminal_name`: prepend underscore to numeric terminal names in
+  generate_terminal_name
+* Fix scanner source generation for Unicode escapes in raw terminals (e.g. keep `\u{0027}` intact
+  instead of generating escaped variants like `\\u\{0027\}`)
+* Fix comment generation: Generated comments in sources could have created invalid Rust code if
+  terminals contained `*/`
 * Fix Dependabot security alerts [#56](https://github.com/jsinger67/parol/security/dependabot/56) and
   [#57](https://github.com/jsinger67/parol/security/dependabot/57) by updating `rustls-webpki`
   0.103.10 -> 0.103.12 in `Cargo.lock`
-
 * Fix dependabot security alerts [#54](https://github.com/jsinger67/parol/security/dependabot/54) and
   [#55](https://github.com/jsinger67/parol/security/dependabot/55) by updating following dependencies
   * rand 0.10.0 -> 0.10.1
   * rand 0.9.2 -> 0.9.3
-
 * Fix dependabot security alerts [#58](https://github.com/jsinger67/parol/security/dependabot/58) and
-associated issue [#1191](https://github.com/jsinger67/parol/issues/1191) regarding `parol-vscode`
-(GHSA-w5hq-g745-h8pq)
+  associated issue [#1191](https://github.com/jsinger67/parol/issues/1191) regarding `parol-vscode`
+  (GHSA-w5hq-g745-h8pq)
   * uuid 8.3.2 -> 14.0.0
 
 ## 4.4.0 - 2026-03-31
