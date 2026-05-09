@@ -19,9 +19,10 @@ use lsp_types::{
         Notification, PublishDiagnostics,
     },
 };
+use parol::generators::grammar_trans::check_and_transform_grammar_with_ignored;
 use parol::{
     GrammarConfig, ParolGrammar, analysis::lalr1_parse_table::calculate_lalr1_parse_table,
-    calculate_lookahead_dfas, check_and_transform_grammar, parser::parol_grammar::GrammarType,
+    calculate_lookahead_dfas, parser::parol_grammar::GrammarType,
 };
 
 use crate::{
@@ -131,7 +132,16 @@ impl Server {
         document_state: DocumentState,
     ) -> anyhow::Result<()> {
         let mut grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
-        let cfg = check_and_transform_grammar(&grammar_config.cfg, grammar_config.grammar_type)?;
+        let ignored_unreachable_non_terminals = grammar_config
+            .unreachable_non_terminals_to_ignore
+            .iter()
+            .cloned()
+            .collect();
+        let cfg = check_and_transform_grammar_with_ignored(
+            &grammar_config.cfg,
+            grammar_config.grammar_type,
+            &ignored_unreachable_non_terminals,
+        )?;
         grammar_config.update_cfg(cfg);
         let grammar_config = grammar_config.clone();
         thread::spawn(move || match grammar_config.grammar_type {
