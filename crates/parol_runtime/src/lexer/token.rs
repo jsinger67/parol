@@ -49,6 +49,9 @@ pub struct Token<'t> {
     /// Unique token number that allows ordering of tokens from different contexts, e.g. comment
     /// tokens can be intermingled with normal tokens.
     pub token_number: TokenNumber,
+
+    /// Indicates whether this token should be skipped in the scanner state it was read in.
+    pub(crate) state_skip: bool,
 }
 
 impl<'t> Token<'t> {
@@ -61,6 +64,7 @@ impl<'t> Token<'t> {
             token_type: EOI,
             location: Location::default(),
             token_number,
+            state_skip: false,
         }
     }
 
@@ -81,6 +85,7 @@ impl<'t> Token<'t> {
             token_type,
             location,
             token_number,
+            state_skip: false,
         }
     }
 
@@ -96,6 +101,17 @@ impl<'t> Token<'t> {
         self
     }
 
+    /// Sets scanner-state-dependent skip behavior for this token.
+    pub fn with_state_skip(mut self, state_skip: bool) -> Self {
+        self.state_skip = state_skip;
+        self
+    }
+
+    /// Sets scanner-state-dependent skip behavior for this token.
+    pub fn set_state_skip(&mut self, state_skip: bool) {
+        self.state_skip = state_skip;
+    }
+
     ///
     /// Indicates whether the token is normally skipped by the TokenStream.
     /// The behavior is independent from the language.
@@ -104,6 +120,12 @@ impl<'t> Token<'t> {
     pub fn is_skip_token(&self) -> bool {
         self.token_type > EOI && self.token_type < FIRST_USER_TOKEN
             || self.token_type == INVALID_TOKEN
+    }
+
+    /// Indicates whether the token is skipped, considering scanner-state-dependent skip settings.
+    #[inline]
+    pub fn is_effectively_skip_token(&self) -> bool {
+        self.is_skip_token() || self.state_skip
     }
 
     ///
@@ -130,6 +152,7 @@ impl<'t> Token<'t> {
             token_type: self.token_type,
             location: self.location.clone(),
             token_number: self.token_number,
+            state_skip: self.state_skip,
         }
     }
 
@@ -142,6 +165,7 @@ impl<'t> Token<'t> {
             token_type: self.token_type,
             location: self.location,
             token_number: self.token_number,
+            state_skip: self.state_skip,
         }
     }
 }

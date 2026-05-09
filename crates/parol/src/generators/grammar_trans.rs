@@ -4,6 +4,7 @@ use crate::{Cfg, augment_grammar, detect_left_recursive_non_terminals, left_fact
 use crate::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
 use parol_macros::bail;
 use parol_runtime::Result;
+use std::collections::BTreeSet;
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -13,6 +14,17 @@ use parol_runtime::Result;
 ///  Apply all grammar transformation necessary to be able to use the given grammar.
 ///
 pub fn check_and_transform_grammar(cfg: &Cfg, grammar_type: GrammarType) -> Result<Cfg> {
+    check_and_transform_grammar_with_ignored(cfg, grammar_type, &BTreeSet::new())
+}
+
+///
+/// Applies grammar transformations with optional filtering of unreachable non-terminals.
+///
+pub fn check_and_transform_grammar_with_ignored(
+    cfg: &Cfg,
+    grammar_type: GrammarType,
+    unreachable_to_ignore: &BTreeSet<String>,
+) -> Result<Cfg> {
     let non_productive = non_productive_non_terminals(cfg);
     if !non_productive.is_empty() {
         let non_terminals = non_productive
@@ -24,7 +36,10 @@ pub fn check_and_transform_grammar(cfg: &Cfg, grammar_type: GrammarType) -> Resu
             .collect::<Vec<RelatedHint>>();
         bail!(GrammarAnalysisError::NonProductiveNonTerminals { non_terminals });
     }
-    let unreachable = unreachable_non_terminals(cfg);
+    let unreachable = unreachable_non_terminals(cfg)
+        .difference(unreachable_to_ignore)
+        .cloned()
+        .collect::<BTreeSet<String>>();
     if !unreachable.is_empty() {
         let non_terminals = unreachable
             .iter()

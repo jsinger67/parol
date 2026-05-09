@@ -117,7 +117,7 @@
 //! Expect breaking changes both before and after 1.0 (but especially before).
 #![deny(missing_docs)]
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::convert::TryFrom;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
@@ -610,8 +610,16 @@ impl GrammarGenerator<'_> {
         // NOTE: it's up to the listener to add appropriate error context
         self.listener
             .on_intermediate_grammar(IntermediateGrammar::Untransformed, &*grammar_config)?;
-        let cfg =
-            crate::check_and_transform_grammar(&grammar_config.cfg, grammar_config.grammar_type)?;
+        let ignored_unreachable_non_terminals = grammar_config
+            .unreachable_non_terminals_to_ignore
+            .iter()
+            .cloned()
+            .collect::<BTreeSet<String>>();
+        let cfg = crate::generators::grammar_trans::check_and_transform_grammar_with_ignored(
+            &grammar_config.cfg,
+            grammar_config.grammar_type,
+            &ignored_unreachable_non_terminals,
+        )?;
 
         // To have at least a preliminary version of the expanded grammar,
         // even when the next checks fail, we write out the expanded grammar here.

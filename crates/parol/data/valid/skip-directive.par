@@ -1,0 +1,36 @@
+%start Start
+%line_comment "//"
+%auto_ws_off
+%skip CommentStart
+%on CommentStart %enter COMMENT
+
+%scanner COMMENT {
+    %auto_ws_off
+    %skip CommentStart, CommentEnd
+    %on CommentStart %push COMMENT
+    %on CommentEnd %pop
+}
+
+%%
+
+Start
+    : { Element }
+    ;
+
+Element
+    : Identifier
+    | CommentStart
+    | CommentEnd
+    ;
+
+Identifier
+    : /[a-zA-Z_][a-zA-Z0-9_]*/
+    ;
+
+CommentStart
+    : <INITIAL, COMMENT>"(*"
+    ;
+
+CommentEnd
+    : <COMMENT>"*)"
+    ;

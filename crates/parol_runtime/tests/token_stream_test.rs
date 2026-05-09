@@ -30,6 +30,23 @@ scanner!(
     }
 );
 
+scanner!(
+    StateSkipScanner {
+        mode INITIAL {
+            token r"[a-z]+" => 5; // Identifier
+            token r"#" => 6; // ModeToggle
+            token "." => 7; // ERROR_TOKEN
+            on 6 enter COMMENT;
+        }
+        mode COMMENT {
+            token r"[a-z]+" => 5; // Identifier
+            token r"#" => 6; // ModeToggle
+            token "." => 7; // ERROR_TOKEN
+            on 6 enter INITIAL;
+        }
+    }
+);
+
 const MAX_K: usize = 1;
 
 const INPUT: &str = r#"Id1
@@ -193,4 +210,28 @@ fn scanner_switch_and_named_source() {
     assert_eq!(prev_tok.text(), "\"");
     assert_eq!(prev_tok.location.start_line, 7);
     assert_eq!(prev_tok.location.start_column, 26);
+}
+
+#[test]
+fn state_specific_skip_tokens_are_applied() {
+    const SKIP_TOKENS_BY_SCANNER_STATE: &[&[parol_runtime::TerminalIndex]; 2] = &[&[], &[5]];
+    let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
+    let scanner = state_skip_scanner::StateSkipScanner::new();
+    let mut stream = TokenStream::new_with_skip_tokens(
+        "a#b#c",
+        file_name,
+        scanner.scanner_impl.clone(),
+        &state_skip_scanner::StateSkipScanner::match_function,
+        1,
+        SKIP_TOKENS_BY_SCANNER_STATE,
+    )
+    .unwrap();
+
+    let mut consumed = Vec::new();
+    while !stream.all_input_consumed() {
+        stream.take_skip_tokens();
+        consumed.push(stream.consume().unwrap().text().to_string());
+    }
+
+    assert_eq!(consumed, vec!["a", "#", "#", "c"]);
 }

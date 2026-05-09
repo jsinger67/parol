@@ -62,6 +62,9 @@ pub struct ScannerConfig {
     /// If true, unmatched input is allowed without error.
     pub allow_unmatched: bool,
 
+    /// Additional terminal indices skipped in this scanner state.
+    pub skip_tokens: Vec<TerminalIndex>,
+
     /// Scanner state transitions
     /// Maps from token to scanner state, where the token is identified by its TerminalIndex
     /// The scanner state is identified by its index.
@@ -79,6 +82,7 @@ impl ScannerConfig {
             auto_newline: true,
             auto_ws: true,
             allow_unmatched: false,
+            skip_tokens: Vec::new(),
             transitions: Vec::new(),
         }
     }
@@ -110,6 +114,12 @@ impl ScannerConfig {
     /// Sets allow unmatched behavior
     pub fn with_allow_unmatched(mut self, allow_unmatched: bool) -> Self {
         self.allow_unmatched = allow_unmatched;
+        self
+    }
+
+    /// Sets additional skip token indices for the scanner state.
+    pub fn with_skip_tokens(mut self, skip_tokens: Vec<TerminalIndex>) -> Self {
+        self.skip_tokens = skip_tokens;
         self
     }
 
@@ -302,6 +312,7 @@ impl Default for ScannerConfig {
             auto_newline: true,
             auto_ws: true,
             allow_unmatched: false,
+            skip_tokens: Vec::new(),
             transitions: Vec::new(),
         }
     }
@@ -315,6 +326,7 @@ impl Display for ScannerConfig {
         writeln!(f, "block_comments: {:?}", self.block_comments)?;
         writeln!(f, "auto_newline: {:?}", self.auto_newline)?;
         writeln!(f, "auto_ws: {:?}", self.auto_ws)?;
+        writeln!(f, "skip_tokens: {:?}", self.skip_tokens)?;
         self.transitions
             .iter()
             .try_for_each(|(k, v)| write!(f, "on {k} enter {v};"))

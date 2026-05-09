@@ -603,6 +603,8 @@ pub struct ScannerConfig {
     pub auto_ws_off: bool,
     /// Allow unmatched input without error
     pub allow_unmatched: bool,
+    /// Primary non-terminals whose derived terminals are skipped in this scanner state
+    pub skip: Vec<Token<'static>>,
     /// Scanner state transitions
     /// Maps from (token, terminal kind) to scanner state, where the token is identified by its
     /// primary non-terminal name. The scanner state is identified by its name.
@@ -610,6 +612,15 @@ pub struct ScannerConfig {
 }
 
 impl ScannerConfig {
+    pub(crate) fn add_skips(&mut self, identifier_list: &parol_grammar_trait::IdentifierList<'_>) {
+        self.skip
+            .push(identifier_list.identifier.identifier.to_owned());
+        identifier_list
+            .identifier_list_list
+            .iter()
+            .for_each(|i| self.skip.push(i.identifier.identifier.to_owned()));
+    }
+
     pub(crate) fn add_transitions(
         &mut self,
         transitions: &ScannerDirectivesPercentOnIdentifierListScannerStateDirectives<'_>,
@@ -640,6 +651,7 @@ impl Display for ScannerConfig {
         write!(f, "block_comments: {:?};", self.block_comments)?;
         write!(f, "auto_newline_off: {};", self.auto_newline_off)?;
         write!(f, "auto_ws_off: {};", self.auto_ws_off)?;
+        write!(f, "skip: {:?};", self.skip)?;
         self.transitions
             .iter()
             .try_for_each(|(k, v)| write!(f, "on {k} {v};"))
@@ -655,6 +667,7 @@ impl Default for ScannerConfig {
             auto_newline_off: false,
             auto_ws_off: false,
             allow_unmatched: false,
+            skip: Vec::default(),
             transitions: BTreeMap::default(),
         }
     }
@@ -688,6 +701,9 @@ impl TryFrom<&parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
                     me.auto_newline_off = true
                 }
                 ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(_) => me.auto_ws_off = true,
+                ScannerDirectives::PercentSkipIdentifierList(skip) => {
+                    me.add_skips(&skip.identifier_list)
+                }
                 ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(
                     scanner_directives_percent_on_identifier_list_scanner_state_directives,
                 ) => {
@@ -841,6 +857,9 @@ impl ParolGrammar<'_> {
             }
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(_) => {
                 self.scanner_configurations[INITIAL_STATE].auto_ws_off = true
+            }
+            ScannerDirectives::PercentSkipIdentifierList(skip) => {
+                self.scanner_configurations[INITIAL_STATE].add_skips(&skip.identifier_list)
             }
             ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(transitions) => {
                 self.scanner_configurations[INITIAL_STATE].add_transitions(transitions)
@@ -1300,7 +1319,33 @@ impl ParolGrammar<'_> {
         self.scanner_configurations
             .iter()
             .enumerate()
-            .try_for_each(|(i, s)| self.check_transitions(i, s))
+            .try_for_each(|(i, s)| {
+                self.check_skipped_tokens(i, s)?;
+                self.check_transitions(i, s)
+            })
+    }
+
+    fn check_skipped_tokens(&self, index: usize, s: &ScannerConfig) -> Result<()> {
+        s.skip.iter().try_for_each(|k| {
+            if !self.is_primary_non_terminal(k) {
+                bail!(ParolParserError::InvalidTokenInTransition {
+                    context: "check_skipped_tokens".to_string(),
+                    token: k.text().to_string(),
+                    input: k.location.file_name.to_path_buf(),
+                    location: k.location.clone(),
+                });
+            }
+            if !self.is_terminal_in_scanner(k, index) {
+                bail!(ParolParserError::TokenIsNotInScanner {
+                    context: "check_skipped_tokens".to_string(),
+                    scanner: s.name.clone(),
+                    token: k.text().to_string(),
+                    input: k.location.file_name.to_path_buf(),
+                    location: k.location.clone(),
+                });
+            }
+            Ok(())
+        })
     }
 
     fn check_transitions(&self, index: usize, s: &ScannerConfig) -> Result<()> {

@@ -100,7 +100,7 @@ mod tests {
     use crate::{InnerAttributes, calculate_lookahead_dfas};
     use std::path::PathBuf;
 
-    const RUST_PARSER_OUTPUT_CHECKSUM: u64 = 5880726045965946773;
+    const RUST_PARSER_OUTPUT_CHECKSUM: u64 = 749855876744296252;
     const CSHARP_PARSER_OUTPUT_CHECKSUM: u64 = 10987753882266822372;
 
     #[derive(Debug)]

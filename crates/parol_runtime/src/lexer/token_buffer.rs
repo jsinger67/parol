@@ -58,13 +58,20 @@ impl<'t> TokenBuffer<'t> {
     /// Returns the number of tokens in the buffer
     /// It only counts non-skip-tokens
     pub fn len(&self) -> usize {
-        self.tokens.iter().filter(|t| !t.is_skip_token()).count()
+        self.tokens
+            .iter()
+            .filter(|t| !t.is_effectively_skip_token())
+            .count()
     }
 
     /// Returns skip tokens at the beginning of the buffer.
     /// The skip tokens are removed from the buffer.
     pub fn take_skip_tokens(&mut self) -> Vec<Token<'t>> {
-        let split_index = self.tokens.iter().take_while(|t| t.is_skip_token()).count();
+        let split_index = self
+            .tokens
+            .iter()
+            .take_while(|t| t.is_effectively_skip_token())
+            .count();
         self.tokens.drain(..split_index).collect()
     }
 
@@ -73,7 +80,7 @@ impl<'t> TokenBuffer<'t> {
     pub fn non_skip_token_types(&self) -> Vec<u16> {
         self.tokens
             .iter()
-            .filter(|t| !t.is_skip_token())
+            .filter(|t| !t.is_effectively_skip_token())
             .map(|t| t.token_type)
             .collect()
     }
@@ -81,25 +88,33 @@ impl<'t> TokenBuffer<'t> {
     /// Returns an iterator over the tokens in the buffer.
     /// It only considers non-skip-tokens.
     pub fn non_skip_tokens(&self) -> impl Iterator<Item = &Token<'t>> {
-        self.tokens.iter().filter(|t| !t.is_skip_token())
+        self.tokens
+            .iter()
+            .filter(|t| !t.is_effectively_skip_token())
     }
 
     /// Returns a reversed iterator over the tokens in the buffer.
     /// It only considers non-skip-tokens.
     pub fn non_skip_tokens_rev(&self) -> impl Iterator<Item = &Token<'t>> {
-        self.tokens.iter().rev().filter(|t| !t.is_skip_token())
+        self.tokens
+            .iter()
+            .rev()
+            .filter(|t| !t.is_effectively_skip_token())
     }
 
     /// Returns the non-skip-token at the given index.
     pub fn non_skip_token_at(&self, index: usize) -> Option<&Token<'t>> {
-        self.tokens.iter().filter(|t| !t.is_skip_token()).nth(index)
+        self.tokens
+            .iter()
+            .filter(|t| !t.is_effectively_skip_token())
+            .nth(index)
     }
 
     /// Returns the non-skip-token at the given index as mutable reference.
     pub fn non_skip_token_at_mut(&mut self, index: usize) -> Option<&mut Token<'t>> {
         self.tokens
             .iter_mut()
-            .filter(|t| !t.is_skip_token())
+            .filter(|t| !t.is_effectively_skip_token())
             .nth(index)
     }
 
@@ -109,7 +124,7 @@ impl<'t> TokenBuffer<'t> {
         let mut skip_count = 0;
         let mut insert_index = self.tokens.len(); // Default to end if index is out of bounds
         for (i, token) in self.tokens.iter().enumerate() {
-            if !token.is_skip_token() {
+            if !token.is_effectively_skip_token() {
                 if skip_count == index {
                     insert_index = i;
                     break;
@@ -125,7 +140,7 @@ impl<'t> TokenBuffer<'t> {
         let mut skip_count = 0;
         let mut remove_index = None;
         for (i, token) in self.tokens.iter().enumerate() {
-            if !token.is_skip_token() {
+            if !token.is_effectively_skip_token() {
                 if skip_count == index {
                     remove_index = Some(i);
                     break;
@@ -147,7 +162,7 @@ impl<'t> TokenBuffer<'t> {
 
     /// Returns true if the buffer contains only skip tokens
     pub fn is_empty(&self) -> bool {
-        self.tokens.iter().all(|t| t.is_skip_token())
+        self.tokens.iter().all(|t| t.is_effectively_skip_token())
     }
 
     /// Returns true if the buffer is completely empty
@@ -165,7 +180,7 @@ impl<'t> TokenBuffer<'t> {
                 "Try to consume from an empty buffer".to_string(),
             ));
         }
-        if self.tokens[0].is_skip_token() {
+        if self.tokens[0].is_effectively_skip_token() {
             return Err(LexerError::InternalError(format!(
                 "Try to consume with skip tokens at the beginning of the buffer: {:?}",
                 self.tokens[0]

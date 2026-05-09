@@ -2,10 +2,14 @@ use crate::parser::{Factor, ParolGrammar};
 use crate::transformation::transform_productions;
 use crate::{Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal, TerminalKind, generators};
 use anyhow::{Result, bail};
+use std::collections::{BTreeMap, BTreeSet};
 
 use super::parol_grammar::{LookaheadExpression, ScannerStateSwitch};
 
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
+    let unreachable_non_terminals_to_ignore =
+        collect_scanner_control_skip_non_terminals(&parol_grammar);
+
     let st = parol_grammar.start_symbol;
     let non_terminals =
         parol_grammar
@@ -47,6 +51,8 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
         .with_comment(comment)
         .with_grammar_type(parol_grammar.grammar_type)
         .add_scanner(scanner_config);
+
+    grammar_config.unreachable_non_terminals_to_ignore = unreachable_non_terminals_to_ignore;
 
     for u in parol_grammar.user_type_definitions {
         grammar_config = grammar_config.add_user_type_def(u.0, u.1.to_string());
@@ -94,6 +100,19 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
         .iter_mut()
         .try_for_each(|sc| {
             insert_transitions(
+                sc,
+                &parol_grammar.scanner_configurations,
+                &terminal_resolver,
+                scanner_resolver,
+                &terminal_finder,
+            )
+        })?;
+
+    grammar_config
+        .scanner_configurations
+        .iter_mut()
+        .try_for_each(|sc| {
+            insert_skips(
                 sc,
                 &parol_grammar.scanner_configurations,
                 &terminal_resolver,
@@ -177,8 +196,100 @@ fn try_from_scanner_config(
         .with_block_comments(sc.block_comments.clone())
         .with_auto_newline(!sc.auto_newline_off)
         .with_auto_ws(!sc.auto_ws_off)
+        .with_skip_tokens(Vec::new())
         .with_allow_unmatched(sc.allow_unmatched);
     Ok(scanner_config)
+}
+
+fn insert_skips(
+    sc: &mut generators::ScannerConfig,
+    scanner_configurations: &[crate::parser::parol_grammar::ScannerConfig],
+    terminal_resolver: &impl crate::grammar::cfg::TerminalIndexFn,
+    scanner_resolver: impl Fn(&str) -> Option<usize>,
+    terminal_finder: impl Fn(&str) -> Option<(String, TerminalKind, Option<LookaheadExpression>)>,
+) -> Result<()> {
+    if let Some(source_configuration) = scanner_resolver(&sc.scanner_name) {
+        let mut skip_tokens = Vec::new();
+        scanner_configurations[source_configuration]
+            .skip
+            .iter()
+            .try_for_each(|token| {
+                if let Some((txt, kind, la)) = terminal_finder(token.text()) {
+                    skip_tokens.push(terminal_resolver.terminal_index(&txt, kind, &la));
+                } else {
+                    bail!("Terminal {} not found", token);
+                }
+                Ok(())
+            })?;
+        skip_tokens.sort();
+        skip_tokens.dedup();
+        sc.skip_tokens = skip_tokens;
+    } else {
+        bail!("Scanner configuration {} not found", sc.scanner_name);
+    }
+    Ok(())
+}
+
+fn collect_scanner_control_skip_non_terminals(parol_grammar: &ParolGrammar) -> Vec<String> {
+    let rhs_non_terminal_usages = parol_grammar
+        .productions
+        .iter()
+        .flat_map(|p| p.rhs.0.iter())
+        .flat_map(|a| a.0.iter())
+        .filter_map(|f| {
+            if let Factor::NonTerminal(n, ..) = f {
+                Some(n.clone())
+            } else {
+                None
+            }
+        })
+        .collect::<BTreeSet<String>>();
+
+    let primary_scanners = parol_grammar
+        .productions
+        .iter()
+        .filter_map(|p| {
+            if p.rhs.0.len() != 1 || p.rhs.0[0].0.len() != 1 {
+                return None;
+            }
+            if let Factor::Terminal(_, _, scanners, ..) = &p.rhs.0[0].0[0] {
+                Some((p.lhs.clone(), scanners.clone()))
+            } else {
+                None
+            }
+        })
+        .collect::<BTreeMap<String, Vec<usize>>>();
+
+    let skip_by_scanner = parol_grammar
+        .scanner_configurations
+        .iter()
+        .map(|sc| {
+            sc.skip
+                .iter()
+                .map(|t| t.text().to_string())
+                .collect::<BTreeSet<String>>()
+        })
+        .collect::<Vec<BTreeSet<String>>>();
+
+    skip_by_scanner
+        .iter()
+        .flat_map(|skip_set| skip_set.iter())
+        .filter(|nt| !rhs_non_terminal_usages.contains(*nt))
+        .filter(|nt| {
+            if let Some(scanners) = primary_scanners.get(*nt) {
+                scanners.iter().all(|idx| {
+                    skip_by_scanner
+                        .get(*idx)
+                        .is_some_and(|skip_set| skip_set.contains(*nt))
+                })
+            } else {
+                false
+            }
+        })
+        .cloned()
+        .collect::<BTreeSet<String>>()
+        .into_iter()
+        .collect()
 }
 
 pub(crate) fn try_from_factor(factor: Factor) -> Result<Symbol> {

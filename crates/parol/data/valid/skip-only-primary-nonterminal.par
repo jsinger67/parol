@@ -1,0 +1,29 @@
+%start Start
+%auto_ws_off
+%skip CommentStart
+%on CommentStart %enter COMMENT
+
+%scanner COMMENT {
+    %auto_ws_off
+    %skip CommentStart, CommentEnd
+    %on CommentStart %push COMMENT
+    %on CommentEnd %pop
+}
+
+%%
+
+Start
+    : Identifier
+    ;
+
+Identifier
+    : /[a-zA-Z_][a-zA-Z0-9_]*/
+    ;
+
+CommentStart
+    : <INITIAL, COMMENT>"(*"
+    ;
+
+CommentEnd
+    : <COMMENT>"*)"
+    ;

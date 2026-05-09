@@ -31,6 +31,27 @@ pub(crate) struct Dfa {
     nt_name: String,
 }
 
+fn generate_skip_tokens_by_state_source(grammar_config: &GrammarConfig) -> String {
+    let scanner_state_count = grammar_config.scanner_configurations.len();
+    let rows = grammar_config
+        .scanner_configurations
+        .iter()
+        .map(|sc| {
+            let tokens = sc
+                .skip_tokens
+                .iter()
+                .map(std::string::ToString::to_string)
+                .collect::<Vec<String>>()
+                .join(", ");
+            format!("    &[{tokens}],")
+        })
+        .collect::<Vec<String>>()
+        .join("\n");
+
+    format!(
+        "pub const SKIP_TOKENS_BY_SCANNER_STATE: &[&[parol_runtime::TerminalIndex]; {scanner_state_count}] = &[\n{rows}\n];"
+    )
+}
 impl Dfa {
     #[allow(dead_code)]
     pub(crate) fn from_compiled_dfa(
@@ -263,6 +284,7 @@ struct ParserData<'a> {
     dfa_source: String,
     productions: String,
     max_k: usize,
+    skip_tokens_by_state_source: String,
     user_type_name: &'a str,
     user_type_life_time: &'static str,
     scanner_type_name: String,
@@ -282,6 +304,7 @@ impl std::fmt::Display for ParserData<'_> {
             dfa_source,
             productions,
             max_k,
+            skip_tokens_by_state_source,
             user_type_name,
             scanner_type_name,
             scanner_module_name,
@@ -327,6 +350,7 @@ impl std::fmt::Display for ParserData<'_> {
         f.write_fmt(ume::ume! {
             const MAX_K: usize = #max_k;
         })?;
+        writeln!(f, "{skip_tokens_by_state_source}")?;
         writeln!(f, "\n\n")?;
         f.write_fmt(ume::ume! {
             pub const NON_TERMINALS: &[&str; #non_terminal_count] = &[#non_terminals];
@@ -411,12 +435,13 @@ impl std::fmt::Display for ParserData<'_> {
 
                 llk_parser.parse_into(
                     tree_builder,
-                    TokenStream::new(
+                    TokenStream::new_with_skip_tokens(
                         input,
                         file_name,
                         scanner.scanner_impl.clone(),
                         &#scanner_type_name::match_function,
                         MAX_K,
+                        SKIP_TOKENS_BY_SCANNER_STATE,
                     )
                     .unwrap(),
                     #mut_ref_user_actions
@@ -433,6 +458,7 @@ struct LRParserData<'a> {
     non_terminals: StrVec,
     non_terminal_count: usize,
     productions: String,
+    skip_tokens_by_state_source: String,
     user_type_name: &'a str,
     user_type_life_time: &'static str,
     scanner_type_name: String,
@@ -450,6 +476,7 @@ impl std::fmt::Display for LRParserData<'_> {
             non_terminals,
             non_terminal_count,
             productions,
+            skip_tokens_by_state_source,
             user_type_name,
             user_type_life_time,
             scanner_type_name,
@@ -491,6 +518,7 @@ impl std::fmt::Display for LRParserData<'_> {
 
         writeln!(f, "{lexer_source}\n")?;
 
+        writeln!(f, "{skip_tokens_by_state_source}")?;
         writeln!(f, "\n\n")?;
         f.write_fmt(ume::ume! {
             pub const NON_TERMINALS: &[&str; #non_terminal_count] = &[#non_terminals];
@@ -572,12 +600,13 @@ impl std::fmt::Display for LRParserData<'_> {
                 #scanner_instance
                 lr_parser.parse_into(
                     tree_builder,
-                    TokenStream::new(
+                    TokenStream::new_with_skip_tokens(
                         input,
                         file_name,
                         scanner.scanner_impl.clone(),
                         &#scanner_type_name::match_function,
                         1,
+                        SKIP_TOKENS_BY_SCANNER_STATE,
                     )
                     .unwrap(),
                     #mut_ref_user_actions
@@ -664,6 +693,7 @@ fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorCon
         dfa_source,
         productions,
         max_k,
+        skip_tokens_by_state_source: generate_skip_tokens_by_state_source(grammar_config),
         user_type_name: config.user_type_name(),
         user_type_life_time,
         scanner_type_name: get_scanner_type_name(config),
@@ -810,6 +840,7 @@ fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGenera
         non_terminals: non_terminals_with_index_comment,
         non_terminal_count,
         productions,
+        skip_tokens_by_state_source: generate_skip_tokens_by_state_source(grammar_config),
         user_type_name: config.user_type_name(),
         user_type_life_time,
         scanner_type_name: get_scanner_type_name(config),

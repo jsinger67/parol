@@ -39,6 +39,9 @@ where
 
     /// Flag to indicate if the parser is in error recovery mode
     pub(crate) recovering: bool,
+
+    /// Additional scanner-state-dependent token types to skip.
+    pub(crate) skip_tokens_by_state: &'static [&'static [TerminalIndex]],
 }
 
 impl<'t, F> TokenStream<'t, F>
@@ -58,6 +61,23 @@ where
         scanner_impl: Rc<RefCell<ScannerImpl>>,
         match_function: &'static F,
         k: usize,
+    ) -> Result<Self, LexerError>
+    where
+        T: AsRef<Path>,
+    {
+        Self::new_with_skip_tokens(input, file_name, scanner_impl, match_function, k, &[])
+    }
+
+    ///
+    /// Creates a new TokenStream with scanner-state-dependent skip token sets.
+    ///
+    pub fn new_with_skip_tokens<T>(
+        input: &'t str,
+        file_name: T,
+        scanner_impl: Rc<RefCell<ScannerImpl>>,
+        match_function: &'static F,
+        k: usize,
+        skip_tokens_by_state: &'static [&'static [TerminalIndex]],
     ) -> Result<Self, LexerError>
     where
         T: AsRef<Path>,
@@ -84,9 +104,17 @@ where
             token_iter,
             tokens: TokenBuffer::new(),
             recovering: false,
+            skip_tokens_by_state,
         };
         token_stream.read_tokens(k)?;
         Ok(token_stream)
+    }
+
+    #[inline]
+    fn is_state_skip_token(&self, token_type: TerminalIndex, scanner_state: ScannerIndex) -> bool {
+        self.skip_tokens_by_state
+            .get(scanner_state)
+            .is_some_and(|tokens| tokens.contains(&token_type))
     }
 
     ///
@@ -219,9 +247,13 @@ where
     ///
     fn read_tokens(&mut self, n: usize) -> Result<usize, LexerError> {
         let mut tokens_read = 0usize;
-        for token in &mut self.token_iter {
+        while let Some((scanner_state, mut token)) = {
+            let scanner_state = self.token_iter.current_mode();
+            self.token_iter.next().map(|token| (scanner_state, token))
+        } {
+            token.set_state_skip(self.is_state_skip_token(token.token_type, scanner_state));
             trace!("Read {}: {}", self.tokens.len(), token);
-            if !token.is_skip_token() {
+            if !token.is_effectively_skip_token() {
                 tokens_read += 1;
             }
             self.tokens.add(token, self.input);

@@ -77,6 +77,11 @@ pub struct GrammarConfig {
     /// The maximum lookahead size, used for lexer generation
     ///
     pub lookahead_size: usize,
+
+    ///
+    /// Non-terminals that should be ignored during unreachable analysis.
+    ///
+    pub unreachable_non_terminals_to_ignore: Vec<String>,
 }
 
 /// The type of a scanner state resolver function.
