@@ -110,6 +110,18 @@ pub(crate) fn generate_scanner_data_with_terminal_names<C: CommonGeneratorConfig
         scanner_modes.push(ScnrScannerMode::new(sc_name, patterns, transitions));
     }
 
+    let skip_tokens_by_mode = scanner_modes
+        .iter()
+        .map(|mode| {
+            grammar_config
+                .scanner_configurations
+                .iter()
+                .find(|sc| sc.scanner_name == mode.name)
+                .map(|sc| sc.skip_tokens.clone())
+                .unwrap_or_default()
+        })
+        .collect::<Vec<Vec<parol_runtime::TerminalIndex>>>();
+
     // Build DFAs and CharacterClasses
     let mut nfas = scanner_modes
         .iter()
@@ -182,6 +194,27 @@ pub(crate) fn generate_scanner_data_with_terminal_names<C: CommonGeneratorConfig
     for (i, mode) in scanner_modes.iter().enumerate() {
         let dfa = &dfas[i];
         generate_scanner_mode(&mut source, mode, dfa, character_classes.intervals.len())?;
+    }
+    writeln!(source, "        }};")?;
+    writeln!(source)?;
+
+    writeln!(source, "        /// <summary>")?;
+    writeln!(
+        source,
+        "        /// Scanner-mode-specific token type indices that are skipped by the scanner runtime."
+    )?;
+    writeln!(source, "        /// </summary>")?;
+    writeln!(
+        source,
+        "        public static readonly int[][] SkipTokensByScannerMode = {{"
+    )?;
+    for skip_tokens in &skip_tokens_by_mode {
+        let tokens = skip_tokens
+            .iter()
+            .map(std::string::ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(", ");
+        writeln!(source, "            [{}],", tokens)?;
     }
     writeln!(source, "        }};")?;
 

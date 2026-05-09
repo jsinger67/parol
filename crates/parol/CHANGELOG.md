@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Add scanner-state-aware `%skip` support and synchronize parser generation with runtime handling.
   * Extend grammar processing and code generation so `%skip` tokens are validated and applied per
     scanner state.
+  * Update C# parser generation to pass scanner-mode skip token arrays to `Parol.Runtime.Scanner.Scan`.
   * Add `%skip` validation tests for primary non-terminal and scanner-membership constraints.
   * Regenerate built-in parser artifacts and affected examples.
 * Bump parser export model schema version to `2` and keep `v1` schema as a compatibility contract.

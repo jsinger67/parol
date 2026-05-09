@@ -258,8 +258,8 @@ fn generate_parse_methods(
     writeln!(source)?;
     writeln!(
         source,
-        "            var tokens = Scanner.Scan(input, fileName, {}Data.MatchFunction, {}Data.ScannerModes);",
-        scanner_type_name, scanner_type_name
+        "            var tokens = Scanner.Scan(input, fileName, {}Data.MatchFunction, {}Data.ScannerModes, {}Data.SkipTokensByScannerMode);",
+        scanner_type_name, scanner_type_name, scanner_type_name
     )?;
     writeln!(
         source,
@@ -496,8 +496,8 @@ fn emit_lalr_parse_methods(
     writeln!(source)?;
     writeln!(
         source,
-        "            var tokens = Scanner.Scan(input, fileName, {}Data.MatchFunction, {}Data.ScannerModes);",
-        scanner_type_name, scanner_type_name
+        "            var tokens = Scanner.Scan(input, fileName, {}Data.MatchFunction, {}Data.ScannerModes, {}Data.SkipTokensByScannerMode);",
+        scanner_type_name, scanner_type_name, scanner_type_name
     )?;
     writeln!(
         source,
