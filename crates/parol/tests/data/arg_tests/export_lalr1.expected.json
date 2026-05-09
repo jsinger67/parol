@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "algorithm": "Lalr1",
   "non_terminal_names": [
     "Start",

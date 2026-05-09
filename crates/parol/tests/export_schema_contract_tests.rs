@@ -13,6 +13,10 @@ fn read_json(path: PathBuf) -> Value {
 }
 
 fn schema_path() -> PathBuf {
+    manifest_dir().join("schemas/parser-export-model.v2.schema.json")
+}
+
+fn schema_path_v1() -> PathBuf {
     manifest_dir().join("schemas/parser-export-model.v1.schema.json")
 }
 
@@ -151,6 +155,22 @@ fn export_schema_has_expected_version_and_required_fields() {
 
     assert_eq!(version_const, PARSER_EXPORT_MODEL_VERSION as u64);
     assert_required_top_level_fields(&schema);
+}
+
+#[test]
+fn export_schema_v1_is_preserved_for_backward_compatibility() {
+    let schema = read_json(schema_path_v1());
+
+    let version_const = schema
+        .get("properties")
+        .and_then(Value::as_object)
+        .and_then(|properties| properties.get("version"))
+        .and_then(Value::as_object)
+        .and_then(|version| version.get("const"))
+        .and_then(Value::as_u64)
+        .expect("Schema must define properties.version.const");
+
+    assert_eq!(version_const, 1);
 }
 
 #[test]

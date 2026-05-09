@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/jsinger67/parol/main/crates/parol/schemas/parser-export-model.v1.schema.json",
-  "title": "parol ParserExportModel v1",
+  "$id": "https://raw.githubusercontent.com/jsinger67/parol/main/crates/parol/schemas/parser-export-model.v2.schema.json",
+  "title": "parol ParserExportModel v2",
   "description": "Language-agnostic parser export model emitted by `parol export`.",
   "type": "object",
   "additionalProperties": false,
@@ -19,7 +19,7 @@
   "properties": {
     "version": {
       "type": "integer",
-      "const": 1
+      "const": 2
     },
     "algorithm": {
       "$ref": "#/$defs/parserAlgorithmKind"
@@ -537,6 +537,7 @@
         "auto_newline",
         "auto_ws",
         "allow_unmatched",
+        "skip_tokens",
         "transitions"
       ],
       "properties": {
@@ -578,6 +579,13 @@
         },
         "allow_unmatched": {
           "type": "boolean"
+        },
+        "skip_tokens": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
         "transitions": {
           "type": "array",

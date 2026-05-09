@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
 /// Version of the language-agnostic parser export model schema.
-pub const PARSER_EXPORT_MODEL_VERSION: u32 = 1;
+pub const PARSER_EXPORT_MODEL_VERSION: u32 = 2;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 /// Discriminator of the exported parser algorithm family.

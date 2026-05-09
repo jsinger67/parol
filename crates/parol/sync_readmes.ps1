@@ -55,7 +55,7 @@ else {
 
 # CommonReadMe uses crate-local links. Rewrite them for the repository README.
 $repoContent = $repoContent.Replace("(../../book/src/ExportModelContract.md)", "(./book/src/ExportModelContract.md)")
-$repoContent = $repoContent.Replace("(./schemas/parser-export-model.v1.schema.json)", "(./crates/parol/schemas/parser-export-model.v1.schema.json)")
+$repoContent = $repoContent.Replace("(./schemas/parser-export-model.v2.schema.json)", "(./crates/parol/schemas/parser-export-model.v2.schema.json)")
 
 $startPattern = "Unfortunately there is no include directive available in Markdown -->"
 

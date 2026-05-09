@@ -54,7 +54,11 @@ runtime style.
 
 The export schema version is carried in `ParserExportModel.version`.
 
-Machine-readable JSON Schema for `version = 1`:
+Machine-readable JSON Schema for `version = 2`:
+
+- `crates/parol/schemas/parser-export-model.v2.schema.json`
+
+Legacy schema (still published for compatibility with older consumers):
 
 - `crates/parol/schemas/parser-export-model.v1.schema.json`
 
@@ -64,7 +68,7 @@ Using `ajv-cli` (Node.js), you can validate an exported JSON file against the sc
 
 ```bash
 npx ajv-cli validate \
-	-s crates/parol/schemas/parser-export-model.v1.schema.json \
+	-s crates/parol/schemas/parser-export-model.v2.schema.json \
 	-d crates/parol/tests/data/arg_tests/export_llk.expected.json
 ```
 

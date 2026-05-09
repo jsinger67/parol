@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "algorithm": "Llk",
   "non_terminal_names": [
     "Start",
