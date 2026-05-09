@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.5.0 - Unreleased
+
+* Add scanner-state-aware `%skip` support and synchronize parser generation with runtime handling.
+  * Extend grammar processing and code generation so `%skip` tokens are validated and applied per
+    scanner state.
+  * Add `%skip` validation tests for primary non-terminal and scanner-membership constraints.
+  * Regenerate built-in parser artifacts and affected examples.
+
 ## 4.4.1 - 2026-05-03
 
 * Fix C# code generation for left-recursive list productions (LR grammars): the accumulated list

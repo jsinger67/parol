@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.4.0 - Unreleased
+
+* Add scanner-state-aware `%skip` support to the runtime token stream to stay in sync with
+  `parol` grammar generation.
+  * Introduce `TokenStream::new_with_skip_tokens` for scanner-state-dependent skip token sets.
+  * Apply skip-token filtering per active scanner state during token consumption/lookahead.
+  * Add runtime tests for scanner-state-specific skipping behavior.
+
 ## 4.3.0 - 2026-02-22
 
 * Switch to scnr2 0.5.0 and other package version updates

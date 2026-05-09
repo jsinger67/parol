@@ -5,6 +5,20 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v0.6.0 - Not yet released
+
+- Add keyword `%skip` for syntax highlighting to match newer `parol` grammar features.
+- Security and dependency maintenance since `v0.5.5`:
+  - Resolve GHSA-w5hq-g745-h8pq / issue #1191 by overriding `uuid` to `^14.0.0`.
+  - Resolve additional Dependabot alerts related to `minimatch` by:
+    - Updating nested lockfile resolution (`minimatch` to `10.2.1` where applicable).
+    - Updating transitive dependencies and lockfile entries (`brace-expansion`, `picomatch`,
+      `lodash`, and related npm graph updates).
+  - Keep explicit maintainer guidance in README/dependabot config for unavoidable upstream
+    transitive `minimatch` constraints in packaging toolchain.
+- Compatibility note: quick fixes and code actions are provided by `parol-ls`; install or update
+  `parol-ls` to the latest version to use them in VS Code.
+
 ## v0.5.5 - 2026-03-20
 
 - Fix vulnerability warning CVE-2026-26996 (transitive `minimatch` ReDoS)

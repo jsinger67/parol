@@ -5,6 +5,24 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 4.4.0 - Unreleased
+
+* Add support for scanner directive `%skip` in `parol-ls`:
+  * Grammar support in `parol_ls.par` and regenerated parser/trait artifacts.
+  * Formatting support for `%skip` directives, including comment-aware rendering.
+  * Document symbol and range support for `%skip` entries.
+  * Add dedicated formatting fixtures for `%skip` in all formatter option profiles.
+* Improve diagnostics for scanner transition issues:
+  * Clearer messages and dedicated diagnostic codes for invalid transition tokens and
+    token-not-in-scanner errors.
+  * Actionable quick-fix hints embedded in diagnostics.
+* Add LSP `CodeAction` support:
+  * Advertise `codeActionProvider` capability.
+  * Provide quick fixes for scanner token diagnostics, including token replacement candidates,
+    remove-from-`%skip`, and directive-line removal.
+  * Scanner-aware candidate selection with filtering to avoid suggesting known non-terminals.
+* Add unit tests for code-action helper behavior and edge cases.
+
 ## 4.3.0 - 2026-02-22
 
 * Completed formatter refactoring:
