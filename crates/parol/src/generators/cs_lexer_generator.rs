@@ -1,6 +1,6 @@
 use crate::CommonGeneratorConfig;
-use crate::generators::{GrammarConfig, NamingHelper};
 use crate::generators::lexer_ir::build_scanner_mode_data;
+use crate::generators::{GrammarConfig, NamingHelper};
 use anyhow::Result;
 use scnr2_generate::character_classes::CharacterClasses;
 use scnr2_generate::dfa::Dfa;
