@@ -146,6 +146,45 @@ pub(super) fn format_scanner_directives_with_context(
                 comments,
             )
         }
+        ScannerDirectives::PercentSkipIdentifierList(skip) => {
+            let (comments_before_token, comments) = format_comments_before_token(
+                comments,
+                &skip.percent_skip,
+                &comment_opts_left(context.policy()),
+            );
+            let context = context_for_scanner_directive(context, &comments_before_token);
+            let indent = scanner_directive_indent(&base_indent, &context);
+            let (following_comment, comments) = format_trailing_comment(
+                comments,
+                skip.get_last_token(),
+                &comment_opts_left_force_remove(context.policy()),
+            );
+            let ident_list = skip
+                .identifier_list
+                .identifier_list_list
+                .iter()
+                .fold(
+                    vec![
+                        skip.identifier_list
+                            .identifier
+                            .identifier
+                            .text()
+                            .to_string(),
+                    ],
+                    |mut acc, i| {
+                        acc.push(i.identifier.identifier.text().to_string());
+                        acc
+                    },
+                )
+                .join(", ");
+            (
+                format!(
+                    "{}{}{} {}{}",
+                    comments_before_token, indent, skip.percent_skip, ident_list, following_comment,
+                ),
+                comments,
+            )
+        }
         ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(trans) => {
             let (comments_before_token, comments) = format_comments_before_token(
                 comments,

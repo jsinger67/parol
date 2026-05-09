@@ -278,6 +278,38 @@ impl ParolLsGrammar {
                     children: None,
                 });
             }
+            ScannerDirectives::PercentSkipIdentifierList(skip) => {
+                // Add the reference to the non-terminal for hover and rename support
+                // This is the first non-terminal in the struct `identifier_list`
+                self.add_non_terminal_ref(&skip.identifier_list.identifier.identifier);
+
+                let mut first_id: DocumentSymbol = (&skip.identifier_list.identifier.identifier).into();
+                first_id.detail = Some("Skipped terminal".to_string());
+
+                let children: Vec<DocumentSymbol> = skip
+                    .identifier_list
+                    .identifier_list_list
+                    .iter()
+                    .fold(vec![first_id], |mut acc, id| {
+                        let mut id_sym: DocumentSymbol = (&id.identifier.identifier).into();
+                        id_sym.detail = Some("Skipped terminal".to_string());
+
+                        // Add the reference to the non-terminal for hover and rename support
+                        self.add_non_terminal_ref(&id.identifier.identifier);
+
+                        acc.push(id_sym);
+                        acc
+                    });
+
+                let mut skip_directive: DocumentSymbol = (&skip.percent_skip).into();
+                skip_directive.detail = Some("Skip scanner terminals".to_string());
+                skip_directive.range = Into::<Rng>::into(arg).0;
+                skip_directive.selection_range = Into::<Rng>::into(&skip.percent_skip).0;
+                skip_directive.kind = SymbolKind::PROPERTY;
+                skip_directive.children = Some(children);
+
+                symbols.push(skip_directive);
+            }
             ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(trans) => {
                 // Add the reference to the non-terminal for hover and rename support
                 // This is the first non-terminal in the struct `identifier_list`

@@ -1,6 +1,7 @@
 use crate::{
     parol_ls_grammar::OwnedToken,
     parol_ls_grammar_trait::{
+        ScannerDirectivesPercentSkipIdentifierList,
         ScannerDirectivesPercentOnIdentifierListScannerStateDirectives, ScannerStateDirectives,
         TokenLiteral, UserTypeName,
     },
@@ -55,6 +56,22 @@ impl LastToken for ScannerDirectivesPercentOnIdentifierListScannerStateDirective
             ScannerStateDirectives::PercentPop(scanner_state_directives_percent_pop) => {
                 &scanner_state_directives_percent_pop.percent_pop
             }
+        }
+    }
+}
+
+impl LastToken for ScannerDirectivesPercentSkipIdentifierList {
+    fn get_last_token(&self) -> &OwnedToken {
+        if self.identifier_list.identifier_list_list.is_empty() {
+            &self.identifier_list.identifier.identifier
+        } else {
+            &self
+                .identifier_list
+                .identifier_list_list
+                .last()
+                .unwrap()
+                .identifier
+                .identifier
         }
     }
 }

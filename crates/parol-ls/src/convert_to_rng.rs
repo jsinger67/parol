@@ -239,6 +239,9 @@ impl From<&ScannerDirectives> for Rng {
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(auto_ws) => {
                 Self::from(&auto_ws.percent_auto_underscore_ws_underscore_off)
             }
+            ScannerDirectives::PercentSkipIdentifierList(skip) => {
+                Self::from(&skip.percent_skip).extend(Self::from(&skip.identifier_list))
+            }
             ScannerDirectives::PercentOnIdentifierListScannerStateDirectives(trans) => {
                 Self::from(&trans.percent_on).extend(Self::from(&trans.scanner_state_directives))
             }

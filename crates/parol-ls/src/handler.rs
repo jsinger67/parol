@@ -1,7 +1,7 @@
 use lsp_server::{RequestId, Response};
 use lsp_types::request::{
-    DocumentSymbolRequest, Formatting, GotoDefinition, HoverRequest, PrepareRenameRequest, Rename,
-    Request,
+    CodeActionRequest, DocumentSymbolRequest, Formatting, GotoDefinition, HoverRequest,
+    PrepareRenameRequest, Rename, Request,
 };
 
 use crate::server::Server;
@@ -79,6 +79,19 @@ impl RequestHandler for Formatting {
     fn handle(server: &mut Server, id: RequestId, params: Self::Params) -> Response {
         eprintln!("got formatting request #{id}: {params:?}");
         let result = server.handle_formatting(params);
+        let result = serde_json::to_value(result).unwrap();
+        Response {
+            id,
+            result: Some(result),
+            error: None,
+        }
+    }
+}
+
+impl RequestHandler for CodeActionRequest {
+    fn handle(server: &mut Server, id: RequestId, params: Self::Params) -> Response {
+        eprintln!("got codeAction request #{id}: {params:?}");
+        let result = server.handle_code_action(params);
         let result = serde_json::to_value(result).unwrap();
         Response {
             id,

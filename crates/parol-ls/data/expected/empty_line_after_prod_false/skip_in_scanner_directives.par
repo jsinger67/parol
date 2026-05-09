@@ -1,0 +1,22 @@
+%start Start
+%skip WS, COMMENT
+%on COMMENT %enter COMMENT_SCANNER
+
+%scanner COMMENT_SCANNER {
+    %skip COMMENT, WS
+    %on COMMENT %pop
+}
+
+%%
+
+Start
+    : Identifier
+    ;
+Identifier
+    : "id"
+    ;
+WS  : /[ \t\r\n]+/
+    ;
+COMMENT
+    : /\/\/.*(\r\n|\r|\n)?/
+    ;

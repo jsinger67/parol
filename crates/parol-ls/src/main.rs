@@ -32,14 +32,14 @@ use lsp_server::{Connection, ExtractError, Message, Request, RequestId};
 use lsp_types::notification::DidChangeConfiguration;
 use lsp_types::request::RegisterCapability;
 use lsp_types::{
-    HoverProviderCapability, InitializeParams, OneOf, RenameOptions, ServerCapabilities,
-    TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
+    CodeActionProviderCapability, HoverProviderCapability, InitializeParams, OneOf, RenameOptions,
+    ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
     notification::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
     },
     request::{
-        DocumentSymbolRequest, Formatting, GotoDefinition, HoverRequest, PrepareRenameRequest,
-        Rename,
+        CodeActionRequest, DocumentSymbolRequest, Formatting, GotoDefinition, HoverRequest,
+        PrepareRenameRequest, Rename,
     },
 };
 use lsp_types::{Registration, RegistrationParams};
@@ -117,6 +117,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             work_done_progress_options: WorkDoneProgressOptions::default(),
         })),
         document_formatting_provider: Some(OneOf::Left(true)),
+        code_action_provider: Some(CodeActionProviderCapability::Simple(true)),
         ..Default::default()
     })
     .unwrap();
@@ -187,6 +188,9 @@ fn main_loop(connection: Arc<Connection>, config: Config) -> Result<(), Box<dyn 
                     }
                     <Formatting as lsp_types::request::Request>::METHOD => {
                         request_match!(Formatting, server, connection, req);
+                    }
+                    <CodeActionRequest as lsp_types::request::Request>::METHOD => {
+                        request_match!(CodeActionRequest, server, connection, req);
                     }
                     _ => {
                         eprintln!("Unhandled request {}", req.method);

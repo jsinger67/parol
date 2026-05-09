@@ -26,7 +26,8 @@ impl Diagnostics {
         let mut range = Range::default();
         let source = Some("parol-ls".to_string());
         let mut related_information = vec![];
-        let message = err.to_string();
+        let mut message = err.to_string();
+        let mut code: Option<lsp_types::NumberOrString> = None;
 
         // Extract additional information from certain errors
         if let Some(e) = err.downcast_ref::<ParolError>() {
@@ -54,6 +55,8 @@ impl Diagnostics {
                             e,
                             &located_document_state,
                             &mut range,
+                            &mut message,
+                            &mut code,
                             &mut related_information,
                         );
                     }
@@ -63,7 +66,7 @@ impl Diagnostics {
 
         let diagnostic = Diagnostic {
             source,
-            code: None,
+            code,
             range,
             message,
             related_information: if related_information.is_empty() {
@@ -278,6 +281,8 @@ fn extract_parser_error(
     error: &ParolParserError,
     located_document_state: &LocatedDocumentState,
     range: &mut Range,
+    message: &mut String,
+    code: &mut Option<lsp_types::NumberOrString>,
     related_information: &mut Vec<DiagnosticRelatedInformation>,
 ) {
     match error {
@@ -387,6 +392,11 @@ fn extract_parser_error(
             input,
             location,
         } => {
+            *message =
+                format!("Token '{token}' is invalid in scanner transition context '{context}'.");
+            *code = Some(lsp_types::NumberOrString::String(
+                "parol::parser::invalid_token_in_transition".to_owned(),
+            ));
             *range = location_to_range(location);
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(location, located_document_state.uri),
@@ -397,6 +407,10 @@ fn extract_parser_error(
                     input.display()
                 ),
             });
+            related_information.push(DiagnosticRelatedInformation {
+                location: location_to_location(location, located_document_state.uri),
+                message: "Quick fix: use a terminal that exists in this context, or remove/adjust the %on transition directive.".to_owned(),
+            });
         }
         ParolParserError::TokenIsNotInScanner {
             context,
@@ -405,6 +419,12 @@ fn extract_parser_error(
             input,
             location,
         } => {
+            *message = format!(
+                "Token '{token}' is referenced in '{context}' but is not available in scanner '{scanner}'."
+            );
+            *code = Some(lsp_types::NumberOrString::String(
+                "parol::parser::token_not_in_scanner".to_owned(),
+            ));
             *range = location_to_range(location);
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(location, located_document_state.uri),
@@ -414,6 +434,12 @@ fn extract_parser_error(
                     scanner,
                     token,
                     input.display()
+                ),
+            });
+            related_information.push(DiagnosticRelatedInformation {
+                location: location_to_location(location, located_document_state.uri),
+                message: format!(
+                    "Quick fix: assign token '{token}' to scanner '{scanner}' in its token definition, or change the directive to use a token that already belongs to '{scanner}'."
                 ),
             });
         }
