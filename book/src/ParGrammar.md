@@ -94,6 +94,49 @@ The scanner also skips whitespace automatically by default. To suppress this, us
 directive.
 In that case, you must handle whitespace tokens yourself in your grammar.
 
+### Configurable skip tokens (available in 4.5.0)
+
+Starting with `parol` 4.5.0, you can configure additional skip tokens via `%skip`.
+
+This generalizes the skip-token concept beyond default whitespace and newline handling and is
+especially important for scanner-state-based grammars:
+
+* You can ignore structural helper tokens (for example comment delimiters) without adding parser
+    noise.
+* You can configure skip behavior per scanner state.
+* You can still keep strict scanner transitions with `%on`, `%enter`, `%push`, and `%pop`.
+
+`%skip` expects a comma-separated list of primary non-terminals that represent terminals.
+
+```parol
+%start Start
+%auto_ws_off
+%skip CommentStart
+%on CommentStart %enter COMMENT
+
+%scanner COMMENT {
+    %auto_ws_off
+    %skip CommentStart, CommentEnd
+    %on CommentStart %push COMMENT
+    %on CommentEnd %pop
+}
+
+%%
+
+Start: Identifier;
+
+Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
+CommentStart: <INITIAL, COMMENT>"(*";
+CommentEnd: <COMMENT>"*)";
+```
+
+Important constraints:
+
+* Each `%skip` entry must be a primary non-terminal for a terminal.
+* The referenced terminal must be available in the scanner state where `%skip` is declared.
+* `%skip` augments default skip behavior; `%auto_ws_off` and `%auto_newline_off` still control
+    default whitespace/newline skipping.
+
 ### Open scanner states
 
 Scanner modes can also be configured to tolerate unmatched tokens by specifying `%allow_unmatched`

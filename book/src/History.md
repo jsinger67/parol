@@ -61,6 +61,7 @@ effort—enabling **real rapid prototyping** for your language!
   - Calculating FIRST(k) and FOLLOW(k) sets
   - Generating random sentences from a grammar description
 - Scanner states, also known as [start conditions](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex_toc.html#TOC11)
+- Configurable scanner-state-dependent skip tokens via `%skip` (available in `parol` 4.5.0)
 - Build script integration to invoke `parol` automatically during your crate's build process
 - A [Visual Studio Code extension](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode)
 and a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls)
