@@ -29,7 +29,7 @@ The export payload contains data that is intrinsic to the grammar and parser con
 - ordered non-terminals and start symbol index
 - production list and RHS symbol structure
 - LL(k) lookahead automata or LALR(1) parse table
-- scanner terminals, states, comments, transitions, and lookahead expressions
+- scanner terminals, states, comments, state-local skip token sets, transitions, and lookahead expressions
 - production datatype metadata derived from grammar type analysis
 
 This data is considered portable across target languages.
@@ -144,6 +144,7 @@ real-world content.
 				"auto_newline": true,
 				"auto_ws": true,
 				"allow_unmatched": false,
+				"skip_tokens": [],
 				"transitions": []
 			}
 		]
@@ -199,6 +200,7 @@ real-world content.
 				"auto_newline": true,
 				"auto_ws": true,
 				"allow_unmatched": false,
+				"skip_tokens": [],
 				"transitions": []
 			}
 		]

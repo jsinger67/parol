@@ -133,6 +133,7 @@ pub struct ScannerStateExportModel {
     pub auto_newline: bool,
     pub auto_ws: bool,
     pub allow_unmatched: bool,
+    pub skip_tokens: Vec<TerminalIndex>,
     pub transitions: Vec<ScannerTransitionExportModel>,
 }
 
@@ -611,6 +612,7 @@ fn build_scanner_export_model(grammar_config: &GrammarConfig) -> ScannerExportMo
                 auto_newline: scanner.auto_newline,
                 auto_ws: scanner.auto_ws,
                 allow_unmatched: scanner.allow_unmatched,
+                skip_tokens: scanner.skip_tokens.clone(),
                 transitions,
             }
         })
@@ -760,6 +762,12 @@ mod tests {
             .join(file_name)
     }
 
+    fn data_grammar_path(file_name: &str) -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("data/valid")
+            .join(file_name)
+    }
+
     #[test]
     fn llk_export_model_is_versioned_and_serializable() {
         let grammar_path =
@@ -906,6 +914,21 @@ S: "a" ?= "b" | "a";
 
         let _ = fs::remove_file(&temp_grammar_file);
         test_result.unwrap();
+    }
+
+    #[test]
+    fn scanner_export_model_contains_skip_tokens() {
+        let grammar_config =
+            obtain_grammar_config(data_grammar_path("skip-directive.par"), false).unwrap();
+        let scanner = build_scanner_export_model(&grammar_config);
+
+        assert!(
+            scanner
+                .scanner_states
+                .iter()
+                .any(|state| !state.skip_tokens.is_empty()),
+            "Expected at least one scanner state with configured skip tokens"
+        );
     }
 
     #[test]

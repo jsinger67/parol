@@ -17,6 +17,22 @@ fn assert_common_contract(model: &ParserExportModel) {
     assert!(!model.productions.is_empty());
     assert!(!model.scanner.scanner_states.is_empty());
     assert_eq!(model.production_datatypes.len(), model.productions.len());
+
+    let known_terminal_indices = model
+        .scanner
+        .terminals
+        .iter()
+        .map(|t| t.index)
+        .collect::<std::collections::BTreeSet<_>>();
+    for scanner_state in &model.scanner.scanner_states {
+        for skip_token in &scanner_state.skip_tokens {
+            assert!(
+                known_terminal_indices.contains(skip_token),
+                "scanner skip token index {} is not part of scanner terminals",
+                skip_token
+            );
+        }
+    }
 }
 
 fn validate_export_model_for_consumer(model: &ParserExportModel) -> Result<(), String> {
@@ -37,6 +53,22 @@ fn validate_export_model_for_consumer(model: &ParserExportModel) -> Result<(), S
     }
     if model.scanner.scanner_states.is_empty() {
         return Err("scanner.scanner_states must not be empty".to_string());
+    }
+    let known_terminal_indices = model
+        .scanner
+        .terminals
+        .iter()
+        .map(|t| t.index)
+        .collect::<std::collections::BTreeSet<_>>();
+    for scanner_state in &model.scanner.scanner_states {
+        for skip_token in &scanner_state.skip_tokens {
+            if !known_terminal_indices.contains(skip_token) {
+                return Err(format!(
+                    "scanner skip token index {} is not part of scanner terminals",
+                    skip_token
+                ));
+            }
+        }
     }
     if model.production_datatypes.len() != model.productions.len() {
         return Err("production_datatypes length must match productions".to_string());

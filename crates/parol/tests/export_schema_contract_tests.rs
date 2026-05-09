@@ -119,6 +119,21 @@ fn assert_snapshot_satisfies_common_contract(snapshot: &Value) {
         !scanner_states.is_empty(),
         "scanner.scanner_states must not be empty"
     );
+
+    for state in scanner_states {
+        let skip_tokens = state
+            .as_object()
+            .and_then(|o| o.get("skip_tokens"))
+            .and_then(Value::as_array)
+            .expect("scanner state must contain skip_tokens array");
+
+        for skip_token in skip_tokens {
+            assert!(
+                skip_token.as_u64().is_some(),
+                "scanner state skip token entries must be unsigned integers"
+            );
+        }
+    }
 }
 
 #[test]

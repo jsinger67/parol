@@ -537,6 +537,7 @@
         "auto_newline",
         "auto_ws",
         "allow_unmatched",
+        "skip_tokens",
         "transitions"
       ],
       "properties": {
@@ -578,6 +579,13 @@
         },
         "allow_unmatched": {
           "type": "boolean"
+        },
+        "skip_tokens": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
         "transitions": {
           "type": "array",

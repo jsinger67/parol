@@ -133,6 +133,7 @@
         "auto_newline": true,
         "auto_ws": true,
         "allow_unmatched": false,
+        "skip_tokens": [],
         "transitions": []
       }
     ]
