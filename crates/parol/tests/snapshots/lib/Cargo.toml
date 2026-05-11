@@ -11,4 +11,4 @@ scnr2 = "0.5.2"
 thiserror = "2.0"
 
 [build-dependencies]
-parol = "4.5.0"
+parol = "4.5.1"
