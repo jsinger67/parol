@@ -778,7 +778,8 @@ mod tests {
         let model = build_export_model_for_llk(&grammar_config, &la_dfa).unwrap();
         let json = serde_json::to_string(&model).unwrap();
 
-        assert!(json.contains("\"version\":1"));
+        assert_eq!(model.version, PARSER_EXPORT_MODEL_VERSION);
+        assert!(json.contains(&format!("\"version\":{}", PARSER_EXPORT_MODEL_VERSION)));
         assert!(json.contains("\"algorithm\":\"Llk\""));
         assert!(model.lalr_parse_table.is_none());
         assert!(!model.lookahead_automata.is_empty());

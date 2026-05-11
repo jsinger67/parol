@@ -60,7 +60,7 @@ mod tests {
     use std::path::PathBuf;
 
     const RUST_LEXER_OUTPUT_CHECKSUM: u64 = 3620951960146662877;
-    const CSHARP_LEXER_OUTPUT_CHECKSUM: u64 = 7234489667512800621;
+    const CSHARP_LEXER_OUTPUT_CHECKSUM: u64 = 13631226015308363166;
 
     #[derive(Debug)]
     struct TestConfig;

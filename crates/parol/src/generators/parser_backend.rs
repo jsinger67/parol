@@ -101,7 +101,7 @@ mod tests {
     use std::path::PathBuf;
 
     const RUST_PARSER_OUTPUT_CHECKSUM: u64 = 749855876744296252;
-    const CSHARP_PARSER_OUTPUT_CHECKSUM: u64 = 10987753882266822372;
+    const CSHARP_PARSER_OUTPUT_CHECKSUM: u64 = 330885139893830924;
 
     #[derive(Debug)]
     struct TestConfig;
