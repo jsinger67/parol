@@ -5,7 +5,7 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## v0.6.0 - Not yet released
+## v0.6.0 - 2026-05-11
 
 - Add keyword `%skip` for syntax highlighting to match newer `parol` grammar features.
 - Security and dependency maintenance since `v0.5.5`:

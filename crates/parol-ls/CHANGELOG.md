@@ -5,7 +5,7 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## 4.4.0 - Unreleased
+## 4.4.0 - 2026-05-11
 
 * Add support for scanner directive `%skip` in `parol-ls`:
   * Grammar support in `parol_ls.par` and regenerated parser/trait artifacts.
