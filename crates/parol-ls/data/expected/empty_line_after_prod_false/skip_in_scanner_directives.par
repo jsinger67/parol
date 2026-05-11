@@ -15,8 +15,8 @@ Start
 Identifier
     : "id"
     ;
-WS  : /[ \t\r\n]+/
+WS  : <INITIAL, COMMENT_SCANNER>/[ \t\r\n]+/
     ;
 COMMENT
-    : /\/\/.*(\r\n|\r|\n)?/
+    : <INITIAL, COMMENT_SCANNER>/\/\/.*(\r\n|\r|\n)?/
     ;

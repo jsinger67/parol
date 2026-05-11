@@ -10,5 +10,5 @@
 %%
 Start: Identifier;
 Identifier: "id";
-WS: /[ \t\r\n]+/;
-COMMENT: /\/\/.*(\r\n|\r|\n)?/;
+WS: <INITIAL, COMMENT_SCANNER>/[ \t\r\n]+/;
+COMMENT: <INITIAL, COMMENT_SCANNER>/\/\/.*(\r\n|\r|\n)?/;
