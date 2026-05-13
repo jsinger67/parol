@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Fix expanded grammar (`*-exp.par`) serialization to preserve `%skip` directives.
+
 ## 4.5.1 - 2026-05-11
 
 * Fix dependency generation in `parol new --lang c-sharp`

@@ -151,6 +151,20 @@ fn render_scanner_config_string(
         scanner_directives.push_str(&format!("{indent}%auto_ws_off\n"));
     }
 
+    let mut skip_tokens = scanner_config
+        .skip_tokens
+        .iter()
+        .map(|terminal_index| {
+            primary_non_terminal_finder(*terminal_index)
+                .unwrap_or_else(|| terminal_index.to_string())
+        })
+        .collect::<Vec<_>>();
+    skip_tokens.sort();
+    skip_tokens.dedup();
+    if !skip_tokens.is_empty() {
+        scanner_directives.push_str(&format!("{indent}%skip {}\n", skip_tokens.join(", ")));
+    }
+
     let mut transitions = Vec::new();
 
     for (scanner_switch, primary_nts) in group_by(&scanner_config.transitions, |(_, v)| v.clone()) {
@@ -251,5 +265,23 @@ mod test {
 "#;
         let expected = expected.replace("\r\n", "\n");
         assert_eq!(expected, par_str);
+    }
+
+    #[test]
+    fn check_par_format_includes_skip_directive() {
+        let g = Cfg::with_start_symbol("S")
+            .add_pr(Pr::new("A", vec![terminal!("a")]))
+            .add_pr(Pr::new("B", vec![terminal!("b")]))
+            .add_pr(Pr::new("S", vec![Symbol::n("A"), Symbol::n("B")]));
+
+        let grammar_config = GrammarConfig::new(g, 1)
+            .add_scanner(ScannerConfig::default().with_skip_tokens(vec![5]));
+
+        let par_str = render_par_string(&grammar_config, true).unwrap();
+        let par_str = par_str.replace("\r\n", "\n");
+        assert!(
+            par_str.contains("%skip A\n"),
+            "Expected rendered PAR string to contain %skip directive, got:\n{par_str}"
+        );
     }
 }
