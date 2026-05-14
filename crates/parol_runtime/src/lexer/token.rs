@@ -23,7 +23,21 @@ pub const BLOCK_COMMENT: TerminalIndex = 4;
 /// Index of the first user token.
 pub const FIRST_USER_TOKEN: TerminalIndex = 5;
 
-/// Invalid token constant
+///
+/// INVALID TOKEN CONSTANT
+///
+/// These tokens can occur in two different scenarios:
+/// 1. They have been inserted by the parser during error recovery.
+/// 2. They have been inserted by the parol runtime when the lexer detects an invalid token in an
+///    open scanner state (%allow_unmatched). In this case, the token type is transfered to the
+///    parse tree, so that users can detect such an unmatched token.
+///
+/// ATTENTION:
+///
+/// Case 2 could lead to invalid array index access, when users try to access the token's
+/// name in the TERMINAL_NAMES array. Therefore, users should always check for INVALID_TOKEN before
+/// accessing the token's name.
+///
 pub const INVALID_TOKEN: TerminalIndex = TerminalIndex::MAX - 1;
 
 /// End of input token text
