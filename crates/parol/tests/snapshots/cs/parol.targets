@@ -1,6 +1,21 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ParolCommand Condition="'$(ParolCommand)' == ''">parol</ParolCommand>
+  </PropertyGroup>
+
+  <Target Name="CheckParol" BeforeTargets="GenerateParser">
+    <Exec Command="$(ParolCommand) --version" IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="ParolExitCode" />
+    </Exec>
+    <PropertyGroup>
+      <ParolAvailable Condition="'$(ParolExitCode)' == '0'">true</ParolAvailable>
+      <ParolAvailable Condition="'$(ParolAvailable)' == ''">false</ParolAvailable>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="GenerateParser" BeforeTargets="BeforeCompile;CoreCompile" Inputs="SnapshotCs.par" Outputs="SnapshotCsParser.cs;ISnapshotCsActions.cs">
-    <Exec Command="parol -f SnapshotCs.par -e SnapshotCsExp.par -p SnapshotCsParser.cs -a ISnapshotCsActions.cs -t SnapshotCs -m SnapshotCs -l c-sharp" />
+    <Exec Condition="'$(ParolAvailable)' == 'true'" Command="$(ParolCommand) -f SnapshotCs.par -e SnapshotCsExp.par -p SnapshotCsParser.cs -a ISnapshotCsActions.cs -t SnapshotCs -m SnapshotCs -l c-sharp" />
+    <Warning Condition="'$(ParolAvailable)' != 'true'" Text="Skipping parser generation because '$(ParolCommand)' is not available. Using checked-in generated sources." />
     <ItemGroup>
       <Compile Remove="SnapshotCsParser.cs" />
       <Compile Include="SnapshotCsParser.cs" />

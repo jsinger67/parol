@@ -13,8 +13,23 @@ impl std::fmt::Display for ParolTargetsData<'_> {
         write!(
             f,
             r#"<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ParolCommand Condition="'$(ParolCommand)' == ''">parol</ParolCommand>
+  </PropertyGroup>
+
+  <Target Name="CheckParol" BeforeTargets="GenerateParser">
+    <Exec Command="$(ParolCommand) --version" IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="ParolExitCode" />
+    </Exec>
+    <PropertyGroup>
+      <ParolAvailable Condition="'$(ParolExitCode)' == '0'">true</ParolAvailable>
+      <ParolAvailable Condition="'$(ParolAvailable)' == ''">false</ParolAvailable>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="GenerateParser" BeforeTargets="BeforeCompile;CoreCompile" Inputs="{grammar_name}.par" Outputs="{grammar_name}Parser.cs;I{grammar_name}Actions.cs">
-    <Exec Command="parol -f {grammar_name}.par -e {grammar_name}Exp.par -p {grammar_name}Parser.cs -a I{grammar_name}Actions.cs -t {grammar_name} -m {grammar_name} -l c-sharp" />
+    <Exec Condition="'$(ParolAvailable)' == 'true'" Command="$(ParolCommand) -f {grammar_name}.par -e {grammar_name}Exp.par -p {grammar_name}Parser.cs -a I{grammar_name}Actions.cs -t {grammar_name} -m {grammar_name} -l c-sharp" />
+    <Warning Condition="'$(ParolAvailable)' != 'true'" Text="Skipping parser generation because '$(ParolCommand)' is not available. Using checked-in generated sources." />
     <ItemGroup>
       <Compile Remove="{grammar_name}Parser.cs" />
       <Compile Include="{grammar_name}Parser.cs" />

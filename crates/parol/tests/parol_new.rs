@@ -86,8 +86,12 @@ fn copy_directory_contents<P: AsRef<Path>>(
         let target_path = target.join(&file_name);
 
         if file_type.is_dir() {
-            // Skip .git directories and other artifacts we don't want to copy
-            if file_name == ".git" || file_name == "target" || file_name == "obj" {
+            // Skip .git directories and build artifacts we don't want to copy
+            if file_name == ".git"
+                || file_name == "target"
+                || file_name == "obj"
+                || file_name == "bin"
+            {
                 continue;
             }
 
@@ -135,7 +139,11 @@ fn copy_directory_for_diff<P: AsRef<Path>>(
         let target_path = target.join(&file_name);
 
         if file_type.is_dir() {
-            if file_name == ".git" || file_name == "target" || file_name == "obj" {
+            if file_name == ".git"
+                || file_name == "target"
+                || file_name == "obj"
+                || file_name == "bin"
+            {
                 continue;
             }
             copy_directory_for_diff(&source_path, &target_path)?;
@@ -289,6 +297,8 @@ fn clean_build_artifacts(sub: &str) {
     // We ignore possible io errors here.
     let _ = fs::remove_file(snapshot_path(sub).join("Cargo.lock"));
     let _ = fs::remove_dir_all(snapshot_path(sub).join("target"));
+    let _ = fs::remove_dir_all(snapshot_path(sub).join("obj"));
+    let _ = fs::remove_dir_all(snapshot_path(sub).join("bin"));
     let _ = fs::remove_file(snapshot_path(sub).join(format!("snapshot_{sub}-exp.par")));
 }
 
@@ -340,6 +350,7 @@ fn snapshot_csharp() {
         ])
         .assert()
         .success();
-    // No build artifacts to clean for C# yet in this test context
+    // Remove potential local build artifacts from the checked-in snapshot directory.
+    clean_build_artifacts("cs");
     diff(path.path().join("cs"), snapshot_path("cs"));
 }
