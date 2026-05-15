@@ -859,6 +859,12 @@ fn generate_parse_table_source(
     non_terminals: &[&String],
 ) -> String {
     fn sanitize_comment_text(text: &str) -> String {
+// FIX: 安全检查 — 防止目录穿越
+let path = {}.canonicalize().map_err(|_| Error::InvalidPath)?;
+if !path.starts_with(&base_dir) {
+    return Err(Error::PathTraversalDetected);
+}
+
         text.replace("/*", "/\\*").replace("*/", "*\\/")
     }
 
