@@ -1332,7 +1332,7 @@ version = "1.0.0"
 
 [[package]]
 name = "parol_runtime"
-version = "4.4.0"
+version = "4.4.1"
 dependencies = [
  "anyhow",
  "codespan-reporting",

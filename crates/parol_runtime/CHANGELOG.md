@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.4.1 - 2026-05-27
+
+* Fix issue [[#1229](https://github.com/jsinger67/parol/issues/1229)]
+  * Suppress calling user actions while parser is in recovery mode
+
 ## 4.4.0 - 2026-05-11
 
 * Add scanner-state-aware `%skip` support to the runtime token stream to stay in sync with

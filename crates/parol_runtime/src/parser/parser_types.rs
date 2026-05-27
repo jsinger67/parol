@@ -276,39 +276,10 @@ impl<'t> LLKParser<'t> {
             .split_off(self.parse_tree_stack.len() - l);
 
         // With the children we can call the user's semantic action
-        match user_actions.call_semantic_action_for_production_number(prod_num, &children) {
-            Ok(()) => {}
-            Err(e) => {
-                if self.is_in_recovery_mode() {
-                    trace!("Ignoring semantic action error during recovery: {:?}", e);
-                    // Add the error to the error entries
-
-                    // Try to get a location from the error if it implements LocationProvider
-                    if let ParolError::UserError(anyhow_error) = e.as_ref() {
-                        for cause in anyhow_error.chain() {
-                            if let Some(syntax_error) = cause.downcast_ref::<SyntaxError>() {
-                                trace!(
-                                    "Found location provider for semantic action error during recovery"
-                                );
-                                let _ = self.add_error(
-                                    SyntaxError::default()
-                                        .with_cause("Semantic action error during recovery")
-                                        .with_location(syntax_error.error_location.as_ref().clone())
-                                        .with_source(Box::new(e)),
-                                );
-                                return Ok(());
-                            }
-                        }
-                    } else {
-                        trace!(
-                            "Ignoring semantic action error during recovery without location provider\n{:?}",
-                            e
-                        );
-                    }
-                } else {
-                    return Err(e);
-                }
-            }
+        if !self.is_in_recovery_mode() {
+            user_actions.call_semantic_action_for_production_number(prod_num, &children)?;
+        } else {
+            trace!("Semantic action suppressed for production {}", prod_num);
         }
 
         if !self.trim_parse_tree {
