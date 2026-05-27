@@ -102,6 +102,7 @@ impl SyntaxError {
         self
     }
 
+    #[allow(unused)]
     pub(crate) fn with_source(mut self, e: Box<ParolError>) -> SyntaxError {
         self.source = Some(e);
         self
