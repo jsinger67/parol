@@ -25,17 +25,13 @@ pub struct Trans(
 );
 
 ///
-/// The lookahead DFA. Used to calculate a certain production number from a
-/// sequence of terminals.
-///
+/// The lookahead DFA. Used to calculate a certain production number from a sequence of terminals.
 /// The start state is per definition always the state with index 0.
-///
-/// In the generated parsers there always exists exactly one LookaheadDFA for
-/// each non-terminal.
+/// In the generated parsers there always exists exactly one LookaheadDFA for each non-terminal.
 ///
 #[derive(Debug, Default, Clone, Eq, PartialEq)]
 pub struct LookaheadDFA {
-    /// Contains the production number in initial state 0. If the automaton has not transitions this
+    /// Contains the production number in initial state 0. If the automaton has no transitions this
     /// number will be returned.
     pub prod0: CompiledProductionIndex,
 
@@ -43,8 +39,8 @@ pub struct LookaheadDFA {
     /// Transitions are sorted
     ///     * firstly by the index of the from-state,
     ///     * secondly by the terminal index
-    /// This way it is easy to detect the case where no match exists and to be
-    /// able to quickly terminate the search for an applicable transition.
+    /// This way it is easy to detect the case where no match exists and to be able to quickly
+    /// terminate the search for an applicable transition.
     ///
     pub transitions: &'static [Trans],
 
@@ -68,8 +64,7 @@ impl LookaheadDFA {
 
     ///
     /// Calculates the next production to use for the given non-terminal.
-    /// Retrieves the lookahead tokens from the TokenStream object without
-    /// consuming any of them.
+    /// Retrieves the lookahead tokens from the TokenStream object without consuming any of them.
     ///
     #[inline(always)]
     pub fn eval<F: Fn(char) -> Option<usize> + Clone>(
@@ -103,9 +98,8 @@ impl LookaheadDFA {
 
                 if current_transition.0 != state {
                     if any_matching_found {
-                        // Since the transitions are sorted by from-state we
-                        // have moved beyond the possible transitions and
-                        // can safely stop the search here.
+                        // Since the transitions are sorted by from-state we have moved beyond the
+                        // possible transitions and can safely stop the search here.
                         break;
                     } else {
                         // Try the next matching transition.
@@ -115,13 +109,12 @@ impl LookaheadDFA {
 
                 any_matching_found = true;
 
-                // Test if there exists a transition from the from-state
-                // via the current lookahead token
+                // Test if there exists a transition from the from-state via the current lookahead
+                // token to another state.
                 match current_transition.1.cmp(&current_lookahead_token) {
                     Ordering::Equal => {
-                        // Set the to_state and break into the outer for loop
-                        // to finish if we found an accepting state or
-                        // to read the next lookahead token if available.
+                        // Set the to_state and break into the outer for loop to finish if we found
+                        // an accepting state or to read the next lookahead token if available.
                         trace!(
                             "{}, {} => {}",
                             state, current_lookahead_token, current_transition.2
@@ -129,16 +122,17 @@ impl LookaheadDFA {
                         // Set the state to the to-state
                         state = current_transition.2;
                         prod_num = current_transition.3;
-                        // Test if the production in this transition is a valid one
+                        // Test if the production in this transition is a valid one.
                         // In this case the to-state is an accepting one.
-                        if current_transition.3 > INVALID_PROD {
-                            // In case we step too far, we can retrieve the last
-                            // accepting state.
-                            // Indeed we can step too far because the self.k is the
-                            // maximum depth of all subtrees.
-                            last_accepting_state = Some(current_transition.2);
-                            last_prod_num = current_transition.3;
-                            trace!("State {} accepts", current_transition.2);
+                        if prod_num > INVALID_PROD {
+                            // We store the last accepting state and the production number.
+                            // If we have advanced too far, we can restore the last accepting state.
+                            // In fact, we can advance too far, since `self.k` is the maximum depth
+                            // of all subtrees and thus the maximum number of non-skip tokens in the
+                            // token stream's token buffer.
+                            last_accepting_state = Some(state);
+                            last_prod_num = prod_num;
+                            trace!("State {} accepts", state);
                         }
                         break;
                     }
@@ -155,6 +149,7 @@ impl LookaheadDFA {
             trace!("Predict production {prod_num} at state {state}");
             Ok(prod_num as ProductionIndex)
         } else if let Some(last_state) = last_accepting_state {
+            // We stepped too far, but we can return the production number of the last accepting state.
             debug_assert!(last_prod_num > INVALID_PROD);
             trace!("Predict production {last_prod_num:?} from last accepting state {last_state}");
             Ok(last_prod_num as ProductionIndex)
@@ -172,7 +167,11 @@ impl LookaheadDFA {
     }
 
     ///
-    /// Returns all terminals that lead from state 0 to a valid next state
+    /// Returns a triple of a diagnostic message, the unexpected tokens and the expected tokens.
+    /// To find the expected tokens we filter the transitions for those with from-state 0 and
+    /// collect the terminal names, i.e. we only report the expected tokens for the initial state.
+    /// If we would return k-tuples of expected tokens for each lookahead position, the error
+    /// message would be too verbose and not helpful.
     ///
     pub fn build_error<F: Fn(char) -> Option<usize> + Clone>(
         &self,
