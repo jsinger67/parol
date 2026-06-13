@@ -92,7 +92,7 @@
     "@typescript-eslint/parser": "^8.60.0",
     "@vscode/test-electron": "^3.0.0",
     "@vscode/vsce": "^3.9.2",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "eslint": "^10.4.1",
     "prettier": "^3.8.4"
   },
