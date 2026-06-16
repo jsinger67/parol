@@ -76,7 +76,7 @@ mod tests {
     use crate::utils::obtain_grammar_config;
     use std::path::PathBuf;
 
-    const RUST_USER_TRAIT_OUTPUT_CHECKSUM: u64 = 9804298626913191341;
+    const RUST_USER_TRAIT_OUTPUT_CHECKSUM: u64 = 14659656194348958893;
     const CSHARP_USER_TRAIT_OUTPUT_CHECKSUM: u64 = 15779923004694027088;
 
     #[derive(Debug)]
