@@ -122,3 +122,28 @@ Another way to avoid this warning is to modify your grammar such that the length
 sides of your productions are decreased. Therefore examine the productions that correlate to the
 functions where the warnings occur. Then consider to factor out parts of the RHS into separate
 productions.
+
+## Q: How can I derive serde traits for generated AST types?
+A: Append derive traits to generated Rust grammar-trait data types with either the Builder API or
+the CLI.
+
+In `build.rs`, add this before `.generate_parser()`:
+
+```rust
+        .add_derives(vec![
+            "serde::Serialize".to_string(),
+            "serde::Deserialize".to_string(),
+        ])
+```
+
+From the CLI, use comma-separated values:
+
+```powershell
+parol -f .\your_grammar.par -p .\src\parser.rs -a .\src\grammar_trait.rs --add-derives serde::Serialize,serde::Deserialize
+```
+
+`parol` keeps the default derives and appends your values, resulting in generated code like:
+
+```rust
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+```

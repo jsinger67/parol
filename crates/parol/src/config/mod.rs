@@ -63,4 +63,9 @@ pub trait ParserGeneratorConfig {
 pub trait UserTraitGeneratorConfig {
     /// Inserts the given inner attributes at the top of the generated trait source.
     fn inner_attributes(&self) -> &[InnerAttributes];
+
+    /// Additional traits appended to derives of generated grammar trait data types.
+    fn add_derives(&self) -> &[String] {
+        &[]
+    }
 }

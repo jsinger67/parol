@@ -368,6 +368,19 @@ pub(crate) struct NonTerminalTypeStruct {
     pub type_name: String,
     pub lifetime: String,
     pub members: StrVec,
+    pub additional_derives: Vec<String>,
+}
+
+fn build_derive_list(additional_derives: &[String]) -> String {
+    let mut derives = vec!["Debug".to_string(), "Clone".to_string()];
+    for derive in additional_derives {
+        let derive = derive.trim();
+        if derive.is_empty() || derives.iter().any(|d| d == derive) {
+            continue;
+        }
+        derives.push(derive.to_string());
+    }
+    derives.join(", ")
 }
 
 impl std::fmt::Display for NonTerminalTypeStruct {
@@ -377,7 +390,9 @@ impl std::fmt::Display for NonTerminalTypeStruct {
             type_name,
             lifetime,
             members,
+            additional_derives,
         } = self;
+        let derives = build_derive_list(additional_derives);
         for comment in comment {
             writeln!(f, "/// {comment}")?
         }
@@ -385,13 +400,10 @@ impl std::fmt::Display for NonTerminalTypeStruct {
             let _ = writeln!(output, "pub {member}");
             output
         });
-        f.write_fmt(ume::ume! {
-            #[allow(dead_code)]
-            #[derive(Debug, Clone)]
-            pub struct #type_name #lifetime {
-                #members
-            }
-        })
+        write!(
+            f,
+            "#[allow(dead_code)]\n#[derive({derives})]\npub struct {type_name} {lifetime} {{\n{members}}}\n"
+        )
     }
 }
 
@@ -401,6 +413,7 @@ pub(crate) struct NonTerminalTypeEnum {
     pub type_name: String,
     pub lifetime: String,
     pub members: StrVec,
+    pub additional_derives: Vec<String>,
 }
 
 impl std::fmt::Display for NonTerminalTypeEnum {
@@ -410,17 +423,20 @@ impl std::fmt::Display for NonTerminalTypeEnum {
             type_name,
             lifetime,
             members,
+            additional_derives,
         } = self;
+        let derives = build_derive_list(additional_derives);
         for comment in comment {
             writeln!(f, "/// {comment}")?
         }
-        f.write_fmt(ume::ume! {
-            #[allow(dead_code)]
-            #[derive(Debug, Clone)]
-            pub enum #type_name #lifetime {
-                #members
-            }
-        })
+        let members = members.iter().fold(String::new(), |mut output, member| {
+            let _ = writeln!(output, "{member}");
+            output
+        });
+        write!(
+            f,
+            "#[allow(dead_code)]\n#[derive({derives})]\npub enum {type_name} {lifetime} {{\n{members}}}\n"
+        )
     }
 }
 

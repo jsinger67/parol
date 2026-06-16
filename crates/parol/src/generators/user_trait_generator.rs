@@ -515,6 +515,7 @@ impl<'a> UserTraitGenerator<'a> {
         type_id: SymbolId,
         symbol_table: &SymbolTable,
         comment: StrVec,
+        additional_derives: &[String],
     ) -> Result<Option<String>> {
         let type_symbol = symbol_table.symbol_as_type(type_id);
         let type_name = symbol_table.name(type_symbol.my_id()).to_string();
@@ -530,6 +531,7 @@ impl<'a> UserTraitGenerator<'a> {
                     comment,
                     type_name,
                     lifetime,
+                    additional_derives: additional_derives.to_vec(),
                     members: members.iter().fold(StrVec::new(4), |mut acc, m| {
                         if symbol_table.symbol_as_instance(*m).sem() != SymbolAttribute::Clipped {
                             acc.push(symbol_table.symbol(*m).to_rust());
@@ -544,6 +546,7 @@ impl<'a> UserTraitGenerator<'a> {
                     comment,
                     type_name,
                     lifetime,
+                    additional_derives: additional_derives.to_vec(),
                     members: members.iter().fold(StrVec::new(4), |mut acc, m| {
                         acc.push(symbol_table.symbol(*m).to_rust());
                         acc
@@ -633,7 +636,13 @@ impl<'a> UserTraitGenerator<'a> {
             comment.push(String::default());
             comment.push("Deduced ASTType of expanded grammar".to_string());
             comment.push(String::default());
-            Self::format_type(type_info.ast_enum_type, &type_info.symbol_table, comment)?.unwrap()
+            Self::format_type(
+                type_info.ast_enum_type,
+                &type_info.symbol_table,
+                comment,
+                config.add_derives(),
+            )?
+            .unwrap()
         };
 
         if config.range() {
@@ -755,7 +764,7 @@ impl<'a> UserTraitGenerator<'a> {
         comment.push(String::default());
         comment.push(format!("Type derived for non-terminal {s}"));
         comment.push(String::default());
-        Self::format_type(*t, &type_info.symbol_table, comment)?
+        Self::format_type(*t, &type_info.symbol_table, comment, config.add_derives())?
             .into_iter()
             .for_each(|s| acc.push(s));
         if config.range() {
@@ -782,7 +791,7 @@ impl<'a> UserTraitGenerator<'a> {
         comment.push(String::default());
         comment.push(format!("`{}`", f.prod_string));
         comment.push(String::default());
-        Self::format_type(*t, &type_info.symbol_table, comment)?
+        Self::format_type(*t, &type_info.symbol_table, comment, config.add_derives())?
             .into_iter()
             .for_each(|s| acc.push(s));
         if config.range() {

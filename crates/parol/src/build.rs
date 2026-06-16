@@ -214,6 +214,8 @@ pub struct Builder {
     enum_kind: bool,
     /// Inner attributes to insert at the top of the generated trait source.
     inner_attributes: Vec<InnerAttributes>,
+    /// Additional traits appended to derive attributes of generated grammar trait data types.
+    additional_derive_attributes: Vec<String>,
     /// Enables trimming of the parse tree during parsing.
     /// Generates the call to trim_parse_tree on the parser object before the call of parse.
     pub(crate) trim_parse_tree: bool,
@@ -296,6 +298,7 @@ impl Builder {
             expanded_grammar_output_file: None,
             minimize_boxed_types: false,
             inner_attributes: Vec::new(),
+            additional_derive_attributes: Vec::new(),
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
             trim_parse_tree: false,
@@ -413,6 +416,17 @@ impl Builder {
     /// Inserts the given inner attributes at the top of the generated trait source.
     pub fn inner_attributes(&mut self, inner_attributes: Vec<InnerAttributes>) -> &mut Self {
         self.inner_attributes = inner_attributes;
+        self
+    }
+
+    /// Appends additional traits to derive attributes of generated grammar trait data types.
+    pub fn add_derives(&mut self, add_derives: Vec<String>) -> &mut Self {
+        self.additional_derive_attributes.extend(
+            add_derives
+                .into_iter()
+                .map(|s| s.trim().to_string())
+                .filter(|s| !s.is_empty()),
+        );
         self
     }
     /// Activate the minimization of boxed types in the generated parser
@@ -533,6 +547,10 @@ impl ParserGeneratorConfig for Builder {
 impl UserTraitGeneratorConfig for Builder {
     fn inner_attributes(&self) -> &[InnerAttributes] {
         &self.inner_attributes
+    }
+
+    fn add_derives(&self) -> &[String] {
+        &self.additional_derive_attributes
     }
 }
 

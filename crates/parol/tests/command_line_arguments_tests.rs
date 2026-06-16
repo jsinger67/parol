@@ -9,7 +9,9 @@ fn test_help_argument() {
         .arg("--help")
         .assert()
         .success()
-        .stdout(predicates::str::contains("Usage:"));
+        .stdout(
+            predicates::str::contains("Usage:").and(predicates::str::contains("--add-derives")),
+        );
 }
 
 #[test]
@@ -140,4 +142,29 @@ fn test_subcommand_export_lalr1_snapshot() {
     let output_file = PathBuf::from("tests/output_export_lalr1.json");
 
     assert_export_snapshot(&grammar_file, &expected_file, &output_file);
+}
+
+#[test]
+fn test_add_derives_argument_appends_derives_to_generated_types() {
+    let grammar_file = PathBuf::from("tests/data/arg_tests/generate.par");
+    let actions_file = PathBuf::from("tests/output_grammar_trait.rs");
+    let _ = fs::remove_file(&actions_file);
+
+    cargo_bin_cmd!("parol")
+        .args([
+            "-f",
+            grammar_file.to_str().unwrap(),
+            "-a",
+            actions_file.to_str().unwrap(),
+            "--add-derives",
+            "serde::Serialize,serde::Deserialize",
+            "--quiet",
+        ])
+        .assert()
+        .success();
+
+    let generated = fs::read_to_string(&actions_file).unwrap();
+    assert!(generated.contains("#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]"));
+
+    fs::remove_file(actions_file).unwrap();
 }

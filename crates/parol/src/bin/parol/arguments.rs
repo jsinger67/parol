@@ -79,6 +79,10 @@ pub(crate) struct CliArgs {
     #[arg(long, value_enum)]
     pub inner_attributes: Vec<InnerAttributes>,
 
+    /// Appends comma-separated traits to derives of generated grammar trait data types.
+    #[arg(long, value_delimiter = ',')]
+    pub add_derives: Vec<String>,
+
     /// Disables the error recovery mechanism in the generated parser
     /// This has currently no effect on LR parsers, because error recovery is not available yet.
     #[arg(long)]

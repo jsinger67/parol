@@ -27,6 +27,8 @@ your own crates.
 
 You can control the process of AST type generation. First you can mark elements for omission in your
 AST. Also you can specify your own types for language elements.
+For generated Rust grammar trait types, you can append additional derive traits with the CLI option
+`--add-derives` (comma separated) or programmatically with `Builder::add_derives`.
 
 Language description and language implementation is strictly separated in `parol`. Thus you can
 design your language's grammar without any need to process anything because generated parsers
