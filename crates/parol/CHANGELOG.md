@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 4.6.0 - 2026-06-17
+
 * Fix expanded grammar (`*-exp.par`) serialization to preserve `%skip` directives.
 * Add configurable extra derives for generated Rust grammar trait data types via
   `Builder::add_derives` and CLI option `--add-derives`.
+  This closes issue [1268](https://github.com/jsinger67/parol/issues/1268).
 
 ## 4.5.1 - 2026-05-11
 
