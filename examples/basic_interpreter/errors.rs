@@ -70,7 +70,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -93,7 +93,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -119,7 +119,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -143,7 +143,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -167,7 +167,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -186,7 +186,7 @@ impl Report for BasicErrorReporter {
                 }
             }
         } else {
-            let result = term::emit(
+            let result = term::emit_to_io_write(
                 &mut writer.lock(),
                 &config,
                 &files,
@@ -202,3 +202,4 @@ impl Report for BasicErrorReporter {
         }
     }
 }
+

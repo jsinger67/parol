@@ -23,10 +23,13 @@ where
 ///
 /// Attributes applicable to a production or an alternation
 ///
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS)]
+#[derive(
+    Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS, Default,
+)]
 #[ts(export)]
 pub enum ProductionAttribute {
     /// No valid attribute, default value
+    #[default]
     None,
     /// Indicates a start of repetition, i.e. a collection
     CollectionStart,
@@ -47,12 +50,6 @@ impl Display for ProductionAttribute {
             Self::OptionalSome => write!(f, "Option<T>::Some"),
             Self::OptionalNone => write!(f, "Option<T>::None"),
         }
-    }
-}
-
-impl Default for ProductionAttribute {
-    fn default() -> Self {
-        Self::None
     }
 }
 
@@ -81,10 +78,13 @@ where
 ///
 /// Attributes applicable to a grammar symbol
 ///
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS)]
+#[derive(
+    Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS, Default,
+)]
 #[ts(export)]
 pub enum SymbolAttribute {
     /// No valid attribute, default value
+    #[default]
     None,
 
     /// The symbol is actually a collection, i.e. a vector
@@ -108,12 +108,6 @@ impl Display for SymbolAttribute {
             Self::Option => write!(f, "`Option<T>`"),
             Self::Clipped => write!(f, "Clipped"),
         }
-    }
-}
-
-impl Default for SymbolAttribute {
-    fn default() -> Self {
-        Self::None
     }
 }
 

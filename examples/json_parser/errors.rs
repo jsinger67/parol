@@ -44,7 +44,7 @@ impl Report for JSONErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    term::emit(
+                    term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -61,7 +61,7 @@ impl Report for JSONErrorReporter {
                 }
             }
         } else {
-            term::emit(
+            term::emit_to_io_write(
                 &mut writer.lock(),
                 &config,
                 &files,

@@ -118,7 +118,7 @@ fn insert_transitions(
                 }
                 Ok(())
             })?;
-        transitions.sort_by(|a, b| a.0.cmp(&b.0));
+        transitions.sort_by_key(|a| a.0);
         sc.transitions = transitions;
     } else {
         bail!("Scanner configuration {} not found", sc.scanner_name);

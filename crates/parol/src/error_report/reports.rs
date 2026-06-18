@@ -32,7 +32,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                             &mut writer.lock(),
                             &config,
                             &files,
@@ -53,7 +53,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -79,7 +79,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -105,7 +105,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -135,7 +135,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -157,7 +157,7 @@ impl Report for ParolErrorReporter {
                             ]),
                     )?)
                 }
-                ParolParserError::EmptyScanners { empty_scanners } => Ok(term::emit(
+                ParolParserError::EmptyScanners { empty_scanners } => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -177,7 +177,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -203,7 +203,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -230,7 +230,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -259,7 +259,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -287,7 +287,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -314,7 +314,7 @@ impl Report for ParolErrorReporter {
                         .map(|r| r.name.to_string())
                         .collect::<Vec<String>>()
                         .join(", ");
-                    return Ok(term::emit(
+                    return Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -335,7 +335,7 @@ impl Report for ParolErrorReporter {
                         .map(|r| r.hint.clone())
                         .collect::<Vec<String>>()
                         .join(", ");
-                    return Ok(term::emit(
+                    return Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -355,7 +355,7 @@ impl Report for ParolErrorReporter {
                         .map(|r| r.hint.clone())
                         .collect::<Vec<String>>()
                         .join(", ");
-                    return Ok(term::emit(
+                    return Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -370,7 +370,7 @@ impl Report for ParolErrorReporter {
                     )?);
                 }
                 GrammarAnalysisError::MaxKExceeded { max_k } => {
-                    return Ok(term::emit(
+                    return Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -381,7 +381,7 @@ impl Report for ParolErrorReporter {
                     )?);
                 }
                 GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict } => {
-                    return Ok(term::emit(
+                    return Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -396,7 +396,7 @@ impl Report for ParolErrorReporter {
                 }
             }
         } else {
-            let result = term::emit(
+            let result = term::emit_to_io_write(
                 &mut writer.lock(),
                 &config,
                 &files,
@@ -408,7 +408,7 @@ impl Report for ParolErrorReporter {
                             .map_or("No details".to_string(), |s| s.to_string()),
                     ]),
             );
-            return result.map_err(|e| anyhow::anyhow!(e));
+            result.map_err(|e| anyhow::anyhow!(e))
         }
     }
 }

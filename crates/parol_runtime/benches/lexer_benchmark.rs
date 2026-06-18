@@ -1,11 +1,12 @@
 use std::{borrow::Cow, cell::RefCell, path::Path};
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 use parol_runtime::{
     lexer::tokenizer::{ERROR_TOKEN, UNMATCHABLE_TOKEN},
     once_cell::sync::Lazy,
     ScannerConfig, TerminalIndex, TokenStream, Tokenizer,
 };
+use std::hint::black_box;
 
 const LEXER_INPUT: &str = include_str!("./input_1.txt");
 

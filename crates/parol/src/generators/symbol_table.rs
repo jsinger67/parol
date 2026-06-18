@@ -137,10 +137,11 @@ impl Display for MetaSymbolKind {
 ///
 /// Type information used for auto-generation
 ///
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TS, Default)]
 #[ts(export)]
 pub(crate) enum TypeEntrails {
     /// Not specified, used as prototype during generation
+    #[default]
     None,
     /// Will be generated as Token structure
     Token,
@@ -191,12 +192,6 @@ impl TypeEntrails {
 
     pub(crate) fn is_container(&self) -> bool {
         matches!(self, Self::Vec(_) | Self::Option(_) | Self::Box(_))
-    }
-}
-
-impl Default for TypeEntrails {
-    fn default() -> Self {
-        Self::None
     }
 }
 
@@ -741,7 +736,7 @@ impl SymbolTable {
     }
 
     /// Returns a type facade of the symbol with the given id
-    pub(crate) fn symbol_as_type(&self, symbol_id: SymbolId) -> impl TypeFacade {
+    pub(crate) fn symbol_as_type(&self, symbol_id: SymbolId) -> impl TypeFacade<'_> {
         let symbol_type = match &self[symbol_id].kind {
             SymbolKind::Type(t) => t,
             SymbolKind::Instance(_) => panic!("Ain't no type!"),

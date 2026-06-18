@@ -39,7 +39,7 @@ pub trait Report {
         let writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
         let config = codespan_reporting::term::Config::default();
         let files = SimpleFiles::<String, String>::new();
-        let result = term::emit(
+        let result = term::emit_to_io_write(
             &mut writer.lock(),
             &config,
             &files,
@@ -69,7 +69,7 @@ pub trait Report {
 
         let report_lexer_error = |err: &LexerError| -> anyhow::Result<()> {
             match err {
-                LexerError::TokenBufferEmptyError => Ok(term::emit(
+                LexerError::TokenBufferEmptyError => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -78,7 +78,7 @@ pub trait Report {
                         .with_code("parol_runtime::lexer::empty_token_buffer")
                         .with_notes(vec!["Token buffer is empty".to_string()]),
                 )?),
-                LexerError::InternalError(e) => Ok(term::emit(
+                LexerError::InternalError(e) => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -86,7 +86,7 @@ pub trait Report {
                         .with_message(format!("Internal lexer error: {e}"))
                         .with_code("parol_runtime::lexer::internal_error"),
                 )?),
-                LexerError::LookaheadExceedsMaximum => Ok(term::emit(
+                LexerError::LookaheadExceedsMaximum => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -94,7 +94,7 @@ pub trait Report {
                         .with_message("Lookahead exceeds maximum".to_string())
                         .with_code("parol_runtime::lexer::lookahead_exceeds_maximum"),
                 )?),
-                LexerError::LookaheadExceedsTokenBufferLength => Ok(term::emit(
+                LexerError::LookaheadExceedsTokenBufferLength => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -102,7 +102,7 @@ pub trait Report {
                         .with_message("Lookahead exceeds token buffer length".to_string())
                         .with_code("parol_runtime::lexer::lookahead_exceeds_token_buffer_length"),
                 )?),
-                LexerError::ScannerStackEmptyError => Ok(term::emit(
+                LexerError::ScannerStackEmptyError => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -114,7 +114,7 @@ pub trait Report {
                                 .to_string(),
                         ]),
                 )?),
-                LexerError::RecoveryError(e) => Ok(term::emit(
+                LexerError::RecoveryError(e) => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -127,7 +127,7 @@ pub trait Report {
 
         let report_parser_error = |err: &ParserError| -> anyhow::Result<()> {
             match err {
-                ParserError::TreeError { source } => Ok(term::emit(
+                ParserError::TreeError { source } => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -136,7 +136,7 @@ pub trait Report {
                         .with_code("parol_runtime::parser::syntree_error")
                         .with_notes(vec!["Internal error".to_string()]),
                 )?),
-                ParserError::DataError(e) => Ok(term::emit(
+                ParserError::DataError(e) => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -145,7 +145,7 @@ pub trait Report {
                         .with_code("parol_runtime::lexer::internal_error")
                         .with_notes(vec!["Error in generated source".to_string()]),
                 )?),
-                ParserError::PredictionError { cause } => Ok(term::emit(
+                ParserError::PredictionError { cause } => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -184,7 +184,7 @@ pub trait Report {
                                     );
                                     acc
                                 });
-                            Ok(term::emit(
+                            Ok(term::emit_to_io_write(
                                 &mut writer.lock(),
                                 &config,
                                 &files,
@@ -202,7 +202,7 @@ pub trait Report {
                             )?)
                         },
                     )?;
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -212,7 +212,7 @@ pub trait Report {
                 }
                 ParserError::UnprocessedInput { last_token, .. } => {
                     let un_span: Span = (Into::<Range<usize>>::into(&**last_token)).into();
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -231,7 +231,7 @@ pub trait Report {
                     context, source, ..
                 } => {
                     report_lexer_error(source)?;
-                    Ok(term::emit(
+                    Ok(term::emit_to_io_write(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -242,7 +242,7 @@ pub trait Report {
                             .with_code("parol_runtime::parser::pop_on_empty_scanner_stack"),
                     )?)
                 }
-                ParserError::InternalError(e) => Ok(term::emit(
+                ParserError::InternalError(e) => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -251,7 +251,7 @@ pub trait Report {
                         .with_code("parol_runtime::parser::internal_error")
                         .with_notes(vec!["This may be a bug. Please report it!".to_string()]),
                 )?),
-                ParserError::TooManyErrors { count } => Ok(term::emit(
+                ParserError::TooManyErrors { count } => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -262,7 +262,7 @@ pub trait Report {
                             "The parser has stopped because too many errors occurred.".to_string(),
                         ]),
                 )?),
-                ParserError::RecoveryFailed => Ok(term::emit(
+                ParserError::RecoveryFailed => Ok(term::emit_to_io_write(
                     &mut writer.lock(),
                     &config,
                     &files,
@@ -283,3 +283,4 @@ pub trait Report {
         }
     }
 }
+
