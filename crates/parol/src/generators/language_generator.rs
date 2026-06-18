@@ -1,7 +1,7 @@
 use crate::{Cfg, Pr, Symbol, Terminal};
 use anyhow::{anyhow, Result};
 use parol_runtime::log::trace;
-use rand::Rng;
+use rand::RngExt;
 use std::collections::HashMap;
 use thiserror::Error;
 
@@ -94,7 +94,7 @@ impl<'a> LanguageGenerator<'a> {
     ) -> Result<()> {
         let mut rng = rand::rng();
         let utf8_gen = self.get_regex(terminal)?;
-        let generated = rng.sample::<String, _>(utf8_gen);
+        let generated: String = rng.sample(utf8_gen);
         trace!("gen: {}", generated);
         result.push_str(&generated);
         result.push(' ');
