@@ -54,6 +54,11 @@ pub struct ListItem<'t> {
 I cannot give general advice here, but there are plenty of examples that cover this topic
 thoroughly.
 
+
+If you instead prefer a runtime guard for deeply nested input, see Q:
+[Can I cap parser depth to avoid stack-overflow-like failures on deeply nested input?](#q-can-i-cap-parser-depth-to-avoid-stack-overflow-like-failures-on-deeply-nested-input).
+
+
 ## Q: I get strange errors while developing my new grammar and cannot figure out the problem
 A: Consider the following recommendations:
 
@@ -67,6 +72,26 @@ The process of error recovery will surely shroud the original error location.
 Therefore it is advisable to temporarily disable it.
 
 Use the Builder API (`disable_recovery()`) or the command-line argument (`--disable-recovery`).
+
+## Q: Can I cap parser depth to avoid stack-overflow-like failures on deeply nested input?
+A: Yes. Configure a maximum parsing depth in `build.rs` or pass it on the CLI.
+
+Builder API:
+```rust
+    .max_parsing_depth(2000)
+```
+
+CLI:
+```powershell
+parol -f .\your_grammar.par -p .\src\parser.rs -a .\src\grammar_trait.rs --max-parsing-depth 2000
+```
+
+Notes:
+- The limit is disabled by default.
+- The measured value is parser-internal and therefore grammar-dependent.
+- LL(k) parsers check the current production depth.
+- LALR(1) parsers check the current parse stack size.
+- Because LL and LR internals differ, the same numeric limit can trigger at different input nesting levels.
 
 ### Enable traces
 

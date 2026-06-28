@@ -8,6 +8,7 @@ use thiserror::Error;
 pub type Result<T> = std::result::Result<T, ParolError>;
 
 #[derive(Error, Debug)]
+#[non_exhaustive]
 pub enum ParserError {
     #[error(transparent)]
     TreeError { source: syntree::Error },
@@ -35,6 +36,9 @@ pub enum ParserError {
 
     #[error("Too many errors: {count}")]
     TooManyErrors { count: usize },
+
+    #[error("Max parsing depth exceeded: {depth}")]
+    MaxParsingDepthExceeded { depth: usize },
 
     #[error("Error recovery failed")]
     RecoveryFailed,

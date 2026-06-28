@@ -292,6 +292,7 @@ struct ParserData<'a> {
     module_name: &'a str,
     trim_parse_tree: bool,
     disable_recovery: bool,
+    max_parsing_depth: Option<usize>,
 }
 
 impl std::fmt::Display for ParserData<'_> {
@@ -312,6 +313,7 @@ impl std::fmt::Display for ParserData<'_> {
             module_name,
             trim_parse_tree,
             disable_recovery,
+            max_parsing_depth,
         } = self;
 
         writeln!(
@@ -397,6 +399,11 @@ impl std::fmt::Display for ParserData<'_> {
         } else {
             ""
         };
+        let depth_limit = if let Some(max_parsing_depth) = *max_parsing_depth {
+            format!("llk_parser.set_max_parsing_depth({max_parsing_depth});\n")
+        } else {
+            String::new()
+        };
         f.write_fmt(ume::ume! {
             pub fn parse<#lifetime_on_parse T>(
                 input: &#lifetime_on_input str,
@@ -430,6 +437,7 @@ impl std::fmt::Display for ParserData<'_> {
                 );
                 #enable_trimming
                 #recovery
+                #depth_limit
                 #scanner_instance
                 #auto_wrapper
 
@@ -465,6 +473,7 @@ struct LRParserData<'a> {
     scanner_module_name: String,
     module_name: &'a str,
     trim_parse_tree: bool,
+    max_parsing_depth: Option<usize>,
     parse_table_source: String,
 }
 
@@ -483,6 +492,7 @@ impl std::fmt::Display for LRParserData<'_> {
             scanner_module_name,
             module_name,
             trim_parse_tree,
+            max_parsing_depth,
             parse_table_source,
         } = self;
 
@@ -555,6 +565,11 @@ impl std::fmt::Display for LRParserData<'_> {
         } else {
             ""
         };
+        let depth_limit = if let Some(max_parsing_depth) = *max_parsing_depth {
+            format!("lr_parser.set_max_parsing_depth({max_parsing_depth});\n")
+        } else {
+            String::new()
+        };
         let use_scanner_type = ume::ume! {
             use #scanner_module_name::#scanner_type_name;
         }
@@ -596,6 +611,7 @@ impl std::fmt::Display for LRParserData<'_> {
                     NON_TERMINALS,
                 );
                 #enable_trimming
+                #depth_limit
                 #auto_wrapper
                 #scanner_instance
                 lr_parser.parse_into(
@@ -701,6 +717,7 @@ fn generate_parser_source_internal<C: CommonGeneratorConfig + ParserGeneratorCon
         module_name: config.module_name(),
         trim_parse_tree: config.trim_parse_tree(),
         disable_recovery: config.recovery_disabled(),
+        max_parsing_depth: config.max_parsing_depth(),
     };
 
     Ok(format!("{parser_data}"))
@@ -847,6 +864,7 @@ fn generate_lalr1_parser_source_internal<C: CommonGeneratorConfig + ParserGenera
         scanner_module_name: get_scanner_module_name(config),
         module_name: config.module_name(),
         trim_parse_tree: config.trim_parse_tree(),
+        max_parsing_depth: config.max_parsing_depth(),
         parse_table_source,
     };
 

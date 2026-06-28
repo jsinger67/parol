@@ -31,6 +31,44 @@ pub struct Production {
     pub production: &'static [ParseType],
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    static TERMINAL_NAMES: [&str; 1] = ["EndOfInput"];
+    static NON_TERMINAL_NAMES: [&str; 1] = ["Start"];
+    static LOOKAHEAD_AUTOMATA: [LookaheadDFA; 1] = [LookaheadDFA {
+        prod0: 0,
+        transitions: &[],
+        k: 0,
+    }];
+    static PRODUCTIONS: [Production; 1] = [Production {
+        lhs: 0,
+        production: &[],
+    }];
+
+    #[test]
+    fn ll_parser_returns_max_depth_error_when_limit_is_exceeded() {
+        let mut parser = LLKParser::new(
+            0,
+            &LOOKAHEAD_AUTOMATA,
+            &PRODUCTIONS,
+            &TERMINAL_NAMES,
+            &NON_TERMINAL_NAMES,
+        );
+        parser.set_max_parsing_depth(1);
+
+        let mut builder: TreeBuilder<SynTree> = TreeBuilder::new_with();
+
+        assert!(parser.push_production(&mut builder, 0).is_ok());
+        let err = parser.push_production(&mut builder, 0).unwrap_err();
+        assert!(matches!(
+            err,
+            ParolError::ParserError(ParserError::MaxParsingDepthExceeded { depth: 2 })
+        ));
+    }
+}
+
 impl Production {
     fn to_string(
         &self,
@@ -87,9 +125,14 @@ pub struct LLKParser<'t> {
     parser_stack: ParseStack,
 
     ///
-    /// The production depth. Use for logging reasons only.
+    /// The production depth. Use for logging and error detection.
     ///
     pub production_depth: usize,
+
+    ///
+    /// Maximum allowed parsing depth. If exceeded, a `MaxParsingDepthExceeded` error is returned.
+    ///
+    max_parsing_depth: Option<usize>,
 
     ///
     /// Temporary stack that receives recognized grammar symbols before they
@@ -151,6 +194,7 @@ impl<'t> LLKParser<'t> {
             start_symbol_index,
             parser_stack: ParseStack::new(terminal_names, non_terminal_names),
             production_depth: 0,
+            max_parsing_depth: None,
             parse_tree_stack: ParseTreeStack::new(),
             lookahead_automata,
             productions,
@@ -170,6 +214,12 @@ impl<'t> LLKParser<'t> {
     ///
     pub fn trim_parse_tree(&mut self) {
         self.trim_parse_tree = true;
+    }
+
+    /// Sets the maximum parsing depth. Can be used to prevent stack overflows for
+    /// grammars that allow deep recursion.
+    pub fn set_max_parsing_depth(&mut self, max_depth: usize) {
+        self.max_parsing_depth = Some(max_depth);
     }
 
     /// Returns true if the parser is currently in error recovery mode
@@ -249,6 +299,16 @@ impl<'t> LLKParser<'t> {
         ));
 
         self.production_depth += 1;
+
+        if let Some(max_depth) = self.max_parsing_depth
+            && self.production_depth > max_depth
+        {
+            return Err(ParserError::MaxParsingDepthExceeded {
+                depth: self.production_depth,
+            }
+            .into());
+        }
+
         trace!(
             "Pushed production {}({}) -> depth {}",
             prod_num,

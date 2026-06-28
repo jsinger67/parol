@@ -100,7 +100,7 @@ mod tests {
     use crate::{InnerAttributes, calculate_lookahead_dfas};
     use std::path::PathBuf;
 
-    const RUST_PARSER_OUTPUT_CHECKSUM: u64 = 749855876744296252;
+    const RUST_PARSER_OUTPUT_CHECKSUM: u64 = 3044906197285355436;
     const CSHARP_PARSER_OUTPUT_CHECKSUM: u64 = 330885139893830924;
 
     #[derive(Debug)]
@@ -135,6 +135,55 @@ mod tests {
 
         fn recovery_disabled(&self) -> bool {
             false
+        }
+
+        fn max_parsing_depth(&self) -> Option<usize> {
+            None
+        }
+    }
+
+    #[derive(Debug)]
+    struct MaxDepthTestConfig;
+
+    impl CommonGeneratorConfig for MaxDepthTestConfig {
+        fn user_type_name(&self) -> &str {
+            "BackendTest"
+        }
+
+        fn module_name(&self) -> &str {
+            "backend_test"
+        }
+
+        fn minimize_boxed_types(&self) -> bool {
+            false
+        }
+
+        fn range(&self) -> bool {
+            false
+        }
+
+        fn node_kind_enums(&self) -> bool {
+            false
+        }
+    }
+
+    impl ParserGeneratorConfig for MaxDepthTestConfig {
+        fn trim_parse_tree(&self) -> bool {
+            false
+        }
+
+        fn recovery_disabled(&self) -> bool {
+            false
+        }
+
+        fn max_parsing_depth(&self) -> Option<usize> {
+            Some(42)
+        }
+    }
+
+    impl UserTraitGeneratorConfig for MaxDepthTestConfig {
+        fn inner_attributes(&self) -> &[InnerAttributes] {
+            &[]
         }
     }
 
@@ -285,5 +334,59 @@ mod tests {
             CSHARP_PARSER_OUTPUT_CHECKSUM, checksum,
             "C# parser output checksum changed: {checksum}"
         );
+    }
+
+    #[test]
+    fn rust_ll_parser_generation_emits_max_depth_setter() {
+        let grammar_config = obtain_grammar_config(test_grammar_path(), false).unwrap();
+        let config = MaxDepthTestConfig;
+        let lexer_source =
+            lexer_generator::generate_lexer_source(&grammar_config, &config).unwrap();
+        let lookahead_dfas = calculate_lookahead_dfas(&grammar_config, 5).unwrap();
+
+        let mut type_info = GrammarTypeInfo::try_new(config.user_type_name()).unwrap();
+        UserTraitGenerator::new(&grammar_config)
+            .generate_user_trait_source(&config, grammar_config.grammar_type, &mut type_info)
+            .unwrap();
+
+        let parser_ir = ParserGenerationIR::new(
+            &grammar_config,
+            &lexer_source,
+            &config,
+            type_info.symbol_table.has_lifetime(type_info.ast_enum_type),
+            ParserAlgorithmIR::Llk(&lookahead_dfas),
+        )
+        .unwrap();
+
+        let source = generate_parser_source_for_language(&RustParserBackend, &parser_ir).unwrap();
+        assert!(source.contains("llk_parser.set_max_parsing_depth(42);"));
+    }
+
+    #[test]
+    fn rust_lalr_parser_generation_emits_max_depth_setter() {
+        let grammar_config = obtain_grammar_config(test_grammar_path(), false).unwrap();
+        let config = MaxDepthTestConfig;
+        let lexer_source =
+            lexer_generator::generate_lexer_source(&grammar_config, &config).unwrap();
+        let parse_table = crate::calculate_lalr1_parse_table(&grammar_config)
+            .unwrap()
+            .0;
+
+        let mut type_info = GrammarTypeInfo::try_new(config.user_type_name()).unwrap();
+        UserTraitGenerator::new(&grammar_config)
+            .generate_user_trait_source(&config, grammar_config.grammar_type, &mut type_info)
+            .unwrap();
+
+        let parser_ir = ParserGenerationIR::new(
+            &grammar_config,
+            &lexer_source,
+            &config,
+            type_info.symbol_table.has_lifetime(type_info.ast_enum_type),
+            ParserAlgorithmIR::Lalr1(&parse_table),
+        )
+        .unwrap();
+
+        let source = generate_parser_source_for_language(&RustParserBackend, &parser_ir).unwrap();
+        assert!(source.contains("lr_parser.set_max_parsing_depth(42);"));
     }
 }

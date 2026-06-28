@@ -53,6 +53,11 @@ pub trait ParserGeneratorConfig {
 
     /// If true error recovery in the generated parser should be disabled.
     fn recovery_disabled(&self) -> bool;
+
+    /// If set, the generated parser will limit the maximum parsing depth to the given value.
+    fn max_parsing_depth(&self) -> Option<usize> {
+        None
+    }
 }
 
 // ---------------------------------------------------
