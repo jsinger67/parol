@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 4.7.0 - 2026-06-29
+
+* Add configurable parsing depth limit to prevent stack overflows on deeply nested ASTs.
+  * Add `Builder::max_parsing_depth` and CLI option `--max-parsing-depth` to set a limit on
+    parsing depth for both LL(k) and LALR(1) parsers.
+  * The runtime now returns a `ParserError::MaxParsingDepthExceeded` error if the limit is reached,
+    avoiding a process crash.
+  * This closes issue [#1308](httpshttps://github.com/jsinger67/parol/issues/1308).
+
 ## 4.6.0 - 2026-06-17
 
 * Fix expanded grammar (`*-exp.par`) serialization to preserve `%skip` directives.
