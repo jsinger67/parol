@@ -219,6 +219,12 @@ pub struct LRParser<'t> {
     ///
     /// Default is `false`.
     trim_parse_tree: bool,
+
+    /// The maximum parsing depth.
+    /// If this is exceeded, the parser will stop and return an error.
+    /// To enable this call the method `set_max_parsing_depth` on the parser object before parsing.
+    /// Default is `None`.
+    max_parsing_depth: Option<usize>,
 }
 
 impl<'t> LRParser<'t> {
@@ -241,6 +247,7 @@ impl<'t> LRParser<'t> {
             terminal_names,
             non_terminal_names,
             trim_parse_tree: false,
+            max_parsing_depth: None,
         }
     }
 
@@ -251,6 +258,14 @@ impl<'t> LRParser<'t> {
     ///
     pub fn trim_parse_tree(&mut self) {
         self.trim_parse_tree = true;
+    }
+
+    ///
+    /// Sets the maximum parsing depth.
+    /// If this is exceeded, the parser will stop and return an error.
+    ///
+    pub fn set_max_parsing_depth(&mut self, max_depth: usize) {
+        self.max_parsing_depth = Some(max_depth);
     }
 
     fn call_action<'u>(
@@ -348,6 +363,15 @@ impl<'t> LRParser<'t> {
         self.parse_tree_stack = ParseTreeStack::new();
 
         loop {
+            if let Some(max_depth) = self.max_parsing_depth
+                && self.parser_stack.stack.len() > max_depth
+            {
+                return Err(ParolError::ParserError(
+                    ParserError::MaxParsingDepthExceeded {
+                        depth: self.parser_stack.stack.len(),
+                    },
+                ));
+            }
             self.handle_additional_tokens(stream.clone(), user_actions)?;
             let terminal_index = stream.borrow_mut().lookahead_token_type(0)?;
             let current_state = self.parser_stack.current_state();
@@ -490,5 +514,83 @@ impl<'t> LRParser<'t> {
 impl From<syntree::Error> for ParolError {
     fn from(source: syntree::Error) -> Self {
         ParolError::ParserError(ParserError::TreeError { source })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::Token;
+    use crate::parser::parse_tree_type::SynTree;
+    use crate::parser::parser_types::SynTreeFlavor;
+    use scnr2::scanner;
+    use syntree::Builder;
+
+    scanner! {
+        TestScanner {
+            mode INITIAL {
+                token r"a" => 1;
+                token r"." => 2;
+            }
+        }
+    }
+
+    struct NoopActions;
+
+    impl<'t> UserActionsTrait<'t> for NoopActions {
+        fn call_semantic_action_for_production_number(
+            &mut self,
+            _prod_num: usize,
+            _children: &[ParseTreeType<'t>],
+        ) -> Result<()> {
+            Ok(())
+        }
+
+        fn on_comment(&mut self, _token: Token<'t>) {}
+    }
+
+    static TERMINAL_NAMES: [&str; 1] = ["EndOfInput"];
+    static NON_TERMINAL_NAMES: [&str; 1] = ["Start"];
+    static PRODUCTIONS: [LRProduction; 1] = [LRProduction { lhs: 0, len: 0 }];
+    static ACTIONS: [LRAction; 1] = [LRAction::Accept];
+    static STATES: [LR1State; 1] = [LR1State {
+        actions: &[(0, 0)],
+        gotos: &[],
+    }];
+    static PARSE_TABLE: LRParseTable = LRParseTable {
+        actions: &ACTIONS,
+        states: &STATES,
+    };
+
+    #[test]
+    fn lr_parser_returns_max_depth_error_when_limit_is_exceeded() {
+        let mut parser = LRParser::new(
+            0,
+            &PARSE_TABLE,
+            &PRODUCTIONS,
+            &TERMINAL_NAMES,
+            &NON_TERMINAL_NAMES,
+        );
+        parser.set_max_parsing_depth(0);
+
+        let scanner = test_scanner::TestScanner::new();
+        let stream = TokenStream::new(
+            "",
+            "test_input",
+            scanner.scanner_impl.clone(),
+            &test_scanner::TestScanner::match_function,
+            1,
+        )
+        .unwrap();
+        let mut builder = Builder::<SynTree, SynTreeFlavor>::new_with();
+        let mut actions = NoopActions;
+
+        let err = parser
+            .parse_into(&mut builder, stream, &mut actions)
+            .unwrap_err();
+        assert!(matches!(
+            err,
+            ParolError::ParserError(ParserError::MaxParsingDepthExceeded { depth: 1 })
+        ));
     }
 }

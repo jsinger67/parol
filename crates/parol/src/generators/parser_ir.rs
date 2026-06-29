@@ -107,6 +107,10 @@ mod tests {
         fn recovery_disabled(&self) -> bool {
             false
         }
+
+        fn max_parsing_depth(&self) -> Option<usize> {
+            None
+        }
     }
 
     fn grammar_path(file_name: &str) -> PathBuf {

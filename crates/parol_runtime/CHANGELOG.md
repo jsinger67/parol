@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.5.0 - 2026-06-29
+
+* Add configurable parsing depth limit to prevent stack overflows on deeply nested ASTs.
+  * Add `set_max_parsing_depth` to `LLKParser` and `LRParser` to enable a runtime depth limit.
+  * Add new `ParserError::MaxParsingDepthExceeded` error variant, which is returned when the
+    configured limit is reached.
+  * This closes issue [#1308](https://github.com/jsinger67/parol/issues/1308).
+
 ## 4.4.1 - 2026-05-27
 
 * Fix issue [[#1229](https://github.com/jsinger67/parol/issues/1229)]

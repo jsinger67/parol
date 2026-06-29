@@ -85,6 +85,9 @@ fn run(args: &CliArgs) -> Result<u128> {
     builder.inner_attributes(args.inner_attributes.clone());
     builder.add_derives(args.add_derives.clone());
     builder.language(args.language);
+    if let Some(max_parsing_depth) = args.max_parsing_depth {
+        builder.max_parsing_depth(max_parsing_depth);
+    }
     if let Some(expanded_grammar_file) = &args.expanded {
         if expanded_grammar_file == OsStr::new("--") {
             // We special case this in our listener (see below)

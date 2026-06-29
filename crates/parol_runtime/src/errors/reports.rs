@@ -300,6 +300,18 @@ pub trait Report {
                             "The parser has stopped because error recovery failed.".to_string(),
                         ]),
                 )?),
+                ParserError::MaxParsingDepthExceeded { depth } => Ok(term::emit_to_write_style(
+                    &mut writer,
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message(format!("Maximum parsing depth ({depth}) exceeded"))
+                        .with_code("parol_runtime::parser::max_parsing_depth_exceeded")
+                        .with_notes(vec![
+                            "The parser has stopped because the maximum allowed parsing depth was exceeded.".to_string(),
+                            "Consider checking for infinite recursion in your grammar rules.".to_string(),
+                        ]),
+                )?),
             }
         };
 

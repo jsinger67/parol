@@ -88,6 +88,11 @@ pub(crate) struct CliArgs {
     #[arg(long)]
     pub disable_recovery: bool,
 
+    /// Sets the maximum parsing depth. Can be used to prevent stack overflows for
+    /// grammars that allow deep recursion.
+    #[arg(long)]
+    pub max_parsing_depth: Option<usize>,
+
     /// The language to generate code for
     #[arg(short, long, value_enum, default_value_t = parol::Language::Rust)]
     pub language: parol::Language,

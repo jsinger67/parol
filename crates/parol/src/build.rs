@@ -221,6 +221,8 @@ pub struct Builder {
     pub(crate) trim_parse_tree: bool,
     /// Disbales the error recovery mechanism in the generated parser
     pub(crate) disable_recovery: bool,
+    /// The maximum parsing depth.
+    pub(crate) max_parsing_depth: Option<usize>,
     /// The language to generate code for
     pub(crate) language: crate::config::Language,
 }
@@ -303,6 +305,7 @@ impl Builder {
             output_sanity_checks: true,
             trim_parse_tree: false,
             disable_recovery: false,
+            max_parsing_depth: None,
             language: crate::config::Language::Rust,
         }
     }
@@ -394,6 +397,12 @@ impl Builder {
         self.max_lookahead = k;
         Ok(self)
     }
+    /// Sets the maximum parsing depth.
+    pub fn max_parsing_depth(&mut self, max_parsing_depth: usize) -> &mut Self {
+        self.max_parsing_depth = Some(max_parsing_depth);
+        self
+    }
+
     /// Debug verbose information to the standard output
     ///
     /// This is an internal method, and is only intended for the CLI.
@@ -496,12 +505,18 @@ impl Builder {
     }
     /// Generate the parser, writing it to the pre-configured output files.
     pub fn generate_parser(&mut self) -> Result<()> {
+        if self.max_parsing_depth.is_some() && self.language != crate::Language::Rust {
+            parol!("Maximum parsing depth is only supported for Rust parsers");
+        }
         self.begin_generation_with(None)
             .map_err(|e| parol!("Misconfigured parol generation: {}", e))?
             .generate_parser()
     }
     /// Generate the parser, writing it to the pre-configured output files. And export the node info.
     pub fn generate_parser_and_export_node_infos(&mut self) -> Result<NodeTypesInfo> {
+        if self.max_parsing_depth.is_some() && self.language != crate::Language::Rust {
+            parol!("Maximum parsing depth is only supported for Rust parsers");
+        }
         self.begin_generation_with(None)
             .map_err(|e| parol!("Misconfigured parol generation: {}", e))?
             .generate_parser_and_export_node_infos()
@@ -541,6 +556,10 @@ impl ParserGeneratorConfig for Builder {
 
     fn recovery_disabled(&self) -> bool {
         self.disable_recovery
+    }
+
+    fn max_parsing_depth(&self) -> Option<usize> {
+        self.max_parsing_depth
     }
 }
 
