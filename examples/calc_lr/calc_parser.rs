@@ -1322,127 +1322,371 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
 
 pub const PRODUCTIONS: &[LRProduction; 61] = &[
     // 0 - Calc: CalcList /* Vec */;
-    LRProduction { lhs: 14, len: 1 },
+    LRProduction {
+        lhs: 14,
+        len: 1,
+        is_push_production: false,
+    },
     // 1 - CalcList: CalcList Instruction ";"^ /* Clipped */;
-    LRProduction { lhs: 15, len: 3 },
+    LRProduction {
+        lhs: 15,
+        len: 3,
+        is_push_production: true,
+    },
     // 2 - CalcList: ;
-    LRProduction { lhs: 15, len: 0 },
+    LRProduction {
+        lhs: 15,
+        len: 0,
+        is_push_production: false,
+    },
     // 3 - EqualityOp: /==|!=/;
-    LRProduction { lhs: 18, len: 1 },
+    LRProduction {
+        lhs: 18,
+        len: 1,
+        is_push_production: false,
+    },
     // 4 - AssignOp: /(\+|-|\*|\/|%|<<|>>|&|\^|\|)?=/;
-    LRProduction { lhs: 2, len: 1 },
+    LRProduction {
+        lhs: 2,
+        len: 1,
+        is_push_production: false,
+    },
     // 5 - LogicalOrOp: '||';
-    LRProduction { lhs: 28, len: 1 },
+    LRProduction {
+        lhs: 28,
+        len: 1,
+        is_push_production: false,
+    },
     // 6 - LogicalAndOp: '&&';
-    LRProduction { lhs: 25, len: 1 },
+    LRProduction {
+        lhs: 25,
+        len: 1,
+        is_push_production: false,
+    },
     // 7 - BitwiseOrOp: '|';
-    LRProduction { lhs: 10, len: 1 },
+    LRProduction {
+        lhs: 10,
+        len: 1,
+        is_push_production: false,
+    },
     // 8 - BitwiseAndOp: '&';
-    LRProduction { lhs: 7, len: 1 },
+    LRProduction {
+        lhs: 7,
+        len: 1,
+        is_push_production: false,
+    },
     // 9 - BitwiseShiftOp: /<<|>>/;
-    LRProduction { lhs: 13, len: 1 },
+    LRProduction {
+        lhs: 13,
+        len: 1,
+        is_push_production: false,
+    },
     // 10 - RelationalOp: /<=|<|>=|>/;
-    LRProduction { lhs: 41, len: 1 },
+    LRProduction {
+        lhs: 41,
+        len: 1,
+        is_push_production: false,
+    },
     // 11 - Plus: '+';
-    LRProduction { lhs: 35, len: 1 },
+    LRProduction {
+        lhs: 35,
+        len: 1,
+        is_push_production: false,
+    },
     // 12 - Minus: '-';
-    LRProduction { lhs: 29, len: 1 },
+    LRProduction {
+        lhs: 29,
+        len: 1,
+        is_push_production: false,
+    },
     // 13 - PowOp: '**';
-    LRProduction { lhs: 36, len: 1 },
+    LRProduction {
+        lhs: 36,
+        len: 1,
+        is_push_production: false,
+    },
     // 14 - MultOp: /\*|\/|%/;
-    LRProduction { lhs: 32, len: 1 },
+    LRProduction {
+        lhs: 32,
+        len: 1,
+        is_push_production: false,
+    },
     // 15 - Instruction: Assignment;
-    LRProduction { lhs: 22, len: 1 },
+    LRProduction {
+        lhs: 22,
+        len: 1,
+        is_push_production: false,
+    },
     // 16 - Instruction: LogicalOr;
-    LRProduction { lhs: 22, len: 1 },
+    LRProduction {
+        lhs: 22,
+        len: 1,
+        is_push_production: false,
+    },
     // 17 - AssignItem: Id AssignOp;
-    LRProduction { lhs: 1, len: 2 },
+    LRProduction {
+        lhs: 1,
+        len: 2,
+        is_push_production: false,
+    },
     // 18 - Assignment: AssignItem AssignmentList /* Vec */ LogicalOr;
-    LRProduction { lhs: 3, len: 3 },
+    LRProduction {
+        lhs: 3,
+        len: 3,
+        is_push_production: false,
+    },
     // 19 - AssignmentList: AssignmentList AssignItem;
-    LRProduction { lhs: 4, len: 2 },
+    LRProduction {
+        lhs: 4,
+        len: 2,
+        is_push_production: true,
+    },
     // 20 - AssignmentList: ;
-    LRProduction { lhs: 4, len: 0 },
+    LRProduction {
+        lhs: 4,
+        len: 0,
+        is_push_production: false,
+    },
     // 21 - LogicalOr: LogicalAnd LogicalOrList /* Vec */;
-    LRProduction { lhs: 26, len: 2 },
+    LRProduction {
+        lhs: 26,
+        len: 2,
+        is_push_production: false,
+    },
     // 22 - LogicalOrList: LogicalOrList LogicalOrOp LogicalAnd;
-    LRProduction { lhs: 27, len: 3 },
+    LRProduction {
+        lhs: 27,
+        len: 3,
+        is_push_production: true,
+    },
     // 23 - LogicalOrList: ;
-    LRProduction { lhs: 27, len: 0 },
+    LRProduction {
+        lhs: 27,
+        len: 0,
+        is_push_production: false,
+    },
     // 24 - LogicalAnd: BitwiseOr LogicalAndList /* Vec */;
-    LRProduction { lhs: 23, len: 2 },
+    LRProduction {
+        lhs: 23,
+        len: 2,
+        is_push_production: false,
+    },
     // 25 - LogicalAndList: LogicalAndList LogicalAndOp BitwiseOr;
-    LRProduction { lhs: 24, len: 3 },
+    LRProduction {
+        lhs: 24,
+        len: 3,
+        is_push_production: true,
+    },
     // 26 - LogicalAndList: ;
-    LRProduction { lhs: 24, len: 0 },
+    LRProduction {
+        lhs: 24,
+        len: 0,
+        is_push_production: false,
+    },
     // 27 - BitwiseOr: BitwiseAnd BitwiseOrList /* Vec */;
-    LRProduction { lhs: 8, len: 2 },
+    LRProduction {
+        lhs: 8,
+        len: 2,
+        is_push_production: false,
+    },
     // 28 - BitwiseOrList: BitwiseOrList BitwiseOrOp BitwiseAnd;
-    LRProduction { lhs: 9, len: 3 },
+    LRProduction {
+        lhs: 9,
+        len: 3,
+        is_push_production: true,
+    },
     // 29 - BitwiseOrList: ;
-    LRProduction { lhs: 9, len: 0 },
+    LRProduction {
+        lhs: 9,
+        len: 0,
+        is_push_production: false,
+    },
     // 30 - BitwiseAnd: Equality BitwiseAndList /* Vec */;
-    LRProduction { lhs: 5, len: 2 },
+    LRProduction {
+        lhs: 5,
+        len: 2,
+        is_push_production: false,
+    },
     // 31 - BitwiseAndList: BitwiseAndList BitwiseAndOp Equality;
-    LRProduction { lhs: 6, len: 3 },
+    LRProduction {
+        lhs: 6,
+        len: 3,
+        is_push_production: true,
+    },
     // 32 - BitwiseAndList: ;
-    LRProduction { lhs: 6, len: 0 },
+    LRProduction {
+        lhs: 6,
+        len: 0,
+        is_push_production: false,
+    },
     // 33 - Equality: Relational EqualityList /* Vec */;
-    LRProduction { lhs: 16, len: 2 },
+    LRProduction {
+        lhs: 16,
+        len: 2,
+        is_push_production: false,
+    },
     // 34 - EqualityList: EqualityList EqualityOp Relational;
-    LRProduction { lhs: 17, len: 3 },
+    LRProduction {
+        lhs: 17,
+        len: 3,
+        is_push_production: true,
+    },
     // 35 - EqualityList: ;
-    LRProduction { lhs: 17, len: 0 },
+    LRProduction {
+        lhs: 17,
+        len: 0,
+        is_push_production: false,
+    },
     // 36 - Relational: BitwiseShift RelationalList /* Vec */;
-    LRProduction { lhs: 39, len: 2 },
+    LRProduction {
+        lhs: 39,
+        len: 2,
+        is_push_production: false,
+    },
     // 37 - RelationalList: RelationalList RelationalOp BitwiseShift;
-    LRProduction { lhs: 40, len: 3 },
+    LRProduction {
+        lhs: 40,
+        len: 3,
+        is_push_production: true,
+    },
     // 38 - RelationalList: ;
-    LRProduction { lhs: 40, len: 0 },
+    LRProduction {
+        lhs: 40,
+        len: 0,
+        is_push_production: false,
+    },
     // 39 - BitwiseShift: Summ BitwiseShiftList /* Vec */;
-    LRProduction { lhs: 11, len: 2 },
+    LRProduction {
+        lhs: 11,
+        len: 2,
+        is_push_production: false,
+    },
     // 40 - BitwiseShiftList: BitwiseShiftList BitwiseShiftOp Summ;
-    LRProduction { lhs: 12, len: 3 },
+    LRProduction {
+        lhs: 12,
+        len: 3,
+        is_push_production: true,
+    },
     // 41 - BitwiseShiftList: ;
-    LRProduction { lhs: 12, len: 0 },
+    LRProduction {
+        lhs: 12,
+        len: 0,
+        is_push_production: false,
+    },
     // 42 - AddOp: Plus;
-    LRProduction { lhs: 0, len: 1 },
+    LRProduction {
+        lhs: 0,
+        len: 1,
+        is_push_production: false,
+    },
     // 43 - AddOp: Minus;
-    LRProduction { lhs: 0, len: 1 },
+    LRProduction {
+        lhs: 0,
+        len: 1,
+        is_push_production: false,
+    },
     // 44 - Summ: Mult SummList /* Vec */;
-    LRProduction { lhs: 42, len: 2 },
+    LRProduction {
+        lhs: 42,
+        len: 2,
+        is_push_production: false,
+    },
     // 45 - SummList: SummList AddOp Mult;
-    LRProduction { lhs: 43, len: 3 },
+    LRProduction {
+        lhs: 43,
+        len: 3,
+        is_push_production: true,
+    },
     // 46 - SummList: ;
-    LRProduction { lhs: 43, len: 0 },
+    LRProduction {
+        lhs: 43,
+        len: 0,
+        is_push_production: false,
+    },
     // 47 - Mult: Power MultList /* Vec */;
-    LRProduction { lhs: 30, len: 2 },
+    LRProduction {
+        lhs: 30,
+        len: 2,
+        is_push_production: false,
+    },
     // 48 - MultList: MultList MultOp Power;
-    LRProduction { lhs: 31, len: 3 },
+    LRProduction {
+        lhs: 31,
+        len: 3,
+        is_push_production: true,
+    },
     // 49 - MultList: ;
-    LRProduction { lhs: 31, len: 0 },
+    LRProduction {
+        lhs: 31,
+        len: 0,
+        is_push_production: false,
+    },
     // 50 - Power: Factor PowerList /* Vec */;
-    LRProduction { lhs: 37, len: 2 },
+    LRProduction {
+        lhs: 37,
+        len: 2,
+        is_push_production: false,
+    },
     // 51 - PowerList: PowerList PowOp Factor;
-    LRProduction { lhs: 38, len: 3 },
+    LRProduction {
+        lhs: 38,
+        len: 3,
+        is_push_production: true,
+    },
     // 52 - PowerList: ;
-    LRProduction { lhs: 38, len: 0 },
+    LRProduction {
+        lhs: 38,
+        len: 0,
+        is_push_production: false,
+    },
     // 53 - Negate: Minus;
-    LRProduction { lhs: 33, len: 1 },
+    LRProduction {
+        lhs: 33,
+        len: 1,
+        is_push_production: false,
+    },
     // 54 - Factor: Number;
-    LRProduction { lhs: 19, len: 1 },
+    LRProduction {
+        lhs: 19,
+        len: 1,
+        is_push_production: false,
+    },
     // 55 - Factor: Negate Factor;
-    LRProduction { lhs: 19, len: 2 },
+    LRProduction {
+        lhs: 19,
+        len: 2,
+        is_push_production: false,
+    },
     // 56 - Factor: IdRef;
-    LRProduction { lhs: 19, len: 1 },
+    LRProduction {
+        lhs: 19,
+        len: 1,
+        is_push_production: false,
+    },
     // 57 - Factor: '('^ /* Clipped */ LogicalOr ')'^ /* Clipped */;
-    LRProduction { lhs: 19, len: 3 },
+    LRProduction {
+        lhs: 19,
+        len: 3,
+        is_push_production: false,
+    },
     // 58 - Number: /0|[1-9][0-9]*/;
-    LRProduction { lhs: 34, len: 1 },
+    LRProduction {
+        lhs: 34,
+        len: 1,
+        is_push_production: false,
+    },
     // 59 - IdRef: Id;
-    LRProduction { lhs: 21, len: 1 },
+    LRProduction {
+        lhs: 21,
+        len: 1,
+        is_push_production: false,
+    },
     // 60 - Id: /[a-zA-Z_][a-zA-Z0-9_]*/;
-    LRProduction { lhs: 20, len: 1 },
+    LRProduction {
+        lhs: 20,
+        len: 1,
+        is_push_production: false,
+    },
 ];
 
 pub fn parse<'t, T>(

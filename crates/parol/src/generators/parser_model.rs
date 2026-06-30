@@ -233,6 +233,9 @@ pub(crate) struct ProductionModel {
     pub(crate) lhs_index: usize,
     pub(crate) rhs: Vec<ProductionSymbolModel>,
     pub(crate) text: String,
+    /// Whether this production has push semantics (AddToCollection attribute),
+    /// meaning it accumulates items into a Vec<T> rather than creating nested structures.
+    pub(crate) is_push_production: bool,
 }
 
 pub(crate) struct LalrStateModel {
@@ -333,6 +336,7 @@ pub(crate) fn build_production_model(
                 lhs_index,
                 rhs,
                 text: format!("{pr}"),
+                is_push_production: pr.2 == ProductionAttribute::AddToCollection,
             })
         })
         .collect::<Result<Vec<_>>>()

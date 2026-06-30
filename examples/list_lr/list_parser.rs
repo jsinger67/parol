@@ -126,19 +126,47 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
 
 pub const PRODUCTIONS: &[LRProduction; 7] = &[
     // 0 - List: ListOpt /* Option */;
-    LRProduction { lhs: 2, len: 1 },
+    LRProduction {
+        lhs: 2,
+        len: 1,
+        is_push_production: false,
+    },
     // 1 - ListOpt: Items : crate::list_grammar::Numbers ;
-    LRProduction { lhs: 3, len: 1 },
+    LRProduction {
+        lhs: 3,
+        len: 1,
+        is_push_production: false,
+    },
     // 2 - ListOpt: ;
-    LRProduction { lhs: 3, len: 0 },
+    LRProduction {
+        lhs: 3,
+        len: 0,
+        is_push_production: false,
+    },
     // 3 - Items: Num ItemsList /* Vec */;
-    LRProduction { lhs: 0, len: 2 },
+    LRProduction {
+        lhs: 0,
+        len: 2,
+        is_push_production: false,
+    },
     // 4 - ItemsList: ItemsList ','^ /* Clipped */ Num;
-    LRProduction { lhs: 1, len: 3 },
+    LRProduction {
+        lhs: 1,
+        len: 3,
+        is_push_production: true,
+    },
     // 5 - ItemsList: ;
-    LRProduction { lhs: 1, len: 0 },
+    LRProduction {
+        lhs: 1,
+        len: 0,
+        is_push_production: false,
+    },
     // 6 - Num: /0|[1-9][0-9]*/;
-    LRProduction { lhs: 4, len: 1 },
+    LRProduction {
+        lhs: 4,
+        len: 1,
+        is_push_production: false,
+    },
 ];
 
 pub fn parse<T>(

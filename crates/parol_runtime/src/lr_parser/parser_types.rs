@@ -36,6 +36,14 @@ pub struct LRProduction {
     /// The length of the right-hand side of the production.
     ///
     pub len: usize,
+
+    ///
+    /// Whether this production has push semantics (accumulates items into a `Vec<T>`
+    /// rather than creating nested AST structures). Such productions are generated
+    /// by parol for repetition constructs and should not be counted towards the
+    /// maximum parsing depth.
+    ///
+    pub is_push_production: bool,
 }
 
 /// An item in the LR(0) state machine.
@@ -400,7 +408,9 @@ impl<'t> LRParser<'t> {
                         LRAction::Reduce(nt_index, prod_index) => {
                             trace!("Reduce by production {prod_index}");
                             let nt_index = *nt_index;
-                            let n = self.call_action(*prod_index, user_actions)?;
+                            let prod_index = *prod_index;
+
+                            let n = self.call_action(prod_index, user_actions)?;
                             for _ in 0..n {
                                 // Pop n states from the stack
                                 if self.parser_stack.stack.is_empty() {
@@ -551,7 +561,7 @@ mod tests {
 
     static TERMINAL_NAMES: [&str; 1] = ["EndOfInput"];
     static NON_TERMINAL_NAMES: [&str; 1] = ["Start"];
-    static PRODUCTIONS: [LRProduction; 1] = [LRProduction { lhs: 0, len: 0 }];
+    static PRODUCTIONS: [LRProduction; 1] = [LRProduction { lhs: 0, len: 0, is_push_production: false }];
     static ACTIONS: [LRAction; 1] = [LRAction::Accept];
     static STATES: [LR1State; 1] = [LR1State {
         actions: &[(0, 0)],
@@ -561,6 +571,7 @@ mod tests {
         actions: &ACTIONS,
         states: &STATES,
     };
+
 
     #[test]
     fn lr_parser_returns_max_depth_error_when_limit_is_exceeded() {
@@ -592,5 +603,14 @@ mod tests {
             err,
             ParolError::ParserError(ParserError::MaxParsingDepthExceeded { depth: 1 })
         ));
+    }
+
+    #[test]
+    fn lr_production_has_push_flag() {
+        // Verify that the is_push_production flag is accessible and correctly set
+        let prod_normal = LRProduction { lhs: 0, len: 1, is_push_production: false };
+        let prod_push = LRProduction { lhs: 0, len: 1, is_push_production: true };
+        assert!(!prod_normal.is_push_production);
+        assert!(prod_push.is_push_production);
     }
 }

@@ -201,6 +201,7 @@ impl std::fmt::Display for Production {
 struct LRProduction {
     lhs: usize,
     len: usize,
+    is_push_production: bool,
     prod_num: usize,
     prod_string: String,
 }
@@ -212,6 +213,7 @@ impl LRProduction {
         Self {
             lhs,
             len,
+            is_push_production: production_render_ir.is_push_production,
             prod_num: production_render_ir.production_index,
             prod_string: production_render_ir.text.clone(),
         }
@@ -223,6 +225,7 @@ impl std::fmt::Display for LRProduction {
         let LRProduction {
             lhs,
             len,
+            is_push_production,
             prod_num,
             prod_string,
         } = self;
@@ -231,6 +234,7 @@ impl std::fmt::Display for LRProduction {
             LRProduction {
                 lhs: #lhs,
                 len: #len,
+                is_push_production: #is_push_production,
             },
         })?;
         writeln!(f)

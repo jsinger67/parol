@@ -271,39 +271,107 @@ static PARSE_TABLE: LRParseTable = LRParseTable {
 
 pub const PRODUCTIONS: &[LRProduction; 17] = &[
     // 0 - Start: StartList /* Vec */;
-    LRProduction { lhs: 5, len: 1 },
+    LRProduction {
+        lhs: 5,
+        len: 1,
+        is_push_production: false,
+    },
     // 1 - StartList: StartList Content;
-    LRProduction { lhs: 6, len: 2 },
+    LRProduction {
+        lhs: 6,
+        len: 2,
+        is_push_production: true,
+    },
     // 2 - StartList: ;
-    LRProduction { lhs: 6, len: 0 },
+    LRProduction {
+        lhs: 6,
+        len: 0,
+        is_push_production: false,
+    },
     // 3 - Content: Identifier;
-    LRProduction { lhs: 0, len: 1 },
+    LRProduction {
+        lhs: 0,
+        len: 1,
+        is_push_production: false,
+    },
     // 4 - Content: StringDelimiter StringContent StringDelimiter;
-    LRProduction { lhs: 0, len: 3 },
+    LRProduction {
+        lhs: 0,
+        len: 3,
+        is_push_production: false,
+    },
     // 5 - StringContent: StringContentList /* Vec */;
-    LRProduction { lhs: 7, len: 1 },
+    LRProduction {
+        lhs: 7,
+        len: 1,
+        is_push_production: false,
+    },
     // 6 - StringContentList: StringContentList StringElement;
-    LRProduction { lhs: 8, len: 2 },
+    LRProduction {
+        lhs: 8,
+        len: 2,
+        is_push_production: true,
+    },
     // 7 - StringContentList: ;
-    LRProduction { lhs: 8, len: 0 },
+    LRProduction {
+        lhs: 8,
+        len: 0,
+        is_push_production: false,
+    },
     // 8 - StringContent: ;
-    LRProduction { lhs: 7, len: 0 },
+    LRProduction {
+        lhs: 7,
+        len: 0,
+        is_push_production: false,
+    },
     // 9 - StringElement: Escaped;
-    LRProduction { lhs: 10, len: 1 },
+    LRProduction {
+        lhs: 10,
+        len: 1,
+        is_push_production: false,
+    },
     // 10 - StringElement: EscapedLineEnd;
-    LRProduction { lhs: 10, len: 1 },
+    LRProduction {
+        lhs: 10,
+        len: 1,
+        is_push_production: false,
+    },
     // 11 - StringElement: NoneQuote;
-    LRProduction { lhs: 10, len: 1 },
+    LRProduction {
+        lhs: 10,
+        len: 1,
+        is_push_production: false,
+    },
     // 12 - Identifier: "[a-zA-Z_]\w*";
-    LRProduction { lhs: 3, len: 1 },
+    LRProduction {
+        lhs: 3,
+        len: 1,
+        is_push_production: false,
+    },
     // 13 - Escaped: "\u{5c}[\u{22}\u{5c}bfnt]";
-    LRProduction { lhs: 1, len: 1 },
+    LRProduction {
+        lhs: 1,
+        len: 1,
+        is_push_production: false,
+    },
     // 14 - EscapedLineEnd: "\u{5c}[\s^\n\r]*\r?\n";
-    LRProduction { lhs: 2, len: 1 },
+    LRProduction {
+        lhs: 2,
+        len: 1,
+        is_push_production: false,
+    },
     // 15 - NoneQuote: "[^\u{22}\u{5c}]+";
-    LRProduction { lhs: 4, len: 1 },
+    LRProduction {
+        lhs: 4,
+        len: 1,
+        is_push_production: false,
+    },
     // 16 - StringDelimiter: '"';
-    LRProduction { lhs: 9, len: 1 },
+    LRProduction {
+        lhs: 9,
+        len: 1,
+        is_push_production: false,
+    },
 ];
 
 pub fn parse<'t, T>(

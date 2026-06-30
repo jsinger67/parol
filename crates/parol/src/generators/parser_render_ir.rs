@@ -23,6 +23,7 @@ pub(crate) struct LalrProductionRenderIR {
     pub(crate) text: String,
     pub(crate) rhs_len: usize,
     pub(crate) semantic_children: Vec<bool>,
+    pub(crate) is_push_production: bool,
 }
 
 pub(crate) struct LalrStateActionRenderIR {
@@ -201,6 +202,7 @@ pub(crate) fn build_lalr_production_render_ir(
                     ProductionSymbolModel::Terminal { clipped, .. } => !*clipped,
                 })
                 .collect::<Vec<_>>(),
+            is_push_production: p.is_push_production,
         })
         .collect::<Vec<_>>()
 }
