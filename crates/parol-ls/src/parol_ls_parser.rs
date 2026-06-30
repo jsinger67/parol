@@ -1291,6 +1291,7 @@ where
         NON_TERMINALS,
     );
     llk_parser.trim_parse_tree();
+    llk_parser.set_max_parsing_depth(1500);
     let scanner = ParolLsGrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = ParolLsGrammarAuto::new(user_actions);

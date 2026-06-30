@@ -70,4 +70,3 @@ pub use user_access::UserActionsTrait;
 /// Module with recovery algorithms
 ///
 pub(crate) mod recovery;
-// pub(crate) use recovery::Recovery;

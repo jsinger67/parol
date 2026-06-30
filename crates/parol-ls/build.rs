@@ -2,7 +2,7 @@ use parol::{build::Builder, parol_runtime::Result};
 
 fn main() -> Result<()> {
     // CLI equivalent is:
-    // parol -f ./parol_ls.par -e ./parol_ls-exp.par -p ./src/parol_ls_parser.rs -a ./src/parol_ls_grammar_trait.rs -t ParolLsGrammar -m parol_ls_grammar -b -x
+    // parol -f ./parol_ls.par -e ./parol_ls-exp.par -p ./src/parol_ls_parser.rs -a ./src/parol_ls_grammar_trait.rs -t ParolLsGrammar -m parol_ls_grammar -b -x --max-parsing-depth 1500
     Builder::with_explicit_output_dir("src")
         .grammar_file("parol_ls.par")
         .expanded_grammar_output_file("../parol_ls-exp.par")
@@ -12,6 +12,7 @@ fn main() -> Result<()> {
         .user_type_name("ParolLsGrammar")
         .user_trait_module_name("parol_ls_grammar")
         .trim_parse_tree()
+        .max_parsing_depth(1500)
         .generate_parser()?;
     Ok(())
 }

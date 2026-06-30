@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 5.0.0 - Not released yet
+
+* **Breaking Changes**:
+  * Generated LL(k) and LALR(1) parsers now require `parol_runtime` version 5.0.0 due to the addition of the `is_push_production` field in `Production` and `LRProduction`.
+* **Features**:
+  * Generated LL(k) and LALR(1) parsers now include the `is_push_production` flag on each production, allowing the runtime to bypass recursion depth limits for push-semantics (repetition-based list flattening) productions.
+  * Properly closes issue [#1308](https://github.com/jsinger67/parol/issues/1308) for flat lists.
+
 ## 4.7.0 - 2026-06-29
 
 * Add configurable parsing depth limit to prevent stack overflows on deeply nested ASTs.

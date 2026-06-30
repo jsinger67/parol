@@ -118,7 +118,7 @@ pub fn main(args: &Args) -> Result<()> {
 
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "env_logger@0.11"],
-    &["add", "parol_runtime@4.5"],
+    &["add", "parol_runtime@5.0"],
     &["add", "thiserror@2.0"],
     &["add", "anyhow@1.0"],
     &["add", "scnr2@0.5.2"],

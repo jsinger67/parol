@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.0 - Not released yet
+
+* **Breaking Changes**:
+  * Add `is_push_production: bool` to both `Production` (LL(k)) and `LRProduction` (LALR(1)) structs to support push-semantics-aware recursion depth limiting.
+  * Remove `#[non_exhaustive]` attribute from `ParserError` enum.
+* **Features / Bug Fixes**:
+  * Implement push-semantics-aware recursion depth limiting for LL(k) parsers. Flat lists generated with push semantics (repetition-based list flattening) no longer count toward the recursion depth limit.
+  * Revert LALR(1) depth limit check to use the parser stack size (`parser_stack.stack.len()`), which naturally does not grow for left-recursive flat lists.
+  * Fix stack overflow when dropping or building deeply nested parse trees in LALR(1) by making `build_tree` and `LRParseTree::drop` iterative using explicit work stacks.
+
 ## 4.5.0 - 2026-06-29
 
 * Add configurable parsing depth limit to prevent stack overflows on deeply nested ASTs.
