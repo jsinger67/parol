@@ -148,6 +148,7 @@ impl std::fmt::Display for Dfas {
 struct Production {
     lhs: usize,
     production: StrVec,
+    is_push_production: bool,
     prod_num: usize,
     prod_string: String,
 }
@@ -172,6 +173,7 @@ impl Production {
         Self {
             lhs,
             production,
+            is_push_production: production_ir.is_push_production,
             prod_num: production_ir.production_index,
             prod_string: production_ir.text.clone(),
         }
@@ -183,6 +185,7 @@ impl std::fmt::Display for Production {
         let Production {
             lhs,
             production,
+            is_push_production,
             prod_num,
             prod_string,
         } = self;
@@ -191,6 +194,7 @@ impl std::fmt::Display for Production {
             Production {
                 lhs: #lhs,
                 production: &[#production],
+                is_push_production: #is_push_production,
             },
         })?;
         writeln!(f)

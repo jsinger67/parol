@@ -636,111 +636,133 @@ pub const PRODUCTIONS: &[Production; 84] = &[
             ParseType::N(24),
             ParseType::N(5),
         ],
+        is_push_production: false,
     },
     // 1 - BasicList: EndOfLine Line BasicList;
     Production {
         lhs: 4,
         production: &[ParseType::N(4), ParseType::N(24), ParseType::N(9)],
+        is_push_production: true,
     },
     // 2 - BasicList: ;
     Production {
         lhs: 4,
         production: &[],
+        is_push_production: false,
     },
     // 3 - BasicOpt0: EndOfLine;
     Production {
         lhs: 6,
         production: &[ParseType::N(9)],
+        is_push_production: false,
     },
     // 4 - BasicOpt0: ;
     Production {
         lhs: 6,
         production: &[],
+        is_push_production: false,
     },
     // 5 - BasicOpt: EndOfLine;
     Production {
         lhs: 5,
         production: &[ParseType::N(9)],
+        is_push_production: false,
     },
     // 6 - BasicOpt: ;
     Production {
         lhs: 5,
         production: &[],
+        is_push_production: false,
     },
     // 7 - Line: LineNumber Statement LineList /* Vec */;
     Production {
         lhs: 24,
         production: &[ParseType::N(25), ParseType::N(53), ParseType::N(26)],
+        is_push_production: false,
     },
     // 8 - LineList: ':'^ /* Clipped */ Statement LineList;
     Production {
         lhs: 25,
         production: &[ParseType::N(25), ParseType::N(53), ParseType::T(5)],
+        is_push_production: true,
     },
     // 9 - LineList: ;
     Production {
         lhs: 25,
         production: &[],
+        is_push_production: false,
     },
     // 10 - LineNumber: /[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+/;
     Production {
         lhs: 26,
         production: &[ParseType::T(6)],
+        is_push_production: false,
     },
     // 11 - Statement: Remark;
     Production {
         lhs: 53,
         production: &[ParseType::N(51)],
+        is_push_production: false,
     },
     // 12 - Statement: GotoStatement;
     Production {
         lhs: 53,
         production: &[ParseType::N(17)],
+        is_push_production: false,
     },
     // 13 - Statement: IfStatement;
     Production {
         lhs: 53,
         production: &[ParseType::N(20)],
+        is_push_production: false,
     },
     // 14 - Statement: Assignment;
     Production {
         lhs: 53,
         production: &[ParseType::N(1)],
+        is_push_production: false,
     },
     // 15 - Statement: PrintStatement;
     Production {
         lhs: 53,
         production: &[ParseType::N(44)],
+        is_push_production: false,
     },
     // 16 - Statement: EndStatement;
     Production {
         lhs: 53,
         production: &[ParseType::N(10)],
+        is_push_production: false,
     },
     // 17 - Remark: Rem RemarkOpt /* Option */;
     Production {
         lhs: 51,
         production: &[ParseType::N(52), ParseType::N(50)],
+        is_push_production: false,
     },
     // 18 - RemarkOpt: Comment;
     Production {
         lhs: 52,
         production: &[ParseType::N(7)],
+        is_push_production: false,
     },
     // 19 - RemarkOpt: ;
     Production {
         lhs: 52,
         production: &[],
+        is_push_production: false,
     },
     // 20 - GotoStatement: Goto LineNumber;
     Production {
         lhs: 17,
         production: &[ParseType::N(26), ParseType::N(16)],
+        is_push_production: false,
     },
     // 21 - IfStatement: If Expression IfBody;
     Production {
         lhs: 20,
         production: &[ParseType::N(19), ParseType::N(11), ParseType::N(18)],
+        is_push_production: false,
     },
     // 22 - Assignment: AssignmentOpt /* Option */ Variable AssignOp Expression;
     Production {
@@ -751,311 +773,373 @@ pub const PRODUCTIONS: &[Production; 84] = &[
             ParseType::N(58),
             ParseType::N(2),
         ],
+        is_push_production: false,
     },
     // 23 - AssignmentOpt: Let;
     Production {
         lhs: 2,
         production: &[ParseType::N(23)],
+        is_push_production: false,
     },
     // 24 - AssignmentOpt: ;
     Production {
         lhs: 2,
         production: &[],
+        is_push_production: false,
     },
     // 25 - IfBody: Then Statement;
     Production {
         lhs: 19,
         production: &[ParseType::N(53), ParseType::N(57)],
+        is_push_production: false,
     },
     // 26 - IfBody: Goto LineNumber;
     Production {
         lhs: 19,
         production: &[ParseType::N(26), ParseType::N(16)],
+        is_push_production: false,
     },
     // 27 - PrintStatement: Print Expression PrintStatementList /* Vec */;
     Production {
         lhs: 44,
         production: &[ParseType::N(45), ParseType::N(11), ParseType::N(43)],
+        is_push_production: false,
     },
     // 28 - PrintStatementList: ','^ /* Clipped */ Expression PrintStatementList;
     Production {
         lhs: 45,
         production: &[ParseType::N(45), ParseType::N(11), ParseType::T(7)],
+        is_push_production: true,
     },
     // 29 - PrintStatementList: ;
     Production {
         lhs: 45,
         production: &[],
+        is_push_production: false,
     },
     // 30 - EndStatement: End;
     Production {
         lhs: 10,
         production: &[ParseType::N(8)],
+        is_push_production: false,
     },
     // 31 - EndOfLine: /(?:\r?\n|\r)+/^ /* Clipped */;
     Production {
         lhs: 9,
         production: &[ParseType::T(8)],
+        is_push_production: false,
     },
     // 32 - Literal: Number;
     Production {
         lhs: 27,
         production: &[ParseType::N(41)],
+        is_push_production: false,
     },
     // 33 - Number: Float;
     Production {
         lhs: 41,
         production: &[ParseType::N(13)],
+        is_push_production: false,
     },
     // 34 - Number: Integer;
     Production {
         lhs: 41,
         production: &[ParseType::N(21)],
+        is_push_production: false,
     },
     // 35 - Float: Float1;
     Production {
         lhs: 13,
         production: &[ParseType::N(14)],
+        is_push_production: false,
     },
     // 36 - Float: Float2;
     Production {
         lhs: 13,
         production: &[ParseType::N(15)],
+        is_push_production: false,
     },
     // 37 - Float1: /(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?/;
     Production {
         lhs: 14,
         production: &[ParseType::T(9)],
+        is_push_production: false,
     },
     // 38 - Float2: /(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+/;
     Production {
         lhs: 15,
         production: &[ParseType::T(10)],
+        is_push_production: false,
     },
     // 39 - Integer: /(?:[0-9] *)+/;
     Production {
         lhs: 21,
         production: &[ParseType::T(11)],
+        is_push_production: false,
     },
     // 40 - Rem: 'REM'^ /* Clipped */;
     Production {
         lhs: 50,
         production: &[ParseType::T(12)],
+        is_push_production: false,
     },
     // 41 - If: 'IF'^ /* Clipped */;
     Production {
         lhs: 18,
         production: &[ParseType::T(13)],
+        is_push_production: false,
     },
     // 42 - Then: 'THEN'^ /* Clipped */;
     Production {
         lhs: 57,
         production: &[ParseType::T(14)],
+        is_push_production: false,
     },
     // 43 - Goto: 'GOTO'^ /* Clipped */;
     Production {
         lhs: 16,
         production: &[ParseType::T(15)],
+        is_push_production: false,
     },
     // 44 - Let: 'LET'^ /* Clipped */;
     Production {
         lhs: 23,
         production: &[ParseType::T(16)],
+        is_push_production: false,
     },
     // 45 - Print: /PRINT|\?/^ /* Clipped */;
     Production {
         lhs: 43,
         production: &[ParseType::T(17)],
+        is_push_production: false,
     },
     // 46 - End: 'END'^ /* Clipped */;
     Production {
         lhs: 8,
         production: &[ParseType::T(18)],
+        is_push_production: false,
     },
     // 47 - AssignOp: '='^ /* Clipped */;
     Production {
         lhs: 0,
         production: &[ParseType::T(19)],
+        is_push_production: false,
     },
     // 48 - LogicalOrOp: /N?OR/;
     Production {
         lhs: 36,
         production: &[ParseType::T(20)],
+        is_push_production: false,
     },
     // 49 - LogicalAndOp: 'AND';
     Production {
         lhs: 30,
         production: &[ParseType::T(21)],
+        is_push_production: false,
     },
     // 50 - LogicalNotOp: 'NOT';
     Production {
         lhs: 32,
         production: &[ParseType::T(22)],
+        is_push_production: false,
     },
     // 51 - RelationalOp: /<\s*>|<\s*=|<|>\s*=|>|=/;
     Production {
         lhs: 49,
         production: &[ParseType::T(23)],
+        is_push_production: false,
     },
     // 52 - Plus: '+';
     Production {
         lhs: 42,
         production: &[ParseType::T(24)],
+        is_push_production: false,
     },
     // 53 - Minus: '-';
     Production {
         lhs: 37,
         production: &[ParseType::T(25)],
+        is_push_production: false,
     },
     // 54 - MulOp: /\*|\u{2F}/;
     Production {
         lhs: 38,
         production: &[ParseType::T(26)],
+        is_push_production: false,
     },
     // 55 - LParen: '(';
     Production {
         lhs: 22,
         production: &[ParseType::T(27)],
+        is_push_production: false,
     },
     // 56 - RParen: ')';
     Production {
         lhs: 46,
         production: &[ParseType::T(28)],
+        is_push_production: false,
     },
     // 57 - Comment: /[^\r\n]+/;
     Production {
         lhs: 7,
         production: &[ParseType::T(29)],
+        is_push_production: false,
     },
     // 58 - Variable: /[A-Z][0-9A-Z]*/;
     Production {
         lhs: 58,
         production: &[ParseType::T(30)],
+        is_push_production: false,
     },
     // 59 - Expression: LogicalOr;
     Production {
         lhs: 11,
         production: &[ParseType::N(34)],
+        is_push_production: false,
     },
     // 60 - LogicalOr: LogicalAnd LogicalOrList /* Vec */;
     Production {
         lhs: 34,
         production: &[ParseType::N(35), ParseType::N(28)],
+        is_push_production: false,
     },
     // 61 - LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList;
     Production {
         lhs: 35,
         production: &[ParseType::N(35), ParseType::N(28), ParseType::N(36)],
+        is_push_production: true,
     },
     // 62 - LogicalOrList: ;
     Production {
         lhs: 35,
         production: &[],
+        is_push_production: false,
     },
     // 63 - LogicalAnd: LogicalNot LogicalAndList /* Vec */;
     Production {
         lhs: 28,
         production: &[ParseType::N(29), ParseType::N(31)],
+        is_push_production: false,
     },
     // 64 - LogicalAndList: LogicalAndOp LogicalNot LogicalAndList;
     Production {
         lhs: 29,
         production: &[ParseType::N(29), ParseType::N(31), ParseType::N(30)],
+        is_push_production: true,
     },
     // 65 - LogicalAndList: ;
     Production {
         lhs: 29,
         production: &[],
+        is_push_production: false,
     },
     // 66 - LogicalNot: LogicalNotOpt /* Option */ Relational;
     Production {
         lhs: 31,
         production: &[ParseType::N(47), ParseType::N(33)],
+        is_push_production: false,
     },
     // 67 - LogicalNotOpt: LogicalNotOp;
     Production {
         lhs: 33,
         production: &[ParseType::N(32)],
+        is_push_production: false,
     },
     // 68 - LogicalNotOpt: ;
     Production {
         lhs: 33,
         production: &[],
+        is_push_production: false,
     },
     // 69 - Relational: Summation RelationalList /* Vec */;
     Production {
         lhs: 47,
         production: &[ParseType::N(48), ParseType::N(54)],
+        is_push_production: false,
     },
     // 70 - RelationalList: RelationalOp Summation RelationalList;
     Production {
         lhs: 48,
         production: &[ParseType::N(48), ParseType::N(54), ParseType::N(49)],
+        is_push_production: true,
     },
     // 71 - RelationalList: ;
     Production {
         lhs: 48,
         production: &[],
+        is_push_production: false,
     },
     // 72 - Summation: Multiplication SummationList /* Vec */;
     Production {
         lhs: 54,
         production: &[ParseType::N(55), ParseType::N(39)],
+        is_push_production: false,
     },
     // 73 - SummationList: SummationListGroup Multiplication SummationList;
     Production {
         lhs: 55,
         production: &[ParseType::N(55), ParseType::N(39), ParseType::N(56)],
+        is_push_production: true,
     },
     // 74 - SummationListGroup: Plus;
     Production {
         lhs: 56,
         production: &[ParseType::N(42)],
+        is_push_production: false,
     },
     // 75 - SummationListGroup: Minus;
     Production {
         lhs: 56,
         production: &[ParseType::N(37)],
+        is_push_production: false,
     },
     // 76 - SummationList: ;
     Production {
         lhs: 55,
         production: &[],
+        is_push_production: false,
     },
     // 77 - Multiplication: Factor MultiplicationList /* Vec */;
     Production {
         lhs: 39,
         production: &[ParseType::N(40), ParseType::N(12)],
+        is_push_production: false,
     },
     // 78 - MultiplicationList: MulOp Factor MultiplicationList;
     Production {
         lhs: 40,
         production: &[ParseType::N(40), ParseType::N(12), ParseType::N(38)],
+        is_push_production: true,
     },
     // 79 - MultiplicationList: ;
     Production {
         lhs: 40,
         production: &[],
+        is_push_production: false,
     },
     // 80 - Factor: Literal;
     Production {
         lhs: 12,
         production: &[ParseType::N(27)],
+        is_push_production: false,
     },
     // 81 - Factor: Variable;
     Production {
         lhs: 12,
         production: &[ParseType::N(58)],
+        is_push_production: false,
     },
     // 82 - Factor: Minus Factor;
     Production {
         lhs: 12,
         production: &[ParseType::N(12), ParseType::N(37)],
+        is_push_production: false,
     },
     // 83 - Factor: LParen Expression RParen;
     Production {
         lhs: 12,
         production: &[ParseType::N(46), ParseType::N(11), ParseType::N(22)],
+        is_push_production: false,
     },
 ];
 

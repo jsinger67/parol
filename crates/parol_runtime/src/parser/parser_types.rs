@@ -29,6 +29,11 @@ pub struct Production {
     /// parsing.
     ///
     pub production: &'static [ParseType],
+
+    ///
+    /// Whether this production has push semantics (list-flattening).
+    ///
+    pub is_push_production: bool,
 }
 
 #[cfg(test)]
@@ -45,6 +50,7 @@ mod tests {
     static PRODUCTIONS: [Production; 1] = [Production {
         lhs: 0,
         production: &[],
+        is_push_production: false,
     }];
 
     #[test]
@@ -177,12 +183,6 @@ pub struct LLKParser<'t> {
     /// The parser can generate multiple syntax errors during the course of recovering from an error
     ///
     error_entries: Vec<SyntaxError>,
-
-    ///
-    /// Pre-computed flags indicating whether each production has push semantics (list-flattening).
-    /// Used to avoid counting list-flattening productions towards recursion depth.
-    ///
-    is_push_production: Vec<bool>,
 }
 
 impl<'t> LLKParser<'t> {
@@ -196,22 +196,6 @@ impl<'t> LLKParser<'t> {
         terminal_names: &'static [&'static str],
         non_terminal_names: &'static [&'static str],
     ) -> Self {
-        let is_push_production = productions
-            .iter()
-            .map(|prod| {
-                prod.production
-                    .iter()
-                    .find_map(|s| {
-                        if let ParseType::N(n) = s {
-                            Some(*n)
-                        } else {
-                            None
-                        }
-                    })
-                    .is_some_and(|first_n| first_n == prod.lhs)
-            })
-            .collect::<Vec<bool>>();
-
         Self {
             start_symbol_index,
             parser_stack: ParseStack::new(terminal_names, non_terminal_names),
@@ -225,7 +209,6 @@ impl<'t> LLKParser<'t> {
             trim_parse_tree: false,
             enable_recovery: true,
             error_entries: Vec::new(),
-            is_push_production,
         }
     }
 
@@ -325,7 +308,7 @@ impl<'t> LLKParser<'t> {
         // Don't count push-semantics productions towards parsing depth.
         // These productions accumulate list items into Vec<T> rather than creating
         // nested AST structures, so they don't contribute to stack overflow risk.
-        if !self.is_push_production[prod_num] {
+        if !self.productions[prod_num].is_push_production {
             self.production_depth += 1;
         }
 
@@ -499,7 +482,7 @@ impl<'t> LLKParser<'t> {
                     },
                     ParseType::E(p) => {
                         // Only decrement depth for non-push productions (matching push_production)
-                        if !self.is_push_production[p] {
+                        if !self.productions[p].is_push_production {
                             self.production_depth -= 1;
                         }
                         trace!("Popped production {} -> depth {}", p, self.production_depth);

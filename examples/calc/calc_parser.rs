@@ -556,306 +556,367 @@ pub const PRODUCTIONS: &[Production; 61] = &[
     Production {
         lhs: 14,
         production: &[ParseType::N(15)],
+        is_push_production: false,
     },
     // 1 - CalcList: Instruction ";"^ /* Clipped */ CalcList;
     Production {
         lhs: 15,
         production: &[ParseType::N(15), ParseType::T(5), ParseType::N(22)],
+        is_push_production: true,
     },
     // 2 - CalcList: ;
     Production {
         lhs: 15,
         production: &[],
+        is_push_production: false,
     },
     // 3 - EqualityOp: "==|!=";
     Production {
         lhs: 18,
         production: &[ParseType::T(6)],
+        is_push_production: false,
     },
     // 4 - AssignOp: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     Production {
         lhs: 2,
         production: &[ParseType::T(7)],
+        is_push_production: false,
     },
     // 5 - LogicalOrOp: "\|\|";
     Production {
         lhs: 28,
         production: &[ParseType::T(8)],
+        is_push_production: false,
     },
     // 6 - LogicalAndOp: "&&";
     Production {
         lhs: 25,
         production: &[ParseType::T(9)],
+        is_push_production: false,
     },
     // 7 - BitwiseOrOp: "\|";
     Production {
         lhs: 10,
         production: &[ParseType::T(10)],
+        is_push_production: false,
     },
     // 8 - BitwiseAndOp: "&";
     Production {
         lhs: 7,
         production: &[ParseType::T(11)],
+        is_push_production: false,
     },
     // 9 - BitwiseShiftOp: "<<|>>";
     Production {
         lhs: 13,
         production: &[ParseType::T(12)],
+        is_push_production: false,
     },
     // 10 - RelationalOp: "<=|<|>=|>";
     Production {
         lhs: 41,
         production: &[ParseType::T(13)],
+        is_push_production: false,
     },
     // 11 - Plus: "\+";
     Production {
         lhs: 35,
         production: &[ParseType::T(14)],
+        is_push_production: false,
     },
     // 12 - Minus: "-";
     Production {
         lhs: 29,
         production: &[ParseType::T(15)],
+        is_push_production: false,
     },
     // 13 - PowOp: "\*\*";
     Production {
         lhs: 36,
         production: &[ParseType::T(16)],
+        is_push_production: false,
     },
     // 14 - MultOp: "\*|/|%";
     Production {
         lhs: 32,
         production: &[ParseType::T(17)],
+        is_push_production: false,
     },
     // 15 - Instruction: Assignment;
     Production {
         lhs: 22,
         production: &[ParseType::N(3)],
+        is_push_production: false,
     },
     // 16 - Instruction: LogicalOr;
     Production {
         lhs: 22,
         production: &[ParseType::N(26)],
+        is_push_production: false,
     },
     // 17 - AssignItem: Id AssignOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(2), ParseType::N(20)],
+        is_push_production: false,
     },
     // 18 - Assignment: AssignItem AssignmentList /* Vec */ LogicalOr;
     Production {
         lhs: 3,
         production: &[ParseType::N(26), ParseType::N(4), ParseType::N(1)],
+        is_push_production: false,
     },
     // 19 - AssignmentList: AssignItem AssignmentList;
     Production {
         lhs: 4,
         production: &[ParseType::N(4), ParseType::N(1)],
+        is_push_production: true,
     },
     // 20 - AssignmentList: ;
     Production {
         lhs: 4,
         production: &[],
+        is_push_production: false,
     },
     // 21 - LogicalOr: LogicalAnd LogicalOrList /* Vec */;
     Production {
         lhs: 26,
         production: &[ParseType::N(27), ParseType::N(23)],
+        is_push_production: false,
     },
     // 22 - LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList;
     Production {
         lhs: 27,
         production: &[ParseType::N(27), ParseType::N(23), ParseType::N(28)],
+        is_push_production: true,
     },
     // 23 - LogicalOrList: ;
     Production {
         lhs: 27,
         production: &[],
+        is_push_production: false,
     },
     // 24 - LogicalAnd: BitwiseOr LogicalAndList /* Vec */;
     Production {
         lhs: 23,
         production: &[ParseType::N(24), ParseType::N(8)],
+        is_push_production: false,
     },
     // 25 - LogicalAndList: LogicalAndOp BitwiseOr LogicalAndList;
     Production {
         lhs: 24,
         production: &[ParseType::N(24), ParseType::N(8), ParseType::N(25)],
+        is_push_production: true,
     },
     // 26 - LogicalAndList: ;
     Production {
         lhs: 24,
         production: &[],
+        is_push_production: false,
     },
     // 27 - BitwiseOr: BitwiseAnd BitwiseOrList /* Vec */;
     Production {
         lhs: 8,
         production: &[ParseType::N(9), ParseType::N(5)],
+        is_push_production: false,
     },
     // 28 - BitwiseOrList: BitwiseOrOp BitwiseAnd BitwiseOrList;
     Production {
         lhs: 9,
         production: &[ParseType::N(9), ParseType::N(5), ParseType::N(10)],
+        is_push_production: true,
     },
     // 29 - BitwiseOrList: ;
     Production {
         lhs: 9,
         production: &[],
+        is_push_production: false,
     },
     // 30 - BitwiseAnd: Equality BitwiseAndList /* Vec */;
     Production {
         lhs: 5,
         production: &[ParseType::N(6), ParseType::N(16)],
+        is_push_production: false,
     },
     // 31 - BitwiseAndList: BitwiseAndOp Equality BitwiseAndList;
     Production {
         lhs: 6,
         production: &[ParseType::N(6), ParseType::N(16), ParseType::N(7)],
+        is_push_production: true,
     },
     // 32 - BitwiseAndList: ;
     Production {
         lhs: 6,
         production: &[],
+        is_push_production: false,
     },
     // 33 - Equality: Relational EqualityList /* Vec */;
     Production {
         lhs: 16,
         production: &[ParseType::N(17), ParseType::N(39)],
+        is_push_production: false,
     },
     // 34 - EqualityList: EqualityOp Relational EqualityList;
     Production {
         lhs: 17,
         production: &[ParseType::N(17), ParseType::N(39), ParseType::N(18)],
+        is_push_production: true,
     },
     // 35 - EqualityList: ;
     Production {
         lhs: 17,
         production: &[],
+        is_push_production: false,
     },
     // 36 - Relational: BitwiseShift RelationalList /* Vec */;
     Production {
         lhs: 39,
         production: &[ParseType::N(40), ParseType::N(11)],
+        is_push_production: false,
     },
     // 37 - RelationalList: RelationalOp BitwiseShift RelationalList;
     Production {
         lhs: 40,
         production: &[ParseType::N(40), ParseType::N(11), ParseType::N(41)],
+        is_push_production: true,
     },
     // 38 - RelationalList: ;
     Production {
         lhs: 40,
         production: &[],
+        is_push_production: false,
     },
     // 39 - BitwiseShift: Summ BitwiseShiftList /* Vec */;
     Production {
         lhs: 11,
         production: &[ParseType::N(12), ParseType::N(42)],
+        is_push_production: false,
     },
     // 40 - BitwiseShiftList: BitwiseShiftOp Summ BitwiseShiftList;
     Production {
         lhs: 12,
         production: &[ParseType::N(12), ParseType::N(42), ParseType::N(13)],
+        is_push_production: true,
     },
     // 41 - BitwiseShiftList: ;
     Production {
         lhs: 12,
         production: &[],
+        is_push_production: false,
     },
     // 42 - AddOp: Plus;
     Production {
         lhs: 0,
         production: &[ParseType::N(35)],
+        is_push_production: false,
     },
     // 43 - AddOp: Minus;
     Production {
         lhs: 0,
         production: &[ParseType::N(29)],
+        is_push_production: false,
     },
     // 44 - Summ: Mult SummList /* Vec */;
     Production {
         lhs: 42,
         production: &[ParseType::N(43), ParseType::N(30)],
+        is_push_production: false,
     },
     // 45 - SummList: AddOp Mult SummList;
     Production {
         lhs: 43,
         production: &[ParseType::N(43), ParseType::N(30), ParseType::N(0)],
+        is_push_production: true,
     },
     // 46 - SummList: ;
     Production {
         lhs: 43,
         production: &[],
+        is_push_production: false,
     },
     // 47 - Mult: Power MultList /* Vec */;
     Production {
         lhs: 30,
         production: &[ParseType::N(31), ParseType::N(37)],
+        is_push_production: false,
     },
     // 48 - MultList: MultOp Power MultList;
     Production {
         lhs: 31,
         production: &[ParseType::N(31), ParseType::N(37), ParseType::N(32)],
+        is_push_production: true,
     },
     // 49 - MultList: ;
     Production {
         lhs: 31,
         production: &[],
+        is_push_production: false,
     },
     // 50 - Power: Factor PowerList /* Vec */;
     Production {
         lhs: 37,
         production: &[ParseType::N(38), ParseType::N(19)],
+        is_push_production: false,
     },
     // 51 - PowerList: PowOp Factor PowerList;
     Production {
         lhs: 38,
         production: &[ParseType::N(38), ParseType::N(19), ParseType::N(36)],
+        is_push_production: true,
     },
     // 52 - PowerList: ;
     Production {
         lhs: 38,
         production: &[],
+        is_push_production: false,
     },
     // 53 - Negate: Minus;
     Production {
         lhs: 33,
         production: &[ParseType::N(29)],
+        is_push_production: false,
     },
     // 54 - Factor: Number;
     Production {
         lhs: 19,
         production: &[ParseType::N(34)],
+        is_push_production: false,
     },
     // 55 - Factor: IdRef;
     Production {
         lhs: 19,
         production: &[ParseType::N(21)],
+        is_push_production: false,
     },
     // 56 - Factor: Negate Factor;
     Production {
         lhs: 19,
         production: &[ParseType::N(19), ParseType::N(33)],
+        is_push_production: false,
     },
     // 57 - Factor: "\("^ /* Clipped */ LogicalOr "\)"^ /* Clipped */;
     Production {
         lhs: 19,
         production: &[ParseType::T(19), ParseType::N(26), ParseType::T(18)],
+        is_push_production: false,
     },
     // 58 - Number: "0|[1-9][0-9]*";
     Production {
         lhs: 34,
         production: &[ParseType::T(20)],
+        is_push_production: false,
     },
     // 59 - IdRef: Id;
     Production {
         lhs: 21,
         production: &[ParseType::N(20)],
+        is_push_production: false,
     },
     // 60 - Id: "[a-zA-Z_][a-zA-Z0-9_]*";
     Production {
         lhs: 20,
         production: &[ParseType::T(21)],
+        is_push_production: false,
     },
 ];
 

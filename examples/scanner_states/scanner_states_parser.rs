@@ -149,81 +149,97 @@ pub const PRODUCTIONS: &[Production; 16] = &[
     Production {
         lhs: 5,
         production: &[ParseType::N(6)],
+        is_push_production: false,
     },
     // 1 - StartList: Content StartList;
     Production {
         lhs: 6,
         production: &[ParseType::N(6), ParseType::N(0)],
+        is_push_production: true,
     },
     // 2 - StartList: ;
     Production {
         lhs: 6,
         production: &[],
+        is_push_production: false,
     },
     // 3 - Content: Identifier;
     Production {
         lhs: 0,
         production: &[ParseType::N(3)],
+        is_push_production: false,
     },
     // 4 - Content: StringDelimiter StringContent StringDelimiter;
     Production {
         lhs: 0,
         production: &[ParseType::N(9), ParseType::N(7), ParseType::N(9)],
+        is_push_production: false,
     },
     // 5 - StringContent: StringContentList /* Vec */;
     Production {
         lhs: 7,
         production: &[ParseType::N(8)],
+        is_push_production: false,
     },
     // 6 - StringContentList: StringElement StringContentList;
     Production {
         lhs: 8,
         production: &[ParseType::N(8), ParseType::N(10)],
+        is_push_production: true,
     },
     // 7 - StringContentList: ;
     Production {
         lhs: 8,
         production: &[],
+        is_push_production: false,
     },
     // 8 - StringElement: Escaped;
     Production {
         lhs: 10,
         production: &[ParseType::N(1)],
+        is_push_production: false,
     },
     // 9 - StringElement: EscapedLineEnd;
     Production {
         lhs: 10,
         production: &[ParseType::N(2)],
+        is_push_production: false,
     },
     // 10 - StringElement: NoneQuote;
     Production {
         lhs: 10,
         production: &[ParseType::N(4)],
+        is_push_production: false,
     },
     // 11 - Identifier: /[a-zA-Z_]\w*/;
     Production {
         lhs: 3,
         production: &[ParseType::T(5)],
+        is_push_production: false,
     },
     // 12 - Escaped: /\\["\\bfnt]/;
     Production {
         lhs: 1,
         production: &[ParseType::T(6)],
+        is_push_production: false,
     },
     // 13 - EscapedLineEnd: /\\[\s--\n\r]*\r?\n/;
     Production {
         lhs: 2,
         production: &[ParseType::T(7)],
+        is_push_production: false,
     },
     // 14 - NoneQuote: /[^"\\]+/;
     Production {
         lhs: 4,
         production: &[ParseType::T(8)],
+        is_push_production: false,
     },
     // 15 - StringDelimiter: '"';
     Production {
         lhs: 9,
         production: &[ParseType::T(9)],
+        is_push_production: false,
     },
 ];
 

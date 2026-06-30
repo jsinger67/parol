@@ -284,181 +284,217 @@ pub const PRODUCTIONS: &[Production; 36] = &[
     Production {
         lhs: 5,
         production: &[ParseType::N(19), ParseType::N(6), ParseType::N(3)],
+        is_push_production: false,
     },
     // 1 - ExpressionsList: Semicolon^ /* Clipped */ Expression ExpressionsList;
     Production {
         lhs: 6,
         production: &[ParseType::N(6), ParseType::N(3), ParseType::N(16)],
+        is_push_production: true,
     },
     // 2 - ExpressionsList: ;
     Production {
         lhs: 6,
         production: &[],
+        is_push_production: false,
     },
     // 3 - TrailingSemicolon: TrailingSemicolonOpt /* Option */;
     Production {
         lhs: 19,
         production: &[ParseType::N(20)],
+        is_push_production: false,
     },
     // 4 - TrailingSemicolonOpt: Semicolon;
     Production {
         lhs: 20,
         production: &[ParseType::N(16)],
+        is_push_production: false,
     },
     // 5 - TrailingSemicolonOpt: ;
     Production {
         lhs: 20,
         production: &[],
+        is_push_production: false,
     },
     // 6 - Expression: Term ExpressionList /* Vec */;
     Production {
         lhs: 3,
         production: &[ParseType::N(4), ParseType::N(17)],
+        is_push_production: false,
     },
     // 7 - ExpressionList: BinaryOperator Term ExpressionList;
     Production {
         lhs: 4,
         production: &[ParseType::N(4), ParseType::N(17), ParseType::N(1)],
+        is_push_production: true,
     },
     // 8 - ExpressionList: ;
     Production {
         lhs: 4,
         production: &[],
+        is_push_production: false,
     },
     // 9 - Term: TermOpt /* Option */ Factor;
     Production {
         lhs: 17,
         production: &[ParseType::N(7), ParseType::N(18)],
+        is_push_production: false,
     },
     // 10 - TermOpt: UnaryOperator;
     Production {
         lhs: 18,
         production: &[ParseType::N(22)],
+        is_push_production: false,
     },
     // 11 - TermOpt: ;
     Production {
         lhs: 18,
         production: &[],
+        is_push_production: false,
     },
     // 12 - Boolean: True;
     Production {
         lhs: 2,
         production: &[ParseType::N(21)],
+        is_push_production: false,
     },
     // 13 - Boolean: False;
     Production {
         lhs: 2,
         production: &[ParseType::N(8)],
+        is_push_production: false,
     },
     // 14 - UnaryOperator: Not;
     Production {
         lhs: 22,
         production: &[ParseType::N(12)],
+        is_push_production: false,
     },
     // 15 - BinaryOperator: AndOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(0)],
+        is_push_production: false,
     },
     // 16 - BinaryOperator: OrOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(13)],
+        is_push_production: false,
     },
     // 17 - BinaryOperator: XorOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(24)],
+        is_push_production: false,
     },
     // 18 - BinaryOperator: NorOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(11)],
+        is_push_production: false,
     },
     // 19 - BinaryOperator: NandOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(10)],
+        is_push_production: false,
     },
     // 20 - BinaryOperator: XnorOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(23)],
+        is_push_production: false,
     },
     // 21 - AndOp: "[aA][nN][dD]"^ /* Clipped */;
     Production {
         lhs: 0,
         production: &[ParseType::T(5)],
+        is_push_production: false,
     },
     // 22 - OrOp: "[oO][rR]"^ /* Clipped */;
     Production {
         lhs: 13,
         production: &[ParseType::T(6)],
+        is_push_production: false,
     },
     // 23 - XorOp: "[xX][oO][rR]"^ /* Clipped */;
     Production {
         lhs: 24,
         production: &[ParseType::T(7)],
+        is_push_production: false,
     },
     // 24 - NorOp: "[nN][oO][rR]"^ /* Clipped */;
     Production {
         lhs: 11,
         production: &[ParseType::T(8)],
+        is_push_production: false,
     },
     // 25 - NandOp: "[nN][aA][nN][dD]"^ /* Clipped */;
     Production {
         lhs: 10,
         production: &[ParseType::T(9)],
+        is_push_production: false,
     },
     // 26 - XnorOp: "[xX][nN][oO][rR]"^ /* Clipped */;
     Production {
         lhs: 23,
         production: &[ParseType::T(10)],
+        is_push_production: false,
     },
     // 27 - True: "[tT][rR][uU][eE]"^ /* Clipped */;
     Production {
         lhs: 21,
         production: &[ParseType::T(11)],
+        is_push_production: false,
     },
     // 28 - False: "[fF][aA][lL][sS][eE]"^ /* Clipped */;
     Production {
         lhs: 8,
         production: &[ParseType::T(12)],
+        is_push_production: false,
     },
     // 29 - Not: "[nN][oO][tT]"^ /* Clipped */;
     Production {
         lhs: 12,
         production: &[ParseType::T(13)],
+        is_push_production: false,
     },
     // 30 - Parenthesized: LeftParenthesis^ /* Clipped */ Expression RightParenthesis^ /* Clipped */;
     Production {
         lhs: 14,
         production: &[ParseType::N(15), ParseType::N(3), ParseType::N(9)],
+        is_push_production: false,
     },
     // 31 - Semicolon: ';';
     Production {
         lhs: 16,
         production: &[ParseType::T(14)],
+        is_push_production: false,
     },
     // 32 - LeftParenthesis: '(';
     Production {
         lhs: 9,
         production: &[ParseType::T(15)],
+        is_push_production: false,
     },
     // 33 - RightParenthesis: ')';
     Production {
         lhs: 15,
         production: &[ParseType::T(16)],
+        is_push_production: false,
     },
     // 34 - Factor: Boolean;
     Production {
         lhs: 7,
         production: &[ParseType::N(2)],
+        is_push_production: false,
     },
     // 35 - Factor: Parenthesized;
     Production {
         lhs: 7,
         production: &[ParseType::N(14)],
+        is_push_production: false,
     },
 ];
 

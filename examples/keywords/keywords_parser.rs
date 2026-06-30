@@ -130,66 +130,79 @@ pub const PRODUCTIONS: &[Production; 13] = &[
     Production {
         lhs: 5,
         production: &[ParseType::N(6)],
+        is_push_production: false,
     },
     // 1 - GrammarList: Items GrammarList;
     Production {
         lhs: 6,
         production: &[ParseType::N(6), ParseType::N(8)],
+        is_push_production: true,
     },
     // 2 - GrammarList: ;
     Production {
         lhs: 6,
         production: &[],
+        is_push_production: false,
     },
     // 3 - Items: Declaration;
     Production {
         lhs: 8,
         production: &[ParseType::N(3)],
+        is_push_production: false,
     },
     // 4 - Items: Block;
     Production {
         lhs: 8,
         production: &[ParseType::N(1)],
+        is_push_production: false,
     },
     // 5 - Declaration: Var Identifier ";";
     Production {
         lhs: 3,
         production: &[ParseType::T(5), ParseType::N(7), ParseType::N(9)],
+        is_push_production: false,
     },
     // 6 - Block: Begin BlockList /* Vec */ End;
     Production {
         lhs: 1,
         production: &[ParseType::N(4), ParseType::N(2), ParseType::N(0)],
+        is_push_production: false,
     },
     // 7 - BlockList: Items BlockList;
     Production {
         lhs: 2,
         production: &[ParseType::N(2), ParseType::N(8)],
+        is_push_production: true,
     },
     // 8 - BlockList: ;
     Production {
         lhs: 2,
         production: &[],
+        is_push_production: false,
     },
     // 9 - Begin: "(?i)begin";
     Production {
         lhs: 0,
         production: &[ParseType::T(6)],
+        is_push_production: false,
     },
     // 10 - End: "(?i)end";
     Production {
         lhs: 4,
         production: &[ParseType::T(7)],
+        is_push_production: false,
     },
     // 11 - Var: "(?i)var";
     Production {
         lhs: 9,
         production: &[ParseType::T(8)],
+        is_push_production: false,
     },
     // 12 - Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     Production {
         lhs: 7,
         production: &[ParseType::T(9)],
+        is_push_production: false,
     },
 ];
 

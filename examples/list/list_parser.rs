@@ -108,51 +108,61 @@ pub const PRODUCTIONS: &[Production; 10] = &[
     Production {
         lhs: 2,
         production: &[ParseType::N(5), ParseType::N(3)],
+        is_push_production: false,
     },
     // 1 - ListOpt: Items : crate::list_grammar::Numbers ;
     Production {
         lhs: 3,
         production: &[ParseType::N(0)],
+        is_push_production: false,
     },
     // 2 - ListOpt: ;
     Production {
         lhs: 3,
         production: &[],
+        is_push_production: false,
     },
     // 3 - Items: Num ItemsList /* Vec */;
     Production {
         lhs: 0,
         production: &[ParseType::N(1), ParseType::N(4)],
+        is_push_production: false,
     },
     // 4 - ItemsList: ","^ /* Clipped */ Num ItemsList;
     Production {
         lhs: 1,
         production: &[ParseType::N(1), ParseType::N(4), ParseType::T(5)],
+        is_push_production: true,
     },
     // 5 - ItemsList: ;
     Production {
         lhs: 1,
         production: &[],
+        is_push_production: false,
     },
     // 6 - Num: "0|[1-9][0-9]*";
     Production {
         lhs: 4,
         production: &[ParseType::T(6)],
+        is_push_production: false,
     },
     // 7 - TrailingComma: TrailingCommaOpt /* Option */;
     Production {
         lhs: 5,
         production: &[ParseType::N(6)],
+        is_push_production: false,
     },
     // 8 - TrailingCommaOpt: ","^ /* Clipped */;
     Production {
         lhs: 6,
         production: &[ParseType::T(5)],
+        is_push_production: false,
     },
     // 9 - TrailingCommaOpt: ;
     Production {
         lhs: 6,
         production: &[],
+        is_push_production: false,
     },
 ];
 

@@ -776,11 +776,13 @@ pub const PRODUCTIONS: &[Production; 104] = &[
     Production {
         lhs: 47,
         production: &[ParseType::N(48)],
+        is_push_production: false,
     },
     // 1 - SelectorList: "\." Ident SelectorList;
     Production {
         lhs: 48,
         production: &[ParseType::N(48), ParseType::N(23), ParseType::T(5)],
+        is_push_production: false,
     },
     // 2 - SelectorList: "\[" Expression "]" SelectorList;
     Production {
@@ -791,101 +793,121 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(13),
             ParseType::T(6),
         ],
+        is_push_production: false,
     },
     // 3 - SelectorList: ;
     Production {
         lhs: 48,
         production: &[],
+        is_push_production: false,
     },
     // 4 - Factor: Ident Selector;
     Production {
         lhs: 18,
         production: &[ParseType::N(47), ParseType::N(23)],
+        is_push_production: false,
     },
     // 5 - Factor: Integer;
     Production {
         lhs: 18,
         production: &[ParseType::N(29)],
+        is_push_production: false,
     },
     // 6 - Factor: "\(" Expression "\)";
     Production {
         lhs: 18,
         production: &[ParseType::T(9), ParseType::N(13), ParseType::T(8)],
+        is_push_production: false,
     },
     // 7 - Factor: "~" Factor;
     Production {
         lhs: 18,
         production: &[ParseType::N(18), ParseType::T(10)],
+        is_push_production: false,
     },
     // 8 - Factor: UnaryOp Factor;
     Production {
         lhs: 18,
         production: &[ParseType::N(18), ParseType::N(56)],
+        is_push_production: false,
     },
     // 9 - Term: Factor MulExpression;
     Production {
         lhs: 53,
         production: &[ParseType::N(32), ParseType::N(18)],
+        is_push_production: false,
     },
     // 10 - MulExpression: MulOperator Factor MulExpression;
     Production {
         lhs: 32,
         production: &[ParseType::N(32), ParseType::N(18), ParseType::N(33)],
+        is_push_production: false,
     },
     // 11 - MulExpression: ;
     Production {
         lhs: 32,
         production: &[],
+        is_push_production: false,
     },
     // 12 - SimpleExpression: Term AddExpression;
     Production {
         lhs: 49,
         production: &[ParseType::N(2), ParseType::N(53)],
+        is_push_production: false,
     },
     // 13 - AddExpression: AddOperator Term AddExpression;
     Production {
         lhs: 2,
         production: &[ParseType::N(2), ParseType::N(53), ParseType::N(3)],
+        is_push_production: false,
     },
     // 14 - AddExpression: ;
     Production {
         lhs: 2,
         production: &[],
+        is_push_production: false,
     },
     // 15 - AssignOp: ':=';
     Production {
         lhs: 5,
         production: &[ParseType::T(11)],
+        is_push_production: false,
     },
     // 16 - RelationOp: AssignOp;
     Production {
         lhs: 44,
         production: &[ParseType::N(5)],
+        is_push_production: false,
     },
     // 17 - RelationOp: RelationalOps;
     Production {
         lhs: 44,
         production: &[ParseType::N(45)],
+        is_push_production: false,
     },
     // 18 - RelationalOps: />=|<=|\#|<|>/;
     Production {
         lhs: 45,
         production: &[ParseType::T(12)],
+        is_push_production: false,
     },
     // 19 - Expression: SimpleExpression ExpressionSuffix;
     Production {
         lhs: 13,
         production: &[ParseType::N(15), ParseType::N(49)],
+        is_push_production: false,
     },
     // 20 - ExpressionSuffix: RelationOp SimpleExpression;
     Production {
         lhs: 15,
         production: &[ParseType::N(49), ParseType::N(44)],
+        is_push_production: false,
     },
     // 21 - ExpressionSuffix: ;
     Production {
         lhs: 15,
         production: &[],
+        is_push_production: false,
     },
     // 22 - Assignment: Ident Selector AssignOp Expression;
     Production {
@@ -896,61 +918,73 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(47),
             ParseType::N(23),
         ],
+        is_push_production: false,
     },
     // 23 - ActualParameters: '(' ActualParametersSuffix;
     Production {
         lhs: 0,
         production: &[ParseType::N(1), ParseType::T(13)],
+        is_push_production: false,
     },
     // 24 - ActualParametersSuffix: ')';
     Production {
         lhs: 1,
         production: &[ParseType::T(14)],
+        is_push_production: false,
     },
     // 25 - ActualParametersSuffix: Expression ExpressionListRest ')';
     Production {
         lhs: 1,
         production: &[ParseType::T(14), ParseType::N(14), ParseType::N(13)],
+        is_push_production: false,
     },
     // 26 - ExpressionListRest: ',' Expression ExpressionListRest;
     Production {
         lhs: 14,
         production: &[ParseType::N(14), ParseType::N(13), ParseType::T(15)],
+        is_push_production: false,
     },
     // 27 - ExpressionListRest: ;
     Production {
         lhs: 14,
         production: &[],
+        is_push_production: false,
     },
     // 28 - ProcedureCall: Ident ProcedureCallSuffix;
     Production {
         lhs: 37,
         production: &[ParseType::N(38), ParseType::N(23)],
+        is_push_production: false,
     },
     // 29 - ProcedureCallSuffix: ActualParameters;
     Production {
         lhs: 38,
         production: &[ParseType::N(0)],
+        is_push_production: false,
     },
     // 30 - ProcedureCallSuffix: ;
     Production {
         lhs: 38,
         production: &[],
+        is_push_production: false,
     },
     // 31 - IfStatement: IfPrefix IfStatementSuffix;
     Production {
         lhs: 27,
         production: &[ParseType::N(28), ParseType::N(26)],
+        is_push_production: false,
     },
     // 32 - IfStatementSuffix: 'ELSE' StatementSequence 'END';
     Production {
         lhs: 28,
         production: &[ParseType::T(17), ParseType::N(51), ParseType::T(16)],
+        is_push_production: false,
     },
     // 33 - IfStatementSuffix: 'END';
     Production {
         lhs: 28,
         production: &[ParseType::T(17)],
+        is_push_production: false,
     },
     // 34 - IfPrefix: 'IF' Expression 'THEN' StatementSequence ElseIfList;
     Production {
@@ -962,6 +996,7 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(13),
             ParseType::T(18),
         ],
+        is_push_production: false,
     },
     // 35 - ElseIfList: 'ELSIF' Expression 'THEN' StatementSequence ElseIfList;
     Production {
@@ -973,11 +1008,13 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(13),
             ParseType::T(20),
         ],
+        is_push_production: false,
     },
     // 36 - ElseIfList: ;
     Production {
         lhs: 12,
         production: &[],
+        is_push_production: false,
     },
     // 37 - WhileStatement: 'WHILE' Expression 'DO' StatementSequence 'END';
     Production {
@@ -989,6 +1026,7 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(13),
             ParseType::T(21),
         ],
+        is_push_production: false,
     },
     // 38 - RepeatStatement: 'REPEAT' StatementSequence 'UNTIL' Expression;
     Production {
@@ -999,66 +1037,79 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(51),
             ParseType::T(23),
         ],
+        is_push_production: false,
     },
     // 39 - Statement: Assignment;
     Production {
         lhs: 50,
         production: &[ParseType::N(6)],
+        is_push_production: false,
     },
     // 40 - Statement: ProcedureCall;
     Production {
         lhs: 50,
         production: &[ParseType::N(37)],
+        is_push_production: false,
     },
     // 41 - Statement: IfStatement;
     Production {
         lhs: 50,
         production: &[ParseType::N(27)],
+        is_push_production: false,
     },
     // 42 - Statement: WhileStatement;
     Production {
         lhs: 50,
         production: &[ParseType::N(58)],
+        is_push_production: false,
     },
     // 43 - Statement: RepeatStatement;
     Production {
         lhs: 50,
         production: &[ParseType::N(46)],
+        is_push_production: false,
     },
     // 44 - Statement: ;
     Production {
         lhs: 50,
         production: &[],
+        is_push_production: false,
     },
     // 45 - StatementSequence: Statement StatementSequenceRest;
     Production {
         lhs: 51,
         production: &[ParseType::N(52), ParseType::N(50)],
+        is_push_production: false,
     },
     // 46 - StatementSequenceRest: ';' Statement StatementSequenceRest;
     Production {
         lhs: 52,
         production: &[ParseType::N(52), ParseType::N(50), ParseType::T(25)],
+        is_push_production: false,
     },
     // 47 - StatementSequenceRest: ;
     Production {
         lhs: 52,
         production: &[],
+        is_push_production: false,
     },
     // 48 - IdentList: Ident IdentListRest;
     Production {
         lhs: 24,
         production: &[ParseType::N(25), ParseType::N(23)],
+        is_push_production: false,
     },
     // 49 - IdentListRest: ',' Ident IdentListRest;
     Production {
         lhs: 25,
         production: &[ParseType::N(25), ParseType::N(23), ParseType::T(15)],
+        is_push_production: false,
     },
     // 50 - IdentListRest: ;
     Production {
         lhs: 25,
         production: &[],
+        is_push_production: false,
     },
     // 51 - ArrayType: 'ARRAY' Expression 'OF' Type;
     Production {
@@ -1069,16 +1120,19 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(13),
             ParseType::T(26),
         ],
+        is_push_production: false,
     },
     // 52 - FieldList: IdentList ':' Type;
     Production {
         lhs: 19,
         production: &[ParseType::N(54), ParseType::T(28), ParseType::N(24)],
+        is_push_production: false,
     },
     // 53 - FieldList: ;
     Production {
         lhs: 19,
         production: &[],
+        is_push_production: false,
     },
     // 54 - RecordType: 'RECORD' FieldList FieldListRest 'END';
     Production {
@@ -1089,31 +1143,37 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(19),
             ParseType::T(29),
         ],
+        is_push_production: false,
     },
     // 55 - FieldListRest: ';' FieldList FieldListRest;
     Production {
         lhs: 20,
         production: &[ParseType::N(20), ParseType::N(19), ParseType::T(25)],
+        is_push_production: false,
     },
     // 56 - FieldListRest: ;
     Production {
         lhs: 20,
         production: &[],
+        is_push_production: false,
     },
     // 57 - Type: Ident;
     Production {
         lhs: 54,
         production: &[ParseType::N(23)],
+        is_push_production: false,
     },
     // 58 - Type: ArrayType;
     Production {
         lhs: 54,
         production: &[ParseType::N(4)],
+        is_push_production: false,
     },
     // 59 - Type: RecordType;
     Production {
         lhs: 54,
         production: &[ParseType::N(43)],
+        is_push_production: false,
     },
     // 60 - FPSection: 'VAR' IdentList ':' Type;
     Production {
@@ -1124,61 +1184,73 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(24),
             ParseType::T(30),
         ],
+        is_push_production: false,
     },
     // 61 - FPSection: IdentList ':' Type;
     Production {
         lhs: 16,
         production: &[ParseType::N(54), ParseType::T(28), ParseType::N(24)],
+        is_push_production: false,
     },
     // 62 - FormalParameters: '(' FormalParametersSuffix;
     Production {
         lhs: 21,
         production: &[ParseType::N(22), ParseType::T(13)],
+        is_push_production: false,
     },
     // 63 - FormalParametersSuffix: ')';
     Production {
         lhs: 22,
         production: &[ParseType::T(14)],
+        is_push_production: false,
     },
     // 64 - FormalParametersSuffix: FPSection FPSectionRest ')';
     Production {
         lhs: 22,
         production: &[ParseType::T(14), ParseType::N(17), ParseType::N(16)],
+        is_push_production: false,
     },
     // 65 - FPSectionRest: ';' FPSection FPSectionRest;
     Production {
         lhs: 17,
         production: &[ParseType::N(17), ParseType::N(16), ParseType::T(25)],
+        is_push_production: false,
     },
     // 66 - FPSectionRest: ;
     Production {
         lhs: 17,
         production: &[],
+        is_push_production: false,
     },
     // 67 - ProcedureHeading: 'PROCEDURE' Ident ProcedureHeadingSuffix;
     Production {
         lhs: 41,
         production: &[ParseType::N(42), ParseType::N(23), ParseType::T(31)],
+        is_push_production: false,
     },
     // 68 - ProcedureHeadingSuffix: FormalParameters;
     Production {
         lhs: 42,
         production: &[ParseType::N(21)],
+        is_push_production: false,
     },
     // 69 - ProcedureHeadingSuffix: ;
     Production {
         lhs: 42,
         production: &[],
+        is_push_production: false,
     },
     // 70 - ProcedureBody: Declarations ProcedureBodySuffix0;
     Production {
         lhs: 34,
         production: &[ParseType::N(36), ParseType::N(8)],
+        is_push_production: false,
     },
     // 71 - ProcedureBodySuffix0: 'BEGIN' StatementSequence ProcedureBodySuffix;
     Production {
         lhs: 36,
         production: &[ParseType::N(35), ParseType::N(51), ParseType::T(32)],
+        is_push_production: false,
     },
     // 72 - ProcedureBodySuffix0: 'RETURN' Expression 'END' Ident;
     Production {
@@ -1189,11 +1261,13 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(13),
             ParseType::T(33),
         ],
+        is_push_production: false,
     },
     // 73 - ProcedureBodySuffix0: 'END' Ident;
     Production {
         lhs: 36,
         production: &[ParseType::N(23), ParseType::T(17)],
+        is_push_production: false,
     },
     // 74 - ProcedureBodySuffix: 'RETURN' Expression 'END' Ident;
     Production {
@@ -1204,81 +1278,97 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(13),
             ParseType::T(33),
         ],
+        is_push_production: false,
     },
     // 75 - ProcedureBodySuffix: 'END' Ident;
     Production {
         lhs: 35,
         production: &[ParseType::N(23), ParseType::T(17)],
+        is_push_production: false,
     },
     // 76 - ProcedureDeclaration: ProcedureHeading ';' ProcedureBody;
     Production {
         lhs: 39,
         production: &[ParseType::N(34), ParseType::T(25), ParseType::N(41)],
+        is_push_production: false,
     },
     // 77 - Declarations: 'TYPE' TypeDecls DeclarationsSuffix1;
     Production {
         lhs: 8,
         production: &[ParseType::N(11), ParseType::N(55), ParseType::T(34)],
+        is_push_production: false,
     },
     // 78 - Declarations: 'CONST' ConstDecls DeclarationsSuffix0;
     Production {
         lhs: 8,
         production: &[ParseType::N(10), ParseType::N(7), ParseType::T(35)],
+        is_push_production: false,
     },
     // 79 - DeclarationsSuffix1: 'VAR' VarDecls ProcedureDeclarationList;
     Production {
         lhs: 11,
         production: &[ParseType::N(40), ParseType::N(57), ParseType::T(30)],
+        is_push_production: false,
     },
     // 80 - DeclarationsSuffix1: ProcedureDeclarationList;
     Production {
         lhs: 11,
         production: &[ParseType::N(40)],
+        is_push_production: false,
     },
     // 81 - Declarations: 'VAR' VarDecls ProcedureDeclarationList;
     Production {
         lhs: 8,
         production: &[ParseType::N(40), ParseType::N(57), ParseType::T(30)],
+        is_push_production: false,
     },
     // 82 - Declarations: ProcedureDeclarationList;
     Production {
         lhs: 8,
         production: &[ParseType::N(40)],
+        is_push_production: false,
     },
     // 83 - DeclarationsSuffix0: 'TYPE' TypeDecls DeclarationsSuffix;
     Production {
         lhs: 10,
         production: &[ParseType::N(9), ParseType::N(55), ParseType::T(34)],
+        is_push_production: false,
     },
     // 84 - DeclarationsSuffix0: 'VAR' VarDecls ProcedureDeclarationList;
     Production {
         lhs: 10,
         production: &[ParseType::N(40), ParseType::N(57), ParseType::T(30)],
+        is_push_production: false,
     },
     // 85 - DeclarationsSuffix0: ProcedureDeclarationList;
     Production {
         lhs: 10,
         production: &[ParseType::N(40)],
+        is_push_production: false,
     },
     // 86 - DeclarationsSuffix: 'VAR' VarDecls ProcedureDeclarationList;
     Production {
         lhs: 9,
         production: &[ParseType::N(40), ParseType::N(57), ParseType::T(30)],
+        is_push_production: false,
     },
     // 87 - DeclarationsSuffix: ProcedureDeclarationList;
     Production {
         lhs: 9,
         production: &[ParseType::N(40)],
+        is_push_production: false,
     },
     // 88 - ProcedureDeclarationList: ProcedureDeclaration ';' ProcedureDeclarationList;
     Production {
         lhs: 40,
         production: &[ParseType::N(40), ParseType::T(25), ParseType::N(39)],
+        is_push_production: false,
     },
     // 89 - ProcedureDeclarationList: ;
     Production {
         lhs: 40,
         production: &[],
+        is_push_production: false,
     },
     // 90 - ConstDecls: Ident AssignOp Expression ';' ConstDecls;
     Production {
@@ -1290,11 +1380,13 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(5),
             ParseType::N(23),
         ],
+        is_push_production: false,
     },
     // 91 - ConstDecls: ;
     Production {
         lhs: 7,
         production: &[],
+        is_push_production: false,
     },
     // 92 - TypeDecls: Ident AssignOp Type ';' TypeDecls;
     Production {
@@ -1306,11 +1398,13 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(5),
             ParseType::N(23),
         ],
+        is_push_production: false,
     },
     // 93 - TypeDecls: ;
     Production {
         lhs: 55,
         production: &[],
+        is_push_production: false,
     },
     // 94 - VarDecls: IdentList ':' Type ';' VarDecls;
     Production {
@@ -1322,11 +1416,13 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::T(28),
             ParseType::N(24),
         ],
+        is_push_production: false,
     },
     // 95 - VarDecls: ;
     Production {
         lhs: 57,
         production: &[],
+        is_push_production: false,
     },
     // 96 - Module: 'MODULE' Ident ';' Declarations ModuleSuffix;
     Production {
@@ -1338,6 +1434,7 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(23),
             ParseType::T(36),
         ],
+        is_push_production: false,
     },
     // 97 - ModuleSuffix: 'BEGIN' StatementSequence 'END' Ident '\.';
     Production {
@@ -1349,36 +1446,43 @@ pub const PRODUCTIONS: &[Production; 104] = &[
             ParseType::N(51),
             ParseType::T(32),
         ],
+        is_push_production: false,
     },
     // 98 - ModuleSuffix: 'END' Ident '\.';
     Production {
         lhs: 31,
         production: &[ParseType::T(5), ParseType::N(23), ParseType::T(17)],
+        is_push_production: false,
     },
     // 99 - MulOperator: "\*|/|DIV|MOD|&";
     Production {
         lhs: 33,
         production: &[ParseType::T(38)],
+        is_push_production: false,
     },
     // 100 - AddOperator: /\+|-|OR/;
     Production {
         lhs: 3,
         production: &[ParseType::T(39)],
+        is_push_production: false,
     },
     // 101 - UnaryOp: /\+|-/;
     Production {
         lhs: 56,
         production: &[ParseType::T(40)],
+        is_push_production: false,
     },
     // 102 - Ident: /[a-zA-Z][a-zA-Z0-9]*/;
     Production {
         lhs: 23,
         production: &[ParseType::T(41)],
+        is_push_production: false,
     },
     // 103 - Integer: /[0-9]+/;
     Production {
         lhs: 29,
         production: &[ParseType::T(42)],
+        is_push_production: false,
     },
 ];
 

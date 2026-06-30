@@ -707,46 +707,55 @@ pub const PRODUCTIONS: &[Production; 86] = &[
     Production {
         lhs: 23,
         production: &[ParseType::N(10), ParseType::N(26)],
+        is_push_production: false,
     },
     // 1 - Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
     Production {
         lhs: 26,
         production: &[ParseType::N(28), ParseType::N(27), ParseType::N(38)],
+        is_push_production: false,
     },
     // 2 - PrologList0: ScannerState : crate::parser::parol_grammar::ScannerConfig  PrologList0;
     Production {
         lhs: 28,
         production: &[ParseType::N(28), ParseType::N(33)],
+        is_push_production: true,
     },
     // 3 - PrologList0: ;
     Production {
         lhs: 28,
         production: &[],
+        is_push_production: false,
     },
     // 4 - PrologList: Declaration PrologList;
     Production {
         lhs: 27,
         production: &[ParseType::N(27), ParseType::N(7)],
+        is_push_production: true,
     },
     // 5 - PrologList: ;
     Production {
         lhs: 27,
         production: &[],
+        is_push_production: false,
     },
     // 6 - StartDeclaration: '%start'^ /* Clipped */ Identifier;
     Production {
         lhs: 38,
         production: &[ParseType::N(13), ParseType::T(5)],
+        is_push_production: false,
     },
     // 7 - Declaration: '%title'^ /* Clipped */ String;
     Production {
         lhs: 7,
         production: &[ParseType::N(39), ParseType::T(6)],
+        is_push_production: false,
     },
     // 8 - Declaration: '%comment'^ /* Clipped */ String;
     Production {
         lhs: 7,
         production: &[ParseType::N(39), ParseType::T(7)],
+        is_push_production: false,
     },
     // 9 - Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
@@ -757,6 +766,7 @@ pub const PRODUCTIONS: &[Production; 86] = &[
             ParseType::N(13),
             ParseType::T(8),
         ],
+        is_push_production: false,
     },
     // 10 - Declaration: "%nt_type"^ /* Clipped */ Identifier@nt_name '='^ /* Clipped */ UserTypeName@nt_type : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
@@ -767,91 +777,109 @@ pub const PRODUCTIONS: &[Production; 86] = &[
             ParseType::N(13),
             ParseType::T(10),
         ],
+        is_push_production: false,
     },
     // 11 - Declaration: "%t_type"^ /* Clipped */ UserTypeName@t_type : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
         lhs: 7,
         production: &[ParseType::N(47), ParseType::T(11)],
+        is_push_production: false,
     },
     // 12 - Declaration: '%grammar_type'^ /* Clipped */ RawString;
     Production {
         lhs: 7,
         production: &[ParseType::N(29), ParseType::T(12)],
+        is_push_production: false,
     },
     // 13 - Declaration: ScannerDirectives;
     Production {
         lhs: 7,
         production: &[ParseType::N(32)],
+        is_push_production: false,
     },
     // 14 - ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
     Production {
         lhs: 32,
         production: &[ParseType::N(43), ParseType::T(13)],
+        is_push_production: false,
     },
     // 15 - ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;
     Production {
         lhs: 32,
         production: &[ParseType::N(43), ParseType::N(43), ParseType::T(14)],
+        is_push_production: false,
     },
     // 16 - ScannerDirectives: '%auto_newline_off'^ /* Clipped */;
     Production {
         lhs: 32,
         production: &[ParseType::T(15)],
+        is_push_production: false,
     },
     // 17 - ScannerDirectives: '%auto_ws_off'^ /* Clipped */;
     Production {
         lhs: 32,
         production: &[ParseType::T(16)],
+        is_push_production: false,
     },
     // 18 - ScannerDirectives: '%skip'^ /* Clipped */ IdentifierList;
     Production {
         lhs: 32,
         production: &[ParseType::N(14), ParseType::T(17)],
+        is_push_production: false,
     },
     // 19 - ScannerDirectives: '%on'^ /* Clipped */ IdentifierList ScannerStateDirectives : crate::parser::parol_grammar::ScannerStateSwitch ;
     Production {
         lhs: 32,
         production: &[ParseType::N(34), ParseType::N(14), ParseType::T(18)],
+        is_push_production: false,
     },
     // 20 - ScannerDirectives: '%allow_unmatched'^ /* Clipped */;
     Production {
         lhs: 32,
         production: &[ParseType::T(19)],
+        is_push_production: false,
     },
     // 21 - ScannerStateDirectives: '%enter'^ /* Clipped */ Identifier;
     Production {
         lhs: 34,
         production: &[ParseType::N(13), ParseType::T(20)],
+        is_push_production: false,
     },
     // 22 - ScannerStateDirectives: '%push'^ /* Clipped */ Identifier;
     Production {
         lhs: 34,
         production: &[ParseType::N(13), ParseType::T(21)],
+        is_push_production: false,
     },
     // 23 - ScannerStateDirectives: '%pop';
     Production {
         lhs: 34,
         production: &[ParseType::T(22)],
+        is_push_production: false,
     },
     // 24 - GrammarDefinition: '%%'^ /* Clipped */ Production GrammarDefinitionList /* Vec */;
     Production {
         lhs: 10,
         production: &[ParseType::N(11), ParseType::N(25), ParseType::T(23)],
+        is_push_production: false,
     },
     // 25 - GrammarDefinitionList: Production GrammarDefinitionList;
     Production {
         lhs: 11,
         production: &[ParseType::N(11), ParseType::N(25)],
+        is_push_production: true,
     },
     // 26 - GrammarDefinitionList: ;
     Production {
         lhs: 11,
         production: &[],
+        is_push_production: false,
     },
     // 27 - DoubleColon: '::';
     Production {
         lhs: 8,
         production: &[ParseType::T(24)],
+        is_push_production: false,
     },
     // 28 - Production: Identifier ':'^ /* Clipped */ Alternations ';'^ /* Clipped */;
     Production {
@@ -862,116 +890,139 @@ pub const PRODUCTIONS: &[Production; 86] = &[
             ParseType::T(25),
             ParseType::N(13),
         ],
+        is_push_production: false,
     },
     // 29 - Alternations: Alternation AlternationsList /* Vec */;
     Production {
         lhs: 4,
         production: &[ParseType::N(5), ParseType::N(2)],
+        is_push_production: false,
     },
     // 30 - AlternationsList: '|'^ /* Clipped */ Alternation AlternationsList;
     Production {
         lhs: 5,
         production: &[ParseType::N(5), ParseType::N(2), ParseType::T(27)],
+        is_push_production: true,
     },
     // 31 - AlternationsList: ;
     Production {
         lhs: 5,
         production: &[],
+        is_push_production: false,
     },
     // 32 - Alternation: AlternationList /* Vec */;
     Production {
         lhs: 2,
         production: &[ParseType::N(3)],
+        is_push_production: false,
     },
     // 33 - AlternationList: Factor AlternationList;
     Production {
         lhs: 3,
         production: &[ParseType::N(3), ParseType::N(9)],
+        is_push_production: true,
     },
     // 34 - AlternationList: ;
     Production {
         lhs: 3,
         production: &[],
+        is_push_production: false,
     },
     // 35 - Factor: Group;
     Production {
         lhs: 9,
         production: &[ParseType::N(12)],
+        is_push_production: false,
     },
     // 36 - Factor: Repeat;
     Production {
         lhs: 9,
         production: &[ParseType::N(31)],
+        is_push_production: false,
     },
     // 37 - Factor: Optional;
     Production {
         lhs: 9,
         production: &[ParseType::N(22)],
+        is_push_production: false,
     },
     // 38 - Factor: Symbol;
     Production {
         lhs: 9,
         production: &[ParseType::N(40)],
+        is_push_production: false,
     },
     // 39 - Symbol: NonTerminal;
     Production {
         lhs: 40,
         production: &[ParseType::N(20)],
+        is_push_production: false,
     },
     // 40 - Symbol: SimpleToken;
     Production {
         lhs: 40,
         production: &[ParseType::N(36)],
+        is_push_production: false,
     },
     // 41 - Symbol: TokenWithStates;
     Production {
         lhs: 40,
         production: &[ParseType::N(44)],
+        is_push_production: false,
     },
     // 42 - TokenLiteral: String;
     Production {
         lhs: 43,
         production: &[ParseType::N(39)],
+        is_push_production: false,
     },
     // 43 - TokenLiteral: RawString;
     Production {
         lhs: 43,
         production: &[ParseType::N(29)],
+        is_push_production: false,
     },
     // 44 - TokenLiteral: Regex;
     Production {
         lhs: 43,
         production: &[ParseType::N(30)],
+        is_push_production: false,
     },
     // 45 - TokenExpression: TokenLiteral TokenExpressionOpt /* Option */;
     Production {
         lhs: 41,
         production: &[ParseType::N(42), ParseType::N(43)],
+        is_push_production: false,
     },
     // 46 - TokenExpressionOpt: LookAhead;
     Production {
         lhs: 42,
         production: &[ParseType::N(16)],
+        is_push_production: false,
     },
     // 47 - TokenExpressionOpt: ;
     Production {
         lhs: 42,
         production: &[],
+        is_push_production: false,
     },
     // 48 - SimpleToken: TokenExpression SimpleTokenOpt /* Option */;
     Production {
         lhs: 36,
         production: &[ParseType::N(37), ParseType::N(41)],
+        is_push_production: false,
     },
     // 49 - SimpleTokenOpt: ASTControl;
     Production {
         lhs: 37,
         production: &[ParseType::N(0)],
+        is_push_production: false,
     },
     // 50 - SimpleTokenOpt: ;
     Production {
         lhs: 37,
         production: &[],
+        is_push_production: false,
     },
     // 51 - TokenWithStates: '<'^ /* Clipped */ IdentifierList '>'^ /* Clipped */ TokenExpression TokenWithStatesOpt /* Option */;
     Production {
@@ -983,66 +1034,79 @@ pub const PRODUCTIONS: &[Production; 86] = &[
             ParseType::N(14),
             ParseType::T(28),
         ],
+        is_push_production: false,
     },
     // 52 - TokenWithStatesOpt: ASTControl;
     Production {
         lhs: 45,
         production: &[ParseType::N(0)],
+        is_push_production: false,
     },
     // 53 - TokenWithStatesOpt: ;
     Production {
         lhs: 45,
         production: &[],
+        is_push_production: false,
     },
     // 54 - String: /"(\\.|[^"])*"/;
     Production {
         lhs: 39,
         production: &[ParseType::T(30)],
+        is_push_production: false,
     },
     // 55 - RawString: /'(\\.|[^'])*'/;
     Production {
         lhs: 29,
         production: &[ParseType::T(31)],
+        is_push_production: false,
     },
     // 56 - Regex: "/(\\.|[^\/])*/";
     Production {
         lhs: 30,
         production: &[ParseType::T(32)],
+        is_push_production: false,
     },
     // 57 - Group: '(' Alternations ')';
     Production {
         lhs: 12,
         production: &[ParseType::T(34), ParseType::N(4), ParseType::T(33)],
+        is_push_production: false,
     },
     // 58 - Optional: '[' Alternations ']';
     Production {
         lhs: 22,
         production: &[ParseType::T(36), ParseType::N(4), ParseType::T(35)],
+        is_push_production: false,
     },
     // 59 - Repeat: '{' Alternations '}';
     Production {
         lhs: 31,
         production: &[ParseType::T(38), ParseType::N(4), ParseType::T(37)],
+        is_push_production: false,
     },
     // 60 - NonTerminal: Identifier NonTerminalOpt /* Option */;
     Production {
         lhs: 20,
         production: &[ParseType::N(21), ParseType::N(13)],
+        is_push_production: false,
     },
     // 61 - NonTerminalOpt: ASTControl;
     Production {
         lhs: 21,
         production: &[ParseType::N(0)],
+        is_push_production: false,
     },
     // 62 - NonTerminalOpt: ;
     Production {
         lhs: 21,
         production: &[],
+        is_push_production: false,
     },
     // 63 - Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
     Production {
         lhs: 13,
         production: &[ParseType::T(39)],
+        is_push_production: false,
     },
     // 64 - ScannerState: '%scanner'^ /* Clipped */ Identifier@state_name '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;
     Production {
@@ -1054,111 +1118,133 @@ pub const PRODUCTIONS: &[Production; 86] = &[
             ParseType::N(13),
             ParseType::T(40),
         ],
+        is_push_production: false,
     },
     // 65 - ScannerStateList: ScannerDirectives ScannerStateList;
     Production {
         lhs: 35,
         production: &[ParseType::N(35), ParseType::N(32)],
+        is_push_production: true,
     },
     // 66 - ScannerStateList: ;
     Production {
         lhs: 35,
         production: &[],
+        is_push_production: false,
     },
     // 67 - IdentifierList: Identifier IdentifierListList /* Vec */;
     Production {
         lhs: 14,
         production: &[ParseType::N(15), ParseType::N(13)],
+        is_push_production: false,
     },
     // 68 - IdentifierListList: ','^ /* Clipped */ Identifier IdentifierListList;
     Production {
         lhs: 15,
         production: &[ParseType::N(15), ParseType::N(13), ParseType::T(41)],
+        is_push_production: true,
     },
     // 69 - IdentifierListList: ;
     Production {
         lhs: 15,
         production: &[],
+        is_push_production: false,
     },
     // 70 - ASTControl: CutOperator;
     Production {
         lhs: 0,
         production: &[ParseType::N(6)],
+        is_push_production: false,
     },
     // 71 - ASTControl: MemberName ASTControlOpt /* Option */;
     Production {
         lhs: 0,
         production: &[ParseType::N(1), ParseType::N(18)],
+        is_push_production: false,
     },
     // 72 - ASTControl: UserTypeDeclaration;
     Production {
         lhs: 0,
         production: &[ParseType::N(46)],
+        is_push_production: false,
     },
     // 73 - ASTControlOpt: UserTypeDeclaration;
     Production {
         lhs: 1,
         production: &[ParseType::N(46)],
+        is_push_production: false,
     },
     // 74 - ASTControlOpt: ;
     Production {
         lhs: 1,
         production: &[],
+        is_push_production: false,
     },
     // 75 - MemberName: '@'^ /* Clipped */ Identifier;
     Production {
         lhs: 18,
         production: &[ParseType::N(13), ParseType::T(42)],
+        is_push_production: false,
     },
     // 76 - CutOperator: '^'^ /* Clipped */;
     Production {
         lhs: 6,
         production: &[ParseType::T(43)],
+        is_push_production: false,
     },
     // 77 - UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
         lhs: 46,
         production: &[ParseType::N(47), ParseType::T(25)],
+        is_push_production: false,
     },
     // 78 - UserTypeName: Identifier UserTypeNameList /* Vec */;
     Production {
         lhs: 47,
         production: &[ParseType::N(48), ParseType::N(13)],
+        is_push_production: false,
     },
     // 79 - UserTypeNameList: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;
     Production {
         lhs: 48,
         production: &[ParseType::N(48), ParseType::N(13), ParseType::N(8)],
+        is_push_production: true,
     },
     // 80 - UserTypeNameList: ;
     Production {
         lhs: 48,
         production: &[],
+        is_push_production: false,
     },
     // 81 - LookAhead: LookAheadGroup TokenLiteral;
     Production {
         lhs: 16,
         production: &[ParseType::N(43), ParseType::N(17)],
+        is_push_production: false,
     },
     // 82 - LookAheadGroup: PositiveLookahead;
     Production {
         lhs: 17,
         production: &[ParseType::N(24)],
+        is_push_production: false,
     },
     // 83 - LookAheadGroup: NegativeLookahead;
     Production {
         lhs: 17,
         production: &[ParseType::N(19)],
+        is_push_production: false,
     },
     // 84 - PositiveLookahead: '?='^ /* Clipped */;
     Production {
         lhs: 24,
         production: &[ParseType::T(44)],
+        is_push_production: false,
     },
     // 85 - NegativeLookahead: '?!'^ /* Clipped */;
     Production {
         lhs: 19,
         production: &[ParseType::T(45)],
+        is_push_production: false,
     },
 ];
 

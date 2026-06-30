@@ -165,106 +165,127 @@ pub const PRODUCTIONS: &[Production; 21] = &[
     Production {
         lhs: 3,
         production: &[ParseType::N(10)],
+        is_push_production: false,
     },
     // 1 - Object: '{'^ /* Clipped */ ObjectSuffix;
     Production {
         lhs: 5,
         production: &[ParseType::N(7), ParseType::T(5)],
+        is_push_production: false,
     },
     // 2 - ObjectSuffix: Pair ObjectList /* Vec */ '}'^ /* Clipped */;
     Production {
         lhs: 7,
         production: &[ParseType::T(6), ParseType::N(6), ParseType::N(8)],
+        is_push_production: false,
     },
     // 3 - ObjectSuffix: '}'^ /* Clipped */;
     Production {
         lhs: 7,
         production: &[ParseType::T(6)],
+        is_push_production: false,
     },
     // 4 - ObjectList: ','^ /* Clipped */ Pair ObjectList;
     Production {
         lhs: 6,
         production: &[ParseType::N(6), ParseType::N(8), ParseType::T(7)],
+        is_push_production: true,
     },
     // 5 - ObjectList: ;
     Production {
         lhs: 6,
         production: &[],
+        is_push_production: false,
     },
     // 6 - Pair: String ':'^ /* Clipped */ Value;
     Production {
         lhs: 8,
         production: &[ParseType::N(10), ParseType::T(8), ParseType::N(9)],
+        is_push_production: false,
     },
     // 7 - Array: '['^ /* Clipped */ ArraySuffix;
     Production {
         lhs: 0,
         production: &[ParseType::N(2), ParseType::T(9)],
+        is_push_production: false,
     },
     // 8 - ArraySuffix: Value ArrayList /* Vec */ ']'^ /* Clipped */;
     Production {
         lhs: 2,
         production: &[ParseType::T(10), ParseType::N(1), ParseType::N(10)],
+        is_push_production: false,
     },
     // 9 - ArraySuffix: ']'^ /* Clipped */;
     Production {
         lhs: 2,
         production: &[ParseType::T(10)],
+        is_push_production: false,
     },
     // 10 - ArrayList: ','^ /* Clipped */ Value ArrayList;
     Production {
         lhs: 1,
         production: &[ParseType::N(1), ParseType::N(10), ParseType::T(7)],
+        is_push_production: true,
     },
     // 11 - ArrayList: ;
     Production {
         lhs: 1,
         production: &[],
+        is_push_production: false,
     },
     // 12 - Value: String;
     Production {
         lhs: 10,
         production: &[ParseType::N(9)],
+        is_push_production: false,
     },
     // 13 - Value: Number;
     Production {
         lhs: 10,
         production: &[ParseType::N(4)],
+        is_push_production: false,
     },
     // 14 - Value: Object;
     Production {
         lhs: 10,
         production: &[ParseType::N(5)],
+        is_push_production: false,
     },
     // 15 - Value: Array;
     Production {
         lhs: 10,
         production: &[ParseType::N(0)],
+        is_push_production: false,
     },
     // 16 - Value: 'true'^ /* Clipped */;
     Production {
         lhs: 10,
         production: &[ParseType::T(11)],
+        is_push_production: false,
     },
     // 17 - Value: 'false'^ /* Clipped */;
     Production {
         lhs: 10,
         production: &[ParseType::T(12)],
+        is_push_production: false,
     },
     // 18 - Value: 'null'^ /* Clipped */;
     Production {
         lhs: 10,
         production: &[ParseType::T(13)],
+        is_push_production: false,
     },
     // 19 - String: /"(\\.|[^"\\])*"/;
     Production {
         lhs: 9,
         production: &[ParseType::T(14)],
+        is_push_production: false,
     },
     // 20 - Number: /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?/;
     Production {
         lhs: 4,
         production: &[ParseType::T(15)],
+        is_push_production: false,
     },
 ];
 

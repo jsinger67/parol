@@ -77,26 +77,31 @@ pub const PRODUCTIONS: &[Production; 5] = &[
     Production {
         lhs: 2,
         production: &[ParseType::T(5)],
+        is_push_production: false,
     },
     // 1 - PLUS: /\+/;
     Production {
         lhs: 3,
         production: &[ParseType::T(6)],
+        is_push_production: false,
     },
     // 2 - Expr: NUMBER ExprList /* Vec */;
     Production {
         lhs: 0,
         production: &[ParseType::N(1), ParseType::N(2)],
+        is_push_production: false,
     },
     // 3 - ExprList: PLUS NUMBER ExprList;
     Production {
         lhs: 1,
         production: &[ParseType::N(1), ParseType::N(2), ParseType::N(3)],
+        is_push_production: true,
     },
     // 4 - ExprList: ;
     Production {
         lhs: 1,
         production: &[],
+        is_push_production: false,
     },
 ];
 
