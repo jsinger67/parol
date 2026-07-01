@@ -83,7 +83,7 @@
   },
   "dependencies": {
     "systemjs": "6.15.1",
-    "vscode-languageclient": "^10.0.1"
+    "vscode-languageclient": "^10.1.0"
   },
   "devDependencies": {
     "@types/node": "^26.1.0",
