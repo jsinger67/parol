@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-## 5.0.0 - Not released yet
+## 5.0.0 - 2026-07-01
 
 * **Breaking Changes**:
   * Generated LL(k) and LALR(1) parsers now require `parol_runtime` version 5.0.0 due to the addition of the `is_push_production` field in `Production` and `LRProduction`.

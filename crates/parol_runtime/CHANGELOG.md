@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 5.0.0 - Not released yet
+## 5.0.0 - 2026-07-01
 
 * **Breaking Changes**:
   * Add `is_push_production: bool` to both `Production` (LL(k)) and `LRProduction` (LALR(1)) structs to support push-semantics-aware recursion depth limiting.
