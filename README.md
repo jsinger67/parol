@@ -199,18 +199,18 @@ example project.
 
 ## State of the project
 
-- Version 1 of `parol` is stable and production ready with all the usual disclaimers.
-It receives fixes on branch `release1.0`
-You should use the latest releases available on crates.io with version >=1.
+### Versions 1 through 4
 
-- Version 2 is stable and production ready with all the usual disclaimers.
-It receives fixes on branch `release2.2`
+are no longer being developed; there will be no further new features or bug fixes. This decision was
+made to reduce maintenance overhead. Please upgrade to Version 5.
 
-- Version 3 is stable and production ready with all the usual disclaimers.
-It receives fixes on branch `release3.1`
+### Version 5
 
-- Version 4 is the current stable version. It is in active development to receive new features and bug fixes.
-Watch CHANGELOG closely and update when new releases are published.
+is the current stable version. It is under active development and receives new features and bug
+fixes. Monitor the CHANGELOG closely and perform updates as soon as new releases become available.
+Version 5 is functionally compatible with Version 4, with the exception of a few changes to the
+public interface. Regenerating your Version 4-created parser using Version 5 should be sufficient
+for the migration.
 
 ## Dependencies
 ## Security alert operations

@@ -2,7 +2,7 @@ name: Parol VSCode Config Sync
 
 on:
   push:
-    branches: [ main, release1.0, release2.2 ]
+    branches: [ main ]
     paths:
       - tools/parol-vscode/config-definitions.js
       - tools/parol-vscode/scripts/check-config-sync.js
@@ -11,7 +11,7 @@ on:
       - tools/parol-vscode/package-lock.json
       - .github/workflows/parol-vscode-config-sync.yml
   pull_request:
-    branches: [ main, release1.0, release2.2 ]
+    branches: [ main ]
     paths:
       - tools/parol-vscode/config-definitions.js
       - tools/parol-vscode/scripts/check-config-sync.js
