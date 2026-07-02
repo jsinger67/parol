@@ -7,7 +7,7 @@ grammar with nearly 1200 productions.
 
 **Parol Usage:** Grammar definition and parser generation for the Veryl language.
 
-**Parol Version:** v4.3
+**Parol Version:** v5.0
 
 ## [sdcx](https://github.com/dalance/sdcx)
 
