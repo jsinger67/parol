@@ -121,6 +121,8 @@ Notes:
 - LL(k) and LALR(1) parsers check the current production depth and do not take into account
 productions with "push semantics"; that is, lists based on repetition are flattened rather than
 explicitly captured.
+- The parser terminates with a `parol_runtime::ParserError::MaxParsingDepthExceeded` instead of
+crashing.
 
 ## Q: I get warnings in generated code 'This function has too many arguments'
 A: Configure the builder in your `build.rs` to let `parol` generate a
