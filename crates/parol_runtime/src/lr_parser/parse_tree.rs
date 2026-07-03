@@ -31,26 +31,25 @@ impl LRParseTree<'_> {
 impl Drop for LRParseTree<'_> {
     fn drop(&mut self) {
         // Take the children out of self, replacing with None (which is trivially droppable)
-        if let LRParseTree::NonTerminal(_, children) = self {
-            if let Some(children_vec) = children.take() {
-                // Use an explicit stack to iteratively drop all nested children
-                let mut drop_stack: Vec<Vec<LRParseTree<'_>>> = vec![children_vec];
-                while let Some(mut current_children) = drop_stack.pop() {
-                    for child in current_children.iter_mut() {
-                        // Take grandchildren out of each child NonTerminal, preventing
-                        // recursive drop. The child itself becomes NonTerminal(_, None)
-                        // which drops trivially.
-                        if let LRParseTree::NonTerminal(_, grandchildren) = child {
-                            if let Some(grandchildren_vec) = grandchildren.take() {
-                                if !grandchildren_vec.is_empty() {
-                                    drop_stack.push(grandchildren_vec);
-                                }
-                            }
-                        }
+        if let LRParseTree::NonTerminal(_, children) = self
+            && let Some(children_vec) = children.take()
+        {
+            // Use an explicit stack to iteratively drop all nested children
+            let mut drop_stack: Vec<Vec<LRParseTree<'_>>> = vec![children_vec];
+            while let Some(mut current_children) = drop_stack.pop() {
+                for child in current_children.iter_mut() {
+                    // Take grandchildren out of each child NonTerminal, preventing
+                    // recursive drop. The child itself becomes NonTerminal(_, None)
+                    // which drops trivially.
+                    if let LRParseTree::NonTerminal(_, grandchildren) = child
+                        && let Some(grandchildren_vec) = grandchildren.take()
+                        && !grandchildren_vec.is_empty()
+                    {
+                        drop_stack.push(grandchildren_vec);
                     }
-                    // current_children now only contains Terminal and NonTerminal(_, None),
-                    // both of which drop trivially without recursion
                 }
+                // current_children now only contains Terminal and NonTerminal(_, None),
+                // both of which drop trivially without recursion
             }
         }
     }
@@ -79,7 +78,6 @@ impl Display for LRParseTree<'_> {
     }
 }
 
-
 // Build a tree from a parse tree in a depth-first manner. This is an iterative function that
 // traverses the parse tree and builds the syntree tree using an explicit work stack.
 // This avoids stack overflow for deeply nested parse trees (e.g. from long lists).
@@ -105,7 +103,7 @@ pub(crate) fn build_tree<'a, T: TreeConstruct<'a>>(
                     builder.close_non_terminal()?;
                 } else if let Some(children_vec) = children.take() {
                     let len = children_vec.len();
-                    builder.open_non_terminal(*name, Some(len))?;
+                    builder.open_non_terminal(name, Some(len))?;
                     // Push close marker first (will be processed last)
                     stack.push(LRParseTree::NonTerminal("", None));
                     // Push children in reverse order so they are processed left-to-right
@@ -113,7 +111,7 @@ pub(crate) fn build_tree<'a, T: TreeConstruct<'a>>(
                         stack.push(child);
                     }
                 } else {
-                    builder.open_non_terminal(*name, Some(0))?;
+                    builder.open_non_terminal(name, Some(0))?;
                     builder.close_non_terminal()?;
                 }
             }
@@ -121,7 +119,6 @@ pub(crate) fn build_tree<'a, T: TreeConstruct<'a>>(
     }
     Ok(())
 }
-
 
 // Convert a parse tree to a syntree tree.
 // Since syntree must be built from the root, we use the LRParseTree during parsing and convert it
