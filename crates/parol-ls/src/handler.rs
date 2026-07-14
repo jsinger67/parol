@@ -15,11 +15,7 @@ impl RequestHandler for GotoDefinition {
         eprintln!("got gotoDefinition request #{id}: {params:?}");
         let result = server.handle_goto_definition(params);
         let result = serde_json::to_value(result).unwrap();
-        Response {
-            id,
-            result: Some(result),
-            error: None,
-        }
+        Response::new_ok(id, result)
     }
 }
 
@@ -28,11 +24,7 @@ impl RequestHandler for HoverRequest {
         eprintln!("got hover request #{id}: {params:?}");
         let result = server.handle_hover(params);
         let result = serde_json::to_value(result).unwrap();
-        Response {
-            id,
-            result: Some(result),
-            error: None,
-        }
+        Response::new_ok(id, result)
     }
 }
 
@@ -41,11 +33,7 @@ impl RequestHandler for DocumentSymbolRequest {
         eprintln!("got document symbols request #{id}: {params:?}");
         let result = server.handle_document_symbols(params);
         let result = serde_json::to_value(result).unwrap();
-        Response {
-            id,
-            result: Some(result),
-            error: None,
-        }
+        Response::new_ok(id, result)
     }
 }
 
@@ -54,11 +42,7 @@ impl RequestHandler for PrepareRenameRequest {
         eprintln!("got prepare rename request #{id}: {params:?}");
         let result = server.handle_prepare_rename(params);
         let result = serde_json::to_value(result).unwrap();
-        Response {
-            id,
-            result: Some(result),
-            error: None,
-        }
+        Response::new_ok(id, result)
     }
 }
 
@@ -67,11 +51,7 @@ impl RequestHandler for Rename {
         eprintln!("got rename request #{id}: {params:?}");
         let result = server.handle_rename(params);
         let result = serde_json::to_value(result).unwrap();
-        Response {
-            id,
-            result: Some(result),
-            error: None,
-        }
+        Response::new_ok(id, result)
     }
 }
 
@@ -80,11 +60,7 @@ impl RequestHandler for Formatting {
         eprintln!("got formatting request #{id}: {params:?}");
         let result = server.handle_formatting(params);
         let result = serde_json::to_value(result).unwrap();
-        Response {
-            id,
-            result: Some(result),
-            error: None,
-        }
+        Response::new_ok(id, result)
     }
 }
 
@@ -93,10 +69,6 @@ impl RequestHandler for CodeActionRequest {
         eprintln!("got codeAction request #{id}: {params:?}");
         let result = server.handle_code_action(params);
         let result = serde_json::to_value(result).unwrap();
-        Response {
-            id,
-            result: Some(result),
-            error: None,
-        }
+        Response::new_ok(id, result)
     }
 }
