@@ -21,7 +21,7 @@ env_logger = { workspace = true }
 function_name = { workspace = true }
 syntree = { workspace = true }
 log = { workspace = true }
-lsp-server = "0.9.0"
+lsp-server = "0.10.0"
 lsp-types = "0.97.0"
 once_cell = { workspace = true }
 parol = { path = "../parol", version = "5.0.0" }
