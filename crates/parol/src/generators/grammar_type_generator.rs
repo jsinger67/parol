@@ -808,7 +808,7 @@ impl GrammarTypeInfo {
 
     pub(crate) fn generate_non_terminal_enum_type(&self) -> Vec<NonTerminalEnumType<'_>> {
         let mut result = Vec::with_capacity(self.non_terminal_types.len() + 1);
-        for (n, _) in self.non_terminal_types.iter() {
+        for n in self.non_terminal_types.keys() {
             result.push(NonTerminalEnumType {
                 name: n.to_string(),
                 from_non_terminal_name: n.as_str(),

@@ -196,7 +196,7 @@ where
             ));
         } else {
             // We consume token LA(1) with buffer index 0.
-            trace!("Consuming {}", &self.tokens.non_skip_token_at(0).unwrap());
+            trace!("Consuming {}", self.tokens.non_skip_token_at(0).unwrap());
             token = self.tokens.consume()?;
             self.ensure_buffer()?;
         }

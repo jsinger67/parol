@@ -192,7 +192,7 @@ pub fn follow_k(
 
                 // Optimization: Use parallel iteration for large equation systems
                 // For now, keeping sequential but with optimized access patterns
-                for (pos, _) in result_map.iter() {
+                for pos in result_map.keys() {
                     // Call each function of the equation system
                     let pos_result = equation_system[pos](
                         Rc::clone(&result_map),
@@ -252,7 +252,7 @@ pub fn follow_k(
         );
 
         // Optimization: Create domain type builder once and reuse pattern
-        for (p, _) in non_terminal_positions.iter() {
+        for p in non_terminal_positions.keys() {
             initial_map.insert(
                 *p,
                 DomainTypeBuilder::new()
