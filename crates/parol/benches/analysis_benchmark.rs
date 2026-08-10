@@ -1,17 +1,43 @@
 use std::time::Duration;
 
 use criterion::{Criterion, criterion_group, criterion_main};
-use parol::analysis::{FirstCache, FollowCache};
+use parol::analysis::{FirstCache, FollowCache, first_k, follow_k};
 
-fn benchmark_real_grammar_scenarios(c: &mut Criterion) {
-    // Benchmark with realistic grammar scenarios
+fn benchmark_first_k_large_grammar(c: &mut Criterion) {
     let large_grammar = create_complex_grammar();
+
+    c.bench_function("first_k_large_grammar", |b| {
+        b.iter(|| {
+            let first_cache = FirstCache::new();
+            first_k(&large_grammar, 3, &first_cache)
+        })
+    });
+}
+
+fn benchmark_follow_k_large_grammar(c: &mut Criterion) {
+    let large_grammar = create_complex_grammar();
+
+    // Isolate FOLLOW cost by precomputing FIRST(k) once.
+    let first_cache = FirstCache::new();
+    let _ = first_k(&large_grammar, 3, &first_cache);
 
     c.bench_function("follow_k_large_grammar", |b| {
         b.iter(|| {
-            let first_cache = FirstCache::new();
             let follow_cache = FollowCache::new();
-            parol::analysis::follow_k(&large_grammar, 3, &first_cache, &follow_cache)
+            follow_k(&large_grammar, 3, &first_cache, &follow_cache)
+        })
+    });
+}
+
+fn benchmark_first_follow_full_scenario(c: &mut Criterion) {
+    let large_grammar = create_complex_grammar();
+
+    c.bench_function("first_follow_full_scenario", |b| {
+        b.iter(|| {
+            let first_cache = FirstCache::new();
+            let _ = first_k(&large_grammar, 3, &first_cache);
+            let follow_cache = FollowCache::new();
+            follow_k(&large_grammar, 3, &first_cache, &follow_cache)
         })
     });
 }
@@ -45,6 +71,6 @@ criterion_group! {
         warm_up_time(Duration::from_secs(10)).
         sample_size(10).
         measurement_time(Duration::from_secs(60));
-    targets = benchmark_real_grammar_scenarios
+    targets = benchmark_first_k_large_grammar, benchmark_follow_k_large_grammar, benchmark_first_follow_full_scenario
 }
 criterion_main!(analysis_benches);
