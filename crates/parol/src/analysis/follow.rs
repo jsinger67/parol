@@ -205,8 +205,7 @@ pub fn follow_k(
                         let mut borrowed = non_terminal_results.borrow_mut();
                         debug_assert!(equation.target_nt_index < borrowed.non_terminals.len());
                         let set = &mut borrowed.non_terminals[equation.target_nt_index];
-                        let (new_set, _changed) = set.union(&pos_result);
-                        *set = new_set;
+                        let _changed = set.union_in_place(&pos_result);
                     }
 
                     new_result_vector.insert(equation.pos, pos_result);
@@ -475,5 +474,27 @@ mod profiling {
                 let _ = writeln!(writer, "{}: {} calls, {:?} total", name, count, duration);
             }
         });
+
+        let mut k_tuple_data = crate::analysis::k_tuples::profiling::snapshot();
+        if !k_tuple_data.is_empty() {
+            k_tuple_data.sort_by(|a, b| b.2.cmp(&a.2));
+            let total = k_tuple_data
+                .iter()
+                .fold(Duration::ZERO, |acc, (_, _, d)| acc.saturating_add(*d));
+
+            let _ = writeln!(writer, "k_tuples_hotspots:");
+            for (name, count, duration) in k_tuple_data {
+                let percent = if total.is_zero() {
+                    0.0
+                } else {
+                    duration.as_secs_f64() / total.as_secs_f64() * 100.0
+                };
+                let _ = writeln!(
+                    writer,
+                    "  {}: {} calls, {:?} total, {:.2}%",
+                    name, count, duration, percent
+                );
+            }
+        }
     }
 }
