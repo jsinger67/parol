@@ -46,12 +46,14 @@ type DomainTypeBuilder<'a> = KTuplesBuilder<'a>;
 /// After the Tuples for each production the Tuples for non-terminals are following.
 type ResultVector = Vec<DomainType>;
 
-/// The type of the function in the equation system
-/// It is called for each non-terminal
-type TransferFunction<'a> = Box<dyn Fn(Rc<ResultVector>) -> DomainType + 'a>;
+#[derive(Clone)]
+enum ProductionPart {
+    TerminalSet(DomainType),
+    NonTerminal(usize),
+}
 
 /// The equation system for the FIRST(k) calculation
-type EquationSystem<'a> = Vec<TransferFunction<'a>>;
+type EquationSystem = Vec<Vec<ProductionPart>>;
 
 /// The step function for the iteration
 type StepFunction = Box<dyn Fn(Rc<ResultVector>) -> ResultVector>;
@@ -88,9 +90,8 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
         cfg.pr
             .iter()
             .fold(Vec::with_capacity(pr_count), |mut es, pr| {
-                es.push(combine_production_equation(
+                es.push(compile_production_equation(
                     pr,
-                    pr_count,
                     Rc::clone(&ti),
                     Rc::clone(&nti),
                     k,
@@ -106,19 +107,41 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     // Single threaded variant
     let step_function: StepFunction = {
+        let empty_set = DomainTypeBuilder::new()
+            .k(k)
+            .max_terminal_index(max_terminal_index)
+            .build()
+            .unwrap();
+        let epsilon_set = DomainTypeBuilder::new()
+            .k(k)
+            .max_terminal_index(max_terminal_index)
+            .eps()
+            .unwrap();
+
         Box::new(move |result_vector: Rc<ResultVector>| {
-            let mut new_result_vector: ResultVector = vec![
-                DomainTypeBuilder::new()
-                    .k(k)
-                    .max_terminal_index(max_terminal_index)
-                    .build()
-                    .unwrap();
-                result_vector.len()
-            ];
-            for pr_i in 0..pr_count {
-                let r = equation_system[pr_i](result_vector.clone());
-                new_result_vector[pr_count + nt_for_production[pr_i]].append(r.clone());
-                new_result_vector[pr_i] = r;
+            let mut new_result_vector: ResultVector = vec![empty_set.clone(); result_vector.len()];
+            let result_nt = &result_vector[pr_count..];
+            let (new_productions, new_non_terminals) = new_result_vector.split_at_mut(pr_count);
+
+            for ((equation, nt_index), production_slot) in equation_system
+                .iter()
+                .zip(nt_for_production.iter())
+                .zip(new_productions.iter_mut())
+            {
+                let mut r = epsilon_set.clone();
+                for part in equation {
+                    r = match part {
+                        ProductionPart::TerminalSet(terminal_set) => r.k_concat(terminal_set, k),
+                        ProductionPart::NonTerminal(nt_index) => {
+                            debug_assert!(*nt_index < result_nt.len());
+                            let nt_tuple = &result_nt[*nt_index];
+                            r.k_concat(nt_tuple, k)
+                        }
+                    };
+                }
+                debug_assert!(*nt_index < new_non_terminals.len());
+                new_non_terminals[*nt_index].append(r.clone());
+                *production_slot = r;
             }
             new_result_vector
         })
@@ -186,18 +209,17 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 }
 
 ///
-/// Creates a function that calculates the FIRST k set for the given production.
+/// Compiles a production equation into reusable parts for fast iterative evaluation.
 ///
-fn combine_production_equation<'a, N, T>(
+fn compile_production_equation<N, T>(
     pr: &Pr,
-    pr_count: usize,
     ti_fn: Rc<T>,
     nti_fn: Rc<N>,
     k: usize,
     max_terminal_index: usize,
-) -> TransferFunction<'a>
+) -> Vec<ProductionPart>
 where
-    T: TerminalIndexFn + 'a,
+    T: TerminalIndexFn,
     N: NonTerminalIndexFn,
 {
     let parts = pr
@@ -211,13 +233,10 @@ where
                 Symbol::T(_) => {
                     if acc.is_empty() {
                         acc.push(SymbolString(vec![s.clone()]));
-                    } else {
-                        let last = acc.len() - 1;
-                        let last_len = acc[last].0.len();
-                        let last_terminal = &acc[last].0[last_len - 1];
-                        if matches!(last_terminal, Symbol::T(_)) {
+                    } else if let Some(last_part) = acc.last_mut() {
+                        if matches!(last_part.0.last(), Some(Symbol::T(_))) {
                             // Only add to terminals
-                            acc[last].0.push(s.clone());
+                            last_part.0.push(s.clone());
                         } else {
                             // Create a new start of terminal list
                             acc.push(SymbolString(vec![s.clone()]));
@@ -232,45 +251,26 @@ where
             }
             acc
         });
-    let mut result_function: TransferFunction = Box::new(move |_| {
-        DomainTypeBuilder::new()
-            .k(k)
-            .max_terminal_index(max_terminal_index)
-            .eps()
-            .unwrap()
-    });
 
-    // For each part of the production (separated into strings of terminals and
-    // single non-terminals) we have to provide a part of the equation like this:
-    // Fir_k_(p) = p1 + p2 + ... + pn | + is k-concatenation; n number of parts
-    // This function is build like this:
-    // f(v).k_concat(fp1(v)).k_concat(fp2(v))...k_concat(fpn(v)) | v is result_vector
+    let mut equation = Vec::with_capacity(parts.len());
     for symbol_string in parts {
-        // trace!(" + {}", symbol_string);
         match &symbol_string.0[0] {
             Symbol::T(_) => {
-                let ti_fn = Rc::clone(&ti_fn);
-                result_function = Box::new(move |result_vector: Rc<ResultVector>| {
-                    let mapper = |s| CompiledTerminal::create(s, Rc::clone(&ti_fn));
-                    let terminal_indices: Vec<TerminalIndex> =
-                        symbol_string.0.iter().map(|s| mapper(s).0).collect();
-                    result_function(result_vector).k_concat(
-                        &DomainTypeBuilder::new()
-                            .k(k)
-                            .max_terminal_index(max_terminal_index)
-                            .terminal_indices(&[&terminal_indices])
-                            .build()
-                            .unwrap(),
-                        k,
-                    )
-                });
+                let terminal_indices: Vec<TerminalIndex> = symbol_string
+                    .0
+                    .iter()
+                    .map(|s| CompiledTerminal::create(s, Rc::clone(&ti_fn)).0)
+                    .collect();
+                let terminal_set = DomainTypeBuilder::new()
+                    .k(k)
+                    .max_terminal_index(max_terminal_index)
+                    .terminal_indices(&[&terminal_indices])
+                    .build()
+                    .unwrap();
+                equation.push(ProductionPart::TerminalSet(terminal_set));
             }
-
             Symbol::N(nt, _, _, _) => {
-                let f = create_union_access_function(nt, pr_count, Rc::clone(&nti_fn));
-                result_function = Box::new(move |result_vector: Rc<ResultVector>| {
-                    result_function(result_vector.clone()).k_concat(&f(result_vector), k)
-                });
+                equation.push(ProductionPart::NonTerminal(nti_fn.non_terminal_index(nt)));
             }
             _ => {
                 unreachable!(
@@ -279,24 +279,5 @@ where
             }
         }
     }
-    result_function
-}
-
-///
-/// Creates a function that returns the KTuple at position p from the
-/// result_vector which is given as a parameter at call time.
-///
-/// Is used to calculate the union of KTuples of productions that belong to
-/// certain non-terminal.
-///
-fn create_union_access_function<'a, N>(
-    nt: &str,
-    pr_count: usize,
-    nti: Rc<N>,
-) -> TransferFunction<'a>
-where
-    N: NonTerminalIndexFn,
-{
-    let index = nti.non_terminal_index(nt);
-    Box::new(move |result_vector: Rc<ResultVector>| result_vector[pr_count + index].clone())
+    equation
 }

@@ -10,6 +10,53 @@ use super::k_tuple::KTupleBuilder;
 
 type TuplesSet = FxHashSet<KTuple>;
 
+#[cfg(feature = "profiling")]
+pub(crate) mod profiling {
+    use rustc_hash::FxHashMap;
+    use std::cell::RefCell;
+    use std::time::{Duration, Instant};
+
+    thread_local! {
+        static PROFILE_DATA: RefCell<FxHashMap<&'static str, (u64, Duration)>> =
+            RefCell::new(FxHashMap::default());
+    }
+
+    pub(crate) struct ProfileScope {
+        name: &'static str,
+        start: Instant,
+    }
+
+    impl ProfileScope {
+        pub(crate) fn new(name: &'static str) -> Self {
+            Self {
+                name,
+                start: Instant::now(),
+            }
+        }
+    }
+
+    impl Drop for ProfileScope {
+        fn drop(&mut self) {
+            let duration = self.start.elapsed();
+            PROFILE_DATA.with(|data| {
+                let mut map = data.borrow_mut();
+                let entry = map.entry(self.name).or_insert((0, Duration::ZERO));
+                entry.0 += 1;
+                entry.1 += duration;
+            });
+        }
+    }
+
+    pub(crate) fn snapshot() -> Vec<(&'static str, u64, Duration)> {
+        PROFILE_DATA.with(|data| {
+            data.borrow()
+                .iter()
+                .map(|(name, (count, duration))| (*name, *count, *duration))
+                .collect()
+        })
+    }
+}
+
 /// Builder for KTuples
 #[derive(Clone, Debug, Default)]
 pub struct KTuplesBuilder<'a> {
@@ -165,18 +212,39 @@ impl KTuples {
 
     /// Creates a union with another KTuples and self
     pub fn union(&self, other: &Self) -> (Self, bool) {
-        let len = self.set.len();
-        let max_terminal_index = self.max_terminal_index;
-        let unn = self.set.union(&other.set).cloned().collect::<TuplesSet>();
-        let changed = len != unn.len();
-        let mut tuples = Self {
-            set: unn,
-            k: self.k,
-            max_terminal_index,
-            k_complete: false,
-        };
-        tuples.update_completeness();
+        #[cfg(feature = "profiling")]
+        let _profile = profiling::ProfileScope::new("ktuples_union");
+
+        let mut tuples = self.clone();
+        let changed = tuples.union_in_place(other);
         (tuples, changed)
+    }
+
+    /// Extends self with all tuples from other and returns true if self changed.
+    pub fn union_in_place(&mut self, other: &Self) -> bool {
+        #[cfg(feature = "profiling")]
+        let _profile = profiling::ProfileScope::new("ktuples_union_in_place");
+
+        debug_assert_eq!(self.k, other.k);
+        debug_assert_eq!(self.max_terminal_index, other.max_terminal_index);
+
+        let mut changed = false;
+        let mut inserted_incomplete = false;
+
+        for tuple in &other.set {
+            if self.set.insert(*tuple) {
+                changed = true;
+                if !tuple.is_k_complete() {
+                    inserted_incomplete = true;
+                }
+            }
+        }
+
+        if inserted_incomplete {
+            self.k_complete = false;
+        }
+
+        changed
     }
 
     /// Creates a intersection with another KTuples and self
@@ -257,6 +325,9 @@ impl KTuples {
     ///
     /// ```
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
+        #[cfg(feature = "profiling")]
+        let _profile = profiling::ProfileScope::new("ktuples_k_concat");
+
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
         if !self.k_complete {
             let (complete, incomplete): (TuplesSet, TuplesSet) =
