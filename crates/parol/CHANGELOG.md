@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 5.0.1 - Not yet released
+
+* Performance optimizations for grammar analysis, focused on FIRST(k) and FOLLOW(k) calculations.
+  * Refactor FIRST(k) and FOLLOW(k) equation handling to compiled, data-oriented equation parts,
+    reducing dynamic dispatch and redundant per-iteration work.
+  * Improve iterative evaluation loops (pre-sized collections, tighter accumulation paths, and
+    streamlined symbol-part processing).
+  * Introduce in-place set union for FOLLOW(k) accumulation (`KTuples::union_in_place`) to reduce
+    allocation churn in hot paths.
+  * Add profiling support for FOLLOW(k) and KTuples hotspots, including per-operation timing output
+    for `k_concat`/`union`-related operations.
+  * Add realistic large-grammar analysis benchmarks with separate FIRST(k), FOLLOW(k), and full
+    scenario measurements to track end-to-end impact.
+  * Restore the proven `KTuples::k_concat` behavior after evaluating alternatives, preserving the
+    best full-scenario runtime while keeping the FOLLOW(k) improvements.
+
 
 ## 5.0.0 - 2026-07-01
 
