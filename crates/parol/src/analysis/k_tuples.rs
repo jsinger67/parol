@@ -4,7 +4,7 @@ use crate::KTuple;
 //use parol_runtime::log::trace;
 use std::fmt::{Debug, Display, Error, Formatter};
 
-use rustc_hash::{FxBuildHasher, FxHashSet};
+use rustc_hash::FxHashSet;
 
 use super::k_tuple::KTupleBuilder;
 
@@ -329,48 +329,17 @@ impl KTuples {
         let _profile = profiling::ProfileScope::new("ktuples_k_concat");
 
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
-        if self.k_complete || self.set.is_empty() {
-            return self;
+        if !self.k_complete {
+            let (complete, incomplete): (TuplesSet, TuplesSet) =
+                self.set.iter().partition(|t| t.is_k_complete());
+            self.set = complete;
+            self.set.extend(
+                incomplete
+                    .iter()
+                    .flat_map(|t| other.set.iter().map(move |o| t.k_concat(o, k))),
+            );
+            self.update_completeness();
         }
-
-        if other.set.is_empty() {
-            // Pairwise tuple concatenation treats empty rhs like epsilon.
-            return self;
-        }
-
-        if other.set.len() == 1 {
-            let only = other
-                .set
-                .iter()
-                .next()
-                .expect("non-empty set has one element");
-            if only.is_eps() || only.is_empty() {
-                return self;
-            }
-        }
-
-        let complete_count = self.set.iter().filter(|t| t.is_k_complete()).count();
-        let incomplete_count = self.set.len() - complete_count;
-        let mut new_set = TuplesSet::with_capacity_and_hasher(
-            complete_count.saturating_add(incomplete_count.saturating_mul(other.set.len())),
-            FxBuildHasher,
-        );
-        let mut all_complete = true;
-
-        for tuple in &self.set {
-            if tuple.is_k_complete() {
-                new_set.insert(*tuple);
-            } else {
-                for other_tuple in &other.set {
-                    let concatenated = tuple.k_concat(other_tuple, k);
-                    all_complete &= concatenated.is_k_complete();
-                    new_set.insert(concatenated);
-                }
-            }
-        }
-
-        self.set = new_set;
-        self.k_complete = all_complete;
         // trace!("KTuples::k_concat => {}", result);
         self
     }
