@@ -120,18 +120,28 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
         Box::new(move |result_vector: Rc<ResultVector>| {
             let mut new_result_vector: ResultVector = vec![empty_set.clone(); result_vector.len()];
-            for (pr_i, equation) in equation_system.iter().enumerate() {
+            let result_nt = &result_vector[pr_count..];
+            let (new_productions, new_non_terminals) = new_result_vector.split_at_mut(pr_count);
+
+            for ((equation, nt_index), production_slot) in equation_system
+                .iter()
+                .zip(nt_for_production.iter())
+                .zip(new_productions.iter_mut())
+            {
                 let mut r = epsilon_set.clone();
                 for part in equation {
                     r = match part {
                         ProductionPart::TerminalSet(terminal_set) => r.k_concat(terminal_set, k),
                         ProductionPart::NonTerminal(nt_index) => {
-                            r.k_concat(&result_vector[pr_count + nt_index], k)
+                            debug_assert!(*nt_index < result_nt.len());
+                            let nt_tuple = &result_nt[*nt_index];
+                            r.k_concat(nt_tuple, k)
                         }
                     };
                 }
-                new_result_vector[pr_count + nt_for_production[pr_i]].append(r.clone());
-                new_result_vector[pr_i] = r;
+                debug_assert!(*nt_index < new_non_terminals.len());
+                new_non_terminals[*nt_index].append(r.clone());
+                *production_slot = r;
             }
             new_result_vector
         })
@@ -223,13 +233,10 @@ where
                 Symbol::T(_) => {
                     if acc.is_empty() {
                         acc.push(SymbolString(vec![s.clone()]));
-                    } else {
-                        let last = acc.len() - 1;
-                        let last_len = acc[last].0.len();
-                        let last_terminal = &acc[last].0[last_len - 1];
-                        if matches!(last_terminal, Symbol::T(_)) {
+                    } else if let Some(last_part) = acc.last_mut() {
+                        if matches!(last_part.0.last(), Some(Symbol::T(_))) {
                             // Only add to terminals
-                            acc[last].0.push(s.clone());
+                            last_part.0.push(s.clone());
                         } else {
                             // Create a new start of terminal list
                             acc.push(SymbolString(vec![s.clone()]));

@@ -183,10 +183,8 @@ pub fn follow_k(
                                     pos_result.k_concat(terminal_set, k)
                                 }
                                 FollowPart::FirstOfNonTerminal(nt_index) => {
-                                    let first_of_nt = borrowed_first
-                                        .non_terminals
-                                        .get(*nt_index)
-                                        .expect("Non-terminal index should be valid");
+                                    debug_assert!(*nt_index < borrowed_first.non_terminals.len());
+                                    let first_of_nt = &borrowed_first.non_terminals[*nt_index];
                                     pos_result.k_concat(first_of_nt, k)
                                 }
                             };
@@ -195,20 +193,20 @@ pub fn follow_k(
 
                     {
                         let borrowed_nt_results = non_terminal_results.borrow();
-                        let nt_follow_set = borrowed_nt_results
-                            .non_terminals
-                            .get(equation.source_nt_index)
-                            .expect("Non-terminal index should be valid");
+                        debug_assert!(
+                            equation.source_nt_index < borrowed_nt_results.non_terminals.len()
+                        );
+                        let nt_follow_set =
+                            &borrowed_nt_results.non_terminals[equation.source_nt_index];
                         pos_result = pos_result.k_concat(nt_follow_set, k);
                     }
 
                     {
                         let mut borrowed = non_terminal_results.borrow_mut();
-                        if let Some(set) = borrowed.non_terminals.get_mut(equation.target_nt_index)
-                        {
-                            let (new_set, _changed) = set.union(&pos_result);
-                            *set = new_set;
-                        }
+                        debug_assert!(equation.target_nt_index < borrowed.non_terminals.len());
+                        let set = &mut borrowed.non_terminals[equation.target_nt_index];
+                        let (new_set, _changed) = set.union(&pos_result);
+                        *set = new_set;
                     }
 
                     new_result_vector.insert(equation.pos, pos_result);
@@ -342,13 +340,10 @@ where
             Symbol::T(_) => {
                 if parts.is_empty() {
                     parts.push((i + 1, SymbolString(vec![s.clone()])));
-                } else {
-                    let last_idx = parts.len() - 1;
-                    let last_symbols = &parts[last_idx].1.0;
-                    if !last_symbols.is_empty() && matches!(last_symbols.last(), Some(Symbol::T(_)))
-                    {
-                        // Only add to terminals - optimization: avoid repeated length calculation
-                        parts[last_idx].1.0.push(s.clone());
+                } else if let Some((_, last_symbol_string)) = parts.last_mut() {
+                    if matches!(last_symbol_string.0.last(), Some(Symbol::T(_))) {
+                        // Only add to terminals
+                        last_symbol_string.0.push(s.clone());
                     } else {
                         // Create a new start of terminal list
                         parts.push((i + 1, SymbolString(vec![s.clone()])));
