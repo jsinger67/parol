@@ -166,7 +166,8 @@ impl Terminals {
     /// Increments the index of the next insertion
     #[inline]
     pub fn inc_index(&mut self) {
-        let i = self.next_index() + 1;
+        let i = self.next_index().checked_add(1).expect("next_index overflow");
+        debug_assert!(i <= MAX_K as u8, "next_index exceeds MAX_K");
         self.t &= 0xF0FF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF;
         self.t |= (i as u128) << 120;
     }
@@ -204,7 +205,12 @@ impl Terminals {
         if self.is_empty() {
             None
         } else {
-            self.get(self.next_index() as usize - 1)
+            let idx = self.next_index();
+            if idx == 0 {
+                None
+            } else {
+                self.get(idx as usize - 1)
+            }
         }
     }
 
@@ -300,7 +306,9 @@ impl Terminals {
             (other.t & !(!0u128 << (to_take * bits as usize))) << (my_k_len * bits as usize);
         // Add the other value to self
         self.t |= value;
-        self.set_next_index((my_k_len + to_take) as u8);
+        let new_index = (my_k_len + to_take) as u8;
+        debug_assert!(new_index <= MAX_K as u8, "next_index exceeds MAX_K");
+        self.set_next_index(new_index);
         self.set_bits(bits);
         self
     }
@@ -757,7 +765,10 @@ impl KTuple {
 
         terms.iter().take(k).enumerate().for_each(|(i, t)| {
             terminals.set(i, CompiledTerminal(*t));
-            terminals.inc_index();
+            // inc_index only if we have room
+            if terminals.next_index() < MAX_K as u8 {
+                terminals.inc_index();
+            }
         });
 
         let terminals = if terminals.is_k_complete(k) {

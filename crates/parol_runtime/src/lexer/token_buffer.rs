@@ -40,13 +40,19 @@ impl<'t> TokenBuffer<'t> {
                 file_name: token.location.file_name.clone(),
                 ..Location::default()
             };
+            // Prevent overflow when last token was EOI with MAX token number
+            let next_token_number = if self.last_token_number == TokenNumber::MAX {
+                TokenNumber::MAX
+            } else {
+                self.last_token_number + 1
+            };
             let invalid_token = Token::with(
                 std::convert::Into::<std::borrow::Cow<'t, str>>::into(
                     &input[gap_location.start as usize..gap_location.end as usize],
                 ),
                 INVALID_TOKEN,
                 gap_location,
-                self.last_token_number + 1,
+                next_token_number,
             );
             self.tokens.push(invalid_token);
         }

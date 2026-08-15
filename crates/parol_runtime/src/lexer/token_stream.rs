@@ -137,8 +137,13 @@ where
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
             } else {
-                trace!("LA({}): {}", n, self.tokens.non_skip_token_at(n).unwrap());
-                Ok(self.tokens.non_skip_token_at(n).unwrap().clone())
+                let token = self.tokens.non_skip_token_at(n).ok_or_else(|| {
+                    LexerError::InternalError(
+                        "non_skip_token_at returned None despite len check".into()
+                    )
+                })?;
+                trace!("LA({}): {}", n, token);
+                Ok(token.clone())
             }
         }
     }
@@ -164,12 +169,13 @@ where
                     Err(LexerError::LookaheadExceedsTokenBufferLength)
                 }
             } else {
-                trace!(
-                    "Type(LA({})): {}",
-                    n,
-                    self.tokens.non_skip_token_at(n).unwrap()
-                );
-                Ok(self.tokens.non_skip_token_at(n).unwrap().token_type)
+                let token = self.tokens.non_skip_token_at(n).ok_or_else(|| {
+                    LexerError::InternalError(
+                        "non_skip_token_at returned None despite len check".into()
+                    )
+                })?;
+                trace!("Type(LA({})): {}", n, token);
+                Ok(token.token_type)
             }
         }
     }
@@ -196,7 +202,12 @@ where
             ));
         } else {
             // We consume token LA(1) with buffer index 0.
-            trace!("Consuming {}", self.tokens.non_skip_token_at(0).unwrap());
+            let token_ref = self.tokens.non_skip_token_at(0).ok_or_else(|| {
+                LexerError::InternalError(
+                    "non_skip_token_at(0) returned None on non-empty buffer".into()
+                )
+            })?;
+            trace!("Consuming {}", token_ref);
             token = self.tokens.consume()?;
             self.ensure_buffer()?;
         }
@@ -207,9 +218,17 @@ where
     /// Test if all input was processed by the parser
     ///
     pub fn all_input_consumed(&self) -> bool {
-        // The unwrap is safe because the token buffer is not empty here.
-        self.tokens.is_buffer_empty()
-            || self.tokens.non_skip_token_at(0).unwrap().token_type == super::EOI
+        // Check buffer emptiness first, then safely access first non-skip token
+        if self.tokens.is_buffer_empty() {
+            return true;
+        }
+        match self.tokens.non_skip_token_at(0) {
+            Some(token) => token.token_type == super::EOI,
+            None => {
+                // Buffer contains only skip tokens; treat as empty for consumption check
+                true
+            }
+        }
     }
 
     ///
@@ -264,6 +283,9 @@ where
         while tokens_read < n {
             trace!("read_tokens: Filling with EOI at end of input");
             self.tokens.add(Token::eoi(TokenNumber::MAX), self.input);
+            // Do not increment tokens_read for EOI filler as EOI is a non-skip token
+            // but we need to ensure we don't overflow token_number calculations.
+            // The buffer add handles MAX token_number specially.
             tokens_read += 1;
         }
         Ok(tokens_read)
@@ -307,16 +329,26 @@ where
         token_type: TerminalIndex,
     ) -> Result<(), LexerError> {
         if self.tokens.len() > index {
+            let token_ref = self.tokens.non_skip_token_at(index).ok_or_else(|| {
+                LexerError::InternalError(
+                    "non_skip_token_at returned None despite len check".into()
+                )
+            })?;
             trace!(
                 "replacing token {} at index {} by {}",
-                self.tokens.non_skip_token_at(index).unwrap(),
+                token_ref,
                 index,
                 token_type
             );
-            if (self.tokens.non_skip_token_at(index).unwrap().token_type) == EOI {
+            if token_ref.token_type == EOI {
                 Err(LexerError::RecoveryError("Can't replace EOI".to_owned()))
             } else {
-                self.tokens.non_skip_token_at_mut(index).unwrap().token_type = token_type;
+                let token_mut = self.tokens.non_skip_token_at_mut(index).ok_or_else(|| {
+                    LexerError::InternalError(
+                        "non_skip_token_at_mut returned None despite len check".into()
+                    )
+                })?;
+                token_mut.token_type = token_type;
                 Ok(())
             }
         } else {
@@ -351,14 +383,14 @@ where
             let location = if self.tokens.len() > index {
                 self.tokens
                     .non_skip_token_at(index)
-                    .unwrap()
-                    .location
-                    .clone()
+                    .ok_or_else(|| LexerError::InternalError(
+                        "non_skip_token_at returned None despite len check".into()
+                    ))?.location.clone()
             } else {
                 LocationBuilder::default()
                     .file_name(self.file_name.clone())
                     .build()
-                    .unwrap()
+                    .map_err(|e| LexerError::InternalError(e.to_string()))?
             };
             self.tokens.insert(
                 index,

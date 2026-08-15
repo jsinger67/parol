@@ -207,7 +207,11 @@ impl Display for Token<'_> {
 
 impl FormatToken for Token<'_> {
     fn format(&self, terminal_names: &'static [&'static str]) -> String {
-        let name = terminal_names[self.token_type as usize];
+        let name = if (self.token_type as usize) < terminal_names.len() {
+            terminal_names[self.token_type as usize]
+        } else {
+            "<invalid>"
+        };
         format!(
             "{} ({}) at {}[{}]",
             self.text, name, self.location, self.token_number,

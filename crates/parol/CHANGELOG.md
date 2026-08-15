@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   * Restore the proven `KTuples::k_concat` behavior after evaluating alternatives, preserving the
     best full-scenario runtime while keeping the FOLLOW(k) improvements.
 
+* k_tuple u8 bounds checking - Added overflow protection:
+  * inc_index() now uses checked_add with panic on overflow
+  * last() guards against underflow when next_index() == 0
+  * k_concat validates new index doesn't exceed MAX_K
+  * with_terminal_indices checks next_index < MAX_K before incrementing
 
 ## 5.0.0 - 2026-07-01
 

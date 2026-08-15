@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 5.0.1 - Not yet released
 
 * Fix new clippy warnings
+* Unsafe unwraps in token_stream.rs - Replaced all unwrap() calls on non_skip_token_at() with proper error handling:
+  * lookahead() - returns LexerError::InternalError on Option None
+  * lookahead_token_type() - same pattern
+  * consume() - validates non-skip token exists before consumption
+  * all_input_consumed() - safe match on Option instead of unwrap
+  * replace_token_type_at() - validates both read and mutable access
+  * insert_token_at() - validates location lookup and handles build errors
+* TokenNumber::MAX sentinel audit:
+  * TokenBuffer::add() prevents overflow when last_token_number == TokenNumber::MAX
+  * FormatToken::format() guards against out-of-bounds terminal name access
+  * EOI filler tokens now handled safely with overflow protection
 
 ## 5.0.0 - 2026-07-01
 
