@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 5.0.1 - Not yet released
+## 5.0.1 - 2026-08-16
 
 * Fix new clippy warnings
+  * `lr_parser/parse_tree.rs`: simplified `LRParseTree::drop` using `if let` chain and removed
+    unnecessary dereferences in `build_tree` (`*name` → `name`)
+  * `lexer/token_stream.rs`: removed unnecessary reference in `trace!` macro for `consume`
 * Unsafe unwraps in token_stream.rs - Replaced all unwrap() calls on non_skip_token_at() with proper error handling:
   * lookahead() - returns LexerError::InternalError on Option None
   * lookahead_token_type() - same pattern

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 5.0.1 - Not yet released
+## 5.0.1 - 2026-08-16
 
 * Performance optimizations for grammar analysis, focused on FIRST(k) and FOLLOW(k) calculations.
   * Refactor FIRST(k) and FOLLOW(k) equation handling to compiled, data-oriented equation parts,
@@ -26,6 +26,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   * last() guards against underflow when next_index() == 0
   * k_concat validates new index doesn't exceed MAX_K
   * with_terminal_indices checks next_index < MAX_K before incrementing
+
+* Dependency updates:
+  * Bump `syn` from 2.0.119 to 3.0.2 in `crates/parol/Cargo.toml`.
+
+* Documentation / project state:
+  * Update `README.md` and `CommonReadMe.md` project state section: Versions 1 through 4 are no
+    longer developed; Version 5 is the current stable version.
+
+* Code quality / minor refactors:
+  * Minor refactor in `generators/grammar_type_generator.rs`: iterate over
+    `self.non_terminal_types.keys()` directly instead of `iter()`.
+  * Clippy clean-ups across the crate.  
 
 ## 5.0.0 - 2026-07-01
 

@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 5.0.1 - 2026-08-16
+
+* Update to parol v5.0.1 and parol_runtime v5.0.1
+
 ## 5.0.0 - 2026-07-01
 
 * Update to parol v5.0.0 and parol_runtime v5.0.0
