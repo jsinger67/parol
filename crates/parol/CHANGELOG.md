@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.2 - 2026-08-16
+
+* C# scaffolding/runtime compatibility:
+  * Update `parol new --lang c-sharp` project template to reference `Parol.Runtime` `0.3.1`.
+  * Align generated C# project defaults with the runtime fix that consistently skips built-in
+    scanner skip token types when mode-specific `%skip` sets are in use.
+
 ## 5.0.1 - 2026-08-16
 
 * Performance optimizations for grammar analysis, focused on FIRST(k) and FOLLOW(k) calculations.
