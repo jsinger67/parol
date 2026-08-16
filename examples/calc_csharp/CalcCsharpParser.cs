@@ -348,6 +348,13 @@ namespace CalcCsharp {
                 ])
             ),
         };
+
+        /// <summary>
+        /// Scanner-mode-specific token type indices that are skipped by the scanner runtime.
+        /// </summary>
+        public static readonly int[][] SkipTokensByScannerMode = {
+            [],
+        };
     }
 
 
@@ -1354,7 +1361,7 @@ namespace CalcCsharp {
                 NonTerminalNames
             );
 
-            var tokens = Scanner.Scan(input, fileName, CalcCsharpScannerData.MatchFunction, CalcCsharpScannerData.ScannerModes);
+            var tokens = Scanner.Scan(input, fileName, CalcCsharpScannerData.MatchFunction, CalcCsharpScannerData.ScannerModes, CalcCsharpScannerData.SkipTokensByScannerMode);
             parser.Parse(tokens, userActions, fileName);
         }
     }

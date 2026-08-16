@@ -334,6 +334,13 @@ namespace JsonParserCsharp {
                 ])
             ),
         };
+
+        /// <summary>
+        /// Scanner-mode-specific token type indices that are skipped by the scanner runtime.
+        /// </summary>
+        public static readonly int[][] SkipTokensByScannerMode = {
+            [],
+        };
     }
 
 
@@ -645,7 +652,7 @@ namespace JsonParserCsharp {
                 NonTerminalNames
             );
 
-            var tokens = Scanner.Scan(input, fileName, JsonParserCsharpScannerData.MatchFunction, JsonParserCsharpScannerData.ScannerModes);
+            var tokens = Scanner.Scan(input, fileName, JsonParserCsharpScannerData.MatchFunction, JsonParserCsharpScannerData.ScannerModes, JsonParserCsharpScannerData.SkipTokensByScannerMode);
             parser.Parse(tokens, userActions, fileName);
         }
     }
