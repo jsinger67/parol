@@ -1668,9 +1668,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.8.10"
+version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc897dd8d9e8bd1ed8cdad82b5966c3e0ecae09fb1907d58efaa013543185d0a"
+checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
 
 [[package]]
 name = "reqwest"
@@ -1843,9 +1843,9 @@ dependencies = [
 
 [[package]]
 name = "scnr2"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e9430a2a48165bc07428868fd12b6fbe5c25673cc6a69b46a7a6a671f9a5fb3"
+checksum = "9858c8a38d7f13028f948e12cf4fef2a5ee52fdf00e39f169a3bb99b2ba26291"
 dependencies = [
  "log",
  "scnr2_macro",
@@ -1853,23 +1853,23 @@ dependencies = [
 
 [[package]]
 name = "scnr2_generate"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86f1cc260edf6a2062f101312b4c4d95407432cd54cd0fb531e3b3ff8d3e7b01"
+checksum = "59149bcf7f2ec802cfd027d229f5cb9eb2df9aedeb51d708b85617ff7b8c4f10"
 dependencies = [
  "log",
  "proc-macro2",
  "quote",
  "regex-syntax",
  "rustc-hash",
- "syn 2.0.119",
+ "syn 3.0.5",
 ]
 
 [[package]]
 name = "scnr2_macro"
-version = "0.5.1"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68c9cc902563695e8754b94a5d2796b0349c10693a154de56528e48236827697"
+checksum = "aa8c3a68e62498a2ff554004b296ef72534839bdc7202e4b6eb60445a18f4852"
 dependencies = [
  "scnr2_generate",
 ]
