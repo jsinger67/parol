@@ -160,9 +160,22 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let mut iterations = 0usize;
     loop {
         for (equation, nt_index) in equation_system.iter().zip(nt_for_production.iter()) {
-            let r = evaluate_equation(equation, &current_non_terminals, &epsilon_set, k);
             debug_assert!(*nt_index < next_non_terminals.len());
-            next_non_terminals[*nt_index].union_in_place(&r);
+            if equation.len() == 1 {
+                match &equation[0] {
+                    ProductionPart::TerminalSet(ts) => {
+                        next_non_terminals[*nt_index].union_in_place(ts);
+                    }
+                    ProductionPart::NonTerminal(src_nt) => {
+                        debug_assert!(*src_nt < current_non_terminals.len());
+                        next_non_terminals[*nt_index]
+                            .union_in_place(&current_non_terminals[*src_nt]);
+                    }
+                }
+            } else {
+                let r = evaluate_equation(equation, &current_non_terminals, &epsilon_set, k);
+                next_non_terminals[*nt_index].union_in_place(&r);
+            }
         }
 
         iterations += 1;
