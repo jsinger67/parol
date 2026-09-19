@@ -77,6 +77,18 @@ struct FollowEquation {
 
 type EquationSystem = Vec<FollowEquation>;
 
+#[inline]
+fn union_distinct(non_terminals: &mut [DomainType], target: usize, source: usize) -> bool {
+    debug_assert_ne!(target, source);
+    if target < source {
+        let (left, right) = non_terminals.split_at_mut(source);
+        left[target].union_in_place(&right[0])
+    } else {
+        let (left, right) = non_terminals.split_at_mut(target);
+        right[0].union_in_place(&left[source])
+    }
+}
+
 /// Calculates the FOLLOW k sets for all non-terminals of the given grammar.
 ///
 /// This function implements the FOLLOW set algorithm for LR parser generation,
@@ -193,13 +205,31 @@ pub fn follow_k(
         let mut changed = false;
 
         for equation in equation_system.iter() {
-            let pos_result = match &equation.suffix {
-                SuffixKind::Complete(first) => first.clone(),
+            match &equation.suffix {
+                SuffixKind::Complete(first) => {
+                    debug_assert!(equation.target_nt_index < non_terminal_results.non_terminals.len());
+                    let target_set = &mut non_terminal_results.non_terminals[equation.target_nt_index];
+                    if target_set.union_in_place(first) {
+                        changed = true;
+                    }
+                }
                 SuffixKind::Epsilon => {
+                    if equation.source_nt_index == equation.target_nt_index {
+                        continue;
+                    }
                     debug_assert!(
                         equation.source_nt_index < non_terminal_results.non_terminals.len()
                     );
-                    non_terminal_results.non_terminals[equation.source_nt_index].clone()
+                    debug_assert!(
+                        equation.target_nt_index < non_terminal_results.non_terminals.len()
+                    );
+                    if union_distinct(
+                        &mut non_terminal_results.non_terminals,
+                        equation.target_nt_index,
+                        equation.source_nt_index,
+                    ) {
+                        changed = true;
+                    }
                 }
                 SuffixKind::General(first) => {
                     debug_assert!(
@@ -207,14 +237,13 @@ pub fn follow_k(
                     );
                     let nt_follow_set =
                         &non_terminal_results.non_terminals[equation.source_nt_index];
-                    first.clone().k_concat(nt_follow_set, k)
+                    let pos_result = first.clone().k_concat(nt_follow_set, k);
+                    debug_assert!(equation.target_nt_index < non_terminal_results.non_terminals.len());
+                    let target_set = &mut non_terminal_results.non_terminals[equation.target_nt_index];
+                    if target_set.union_in_place(&pos_result) {
+                        changed = true;
+                    }
                 }
-            };
-
-            debug_assert!(equation.target_nt_index < non_terminal_results.non_terminals.len());
-            let target_set = &mut non_terminal_results.non_terminals[equation.target_nt_index];
-            if target_set.union_in_place(&pos_result) {
-                changed = true;
             }
         }
 
