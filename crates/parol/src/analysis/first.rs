@@ -40,12 +40,6 @@ impl FirstSet {
 type DomainType = KTuples;
 type DomainTypeBuilder<'a> = KTuplesBuilder<'a>;
 
-/// The result vector applied to each iteration step;
-/// is also returned after each iteration step
-/// The first indices correspond to the production number
-/// After the Tuples for each production the Tuples for non-terminals are following.
-type ResultVector = Vec<DomainType>;
-
 #[derive(Clone)]
 enum ProductionPart {
     TerminalSet(DomainType),
@@ -54,9 +48,6 @@ enum ProductionPart {
 
 /// The equation system for the FIRST(k) calculation
 type EquationSystem = Vec<Vec<ProductionPart>>;
-
-/// The step function for the iteration
-type StepFunction = Box<dyn Fn(Rc<ResultVector>) -> ResultVector>;
 
 ///
 /// Calculates the FIRST(k) sets for all productions of the given grammar.
@@ -105,106 +96,86 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
         equation_system.len()
     );
 
-    // Single threaded variant
-    let step_function: StepFunction = {
-        let empty_set = DomainTypeBuilder::new()
-            .k(k)
-            .max_terminal_index(max_terminal_index)
-            .build()
-            .unwrap();
-        let epsilon_set = DomainTypeBuilder::new()
-            .k(k)
-            .max_terminal_index(max_terminal_index)
-            .eps()
-            .unwrap();
+    let empty_set = DomainTypeBuilder::new()
+        .k(k)
+        .max_terminal_index(max_terminal_index)
+        .build()
+        .unwrap();
+    let epsilon_set = DomainTypeBuilder::new()
+        .k(k)
+        .max_terminal_index(max_terminal_index)
+        .eps()
+        .unwrap();
 
-        Box::new(move |result_vector: Rc<ResultVector>| {
-            let mut new_result_vector: ResultVector = vec![empty_set.clone(); result_vector.len()];
-            let result_nt = &result_vector[pr_count..];
-            let (new_productions, new_non_terminals) = new_result_vector.split_at_mut(pr_count);
-
-            for ((equation, nt_index), production_slot) in equation_system
-                .iter()
-                .zip(nt_for_production.iter())
-                .zip(new_productions.iter_mut())
-            {
-                let mut r = epsilon_set.clone();
-                for part in equation {
-                    r = match part {
-                        ProductionPart::TerminalSet(terminal_set) => r.k_concat(terminal_set, k),
-                        ProductionPart::NonTerminal(nt_index) => {
-                            debug_assert!(*nt_index < result_nt.len());
-                            let nt_tuple = &result_nt[*nt_index];
-                            r.k_concat(nt_tuple, k)
-                        }
-                    };
-                }
-                debug_assert!(*nt_index < new_non_terminals.len());
-                new_non_terminals[*nt_index].append(r.clone());
-                *production_slot = r;
-            }
-            new_result_vector
-        })
+    let mut current_non_terminals: Vec<DomainType> = if k == 0 {
+        (0..nt_count).map(|_| epsilon_set.clone()).collect()
+    } else {
+        let last_first_set = first_cache.get(k - 1, grammar_config);
+        let borrowed = last_first_set.borrow();
+        debug_assert_eq!(borrowed.non_terminals.len(), nt_count);
+        borrowed
+            .non_terminals
+            .iter()
+            .map(|t| t.clone().set_k(k))
+            .collect()
     };
 
-    // Create the initial result vector:
-    // The first indices correspond to the production number.
-    // After the Tuples for each production the Tuples for non-terminals are following.
-    let mut result_vector = Rc::new(if k == 0 {
-        // For k=0 the k-1 first set does not exist, we create an empty set
-        (0..pr_count + nt_count).fold(Vec::with_capacity(pr_count + nt_count), |mut acc, i| {
-            if i < pr_count {
-                acc.push(
-                    DomainTypeBuilder::new()
-                        .k(k)
-                        .max_terminal_index(max_terminal_index)
-                        .build()
-                        .unwrap(),
-                );
-            } else {
-                acc.push(
-                    DomainTypeBuilder::new()
-                        .k(k)
-                        .max_terminal_index(max_terminal_index)
-                        .eps()
-                        .unwrap(),
-                );
-            }
-            acc
-        })
-    } else {
-        // For k>0 the k-1 first set is the last first set calculated
-        // We clone and modify the last first set and set the k value
-        let last_first_set = first_cache.get(k - 1, grammar_config).borrow().clone();
-        let mut result_vector = Vec::with_capacity(pr_count + nt_count);
-        // The part for the productions
-        for t in last_first_set.productions.iter() {
-            result_vector.push(t.clone().set_k(k));
-        }
-        // The part for the non-terminals
-        debug_assert_eq!(last_first_set.non_terminals.len(), nt_count);
-        for t in last_first_set.non_terminals.iter() {
-            result_vector.push(t.clone().set_k(k));
-        }
-        result_vector
-    });
+    let mut next_non_terminals: Vec<DomainType> = vec![empty_set.clone(); nt_count];
 
     let mut iterations = 0usize;
     loop {
-        let new_result_vector = Rc::new(step_function(result_vector.clone()));
-        if new_result_vector == result_vector {
-            break;
+        for (equation, nt_index) in equation_system.iter().zip(nt_for_production.iter()) {
+            let mut r = epsilon_set.clone();
+            for part in equation {
+                r = match part {
+                    ProductionPart::TerminalSet(terminal_set) => r.k_concat(terminal_set, k),
+                    ProductionPart::NonTerminal(src_nt) => {
+                        debug_assert!(*src_nt < current_non_terminals.len());
+                        r.k_concat(&current_non_terminals[*src_nt], k)
+                    }
+                };
+                if r.is_k_complete() {
+                    break;
+                }
+            }
+            debug_assert!(*nt_index < next_non_terminals.len());
+            next_non_terminals[*nt_index].union_in_place(&r);
         }
-        result_vector = new_result_vector;
+
         iterations += 1;
         trace!("Iteration number {iterations} completed");
+
+        if next_non_terminals == current_non_terminals {
+            break;
+        }
+
+        std::mem::swap(&mut current_non_terminals, &mut next_non_terminals);
+        for nt in &mut next_non_terminals {
+            nt.clear();
+        }
     }
 
-    let (r, k_tuples_of_nt) = result_vector.split_at(pr_count);
+    // Single final pass to construct productions
+    let mut productions = Vec::with_capacity(pr_count);
+    for equation in equation_system.iter() {
+        let mut r = epsilon_set.clone();
+        for part in equation {
+            r = match part {
+                ProductionPart::TerminalSet(terminal_set) => r.k_concat(terminal_set, k),
+                ProductionPart::NonTerminal(src_nt) => {
+                    r.k_concat(&next_non_terminals[*src_nt], k)
+                }
+            };
+            if r.is_k_complete() {
+                break;
+            }
+        }
+        productions.push(r);
+    }
 
     FirstSet {
-        productions: r.to_vec(),
-        non_terminals: k_tuples_of_nt.to_vec(),
+        productions,
+        non_terminals: next_non_terminals,
     }
 }
 

@@ -274,6 +274,12 @@ impl KTuples {
         self.set.is_empty()
     }
 
+    /// Clears the set of tuples while retaining allocated capacity
+    pub fn clear(&mut self) {
+        self.set.clear();
+        self.k_complete = false;
+    }
+
     /// Checks if all tuples in the collection are k-complete
     pub fn is_k_complete(&self) -> bool {
         self.k_complete
