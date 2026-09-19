@@ -49,6 +49,41 @@ enum ProductionPart {
 /// The equation system for the FIRST(k) calculation
 type EquationSystem = Vec<Vec<ProductionPart>>;
 
+#[inline]
+fn evaluate_equation(
+    equation: &[ProductionPart],
+    non_terminals: &[DomainType],
+    epsilon_set: &DomainType,
+    k: usize,
+) -> DomainType {
+    let mut parts = equation.iter();
+    let mut r = match parts.next() {
+        None => epsilon_set.clone(),
+        Some(ProductionPart::TerminalSet(ts)) => ts.clone(),
+        Some(ProductionPart::NonTerminal(src_nt)) => {
+            debug_assert!(*src_nt < non_terminals.len());
+            non_terminals[*src_nt].clone()
+        }
+    };
+
+    if !r.is_k_complete() {
+        for part in parts {
+            r = match part {
+                ProductionPart::TerminalSet(ts) => r.k_concat(ts, k),
+                ProductionPart::NonTerminal(src_nt) => {
+                    debug_assert!(*src_nt < non_terminals.len());
+                    r.k_concat(&non_terminals[*src_nt], k)
+                }
+            };
+            if r.is_k_complete() {
+                break;
+            }
+        }
+    }
+
+    r
+}
+
 ///
 /// Calculates the FIRST(k) sets for all productions of the given grammar.
 /// The indices in the returned vector correspond to the production number.
@@ -125,19 +160,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let mut iterations = 0usize;
     loop {
         for (equation, nt_index) in equation_system.iter().zip(nt_for_production.iter()) {
-            let mut r = epsilon_set.clone();
-            for part in equation {
-                r = match part {
-                    ProductionPart::TerminalSet(terminal_set) => r.k_concat(terminal_set, k),
-                    ProductionPart::NonTerminal(src_nt) => {
-                        debug_assert!(*src_nt < current_non_terminals.len());
-                        r.k_concat(&current_non_terminals[*src_nt], k)
-                    }
-                };
-                if r.is_k_complete() {
-                    break;
-                }
-            }
+            let r = evaluate_equation(equation, &current_non_terminals, &epsilon_set, k);
             debug_assert!(*nt_index < next_non_terminals.len());
             next_non_terminals[*nt_index].union_in_place(&r);
         }
@@ -158,19 +181,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     // Single final pass to construct productions
     let mut productions = Vec::with_capacity(pr_count);
     for equation in equation_system.iter() {
-        let mut r = epsilon_set.clone();
-        for part in equation {
-            r = match part {
-                ProductionPart::TerminalSet(terminal_set) => r.k_concat(terminal_set, k),
-                ProductionPart::NonTerminal(src_nt) => {
-                    r.k_concat(&next_non_terminals[*src_nt], k)
-                }
-            };
-            if r.is_k_complete() {
-                break;
-            }
-        }
-        productions.push(r);
+        productions.push(evaluate_equation(equation, &next_non_terminals, &epsilon_set, k));
     }
 
     FirstSet {
