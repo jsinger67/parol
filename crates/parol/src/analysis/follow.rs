@@ -57,9 +57,13 @@ impl FollowSet {
 pub(crate) type ResultMap = FxHashMap<Pos, DomainType>;
 
 #[derive(Clone)]
-enum FollowPart {
-    TerminalSet(DomainType),
-    FirstOfNonTerminal(usize),
+enum SuffixKind {
+    /// Suffix is empty: pos_result = FOLLOW(source_nt).clone()
+    Epsilon,
+    /// Suffix FIRST set is k-complete: pos_result is constant (FOLLOW(source_nt) does not affect it)
+    Complete(DomainType),
+    /// General suffix with precomputed FIRST_k: pos_result = first.clone().k_concat(FOLLOW(source_nt), k)
+    General(DomainType),
 }
 
 #[derive(Clone)]
@@ -69,7 +73,7 @@ struct FollowEquation {
     target_nt_index: usize,
     /// Left-hand-side non-terminal of the production containing this position.
     source_nt_index: usize,
-    rhs_parts: Vec<FollowPart>,
+    suffix: SuffixKind,
 }
 
 type EquationSystem = Vec<FollowEquation>;
@@ -136,6 +140,7 @@ pub fn follow_k(
     let equation_system: Rc<EquationSystem> = Rc::new({
         #[cfg(feature = "profiling")]
         profile_scope!("equation_system_build");
+        let borrowed_first = first_k_of_nt.borrow();
         cfg.pr.iter().enumerate().fold(Vec::new(), |es, (i, pr)| {
             let args = UpdateProductionEquationsArgs {
                 prod_num: i,
@@ -144,6 +149,7 @@ pub fn follow_k(
                 nti: Rc::clone(&nti),
                 k,
                 max_terminal_index,
+                first_k_of_nt: &borrowed_first.non_terminals,
             };
             update_production_equations(es, args)
         })
@@ -157,12 +163,6 @@ pub fn follow_k(
 
     let step_function: StepFunction = {
         let equation_system = Rc::clone(&equation_system);
-        let first_k_of_nt = Rc::clone(&first_k_of_nt);
-        let epsilon_set = DomainTypeBuilder::new()
-            .k(k)
-            .max_terminal_index(max_terminal_index)
-            .eps()
-            .unwrap();
 
         Box::new(
             move |result_map: Rc<ResultMap>, non_terminal_results: Rc<RefCell<FollowSet>>| {
@@ -173,33 +173,25 @@ pub fn follow_k(
                 );
 
                 for equation in equation_system.iter() {
-                    let mut pos_result = epsilon_set.clone();
-
-                    {
-                        let borrowed_first = first_k_of_nt.borrow();
-                        for part in &equation.rhs_parts {
-                            pos_result = match part {
-                                FollowPart::TerminalSet(terminal_set) => {
-                                    pos_result.k_concat(terminal_set, k)
-                                }
-                                FollowPart::FirstOfNonTerminal(nt_index) => {
-                                    debug_assert!(*nt_index < borrowed_first.non_terminals.len());
-                                    let first_of_nt = &borrowed_first.non_terminals[*nt_index];
-                                    pos_result.k_concat(first_of_nt, k)
-                                }
-                            };
+                    let pos_result = match &equation.suffix {
+                        SuffixKind::Complete(first) => first.clone(),
+                        SuffixKind::Epsilon => {
+                            let borrowed_nt_results = non_terminal_results.borrow();
+                            debug_assert!(
+                                equation.source_nt_index < borrowed_nt_results.non_terminals.len()
+                            );
+                            borrowed_nt_results.non_terminals[equation.source_nt_index].clone()
                         }
-                    }
-
-                    {
-                        let borrowed_nt_results = non_terminal_results.borrow();
-                        debug_assert!(
-                            equation.source_nt_index < borrowed_nt_results.non_terminals.len()
-                        );
-                        let nt_follow_set =
-                            &borrowed_nt_results.non_terminals[equation.source_nt_index];
-                        pos_result = pos_result.k_concat(nt_follow_set, k);
-                    }
+                        SuffixKind::General(first) => {
+                            let borrowed_nt_results = non_terminal_results.borrow();
+                            debug_assert!(
+                                equation.source_nt_index < borrowed_nt_results.non_terminals.len()
+                            );
+                            let nt_follow_set =
+                                &borrowed_nt_results.non_terminals[equation.source_nt_index];
+                            first.clone().k_concat(nt_follow_set, k)
+                        }
+                    };
 
                     {
                         let mut borrowed = non_terminal_results.borrow_mut();
@@ -313,6 +305,8 @@ struct UpdateProductionEquationsArgs<'a, T, N> {
     k: usize,
     /// The maximum terminal index
     max_terminal_index: usize,
+    /// The FIRST(k) sets of non-terminals
+    first_k_of_nt: &'a [DomainType],
 }
 
 ///
@@ -321,7 +315,7 @@ struct UpdateProductionEquationsArgs<'a, T, N> {
 ///
 fn update_production_equations<T, N>(
     mut es: EquationSystem,
-    args: UpdateProductionEquationsArgs<T, N>,
+    args: UpdateProductionEquationsArgs<'_, T, N>,
 ) -> EquationSystem
 where
     T: TerminalIndexFn,
@@ -362,45 +356,62 @@ where
     // have to provide an equation.
     for (part_index, (symbol_index, symbol_string)) in parts.iter().enumerate() {
         if let Symbol::N(nt_at_position, _, _, _) = &symbol_string.0[0] {
-            let mut rhs_parts = Vec::with_capacity(parts.len().saturating_sub(part_index + 1));
-            for (_, symbol_string) in parts.iter().skip(part_index + 1) {
-                let symbol = &symbol_string.0[0]; // Avoid cloning the entire symbol
-                match symbol {
-                    Symbol::T(_) => {
-                        // Optimization: Pre-compute terminal indices to avoid repeated work
-                        let terminal_indices: Vec<TerminalIndex> = symbol_string
-                            .0
-                            .iter()
-                            .map(|s| CompiledTerminal::create(s, Rc::clone(&args.ti)).0)
-                            .collect();
+            let remaining_parts = &parts[part_index + 1..];
+            let suffix = if remaining_parts.is_empty() {
+                SuffixKind::Epsilon
+            } else {
+                let mut suffix_first = DomainTypeBuilder::new()
+                    .k(args.k)
+                    .max_terminal_index(args.max_terminal_index)
+                    .eps()
+                    .unwrap();
 
-                        // Optimization: Pre-build the domain type to avoid repeated builder calls
-                        let domain_type = DomainTypeBuilder::new()
-                            .k(args.k)
-                            .max_terminal_index(args.max_terminal_index)
-                            .terminal_indices(&[&terminal_indices])
-                            .build()
-                            .unwrap();
-                        rhs_parts.push(FollowPart::TerminalSet(domain_type));
-                    }
-                    Symbol::N(nt, _, _, _) => {
-                        rhs_parts.push(FollowPart::FirstOfNonTerminal(
-                            args.nti.non_terminal_index(nt),
-                        ));
-                    }
-                    _ => {
-                        unreachable!(
-                            "Scanner switching directives have been removed from the grammar syntax."
-                        );
+                for (_, symbol_string) in remaining_parts {
+                    let symbol = &symbol_string.0[0]; // Avoid cloning the entire symbol
+                    match symbol {
+                        Symbol::T(_) => {
+                            // Optimization: Pre-compute terminal indices to avoid repeated work
+                            let terminal_indices: Vec<TerminalIndex> = symbol_string
+                                .0
+                                .iter()
+                                .map(|s| CompiledTerminal::create(s, Rc::clone(&args.ti)).0)
+                                .collect();
+
+                            // Optimization: Pre-build the domain type to avoid repeated builder calls
+                            let domain_type = DomainTypeBuilder::new()
+                                .k(args.k)
+                                .max_terminal_index(args.max_terminal_index)
+                                .terminal_indices(&[&terminal_indices])
+                                .build()
+                                .unwrap();
+                            suffix_first = suffix_first.k_concat(&domain_type, args.k);
+                        }
+                        Symbol::N(nt, _, _, _) => {
+                            let nt_index = args.nti.non_terminal_index(nt);
+                            debug_assert!(nt_index < args.first_k_of_nt.len());
+                            let first_of_nt = &args.first_k_of_nt[nt_index];
+                            suffix_first = suffix_first.k_concat(first_of_nt, args.k);
+                        }
+                        _ => {
+                            unreachable!(
+                                "Scanner switching directives have been removed from the grammar syntax."
+                            );
+                        }
                     }
                 }
-            }
+
+                if suffix_first.is_k_complete() {
+                    SuffixKind::Complete(suffix_first)
+                } else {
+                    SuffixKind::General(suffix_first)
+                }
+            };
 
             es.push(FollowEquation {
                 pos: (args.prod_num, *symbol_index).into(),
                 target_nt_index: args.nti.non_terminal_index(nt_at_position),
                 source_nt_index: args.nti.non_terminal_index(args.pr.get_n_str()),
-                rhs_parts,
+                suffix,
             });
         }
     }

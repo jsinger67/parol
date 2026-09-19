@@ -274,6 +274,11 @@ impl KTuples {
         self.set.is_empty()
     }
 
+    /// Checks if all tuples in the collection are k-complete
+    pub fn is_k_complete(&self) -> bool {
+        self.k_complete
+    }
+
     /// Checks if self and other are disjoint
     pub fn is_disjoint(&self, other: &Self) -> bool {
         self.set.is_disjoint(&other.set)
