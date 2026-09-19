@@ -13,7 +13,7 @@ From the repository root, execute:
 dotnet run --project .\examples\calc_csharp\calc_csharp.csproj -- examples/calc_csharp/test.txt
 ```
 
-The sample input is in `examples/calc_csharp/test.txt`.
+The sample input is in `examples/calc/calc_test.txt`.
 
 ## Conversion principle (%nt_type mapping)
 
