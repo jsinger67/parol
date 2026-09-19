@@ -14,7 +14,6 @@ use parol_runtime::TerminalIndex;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use rustc_hash::FxHashMap;
-use std::cell::RefCell;
 use std::rc::Rc;
 
 #[cfg(feature = "profiling")]
@@ -78,9 +77,6 @@ struct FollowEquation {
 
 type EquationSystem = Vec<FollowEquation>;
 
-/// The function that performs a single iterative update step.
-type StepFunction = Box<dyn Fn(Rc<ResultMap>, Rc<RefCell<FollowSet>>) -> ResultMap>;
-
 /// Calculates the FOLLOW k sets for all non-terminals of the given grammar.
 ///
 /// This function implements the FOLLOW set algorithm for LR parser generation,
@@ -137,7 +133,7 @@ pub fn follow_k(
 
     let nti = Rc::new(cfg.get_non_terminal_index_function());
 
-    let equation_system: Rc<EquationSystem> = Rc::new({
+    let equation_system: EquationSystem = {
         #[cfg(feature = "profiling")]
         profile_scope!("equation_system_build");
         let borrowed_first = first_k_of_nt.borrow();
@@ -153,7 +149,7 @@ pub fn follow_k(
             };
             update_production_equations(es, args)
         })
-    });
+    };
 
     trace!(
         "FOLLOW({}): {} equations in equation system",
@@ -161,53 +157,11 @@ pub fn follow_k(
         equation_system.len()
     );
 
-    let step_function: StepFunction = {
-        let equation_system = Rc::clone(&equation_system);
+    if k > 0 {
+        let _ = follow_cache.get(k - 1, grammar_config, first_cache);
+    }
 
-        Box::new(
-            move |result_map: Rc<ResultMap>, non_terminal_results: Rc<RefCell<FollowSet>>| {
-                // Optimization: Pre-allocate capacity for better performance
-                let mut new_result_vector = ResultMap::with_capacity_and_hasher(
-                    result_map.len(),
-                    rustc_hash::FxBuildHasher,
-                );
-
-                for equation in equation_system.iter() {
-                    let pos_result = match &equation.suffix {
-                        SuffixKind::Complete(first) => first.clone(),
-                        SuffixKind::Epsilon => {
-                            let borrowed_nt_results = non_terminal_results.borrow();
-                            debug_assert!(
-                                equation.source_nt_index < borrowed_nt_results.non_terminals.len()
-                            );
-                            borrowed_nt_results.non_terminals[equation.source_nt_index].clone()
-                        }
-                        SuffixKind::General(first) => {
-                            let borrowed_nt_results = non_terminal_results.borrow();
-                            debug_assert!(
-                                equation.source_nt_index < borrowed_nt_results.non_terminals.len()
-                            );
-                            let nt_follow_set =
-                                &borrowed_nt_results.non_terminals[equation.source_nt_index];
-                            first.clone().k_concat(nt_follow_set, k)
-                        }
-                    };
-
-                    {
-                        let mut borrowed = non_terminal_results.borrow_mut();
-                        debug_assert!(equation.target_nt_index < borrowed.non_terminals.len());
-                        let set = &mut borrowed.non_terminals[equation.target_nt_index];
-                        let _changed = set.union_in_place(&pos_result);
-                    }
-
-                    new_result_vector.insert(equation.pos, pos_result);
-                }
-                new_result_vector
-            },
-        )
-    };
-
-    let non_terminal_results = Rc::new(RefCell::new(FollowSet::new(
+    let mut non_terminal_results = FollowSet::new(
         cfg.get_non_terminal_set()
             .iter()
             .fold(Vec::new(), |mut acc, nt| {
@@ -230,65 +184,70 @@ pub fn follow_k(
                 }
                 acc
             }),
-    )));
-
-    let mut result_map = if k == 0 {
-        // k == 0: No previous cache result available
-        // Optimization: Pre-allocate capacity and use builder pattern more efficiently
-        let mut initial_map =
-            ResultMap::with_capacity_and_hasher(equation_system.len(), rustc_hash::FxBuildHasher);
-
-        // Optimization: Create domain type builder once and reuse pattern
-        for equation in equation_system.iter() {
-            initial_map.insert(
-                equation.pos,
-                DomainTypeBuilder::new()
-                    .k(k)
-                    .max_terminal_index(max_terminal_index)
-                    .build()
-                    .unwrap(),
-            );
-        }
-        Rc::new(initial_map)
-    } else {
-        // Optimization: Avoid unnecessary cloning by using more efficient collection
-        let cache_ref = follow_cache.get(k - 1, grammar_config, first_cache);
-        let borrowed_cache = cache_ref.borrow();
-
-        let mut cached = ResultMap::with_capacity_and_hasher(
-            borrowed_cache.last_result.len(),
-            rustc_hash::FxBuildHasher,
-        );
-
-        for (p, t) in borrowed_cache.last_result.iter() {
-            cached.insert(*p, t.clone().set_k(k));
-        }
-        drop(borrowed_cache); // Explicitly drop borrow before creating Rc
-        Rc::new(cached)
-    };
+    );
 
     let mut iterations = 0usize;
-    let mut new_result_vector;
     loop {
         #[cfg(feature = "profiling")]
         profile_scope!("iteration_step");
-        new_result_vector = step_function(Rc::clone(&result_map), Rc::clone(&non_terminal_results));
-        if new_result_vector == *result_map {
-            // No change in the result map, we are done
-            break;
+        let mut changed = false;
+
+        for equation in equation_system.iter() {
+            let pos_result = match &equation.suffix {
+                SuffixKind::Complete(first) => first.clone(),
+                SuffixKind::Epsilon => {
+                    debug_assert!(
+                        equation.source_nt_index < non_terminal_results.non_terminals.len()
+                    );
+                    non_terminal_results.non_terminals[equation.source_nt_index].clone()
+                }
+                SuffixKind::General(first) => {
+                    debug_assert!(
+                        equation.source_nt_index < non_terminal_results.non_terminals.len()
+                    );
+                    let nt_follow_set =
+                        &non_terminal_results.non_terminals[equation.source_nt_index];
+                    first.clone().k_concat(nt_follow_set, k)
+                }
+            };
+
+            debug_assert!(equation.target_nt_index < non_terminal_results.non_terminals.len());
+            let target_set = &mut non_terminal_results.non_terminals[equation.target_nt_index];
+            if target_set.union_in_place(&pos_result) {
+                changed = true;
+            }
         }
-        result_map = Rc::new(new_result_vector);
+
         iterations += 1;
         trace!("Iteration number {iterations} completed");
+
+        if !changed {
+            break;
+        }
     }
 
     #[cfg(feature = "profiling")]
     profiling::output_profiling_data();
 
-    (
-        new_result_vector,
-        Rc::try_unwrap(non_terminal_results).unwrap().into_inner(),
-    )
+    // Construct the final ResultMap once after convergence
+    let mut result_map =
+        ResultMap::with_capacity_and_hasher(equation_system.len(), rustc_hash::FxBuildHasher);
+
+    for equation in equation_system.iter() {
+        let pos_result = match &equation.suffix {
+            SuffixKind::Complete(first) => first.clone(),
+            SuffixKind::Epsilon => {
+                non_terminal_results.non_terminals[equation.source_nt_index].clone()
+            }
+            SuffixKind::General(first) => {
+                let nt_follow_set = &non_terminal_results.non_terminals[equation.source_nt_index];
+                first.clone().k_concat(nt_follow_set, k)
+            }
+        };
+        result_map.insert(equation.pos, pos_result);
+    }
+
+    (result_map, non_terminal_results)
 }
 
 /// Arguments for the update_production_equations function
