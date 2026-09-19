@@ -496,7 +496,7 @@ impl<'t> LLKParser<'t> {
         self.handle_additional_tokens(tree_builder, stream.clone(), user_actions)?;
         if !self.error_entries.is_empty() {
             return Err(ParserError::SyntaxErrors {
-                entries: self.error_entries.drain(..).collect(),
+                entries: std::mem::take(&mut self.error_entries),
             }
             .into());
         }
@@ -648,7 +648,7 @@ impl<'t> LLKParser<'t> {
                 .with_location(current_token.location.clone()),
         );
         Err(ParserError::SyntaxErrors {
-            entries: self.error_entries.drain(..).collect(),
+            entries: std::mem::take(&mut self.error_entries),
         }
         .into())
     }
@@ -731,7 +731,7 @@ impl<'t> LLKParser<'t> {
         } else {
             let _ = self.add_error(SyntaxError::default().with_cause("Can't sync"));
             Err(ParserError::SyntaxErrors {
-                entries: self.error_entries.drain(..).collect(),
+                entries: std::mem::take(&mut self.error_entries),
             }
             .into())
         }
