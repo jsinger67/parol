@@ -340,6 +340,12 @@ impl KTuples {
         let _profile = profiling::ProfileScope::new("ktuples_k_concat");
 
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
+        if other.is_empty() { return self; }
+        if self.is_empty() { return other.clone(); }
+        let self_is_eps = self.set.len() == 1 && self.set.iter().next().unwrap().is_eps();
+        let other_is_eps = other.set.len() == 1 && other.set.iter().next().unwrap().is_eps();
+        if self_is_eps { return other.clone(); }
+        if other_is_eps { return self; }
         if !self.k_complete {
             let (complete, incomplete): (TuplesSet, TuplesSet) =
                 self.set.iter().partition(|t| t.is_k_complete());
