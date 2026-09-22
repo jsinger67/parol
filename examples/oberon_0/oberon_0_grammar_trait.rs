@@ -18,158 +18,43 @@ use parol_runtime::{ParserError, Result, Token};
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait Oberon0GrammarTrait<'t> {
-    /// Semantic action for non-terminal 'Selector'
-    fn selector(&mut self, _arg: &Selector<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'Module'
+    fn module(&mut self, _arg: &Module<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'SelectorList'
-    fn selector_list(&mut self, _arg: &SelectorList<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'Declarations'
+    fn declarations(&mut self, _arg: &Declarations<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'Factor'
-    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'ConstPart'
+    fn const_part(&mut self, _arg: &ConstPart<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'Term'
-    fn term(&mut self, _arg: &Term<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'TypePart'
+    fn type_part(&mut self, _arg: &TypePart<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'MulExpression'
-    fn mul_expression(&mut self, _arg: &MulExpression<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'VarPart'
+    fn var_part(&mut self, _arg: &VarPart<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'SimpleExpression'
-    fn simple_expression(&mut self, _arg: &SimpleExpression<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'ProcedurePart'
+    fn procedure_part(&mut self, _arg: &ProcedurePart<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'AddExpression'
-    fn add_expression(&mut self, _arg: &AddExpression<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'ProcedureDeclaration'
+    fn procedure_declaration(&mut self, _arg: &ProcedureDeclaration<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'AssignOp'
-    fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'RelationOp'
-    fn relation_op(&mut self, _arg: &RelationOp<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'RelationalOps'
-    fn relational_ops(&mut self, _arg: &RelationalOps<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'Expression'
-    fn expression(&mut self, _arg: &Expression<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'Assignment'
-    fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'ActualParameters'
-    fn actual_parameters(&mut self, _arg: &ActualParameters<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'ExpressionListRest'
-    fn expression_list_rest(&mut self, _arg: &ExpressionListRest<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'ProcedureCall'
-    fn procedure_call(&mut self, _arg: &ProcedureCall<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'IfStatement'
-    fn if_statement(&mut self, _arg: &IfStatement<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'IfPrefix'
-    fn if_prefix(&mut self, _arg: &IfPrefix<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'ElseIfList'
-    fn else_if_list(&mut self, _arg: &ElseIfList<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'WhileStatement'
-    fn while_statement(&mut self, _arg: &WhileStatement<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'RepeatStatement'
-    fn repeat_statement(&mut self, _arg: &RepeatStatement<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'Statement'
-    fn statement(&mut self, _arg: &Statement<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'StatementSequence'
-    fn statement_sequence(&mut self, _arg: &StatementSequence<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'StatementSequenceRest'
-    fn statement_sequence_rest(&mut self, _arg: &StatementSequenceRest<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'IdentList'
-    fn ident_list(&mut self, _arg: &IdentList<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'IdentListRest'
-    fn ident_list_rest(&mut self, _arg: &IdentListRest<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'ArrayType'
-    fn array_type(&mut self, _arg: &ArrayType<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'FieldList'
-    fn field_list(&mut self, _arg: &FieldList<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'RecordType'
-    fn record_type(&mut self, _arg: &RecordType<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'FieldListRest'
-    fn field_list_rest(&mut self, _arg: &FieldListRest<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'Type'
-    fn r#type(&mut self, _arg: &Type<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'FPSection'
-    fn f_p_section(&mut self, _arg: &FPSection<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'ProcedureHeading'
+    fn procedure_heading(&mut self, _arg: &ProcedureHeading<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -183,28 +68,13 @@ pub trait Oberon0GrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'ProcedureHeading'
-    fn procedure_heading(&mut self, _arg: &ProcedureHeading<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'FPSection'
+    fn f_p_section(&mut self, _arg: &FPSection<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ProcedureBody'
     fn procedure_body(&mut self, _arg: &ProcedureBody<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'ProcedureDeclaration'
-    fn procedure_declaration(&mut self, _arg: &ProcedureDeclaration<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'Declarations'
-    fn declarations(&mut self, _arg: &Declarations<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'ProcedureDeclarationList'
-    fn procedure_declaration_list(&mut self, _arg: &ProcedureDeclarationList<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -223,13 +93,93 @@ pub trait Oberon0GrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'Module'
-    fn module(&mut self, _arg: &Module<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'StatementSequence'
+    fn statement_sequence(&mut self, _arg: &StatementSequence<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'MulOperator'
-    fn mul_operator(&mut self, _arg: &MulOperator<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'Statement'
+    fn statement(&mut self, _arg: &Statement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Assignment'
+    fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ProcedureCall'
+    fn procedure_call(&mut self, _arg: &ProcedureCall<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ActualParameters'
+    fn actual_parameters(&mut self, _arg: &ActualParameters<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ExpressionListRest'
+    fn expression_list_rest(&mut self, _arg: &ExpressionListRest<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'IfStatement'
+    fn if_statement(&mut self, _arg: &IfStatement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ElseIfList'
+    fn else_if_list(&mut self, _arg: &ElseIfList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'WhileStatement'
+    fn while_statement(&mut self, _arg: &WhileStatement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RepeatStatement'
+    fn repeat_statement(&mut self, _arg: &RepeatStatement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Expression'
+    fn expression(&mut self, _arg: &Expression<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'SimpleExpression'
+    fn simple_expression(&mut self, _arg: &SimpleExpression<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Term'
+    fn term(&mut self, _arg: &Term<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Factor'
+    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Selector'
+    fn selector(&mut self, _arg: &Selector<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'SelectorList'
+    fn selector_list(&mut self, _arg: &SelectorList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'AssignOp'
+    fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RelationOp'
+    fn relation_op(&mut self, _arg: &RelationOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -238,8 +188,43 @@ pub trait Oberon0GrammarTrait<'t> {
         Ok(())
     }
 
+    /// Semantic action for non-terminal 'MulOperator'
+    fn mul_operator(&mut self, _arg: &MulOperator<'t>) -> Result<()> {
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'UnaryOp'
     fn unary_op(&mut self, _arg: &UnaryOp<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Type'
+    fn r#type(&mut self, _arg: &Type<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ArrayType'
+    fn array_type(&mut self, _arg: &ArrayType<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RecordType'
+    fn record_type(&mut self, _arg: &RecordType<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'FieldList'
+    fn field_list(&mut self, _arg: &FieldList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'FieldListRest'
+    fn field_list_rest(&mut self, _arg: &FieldListRest<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'IdentList'
+    fn ident_list(&mut self, _arg: &IdentList<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -264,489 +249,31 @@ pub trait Oberon0GrammarTrait<'t> {
 //
 
 ///
-/// Type derived for production 1
-///
-/// `SelectorList: "\." Ident SelectorList;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct SelectorListDotIdentSelectorList<'t> {
-    pub dot: Token<'t>, /* \. */
-    pub ident: Ident<'t>,
-    pub selector_list: Box<SelectorList<'t>>,
-}
-
-///
-/// Type derived for production 2
-///
-/// `SelectorList: "\[" Expression "]" SelectorList;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct SelectorListLBracketExpressionRBracketSelectorList<'t> {
-    pub l_bracket: Token<'t>, /* \[ */
-    pub expression: Box<Expression<'t>>,
-    pub r_bracket: Token<'t>, /* ] */
-    pub selector_list: Box<SelectorList<'t>>,
-}
-
-///
-/// Type derived for production 3
-///
-/// `SelectorList: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct SelectorListSelectorListEmpty {}
-
-///
-/// Type derived for production 4
-///
-/// `Factor: Ident Selector;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FactorIdentSelector<'t> {
-    pub ident: Ident<'t>,
-    pub selector: Selector<'t>,
-}
-
-///
-/// Type derived for production 5
-///
-/// `Factor: Integer;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FactorInteger<'t> {
-    pub integer: Integer<'t>,
-}
-
-///
-/// Type derived for production 6
-///
-/// `Factor: "\(" Expression "\)";`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FactorLParenExpressionRParen<'t> {
-    pub l_paren: Token<'t>, /* \( */
-    pub expression: Box<Expression<'t>>,
-    pub r_paren: Token<'t>, /* \) */
-}
-
-///
-/// Type derived for production 7
-///
-/// `Factor: "~" Factor;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FactorTildeFactor<'t> {
-    pub tilde: Token<'t>, /* ~ */
-    pub factor: Box<Factor<'t>>,
-}
-
-///
-/// Type derived for production 8
-///
-/// `Factor: UnaryOp Factor;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FactorUnaryOpFactor<'t> {
-    pub unary_op: UnaryOp<'t>,
-    pub factor: Box<Factor<'t>>,
-}
-
-///
-/// Type derived for production 10
-///
-/// `MulExpression: MulOperator Factor MulExpression;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct MulExpressionMulOperatorFactorMulExpression<'t> {
-    pub mul_operator: MulOperator<'t>,
-    pub factor: Factor<'t>,
-    pub mul_expression: Box<MulExpression<'t>>,
-}
-
-///
-/// Type derived for production 11
-///
-/// `MulExpression: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct MulExpressionMulExpressionEmpty {}
-
-///
-/// Type derived for production 13
-///
-/// `AddExpression: AddOperator Term AddExpression;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct AddExpressionAddOperatorTermAddExpression<'t> {
-    pub add_operator: AddOperator<'t>,
-    pub term: Term<'t>,
-    pub add_expression: Box<AddExpression<'t>>,
-}
-
-///
-/// Type derived for production 14
-///
-/// `AddExpression: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct AddExpressionAddExpressionEmpty {}
-
-///
-/// Type derived for production 16
-///
-/// `RelationOp: AssignOp;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct RelationOpAssignOp<'t> {
-    pub assign_op: AssignOp<'t>,
-}
-
-///
-/// Type derived for production 17
-///
-/// `RelationOp: RelationalOps;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct RelationOpRelationalOps<'t> {
-    pub relational_ops: RelationalOps<'t>,
-}
-
-///
-/// Type derived for production 20
-///
-/// `ExpressionSuffix: RelationOp SimpleExpression;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ExpressionSuffixRelationOpSimpleExpression<'t> {
-    pub relation_op: RelationOp<'t>,
-    pub simple_expression: SimpleExpression<'t>,
-}
-
-///
 /// Type derived for production 21
 ///
-/// `ExpressionSuffix: ;`
+/// `FormalParametersSuffix: ')';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct ExpressionSuffixExpressionSuffixEmpty {}
-
-///
-/// Type derived for production 24
-///
-/// `ActualParametersSuffix: ')';`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ActualParametersSuffixRParen<'t> {
+pub struct FormalParametersSuffixRParen<'t> {
     pub r_paren: Token<'t>, /* ) */
 }
 
 ///
-/// Type derived for production 25
+/// Type derived for production 22
 ///
-/// `ActualParametersSuffix: Expression ExpressionListRest ')';`
+/// `FormalParametersSuffix: FPSection FPSectionRest ')';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct ActualParametersSuffixExpressionExpressionListRestRParen<'t> {
-    pub expression: Expression<'t>,
-    pub expression_list_rest: ExpressionListRest<'t>,
+pub struct FormalParametersSuffixFPSectionFPSectionRestRParen<'t> {
+    pub f_p_section: FPSection<'t>,
+    pub f_p_section_rest: FPSectionRest<'t>,
     pub r_paren: Token<'t>, /* ) */
 }
 
 ///
 /// Type derived for production 26
-///
-/// `ExpressionListRest: ',' Expression ExpressionListRest;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ExpressionListRestCommaExpressionExpressionListRest<'t> {
-    pub comma: Token<'t>, /* , */
-    pub expression: Expression<'t>,
-    pub expression_list_rest: Box<ExpressionListRest<'t>>,
-}
-
-///
-/// Type derived for production 27
-///
-/// `ExpressionListRest: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ExpressionListRestExpressionListRestEmpty {}
-
-///
-/// Type derived for production 29
-///
-/// `ProcedureCallSuffix: ActualParameters;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureCallSuffixActualParameters<'t> {
-    pub actual_parameters: ActualParameters<'t>,
-}
-
-///
-/// Type derived for production 30
-///
-/// `ProcedureCallSuffix: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureCallSuffixProcedureCallSuffixEmpty {}
-
-///
-/// Type derived for production 32
-///
-/// `IfStatementSuffix: 'ELSE' StatementSequence 'END';`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct IfStatementSuffixELSEStatementSequenceEND<'t> {
-    pub e_l_s_e: Token<'t>, /* ELSE */
-    pub statement_sequence: Box<StatementSequence<'t>>,
-    pub e_n_d: Token<'t>, /* END */
-}
-
-///
-/// Type derived for production 33
-///
-/// `IfStatementSuffix: 'END';`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct IfStatementSuffixEND<'t> {
-    pub e_n_d: Token<'t>, /* END */
-}
-
-///
-/// Type derived for production 35
-///
-/// `ElseIfList: 'ELSIF' Expression 'THEN' StatementSequence ElseIfList;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t> {
-    pub e_l_s_i_f: Token<'t>, /* ELSIF */
-    pub expression: Expression<'t>,
-    pub t_h_e_n: Token<'t>, /* THEN */
-    pub statement_sequence: Box<StatementSequence<'t>>,
-    pub else_if_list: Box<ElseIfList<'t>>,
-}
-
-///
-/// Type derived for production 36
-///
-/// `ElseIfList: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ElseIfListElseIfListEmpty {}
-
-///
-/// Type derived for production 39
-///
-/// `Statement: Assignment;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct StatementAssignment<'t> {
-    pub assignment: Assignment<'t>,
-}
-
-///
-/// Type derived for production 40
-///
-/// `Statement: ProcedureCall;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct StatementProcedureCall<'t> {
-    pub procedure_call: ProcedureCall<'t>,
-}
-
-///
-/// Type derived for production 41
-///
-/// `Statement: IfStatement;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct StatementIfStatement<'t> {
-    pub if_statement: Box<IfStatement<'t>>,
-}
-
-///
-/// Type derived for production 42
-///
-/// `Statement: WhileStatement;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct StatementWhileStatement<'t> {
-    pub while_statement: Box<WhileStatement<'t>>,
-}
-
-///
-/// Type derived for production 43
-///
-/// `Statement: RepeatStatement;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct StatementRepeatStatement<'t> {
-    pub repeat_statement: Box<RepeatStatement<'t>>,
-}
-
-///
-/// Type derived for production 44
-///
-/// `Statement: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct StatementStatementEmpty {}
-
-///
-/// Type derived for production 46
-///
-/// `StatementSequenceRest: ';' Statement StatementSequenceRest;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct StatementSequenceRestSemicolonStatementStatementSequenceRest<'t> {
-    pub semicolon: Token<'t>, /* ; */
-    pub statement: Statement<'t>,
-    pub statement_sequence_rest: Box<StatementSequenceRest<'t>>,
-}
-
-///
-/// Type derived for production 47
-///
-/// `StatementSequenceRest: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct StatementSequenceRestStatementSequenceRestEmpty {}
-
-///
-/// Type derived for production 49
-///
-/// `IdentListRest: ',' Ident IdentListRest;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct IdentListRestCommaIdentIdentListRest<'t> {
-    pub comma: Token<'t>, /* , */
-    pub ident: Ident<'t>,
-    pub ident_list_rest: Box<IdentListRest<'t>>,
-}
-
-///
-/// Type derived for production 50
-///
-/// `IdentListRest: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct IdentListRestIdentListRestEmpty {}
-
-///
-/// Type derived for production 52
-///
-/// `FieldList: IdentList ':' Type;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FieldListIdentListColonType<'t> {
-    pub ident_list: IdentList<'t>,
-    pub colon: Token<'t>, /* : */
-    pub r#type: Box<Type<'t>>,
-}
-
-///
-/// Type derived for production 53
-///
-/// `FieldList: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FieldListFieldListEmpty {}
-
-///
-/// Type derived for production 55
-///
-/// `FieldListRest: ';' FieldList FieldListRest;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FieldListRestSemicolonFieldListFieldListRest<'t> {
-    pub semicolon: Token<'t>, /* ; */
-    pub field_list: FieldList<'t>,
-    pub field_list_rest: Box<FieldListRest<'t>>,
-}
-
-///
-/// Type derived for production 56
-///
-/// `FieldListRest: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FieldListRestFieldListRestEmpty {}
-
-///
-/// Type derived for production 57
-///
-/// `Type: Ident;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct TypeIdent<'t> {
-    pub ident: Ident<'t>,
-}
-
-///
-/// Type derived for production 58
-///
-/// `Type: ArrayType;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct TypeArrayType<'t> {
-    pub array_type: Box<ArrayType<'t>>,
-}
-
-///
-/// Type derived for production 59
-///
-/// `Type: RecordType;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct TypeRecordType<'t> {
-    pub record_type: RecordType<'t>,
-}
-
-///
-/// Type derived for production 60
 ///
 /// `FPSection: 'VAR' IdentList ':' Type;`
 ///
@@ -760,7 +287,7 @@ pub struct FPSectionVARIdentListColonType<'t> {
 }
 
 ///
-/// Type derived for production 61
+/// Type derived for production 27
 ///
 /// `FPSection: IdentList ':' Type;`
 ///
@@ -773,392 +300,300 @@ pub struct FPSectionIdentListColonType<'t> {
 }
 
 ///
-/// Type derived for production 63
+/// Type derived for production 47
 ///
-/// `FormalParametersSuffix: ')';`
+/// `Statement: Assignment;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct FormalParametersSuffixRParen<'t> {
+pub struct StatementAssignment<'t> {
+    pub assignment: Assignment<'t>,
+}
+
+///
+/// Type derived for production 48
+///
+/// `Statement: ProcedureCall;`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct StatementProcedureCall<'t> {
+    pub procedure_call: ProcedureCall<'t>,
+}
+
+///
+/// Type derived for production 49
+///
+/// `Statement: IfStatement;`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct StatementIfStatement<'t> {
+    pub if_statement: Box<IfStatement<'t>>,
+}
+
+///
+/// Type derived for production 50
+///
+/// `Statement: WhileStatement;`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct StatementWhileStatement<'t> {
+    pub while_statement: Box<WhileStatement<'t>>,
+}
+
+///
+/// Type derived for production 51
+///
+/// `Statement: RepeatStatement;`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct StatementRepeatStatement<'t> {
+    pub repeat_statement: Box<RepeatStatement<'t>>,
+}
+
+///
+/// Type derived for production 57
+///
+/// `ActualParametersSuffix: ')';`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct ActualParametersSuffixRParen<'t> {
     pub r_paren: Token<'t>, /* ) */
 }
 
 ///
-/// Type derived for production 64
+/// Type derived for production 58
 ///
-/// `FormalParametersSuffix: FPSection FPSectionRest ')';`
+/// `ActualParametersSuffix: Expression ExpressionListRest ')';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct FormalParametersSuffixFPSectionFPSectionRestRParen<'t> {
-    pub f_p_section: FPSection<'t>,
-    pub f_p_section_rest: FPSectionRest<'t>,
+pub struct ActualParametersSuffixExpressionExpressionListRestRParen<'t> {
+    pub expression: Expression<'t>,
+    pub expression_list_rest: ExpressionListRest<'t>,
     pub r_paren: Token<'t>, /* ) */
-}
-
-///
-/// Type derived for production 65
-///
-/// `FPSectionRest: ';' FPSection FPSectionRest;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FPSectionRestSemicolonFPSectionFPSectionRest<'t> {
-    pub semicolon: Token<'t>, /* ; */
-    pub f_p_section: FPSection<'t>,
-    pub f_p_section_rest: Box<FPSectionRest<'t>>,
-}
-
-///
-/// Type derived for production 66
-///
-/// `FPSectionRest: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FPSectionRestFPSectionRestEmpty {}
-
-///
-/// Type derived for production 68
-///
-/// `ProcedureHeadingSuffix: FormalParameters;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureHeadingSuffixFormalParameters<'t> {
-    pub formal_parameters: FormalParameters<'t>,
-}
-
-///
-/// Type derived for production 69
-///
-/// `ProcedureHeadingSuffix: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureHeadingSuffixProcedureHeadingSuffixEmpty {}
-
-///
-/// Type derived for production 71
-///
-/// `ProcedureBodySuffix0: 'BEGIN' StatementSequence ProcedureBodySuffix;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix<'t> {
-    pub b_e_g_i_n: Token<'t>, /* BEGIN */
-    pub statement_sequence: StatementSequence<'t>,
-    pub procedure_body_suffix: ProcedureBodySuffix<'t>,
-}
-
-///
-/// Type derived for production 72
-///
-/// `ProcedureBodySuffix0: 'RETURN' Expression 'END' Ident;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureBodySuffix0RETURNExpressionENDIdent<'t> {
-    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
-    pub expression: Expression<'t>,
-    pub e_n_d: Token<'t>, /* END */
-    pub ident: Ident<'t>,
-}
-
-///
-/// Type derived for production 73
-///
-/// `ProcedureBodySuffix0: 'END' Ident;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureBodySuffix0ENDIdent<'t> {
-    pub e_n_d: Token<'t>, /* END */
-    pub ident: Ident<'t>,
-}
-
-///
-/// Type derived for production 74
-///
-/// `ProcedureBodySuffix: 'RETURN' Expression 'END' Ident;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureBodySuffixRETURNExpressionENDIdent<'t> {
-    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
-    pub expression: Expression<'t>,
-    pub e_n_d: Token<'t>, /* END */
-    pub ident: Ident<'t>,
-}
-
-///
-/// Type derived for production 75
-///
-/// `ProcedureBodySuffix: 'END' Ident;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureBodySuffixENDIdent<'t> {
-    pub e_n_d: Token<'t>, /* END */
-    pub ident: Ident<'t>,
-}
-
-///
-/// Type derived for production 77
-///
-/// `Declarations: 'TYPE' TypeDecls DeclarationsSuffix1;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct DeclarationsTYPETypeDeclsDeclarationsSuffix1<'t> {
-    pub t_y_p_e: Token<'t>, /* TYPE */
-    pub type_decls: TypeDecls<'t>,
-    pub declarations_suffix1: Box<DeclarationsSuffix1<'t>>,
-}
-
-///
-/// Type derived for production 78
-///
-/// `Declarations: 'CONST' ConstDecls DeclarationsSuffix0;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct DeclarationsCONSTConstDeclsDeclarationsSuffix0<'t> {
-    pub c_o_n_s_t: Token<'t>, /* CONST */
-    pub const_decls: ConstDecls<'t>,
-    pub declarations_suffix0: Box<DeclarationsSuffix0<'t>>,
 }
 
 ///
 /// Type derived for production 79
 ///
-/// `DeclarationsSuffix1: 'VAR' VarDecls ProcedureDeclarationList;`
+/// `Factor: Ident Selector;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationsSuffix1VARVarDeclsProcedureDeclarationList<'t> {
-    pub v_a_r: Token<'t>, /* VAR */
-    pub var_decls: VarDecls<'t>,
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
+pub struct FactorIdentSelector<'t> {
+    pub ident: Ident<'t>,
+    pub selector: Box<Selector<'t>>,
 }
 
 ///
 /// Type derived for production 80
 ///
-/// `DeclarationsSuffix1: ProcedureDeclarationList;`
+/// `Factor: Integer;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationsSuffix1ProcedureDeclarationList<'t> {
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
+pub struct FactorInteger<'t> {
+    pub integer: Integer<'t>,
 }
 
 ///
 /// Type derived for production 81
 ///
-/// `Declarations: 'VAR' VarDecls ProcedureDeclarationList;`
+/// `Factor: '(' Expression ')';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationsVARVarDeclsProcedureDeclarationList<'t> {
-    pub v_a_r: Token<'t>, /* VAR */
-    pub var_decls: VarDecls<'t>,
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+pub struct FactorLParenExpressionRParen<'t> {
+    pub l_paren: Token<'t>, /* ( */
+    pub expression: Box<Expression<'t>>,
+    pub r_paren: Token<'t>, /* ) */
 }
 
 ///
 /// Type derived for production 82
 ///
-/// `Declarations: ProcedureDeclarationList;`
+/// `Factor: '~' Factor;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationsProcedureDeclarationList<'t> {
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
+pub struct FactorTildeFactor<'t> {
+    pub tilde: Token<'t>, /* ~ */
+    pub factor: Box<Factor<'t>>,
 }
 
 ///
 /// Type derived for production 83
 ///
-/// `DeclarationsSuffix0: 'TYPE' TypeDecls DeclarationsSuffix;`
+/// `Factor: UnaryOp Factor;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t> {
-    pub t_y_p_e: Token<'t>, /* TYPE */
-    pub type_decls: TypeDecls<'t>,
-    pub declarations_suffix: DeclarationsSuffix<'t>,
-}
-
-///
-/// Type derived for production 84
-///
-/// `DeclarationsSuffix0: 'VAR' VarDecls ProcedureDeclarationList;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct DeclarationsSuffix0VARVarDeclsProcedureDeclarationList<'t> {
-    pub v_a_r: Token<'t>, /* VAR */
-    pub var_decls: VarDecls<'t>,
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
+pub struct FactorUnaryOpFactor<'t> {
+    pub unary_op: UnaryOp<'t>,
+    pub factor: Box<Factor<'t>>,
 }
 
 ///
 /// Type derived for production 85
 ///
-/// `DeclarationsSuffix0: ProcedureDeclarationList;`
+/// `SelectorList: '.' Ident SelectorList;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationsSuffix0ProcedureDeclarationList<'t> {
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
+pub struct SelectorListDotIdentSelectorList<'t> {
+    pub dot: Token<'t>, /* . */
+    pub ident: Ident<'t>,
+    pub selector_list: Box<SelectorList<'t>>,
 }
 
 ///
 /// Type derived for production 86
 ///
-/// `DeclarationsSuffix: 'VAR' VarDecls ProcedureDeclarationList;`
+/// `SelectorList: '[' Expression ']' SelectorList;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationsSuffixVARVarDeclsProcedureDeclarationList<'t> {
-    pub v_a_r: Token<'t>, /* VAR */
-    pub var_decls: VarDecls<'t>,
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
+pub struct SelectorListLBracketExpressionRBracketSelectorList<'t> {
+    pub l_bracket: Token<'t>, /* [ */
+    pub expression: Expression<'t>,
+    pub r_bracket: Token<'t>, /* ] */
+    pub selector_list: Box<SelectorList<'t>>,
 }
 
 ///
 /// Type derived for production 87
 ///
-/// `DeclarationsSuffix: ProcedureDeclarationList;`
+/// `SelectorList: ;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct DeclarationsSuffixProcedureDeclarationList<'t> {
-    pub procedure_declaration_list: ProcedureDeclarationList<'t>,
-}
-
-///
-/// Type derived for production 88
-///
-/// `ProcedureDeclarationList: ProcedureDeclaration ';' ProcedureDeclarationList;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclarationList<'t> {
-    pub procedure_declaration: ProcedureDeclaration<'t>,
-    pub semicolon: Token<'t>, /* ; */
-    pub procedure_declaration_list: Box<ProcedureDeclarationList<'t>>,
-}
+pub struct SelectorListSelectorListEmpty {}
 
 ///
 /// Type derived for production 89
 ///
-/// `ProcedureDeclarationList: ;`
+/// `RelationOp: '>=';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct ProcedureDeclarationListProcedureDeclarationListEmpty {}
+pub struct RelationOpGTEqu<'t> {
+    pub g_t_equ: Token<'t>, /* >= */
+}
 
 ///
 /// Type derived for production 90
 ///
-/// `ConstDecls: Ident AssignOp Expression ';' ConstDecls;`
+/// `RelationOp: '<=';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct ConstDeclsIdentAssignOpExpressionSemicolonConstDecls<'t> {
-    pub ident: Ident<'t>,
-    pub assign_op: AssignOp<'t>,
-    pub expression: Expression<'t>,
-    pub semicolon: Token<'t>, /* ; */
-    pub const_decls: Box<ConstDecls<'t>>,
+pub struct RelationOpLTEqu<'t> {
+    pub l_t_equ: Token<'t>, /* <= */
 }
 
 ///
 /// Type derived for production 91
 ///
-/// `ConstDecls: ;`
+/// `RelationOp: '=';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct ConstDeclsConstDeclsEmpty {}
+pub struct RelationOpEqu<'t> {
+    pub equ: Token<'t>, /* = */
+}
 
 ///
 /// Type derived for production 92
 ///
-/// `TypeDecls: Ident AssignOp Type ';' TypeDecls;`
+/// `RelationOp: '#';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct TypeDeclsIdentAssignOpTypeSemicolonTypeDecls<'t> {
-    pub ident: Ident<'t>,
-    pub assign_op: AssignOp<'t>,
-    pub r#type: Type<'t>,
-    pub semicolon: Token<'t>, /* ; */
-    pub type_decls: Box<TypeDecls<'t>>,
+pub struct RelationOpHash<'t> {
+    pub hash: Token<'t>, /* # */
 }
 
 ///
 /// Type derived for production 93
 ///
-/// `TypeDecls: ;`
+/// `RelationOp: '<';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct TypeDeclsTypeDeclsEmpty {}
+pub struct RelationOpLT<'t> {
+    pub l_t: Token<'t>, /* < */
+}
 
 ///
 /// Type derived for production 94
 ///
-/// `VarDecls: IdentList ':' Type ';' VarDecls;`
+/// `RelationOp: '>';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct VarDeclsIdentListColonTypeSemicolonVarDecls<'t> {
-    pub ident_list: IdentList<'t>,
-    pub colon: Token<'t>, /* : */
-    pub r#type: Type<'t>,
-    pub semicolon: Token<'t>, /* ; */
-    pub var_decls: Box<VarDecls<'t>>,
-}
-
-///
-/// Type derived for production 95
-///
-/// `VarDecls: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct VarDeclsVarDeclsEmpty {}
-
-///
-/// Type derived for production 97
-///
-/// `ModuleSuffix: 'BEGIN' StatementSequence 'END' Ident '\.';`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ModuleSuffixBEGINStatementSequenceENDIdentDot<'t> {
-    pub b_e_g_i_n: Token<'t>, /* BEGIN */
-    pub statement_sequence: StatementSequence<'t>,
-    pub e_n_d: Token<'t>, /* END */
-    pub ident: Ident<'t>,
-    pub dot: Token<'t>, /* \. */
+pub struct RelationOpGT<'t> {
+    pub g_t: Token<'t>, /* > */
 }
 
 ///
 /// Type derived for production 98
 ///
-/// `ModuleSuffix: 'END' Ident '\.';`
+/// `Type: Ident;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct ModuleSuffixENDIdentDot<'t> {
-    pub e_n_d: Token<'t>, /* END */
+pub struct TypeIdent<'t> {
     pub ident: Ident<'t>,
-    pub dot: Token<'t>, /* \. */
 }
+
+///
+/// Type derived for production 99
+///
+/// `Type: ArrayType;`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct TypeArrayType<'t> {
+    pub array_type: Box<ArrayType<'t>>,
+}
+
+///
+/// Type derived for production 100
+///
+/// `Type: RecordType;`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct TypeRecordType<'t> {
+    pub record_type: RecordType<'t>,
+}
+
+///
+/// Type derived for production 106
+///
+/// `FieldListRest: ';' FieldList FieldListRest;`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct FieldListRestSemicolonFieldListFieldListRest<'t> {
+    pub semicolon: Token<'t>, /* ; */
+    pub field_list: FieldList<'t>,
+    pub field_list_rest: Box<FieldListRest<'t>>,
+}
+
+///
+/// Type derived for production 107
+///
+/// `FieldListRest: ;`
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct FieldListRestFieldListRestEmpty {}
 
 // -------------------------------------------------------------------------------------------------
 //
@@ -1185,16 +620,6 @@ pub enum ActualParametersSuffix<'t> {
     ExpressionExpressionListRestRParen(
         ActualParametersSuffixExpressionExpressionListRestRParen<'t>,
     ),
-}
-
-///
-/// Type derived for non-terminal AddExpression
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum AddExpression<'t> {
-    AddOperatorTermAddExpression(AddExpressionAddOperatorTermAddExpression<'t>),
-    AddExpressionEmpty(AddExpressionAddExpressionEmpty),
 }
 
 ///
@@ -1244,11 +669,39 @@ pub struct Assignment<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ConstDecls<'t> {
-    IdentAssignOpExpressionSemicolonConstDecls(
-        ConstDeclsIdentAssignOpExpressionSemicolonConstDecls<'t>,
-    ),
-    ConstDeclsEmpty(ConstDeclsConstDeclsEmpty),
+pub struct ConstDecls<'t> {
+    pub const_decls_list: Vec<ConstDeclsList<'t>>,
+}
+
+///
+/// Type derived for non-terminal ConstDeclsList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct ConstDeclsList<'t> {
+    pub ident: Ident<'t>,
+    pub equ: Token<'t>, /* = */
+    pub expression: Expression<'t>,
+    pub semicolon: Token<'t>, /* ; */
+}
+
+///
+/// Type derived for non-terminal ConstPart
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct ConstPart<'t> {
+    pub const_part_opt: Option<ConstPartOpt<'t>>,
+}
+
+///
+/// Type derived for non-terminal ConstPartOpt
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct ConstPartOpt<'t> {
+    pub c_o_n_s_t: Token<'t>, /* CONST */
+    pub const_decls: ConstDecls<'t>,
 }
 
 ///
@@ -1256,42 +709,11 @@ pub enum ConstDecls<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum Declarations<'t> {
-    TYPETypeDeclsDeclarationsSuffix1(DeclarationsTYPETypeDeclsDeclarationsSuffix1<'t>),
-    CONSTConstDeclsDeclarationsSuffix0(DeclarationsCONSTConstDeclsDeclarationsSuffix0<'t>),
-    VARVarDeclsProcedureDeclarationList(DeclarationsVARVarDeclsProcedureDeclarationList<'t>),
-    ProcedureDeclarationList(DeclarationsProcedureDeclarationList<'t>),
-}
-
-///
-/// Type derived for non-terminal DeclarationsSuffix
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum DeclarationsSuffix<'t> {
-    VARVarDeclsProcedureDeclarationList(DeclarationsSuffixVARVarDeclsProcedureDeclarationList<'t>),
-    ProcedureDeclarationList(DeclarationsSuffixProcedureDeclarationList<'t>),
-}
-
-///
-/// Type derived for non-terminal DeclarationsSuffix0
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum DeclarationsSuffix0<'t> {
-    TYPETypeDeclsDeclarationsSuffix(DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix<'t>),
-    VARVarDeclsProcedureDeclarationList(DeclarationsSuffix0VARVarDeclsProcedureDeclarationList<'t>),
-    ProcedureDeclarationList(DeclarationsSuffix0ProcedureDeclarationList<'t>),
-}
-
-///
-/// Type derived for non-terminal DeclarationsSuffix1
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum DeclarationsSuffix1<'t> {
-    VARVarDeclsProcedureDeclarationList(DeclarationsSuffix1VARVarDeclsProcedureDeclarationList<'t>),
-    ProcedureDeclarationList(DeclarationsSuffix1ProcedureDeclarationList<'t>),
+pub struct Declarations<'t> {
+    pub const_part: ConstPart<'t>,
+    pub type_part: TypePart<'t>,
+    pub var_part: VarPart<'t>,
+    pub procedure_part: ProcedurePart<'t>,
 }
 
 ///
@@ -1299,11 +721,20 @@ pub enum DeclarationsSuffix1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ElseIfList<'t> {
-    ELSIFExpressionTHENStatementSequenceElseIfList(
-        ElseIfListELSIFExpressionTHENStatementSequenceElseIfList<'t>,
-    ),
-    ElseIfListEmpty(ElseIfListElseIfListEmpty),
+pub struct ElseIfList<'t> {
+    pub else_if_list_list: Vec<ElseIfListList<'t>>,
+}
+
+///
+/// Type derived for non-terminal ElseIfListList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct ElseIfListList<'t> {
+    pub e_l_s_i_f: Token<'t>, /* ELSIF */
+    pub expression: Expression<'t>,
+    pub t_h_e_n: Token<'t>, /* THEN */
+    pub statement_sequence: StatementSequence<'t>,
 }
 
 ///
@@ -1313,7 +744,7 @@ pub enum ElseIfList<'t> {
 #[derive(Debug, Clone)]
 pub struct Expression<'t> {
     pub simple_expression: SimpleExpression<'t>,
-    pub expression_suffix: ExpressionSuffix<'t>,
+    pub expression_opt: Option<ExpressionOpt<'t>>,
 }
 
 ///
@@ -1321,19 +752,28 @@ pub struct Expression<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ExpressionListRest<'t> {
-    CommaExpressionExpressionListRest(ExpressionListRestCommaExpressionExpressionListRest<'t>),
-    ExpressionListRestEmpty(ExpressionListRestExpressionListRestEmpty),
+pub struct ExpressionListRest<'t> {
+    pub expression_list_rest_list: Vec<ExpressionListRestList<'t>>,
 }
 
 ///
-/// Type derived for non-terminal ExpressionSuffix
+/// Type derived for non-terminal ExpressionListRestList
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ExpressionSuffix<'t> {
-    RelationOpSimpleExpression(ExpressionSuffixRelationOpSimpleExpression<'t>),
-    ExpressionSuffixEmpty(ExpressionSuffixExpressionSuffixEmpty),
+pub struct ExpressionListRestList<'t> {
+    pub comma: Token<'t>, /* , */
+    pub expression: Expression<'t>,
+}
+
+///
+/// Type derived for non-terminal ExpressionOpt
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct ExpressionOpt<'t> {
+    pub relation_op: RelationOp<'t>,
+    pub simple_expression: SimpleExpression<'t>,
 }
 
 ///
@@ -1351,9 +791,18 @@ pub enum FPSection<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum FPSectionRest<'t> {
-    SemicolonFPSectionFPSectionRest(FPSectionRestSemicolonFPSectionFPSectionRest<'t>),
-    FPSectionRestEmpty(FPSectionRestFPSectionRestEmpty),
+pub struct FPSectionRest<'t> {
+    pub f_p_section_rest_list: Vec<FPSectionRestList<'t>>,
+}
+
+///
+/// Type derived for non-terminal FPSectionRestList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct FPSectionRestList<'t> {
+    pub semicolon: Token<'t>, /* ; */
+    pub f_p_section: FPSection<'t>,
 }
 
 ///
@@ -1374,9 +823,19 @@ pub enum Factor<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum FieldList<'t> {
-    IdentListColonType(FieldListIdentListColonType<'t>),
-    FieldListEmpty(FieldListFieldListEmpty),
+pub struct FieldList<'t> {
+    pub field_list_list: Vec<FieldListList<'t>>,
+}
+
+///
+/// Type derived for non-terminal FieldListList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct FieldListList<'t> {
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Type<'t>,
 }
 
 ///
@@ -1425,30 +884,17 @@ pub struct Ident<'t> {
 #[derive(Debug, Clone)]
 pub struct IdentList<'t> {
     pub ident: Ident<'t>,
-    pub ident_list_rest: IdentListRest<'t>,
+    pub ident_list_list: Vec<IdentListList<'t>>,
 }
 
 ///
-/// Type derived for non-terminal IdentListRest
+/// Type derived for non-terminal IdentListList
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum IdentListRest<'t> {
-    CommaIdentIdentListRest(IdentListRestCommaIdentIdentListRest<'t>),
-    IdentListRestEmpty(IdentListRestIdentListRestEmpty),
-}
-
-///
-/// Type derived for non-terminal IfPrefix
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct IfPrefix<'t> {
-    pub i_f: Token<'t>, /* IF */
-    pub expression: Expression<'t>,
-    pub t_h_e_n: Token<'t>, /* THEN */
-    pub statement_sequence: StatementSequence<'t>,
-    pub else_if_list: ElseIfList<'t>,
+pub struct IdentListList<'t> {
+    pub comma: Token<'t>, /* , */
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -1457,18 +903,23 @@ pub struct IfPrefix<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct IfStatement<'t> {
-    pub if_prefix: IfPrefix<'t>,
-    pub if_statement_suffix: IfStatementSuffix<'t>,
+    pub i_f: Token<'t>, /* IF */
+    pub expression: Expression<'t>,
+    pub t_h_e_n: Token<'t>, /* THEN */
+    pub statement_sequence: StatementSequence<'t>,
+    pub else_if_list: ElseIfList<'t>,
+    pub if_statement_opt: Option<IfStatementOpt<'t>>,
+    pub e_n_d: Token<'t>, /* END */
 }
 
 ///
-/// Type derived for non-terminal IfStatementSuffix
+/// Type derived for non-terminal IfStatementOpt
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum IfStatementSuffix<'t> {
-    ELSEStatementSequenceEND(IfStatementSuffixELSEStatementSequenceEND<'t>),
-    END(IfStatementSuffixEND<'t>),
+pub struct IfStatementOpt<'t> {
+    pub e_l_s_e: Token<'t>, /* ELSE */
+    pub statement_sequence: StatementSequence<'t>,
 }
 
 ///
@@ -1490,27 +941,20 @@ pub struct Module<'t> {
     pub ident: Ident<'t>,
     pub semicolon: Token<'t>, /* ; */
     pub declarations: Declarations<'t>,
-    pub module_suffix: ModuleSuffix<'t>,
+    pub module_opt: Option<ModuleOpt<'t>>,
+    pub e_n_d: Token<'t>, /* END */
+    pub ident0: Ident<'t>,
+    pub dot: Token<'t>, /* . */
 }
 
 ///
-/// Type derived for non-terminal ModuleSuffix
+/// Type derived for non-terminal ModuleOpt
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ModuleSuffix<'t> {
-    BEGINStatementSequenceENDIdentDot(ModuleSuffixBEGINStatementSequenceENDIdentDot<'t>),
-    ENDIdentDot(ModuleSuffixENDIdentDot<'t>),
-}
-
-///
-/// Type derived for non-terminal MulExpression
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum MulExpression<'t> {
-    MulOperatorFactorMulExpression(MulExpressionMulOperatorFactorMulExpression<'t>),
-    MulExpressionEmpty(MulExpressionMulExpressionEmpty),
+pub struct ModuleOpt<'t> {
+    pub b_e_g_i_n: Token<'t>, /* BEGIN */
+    pub statement_sequence: StatementSequence<'t>,
 }
 
 ///
@@ -1529,30 +973,30 @@ pub struct MulOperator<'t> {
 #[derive(Debug, Clone)]
 pub struct ProcedureBody<'t> {
     pub declarations: Declarations<'t>,
-    pub procedure_body_suffix0: ProcedureBodySuffix0<'t>,
+    pub procedure_body_opt: Option<ProcedureBodyOpt<'t>>,
+    pub procedure_body_opt0: Option<ProcedureBodyOpt0<'t>>,
+    pub e_n_d: Token<'t>, /* END */
+    pub ident: Ident<'t>,
 }
 
 ///
-/// Type derived for non-terminal ProcedureBodySuffix
+/// Type derived for non-terminal ProcedureBodyOpt
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ProcedureBodySuffix<'t> {
-    RETURNExpressionENDIdent(ProcedureBodySuffixRETURNExpressionENDIdent<'t>),
-    ENDIdent(ProcedureBodySuffixENDIdent<'t>),
+pub struct ProcedureBodyOpt<'t> {
+    pub b_e_g_i_n: Token<'t>, /* BEGIN */
+    pub statement_sequence: StatementSequence<'t>,
 }
 
 ///
-/// Type derived for non-terminal ProcedureBodySuffix0
+/// Type derived for non-terminal ProcedureBodyOpt0
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ProcedureBodySuffix0<'t> {
-    BEGINStatementSequenceProcedureBodySuffix(
-        ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix<'t>,
-    ),
-    RETURNExpressionENDIdent(ProcedureBodySuffix0RETURNExpressionENDIdent<'t>),
-    ENDIdent(ProcedureBodySuffix0ENDIdent<'t>),
+pub struct ProcedureBodyOpt0<'t> {
+    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
+    pub expression: Expression<'t>,
 }
 
 ///
@@ -1562,17 +1006,16 @@ pub enum ProcedureBodySuffix0<'t> {
 #[derive(Debug, Clone)]
 pub struct ProcedureCall<'t> {
     pub ident: Ident<'t>,
-    pub procedure_call_suffix: ProcedureCallSuffix<'t>,
+    pub procedure_call_opt: Option<ProcedureCallOpt<'t>>,
 }
 
 ///
-/// Type derived for non-terminal ProcedureCallSuffix
+/// Type derived for non-terminal ProcedureCallOpt
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ProcedureCallSuffix<'t> {
-    ActualParameters(ProcedureCallSuffixActualParameters<'t>),
-    ProcedureCallSuffixEmpty(ProcedureCallSuffixProcedureCallSuffixEmpty),
+pub struct ProcedureCallOpt<'t> {
+    pub actual_parameters: ActualParameters<'t>,
 }
 
 ///
@@ -1587,18 +1030,6 @@ pub struct ProcedureDeclaration<'t> {
 }
 
 ///
-/// Type derived for non-terminal ProcedureDeclarationList
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum ProcedureDeclarationList<'t> {
-    ProcedureDeclarationSemicolonProcedureDeclarationList(
-        ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclarationList<'t>,
-    ),
-    ProcedureDeclarationListEmpty(ProcedureDeclarationListProcedureDeclarationListEmpty),
-}
-
-///
 /// Type derived for non-terminal ProcedureHeading
 ///
 #[allow(dead_code)]
@@ -1606,17 +1037,35 @@ pub enum ProcedureDeclarationList<'t> {
 pub struct ProcedureHeading<'t> {
     pub p_r_o_c_e_d_u_r_e: Token<'t>, /* PROCEDURE */
     pub ident: Ident<'t>,
-    pub procedure_heading_suffix: ProcedureHeadingSuffix<'t>,
+    pub procedure_heading_opt: Option<ProcedureHeadingOpt<'t>>,
 }
 
 ///
-/// Type derived for non-terminal ProcedureHeadingSuffix
+/// Type derived for non-terminal ProcedureHeadingOpt
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ProcedureHeadingSuffix<'t> {
-    FormalParameters(ProcedureHeadingSuffixFormalParameters<'t>),
-    ProcedureHeadingSuffixEmpty(ProcedureHeadingSuffixProcedureHeadingSuffixEmpty),
+pub struct ProcedureHeadingOpt<'t> {
+    pub formal_parameters: FormalParameters<'t>,
+}
+
+///
+/// Type derived for non-terminal ProcedurePart
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct ProcedurePart<'t> {
+    pub procedure_part_list: Vec<ProcedurePartList<'t>>,
+}
+
+///
+/// Type derived for non-terminal ProcedurePartList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct ProcedurePartList<'t> {
+    pub procedure_declaration: ProcedureDeclaration<'t>,
+    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -1637,17 +1086,12 @@ pub struct RecordType<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum RelationOp<'t> {
-    AssignOp(RelationOpAssignOp<'t>),
-    RelationalOps(RelationOpRelationalOps<'t>),
-}
-
-///
-/// Type derived for non-terminal RelationalOps
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct RelationalOps<'t> {
-    pub relational_ops: Token<'t>, /* >=|<=|\#|<|> */
+    GTEqu(RelationOpGTEqu<'t>),
+    LTEqu(RelationOpLTEqu<'t>),
+    Equ(RelationOpEqu<'t>),
+    Hash(RelationOpHash<'t>),
+    LT(RelationOpLT<'t>),
+    GT(RelationOpGT<'t>),
 }
 
 ///
@@ -1689,7 +1133,17 @@ pub enum SelectorList<'t> {
 #[derive(Debug, Clone)]
 pub struct SimpleExpression<'t> {
     pub term: Term<'t>,
-    pub add_expression: AddExpression<'t>,
+    pub simple_expression_list: Vec<SimpleExpressionList<'t>>,
+}
+
+///
+/// Type derived for non-terminal SimpleExpressionList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct SimpleExpressionList<'t> {
+    pub add_operator: AddOperator<'t>,
+    pub term: Term<'t>,
 }
 
 ///
@@ -1703,7 +1157,6 @@ pub enum Statement<'t> {
     IfStatement(StatementIfStatement<'t>),
     WhileStatement(StatementWhileStatement<'t>),
     RepeatStatement(StatementRepeatStatement<'t>),
-    StatementEmpty(StatementStatementEmpty),
 }
 
 ///
@@ -1712,20 +1165,27 @@ pub enum Statement<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct StatementSequence<'t> {
-    pub statement: Statement<'t>,
-    pub statement_sequence_rest: StatementSequenceRest<'t>,
+    pub statement_sequence_opt: Option<StatementSequenceOpt<'t>>,
+    pub statement_sequence_list: Vec<StatementSequenceList<'t>>,
 }
 
 ///
-/// Type derived for non-terminal StatementSequenceRest
+/// Type derived for non-terminal StatementSequenceList
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum StatementSequenceRest<'t> {
-    SemicolonStatementStatementSequenceRest(
-        StatementSequenceRestSemicolonStatementStatementSequenceRest<'t>,
-    ),
-    StatementSequenceRestEmpty(StatementSequenceRestStatementSequenceRestEmpty),
+pub struct StatementSequenceList<'t> {
+    pub semicolon: Token<'t>, /* ; */
+    pub statement: Statement<'t>,
+}
+
+///
+/// Type derived for non-terminal StatementSequenceOpt
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct StatementSequenceOpt<'t> {
+    pub statement: Statement<'t>,
 }
 
 ///
@@ -1735,7 +1195,17 @@ pub enum StatementSequenceRest<'t> {
 #[derive(Debug, Clone)]
 pub struct Term<'t> {
     pub factor: Factor<'t>,
-    pub mul_expression: MulExpression<'t>,
+    pub term_list: Vec<TermList<'t>>,
+}
+
+///
+/// Type derived for non-terminal TermList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct TermList<'t> {
+    pub mul_operator: MulOperator<'t>,
+    pub factor: Factor<'t>,
 }
 
 ///
@@ -1754,9 +1224,39 @@ pub enum Type<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum TypeDecls<'t> {
-    IdentAssignOpTypeSemicolonTypeDecls(TypeDeclsIdentAssignOpTypeSemicolonTypeDecls<'t>),
-    TypeDeclsEmpty(TypeDeclsTypeDeclsEmpty),
+pub struct TypeDecls<'t> {
+    pub type_decls_list: Vec<TypeDeclsList<'t>>,
+}
+
+///
+/// Type derived for non-terminal TypeDeclsList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct TypeDeclsList<'t> {
+    pub ident: Ident<'t>,
+    pub equ: Token<'t>, /* = */
+    pub r#type: Type<'t>,
+    pub semicolon: Token<'t>, /* ; */
+}
+
+///
+/// Type derived for non-terminal TypePart
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct TypePart<'t> {
+    pub type_part_opt: Option<TypePartOpt<'t>>,
+}
+
+///
+/// Type derived for non-terminal TypePartOpt
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct TypePartOpt<'t> {
+    pub t_y_p_e: Token<'t>, /* TYPE */
+    pub type_decls: TypeDecls<'t>,
 }
 
 ///
@@ -1773,9 +1273,39 @@ pub struct UnaryOp<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum VarDecls<'t> {
-    IdentListColonTypeSemicolonVarDecls(VarDeclsIdentListColonTypeSemicolonVarDecls<'t>),
-    VarDeclsEmpty(VarDeclsVarDeclsEmpty),
+pub struct VarDecls<'t> {
+    pub var_decls_list: Vec<VarDeclsList<'t>>,
+}
+
+///
+/// Type derived for non-terminal VarDeclsList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct VarDeclsList<'t> {
+    pub ident_list: IdentList<'t>,
+    pub colon: Token<'t>, /* : */
+    pub r#type: Type<'t>,
+    pub semicolon: Token<'t>, /* ; */
+}
+
+///
+/// Type derived for non-terminal VarPart
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct VarPart<'t> {
+    pub var_part_opt: Option<VarPartOpt<'t>>,
+}
+
+///
+/// Type derived for non-terminal VarPartOpt
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct VarPartOpt<'t> {
+    pub v_a_r: Token<'t>, /* VAR */
+    pub var_decls: VarDecls<'t>,
 }
 
 ///
@@ -1801,62 +1331,72 @@ pub struct WhileStatement<'t> {
 pub enum ASTType<'t> {
     ActualParameters(ActualParameters<'t>),
     ActualParametersSuffix(ActualParametersSuffix<'t>),
-    AddExpression(AddExpression<'t>),
     AddOperator(AddOperator<'t>),
     ArrayType(ArrayType<'t>),
     AssignOp(AssignOp<'t>),
     Assignment(Assignment<'t>),
     ConstDecls(ConstDecls<'t>),
+    ConstDeclsList(Vec<ConstDeclsList<'t>>),
+    ConstPart(ConstPart<'t>),
+    ConstPartOpt(Option<ConstPartOpt<'t>>),
     Declarations(Declarations<'t>),
-    DeclarationsSuffix(DeclarationsSuffix<'t>),
-    DeclarationsSuffix0(DeclarationsSuffix0<'t>),
-    DeclarationsSuffix1(DeclarationsSuffix1<'t>),
     ElseIfList(ElseIfList<'t>),
+    ElseIfListList(Vec<ElseIfListList<'t>>),
     Expression(Expression<'t>),
     ExpressionListRest(ExpressionListRest<'t>),
-    ExpressionSuffix(ExpressionSuffix<'t>),
+    ExpressionListRestList(Vec<ExpressionListRestList<'t>>),
+    ExpressionOpt(Option<ExpressionOpt<'t>>),
     FPSection(FPSection<'t>),
     FPSectionRest(FPSectionRest<'t>),
+    FPSectionRestList(Vec<FPSectionRestList<'t>>),
     Factor(Factor<'t>),
     FieldList(FieldList<'t>),
+    FieldListList(Vec<FieldListList<'t>>),
     FieldListRest(FieldListRest<'t>),
     FormalParameters(FormalParameters<'t>),
     FormalParametersSuffix(FormalParametersSuffix<'t>),
     Ident(Ident<'t>),
     IdentList(IdentList<'t>),
-    IdentListRest(IdentListRest<'t>),
-    IfPrefix(IfPrefix<'t>),
+    IdentListList(Vec<IdentListList<'t>>),
     IfStatement(IfStatement<'t>),
-    IfStatementSuffix(IfStatementSuffix<'t>),
+    IfStatementOpt(Option<IfStatementOpt<'t>>),
     Integer(Integer<'t>),
     Module(Module<'t>),
-    ModuleSuffix(ModuleSuffix<'t>),
-    MulExpression(MulExpression<'t>),
+    ModuleOpt(Option<ModuleOpt<'t>>),
     MulOperator(MulOperator<'t>),
     ProcedureBody(ProcedureBody<'t>),
-    ProcedureBodySuffix(ProcedureBodySuffix<'t>),
-    ProcedureBodySuffix0(ProcedureBodySuffix0<'t>),
+    ProcedureBodyOpt(Option<ProcedureBodyOpt<'t>>),
+    ProcedureBodyOpt0(Option<ProcedureBodyOpt0<'t>>),
     ProcedureCall(ProcedureCall<'t>),
-    ProcedureCallSuffix(ProcedureCallSuffix<'t>),
+    ProcedureCallOpt(Option<ProcedureCallOpt<'t>>),
     ProcedureDeclaration(ProcedureDeclaration<'t>),
-    ProcedureDeclarationList(ProcedureDeclarationList<'t>),
     ProcedureHeading(ProcedureHeading<'t>),
-    ProcedureHeadingSuffix(ProcedureHeadingSuffix<'t>),
+    ProcedureHeadingOpt(Option<ProcedureHeadingOpt<'t>>),
+    ProcedurePart(ProcedurePart<'t>),
+    ProcedurePartList(Vec<ProcedurePartList<'t>>),
     RecordType(RecordType<'t>),
     RelationOp(RelationOp<'t>),
-    RelationalOps(RelationalOps<'t>),
     RepeatStatement(RepeatStatement<'t>),
     Selector(Selector<'t>),
     SelectorList(SelectorList<'t>),
     SimpleExpression(SimpleExpression<'t>),
+    SimpleExpressionList(Vec<SimpleExpressionList<'t>>),
     Statement(Statement<'t>),
     StatementSequence(StatementSequence<'t>),
-    StatementSequenceRest(StatementSequenceRest<'t>),
+    StatementSequenceList(Vec<StatementSequenceList<'t>>),
+    StatementSequenceOpt(Option<StatementSequenceOpt<'t>>),
     Term(Term<'t>),
+    TermList(Vec<TermList<'t>>),
     Type(Type<'t>),
     TypeDecls(TypeDecls<'t>),
+    TypeDeclsList(Vec<TypeDeclsList<'t>>),
+    TypePart(TypePart<'t>),
+    TypePartOpt(Option<TypePartOpt<'t>>),
     UnaryOp(UnaryOp<'t>),
     VarDecls(VarDecls<'t>),
+    VarDeclsList(Vec<VarDeclsList<'t>>),
+    VarPart(VarPart<'t>),
+    VarPartOpt(Option<VarPartOpt<'t>>),
     WhileStatement(WhileStatement<'t>),
 }
 
@@ -1923,484 +1463,1106 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// `Selector: SelectorList;`
+    /// `Module: 'MODULE' Ident ';' Declarations ModuleOpt /* Option */ 'END' Ident '.';`
     ///
     #[parol_runtime::function_name::named]
-    fn selector(&mut self, _selector_list: &ParseTreeType<'t>) -> Result<()> {
+    fn module(
+        &mut self,
+        m_o_d_u_l_e: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _declarations: &ParseTreeType<'t>,
+        _module_opt: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
+        _ident0: &ParseTreeType<'t>,
+        dot: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let selector_list = pop_item!(self, selector_list, SelectorList, context);
-        let selector_built = Selector { selector_list };
+        let m_o_d_u_l_e = m_o_d_u_l_e.token()?.clone();
+        let semicolon = semicolon.token()?.clone();
+        let e_n_d = e_n_d.token()?.clone();
+        let dot = dot.token()?.clone();
+        let ident0 = pop_item!(self, ident0, Ident, context);
+        let module_opt = pop_item!(self, module_opt, ModuleOpt, context);
+        let declarations = pop_item!(self, declarations, Declarations, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let module_built = Module {
+            m_o_d_u_l_e,
+            ident,
+            semicolon,
+            declarations,
+            module_opt,
+            e_n_d,
+            ident0,
+            dot,
+        };
         // Calling user action here
-        self.user_grammar.selector(&selector_built)?;
-        self.push(ASTType::Selector(selector_built), context);
+        self.user_grammar.module(&module_built)?;
+        self.push(ASTType::Module(module_built), context);
         Ok(())
     }
 
     /// Semantic action for production 1:
     ///
-    /// `SelectorList: "\." Ident SelectorList;`
+    /// `ModuleOpt /* Option<T>::Some */: 'BEGIN' StatementSequence;`
     ///
     #[parol_runtime::function_name::named]
-    fn selector_list_0(
+    fn module_opt_0(
         &mut self,
-        dot: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
-        _selector_list: &ParseTreeType<'t>,
+        b_e_g_i_n: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let dot = dot.token()?.clone();
-        let selector_list = pop_item!(self, selector_list, SelectorList, context);
-        let ident = pop_item!(self, ident, Ident, context);
-        let selector_list_0_built = SelectorListDotIdentSelectorList {
-            dot,
-            ident,
-            selector_list: Box::new(selector_list),
+        let b_e_g_i_n = b_e_g_i_n.token()?.clone();
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let module_opt_0_built = ModuleOpt {
+            b_e_g_i_n,
+            statement_sequence,
         };
-        let selector_list_0_built = SelectorList::DotIdentSelectorList(selector_list_0_built);
-        // Calling user action here
-        self.user_grammar.selector_list(&selector_list_0_built)?;
-        self.push(ASTType::SelectorList(selector_list_0_built), context);
+        self.push(ASTType::ModuleOpt(Some(module_opt_0_built)), context);
         Ok(())
     }
 
     /// Semantic action for production 2:
     ///
-    /// `SelectorList: "\[" Expression "]" SelectorList;`
+    /// `ModuleOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn selector_list_1(
-        &mut self,
-        l_bracket: &ParseTreeType<'t>,
-        _expression: &ParseTreeType<'t>,
-        r_bracket: &ParseTreeType<'t>,
-        _selector_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn module_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_bracket = l_bracket.token()?.clone();
-        let r_bracket = r_bracket.token()?.clone();
-        let selector_list = pop_item!(self, selector_list, SelectorList, context);
-        let expression = pop_item!(self, expression, Expression, context);
-        let selector_list_1_built = SelectorListLBracketExpressionRBracketSelectorList {
-            l_bracket,
-            expression: Box::new(expression),
-            r_bracket,
-            selector_list: Box::new(selector_list),
-        };
-        let selector_list_1_built =
-            SelectorList::LBracketExpressionRBracketSelectorList(selector_list_1_built);
-        // Calling user action here
-        self.user_grammar.selector_list(&selector_list_1_built)?;
-        self.push(ASTType::SelectorList(selector_list_1_built), context);
+        self.push(ASTType::ModuleOpt(None), context);
         Ok(())
     }
 
     /// Semantic action for production 3:
     ///
-    /// `SelectorList: ;`
+    /// `Declarations: ConstPart TypePart VarPart ProcedurePart;`
     ///
     #[parol_runtime::function_name::named]
-    fn selector_list_2(&mut self) -> Result<()> {
+    fn declarations(
+        &mut self,
+        _const_part: &ParseTreeType<'t>,
+        _type_part: &ParseTreeType<'t>,
+        _var_part: &ParseTreeType<'t>,
+        _procedure_part: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let selector_list_2_built = SelectorListSelectorListEmpty {};
-        let selector_list_2_built = SelectorList::SelectorListEmpty(selector_list_2_built);
+        let procedure_part = pop_item!(self, procedure_part, ProcedurePart, context);
+        let var_part = pop_item!(self, var_part, VarPart, context);
+        let type_part = pop_item!(self, type_part, TypePart, context);
+        let const_part = pop_item!(self, const_part, ConstPart, context);
+        let declarations_built = Declarations {
+            const_part,
+            type_part,
+            var_part,
+            procedure_part,
+        };
         // Calling user action here
-        self.user_grammar.selector_list(&selector_list_2_built)?;
-        self.push(ASTType::SelectorList(selector_list_2_built), context);
+        self.user_grammar.declarations(&declarations_built)?;
+        self.push(ASTType::Declarations(declarations_built), context);
         Ok(())
     }
 
     /// Semantic action for production 4:
     ///
-    /// `Factor: Ident Selector;`
+    /// `ConstPart: ConstPartOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
-    fn factor_0(
-        &mut self,
-        _ident: &ParseTreeType<'t>,
-        _selector: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn const_part(&mut self, _const_part_opt: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let selector = pop_item!(self, selector, Selector, context);
-        let ident = pop_item!(self, ident, Ident, context);
-        let factor_0_built = FactorIdentSelector { ident, selector };
-        let factor_0_built = Factor::IdentSelector(factor_0_built);
+        let const_part_opt = pop_item!(self, const_part_opt, ConstPartOpt, context);
+        let const_part_built = ConstPart { const_part_opt };
         // Calling user action here
-        self.user_grammar.factor(&factor_0_built)?;
-        self.push(ASTType::Factor(factor_0_built), context);
+        self.user_grammar.const_part(&const_part_built)?;
+        self.push(ASTType::ConstPart(const_part_built), context);
         Ok(())
     }
 
     /// Semantic action for production 5:
     ///
-    /// `Factor: Integer;`
+    /// `ConstPartOpt /* Option<T>::Some */: 'CONST' ConstDecls;`
     ///
     #[parol_runtime::function_name::named]
-    fn factor_1(&mut self, _integer: &ParseTreeType<'t>) -> Result<()> {
+    fn const_part_opt_0(
+        &mut self,
+        c_o_n_s_t: &ParseTreeType<'t>,
+        _const_decls: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let integer = pop_item!(self, integer, Integer, context);
-        let factor_1_built = FactorInteger { integer };
-        let factor_1_built = Factor::Integer(factor_1_built);
-        // Calling user action here
-        self.user_grammar.factor(&factor_1_built)?;
-        self.push(ASTType::Factor(factor_1_built), context);
+        let c_o_n_s_t = c_o_n_s_t.token()?.clone();
+        let const_decls = pop_item!(self, const_decls, ConstDecls, context);
+        let const_part_opt_0_built = ConstPartOpt {
+            c_o_n_s_t,
+            const_decls,
+        };
+        self.push(ASTType::ConstPartOpt(Some(const_part_opt_0_built)), context);
         Ok(())
     }
 
     /// Semantic action for production 6:
     ///
-    /// `Factor: "\(" Expression "\)";`
+    /// `ConstPartOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn factor_2(
-        &mut self,
-        l_paren: &ParseTreeType<'t>,
-        _expression: &ParseTreeType<'t>,
-        r_paren: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn const_part_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = l_paren.token()?.clone();
-        let r_paren = r_paren.token()?.clone();
-        let expression = pop_item!(self, expression, Expression, context);
-        let factor_2_built = FactorLParenExpressionRParen {
-            l_paren,
-            expression: Box::new(expression),
-            r_paren,
-        };
-        let factor_2_built = Factor::LParenExpressionRParen(factor_2_built);
-        // Calling user action here
-        self.user_grammar.factor(&factor_2_built)?;
-        self.push(ASTType::Factor(factor_2_built), context);
+        self.push(ASTType::ConstPartOpt(None), context);
         Ok(())
     }
 
     /// Semantic action for production 7:
     ///
-    /// `Factor: "~" Factor;`
+    /// `TypePart: TypePartOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
-    fn factor_3(&mut self, tilde: &ParseTreeType<'t>, _factor: &ParseTreeType<'t>) -> Result<()> {
+    fn type_part(&mut self, _type_part_opt: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let tilde = tilde.token()?.clone();
-        let factor = pop_item!(self, factor, Factor, context);
-        let factor_3_built = FactorTildeFactor {
-            tilde,
-            factor: Box::new(factor),
-        };
-        let factor_3_built = Factor::TildeFactor(factor_3_built);
+        let type_part_opt = pop_item!(self, type_part_opt, TypePartOpt, context);
+        let type_part_built = TypePart { type_part_opt };
         // Calling user action here
-        self.user_grammar.factor(&factor_3_built)?;
-        self.push(ASTType::Factor(factor_3_built), context);
+        self.user_grammar.type_part(&type_part_built)?;
+        self.push(ASTType::TypePart(type_part_built), context);
         Ok(())
     }
 
     /// Semantic action for production 8:
     ///
-    /// `Factor: UnaryOp Factor;`
+    /// `TypePartOpt /* Option<T>::Some */: 'TYPE' TypeDecls;`
     ///
     #[parol_runtime::function_name::named]
-    fn factor_4(
+    fn type_part_opt_0(
         &mut self,
-        _unary_op: &ParseTreeType<'t>,
-        _factor: &ParseTreeType<'t>,
+        t_y_p_e: &ParseTreeType<'t>,
+        _type_decls: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor = pop_item!(self, factor, Factor, context);
-        let unary_op = pop_item!(self, unary_op, UnaryOp, context);
-        let factor_4_built = FactorUnaryOpFactor {
-            unary_op,
-            factor: Box::new(factor),
+        let t_y_p_e = t_y_p_e.token()?.clone();
+        let type_decls = pop_item!(self, type_decls, TypeDecls, context);
+        let type_part_opt_0_built = TypePartOpt {
+            t_y_p_e,
+            type_decls,
         };
-        let factor_4_built = Factor::UnaryOpFactor(factor_4_built);
-        // Calling user action here
-        self.user_grammar.factor(&factor_4_built)?;
-        self.push(ASTType::Factor(factor_4_built), context);
+        self.push(ASTType::TypePartOpt(Some(type_part_opt_0_built)), context);
         Ok(())
     }
 
     /// Semantic action for production 9:
     ///
-    /// `Term: Factor MulExpression;`
+    /// `TypePartOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn term(
-        &mut self,
-        _factor: &ParseTreeType<'t>,
-        _mul_expression: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn type_part_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mul_expression = pop_item!(self, mul_expression, MulExpression, context);
-        let factor = pop_item!(self, factor, Factor, context);
-        let term_built = Term {
-            factor,
-            mul_expression,
-        };
-        // Calling user action here
-        self.user_grammar.term(&term_built)?;
-        self.push(ASTType::Term(term_built), context);
+        self.push(ASTType::TypePartOpt(None), context);
         Ok(())
     }
 
     /// Semantic action for production 10:
     ///
-    /// `MulExpression: MulOperator Factor MulExpression;`
+    /// `VarPart: VarPartOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
-    fn mul_expression_0(
-        &mut self,
-        _mul_operator: &ParseTreeType<'t>,
-        _factor: &ParseTreeType<'t>,
-        _mul_expression: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn var_part(&mut self, _var_part_opt: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mul_expression = pop_item!(self, mul_expression, MulExpression, context);
-        let factor = pop_item!(self, factor, Factor, context);
-        let mul_operator = pop_item!(self, mul_operator, MulOperator, context);
-        let mul_expression_0_built = MulExpressionMulOperatorFactorMulExpression {
-            mul_operator,
-            factor,
-            mul_expression: Box::new(mul_expression),
-        };
-        let mul_expression_0_built =
-            MulExpression::MulOperatorFactorMulExpression(mul_expression_0_built);
+        let var_part_opt = pop_item!(self, var_part_opt, VarPartOpt, context);
+        let var_part_built = VarPart { var_part_opt };
         // Calling user action here
-        self.user_grammar.mul_expression(&mul_expression_0_built)?;
-        self.push(ASTType::MulExpression(mul_expression_0_built), context);
+        self.user_grammar.var_part(&var_part_built)?;
+        self.push(ASTType::VarPart(var_part_built), context);
         Ok(())
     }
 
     /// Semantic action for production 11:
     ///
-    /// `MulExpression: ;`
+    /// `VarPartOpt /* Option<T>::Some */: 'VAR' VarDecls;`
     ///
     #[parol_runtime::function_name::named]
-    fn mul_expression_1(&mut self) -> Result<()> {
+    fn var_part_opt_0(
+        &mut self,
+        v_a_r: &ParseTreeType<'t>,
+        _var_decls: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mul_expression_1_built = MulExpressionMulExpressionEmpty {};
-        let mul_expression_1_built = MulExpression::MulExpressionEmpty(mul_expression_1_built);
-        // Calling user action here
-        self.user_grammar.mul_expression(&mul_expression_1_built)?;
-        self.push(ASTType::MulExpression(mul_expression_1_built), context);
+        let v_a_r = v_a_r.token()?.clone();
+        let var_decls = pop_item!(self, var_decls, VarDecls, context);
+        let var_part_opt_0_built = VarPartOpt { v_a_r, var_decls };
+        self.push(ASTType::VarPartOpt(Some(var_part_opt_0_built)), context);
         Ok(())
     }
 
     /// Semantic action for production 12:
     ///
-    /// `SimpleExpression: Term AddExpression;`
+    /// `VarPartOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn simple_expression(
-        &mut self,
-        _term: &ParseTreeType<'t>,
-        _add_expression: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn var_part_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let add_expression = pop_item!(self, add_expression, AddExpression, context);
-        let term = pop_item!(self, term, Term, context);
-        let simple_expression_built = SimpleExpression {
-            term,
-            add_expression,
-        };
-        // Calling user action here
-        self.user_grammar
-            .simple_expression(&simple_expression_built)?;
-        self.push(ASTType::SimpleExpression(simple_expression_built), context);
+        self.push(ASTType::VarPartOpt(None), context);
         Ok(())
     }
 
     /// Semantic action for production 13:
     ///
-    /// `AddExpression: AddOperator Term AddExpression;`
+    /// `ProcedurePart: ProcedurePartList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
-    fn add_expression_0(
-        &mut self,
-        _add_operator: &ParseTreeType<'t>,
-        _term: &ParseTreeType<'t>,
-        _add_expression: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn procedure_part(&mut self, _procedure_part_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let add_expression = pop_item!(self, add_expression, AddExpression, context);
-        let term = pop_item!(self, term, Term, context);
-        let add_operator = pop_item!(self, add_operator, AddOperator, context);
-        let add_expression_0_built = AddExpressionAddOperatorTermAddExpression {
-            add_operator,
-            term,
-            add_expression: Box::new(add_expression),
+        let procedure_part_list =
+            pop_and_reverse_item!(self, procedure_part_list, ProcedurePartList, context);
+        let procedure_part_built = ProcedurePart {
+            procedure_part_list,
         };
-        let add_expression_0_built =
-            AddExpression::AddOperatorTermAddExpression(add_expression_0_built);
         // Calling user action here
-        self.user_grammar.add_expression(&add_expression_0_built)?;
-        self.push(ASTType::AddExpression(add_expression_0_built), context);
+        self.user_grammar.procedure_part(&procedure_part_built)?;
+        self.push(ASTType::ProcedurePart(procedure_part_built), context);
         Ok(())
     }
 
     /// Semantic action for production 14:
     ///
-    /// `AddExpression: ;`
+    /// `ProcedurePartList /* Vec<T>::Push */: ProcedureDeclaration ';' ProcedurePartList;`
     ///
     #[parol_runtime::function_name::named]
-    fn add_expression_1(&mut self) -> Result<()> {
+    fn procedure_part_list_0(
+        &mut self,
+        _procedure_declaration: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _procedure_part_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let add_expression_1_built = AddExpressionAddExpressionEmpty {};
-        let add_expression_1_built = AddExpression::AddExpressionEmpty(add_expression_1_built);
-        // Calling user action here
-        self.user_grammar.add_expression(&add_expression_1_built)?;
-        self.push(ASTType::AddExpression(add_expression_1_built), context);
+        let semicolon = semicolon.token()?.clone();
+        let mut procedure_part_list =
+            pop_item!(self, procedure_part_list, ProcedurePartList, context);
+        let procedure_declaration =
+            pop_item!(self, procedure_declaration, ProcedureDeclaration, context);
+        let procedure_part_list_0_built = ProcedurePartList {
+            semicolon,
+            procedure_declaration,
+        };
+        // Add an element to the vector
+        procedure_part_list.push(procedure_part_list_0_built);
+        self.push(ASTType::ProcedurePartList(procedure_part_list), context);
         Ok(())
     }
 
     /// Semantic action for production 15:
     ///
-    /// `AssignOp: ':=';`
+    /// `ProcedurePartList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn assign_op(&mut self, assign_op: &ParseTreeType<'t>) -> Result<()> {
+    fn procedure_part_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assign_op = assign_op.token()?.clone();
-        let assign_op_built = AssignOp { assign_op };
-        // Calling user action here
-        self.user_grammar.assign_op(&assign_op_built)?;
-        self.push(ASTType::AssignOp(assign_op_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 16:
-    ///
-    /// `RelationOp: AssignOp;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn relation_op_0(&mut self, _assign_op: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let assign_op = pop_item!(self, assign_op, AssignOp, context);
-        let relation_op_0_built = RelationOpAssignOp { assign_op };
-        let relation_op_0_built = RelationOp::AssignOp(relation_op_0_built);
-        // Calling user action here
-        self.user_grammar.relation_op(&relation_op_0_built)?;
-        self.push(ASTType::RelationOp(relation_op_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 17:
-    ///
-    /// `RelationOp: RelationalOps;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn relation_op_1(&mut self, _relational_ops: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let relational_ops = pop_item!(self, relational_ops, RelationalOps, context);
-        let relation_op_1_built = RelationOpRelationalOps { relational_ops };
-        let relation_op_1_built = RelationOp::RelationalOps(relation_op_1_built);
-        // Calling user action here
-        self.user_grammar.relation_op(&relation_op_1_built)?;
-        self.push(ASTType::RelationOp(relation_op_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 18:
-    ///
-    /// `RelationalOps: />=|<=|\#|<|>/;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn relational_ops(&mut self, relational_ops: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let relational_ops = relational_ops.token()?.clone();
-        let relational_ops_built = RelationalOps { relational_ops };
-        // Calling user action here
-        self.user_grammar.relational_ops(&relational_ops_built)?;
-        self.push(ASTType::RelationalOps(relational_ops_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 19:
-    ///
-    /// `Expression: SimpleExpression ExpressionSuffix;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn expression(
-        &mut self,
-        _simple_expression: &ParseTreeType<'t>,
-        _expression_suffix: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let expression_suffix = pop_item!(self, expression_suffix, ExpressionSuffix, context);
-        let simple_expression = pop_item!(self, simple_expression, SimpleExpression, context);
-        let expression_built = Expression {
-            simple_expression,
-            expression_suffix,
-        };
-        // Calling user action here
-        self.user_grammar.expression(&expression_built)?;
-        self.push(ASTType::Expression(expression_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 20:
-    ///
-    /// `ExpressionSuffix: RelationOp SimpleExpression;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn expression_suffix_0(
-        &mut self,
-        _relation_op: &ParseTreeType<'t>,
-        _simple_expression: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let simple_expression = pop_item!(self, simple_expression, SimpleExpression, context);
-        let relation_op = pop_item!(self, relation_op, RelationOp, context);
-        let expression_suffix_0_built = ExpressionSuffixRelationOpSimpleExpression {
-            relation_op,
-            simple_expression,
-        };
-        let expression_suffix_0_built =
-            ExpressionSuffix::RelationOpSimpleExpression(expression_suffix_0_built);
+        let procedure_part_list_1_built = Vec::new();
         self.push(
-            ASTType::ExpressionSuffix(expression_suffix_0_built),
+            ASTType::ProcedurePartList(procedure_part_list_1_built),
             context,
         );
         Ok(())
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 16:
     ///
-    /// `ExpressionSuffix: ;`
+    /// `ProcedureDeclaration: ProcedureHeading ';' ProcedureBody;`
     ///
     #[parol_runtime::function_name::named]
-    fn expression_suffix_1(&mut self) -> Result<()> {
+    fn procedure_declaration(
+        &mut self,
+        _procedure_heading: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _procedure_body: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expression_suffix_1_built = ExpressionSuffixExpressionSuffixEmpty {};
-        let expression_suffix_1_built =
-            ExpressionSuffix::ExpressionSuffixEmpty(expression_suffix_1_built);
+        let semicolon = semicolon.token()?.clone();
+        let procedure_body = pop_item!(self, procedure_body, ProcedureBody, context);
+        let procedure_heading = pop_item!(self, procedure_heading, ProcedureHeading, context);
+        let procedure_declaration_built = ProcedureDeclaration {
+            procedure_heading,
+            semicolon,
+            procedure_body,
+        };
+        // Calling user action here
+        self.user_grammar
+            .procedure_declaration(&procedure_declaration_built)?;
         self.push(
-            ASTType::ExpressionSuffix(expression_suffix_1_built),
+            ASTType::ProcedureDeclaration(procedure_declaration_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 17:
+    ///
+    /// `ProcedureHeading: 'PROCEDURE' Ident ProcedureHeadingOpt /* Option */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_heading(
+        &mut self,
+        p_r_o_c_e_d_u_r_e: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        _procedure_heading_opt: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let p_r_o_c_e_d_u_r_e = p_r_o_c_e_d_u_r_e.token()?.clone();
+        let procedure_heading_opt =
+            pop_item!(self, procedure_heading_opt, ProcedureHeadingOpt, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let procedure_heading_built = ProcedureHeading {
+            p_r_o_c_e_d_u_r_e,
+            ident,
+            procedure_heading_opt,
+        };
+        // Calling user action here
+        self.user_grammar
+            .procedure_heading(&procedure_heading_built)?;
+        self.push(ASTType::ProcedureHeading(procedure_heading_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 18:
+    ///
+    /// `ProcedureHeadingOpt /* Option<T>::Some */: FormalParameters;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_heading_opt_0(&mut self, _formal_parameters: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let formal_parameters = pop_item!(self, formal_parameters, FormalParameters, context);
+        let procedure_heading_opt_0_built = ProcedureHeadingOpt { formal_parameters };
+        self.push(
+            ASTType::ProcedureHeadingOpt(Some(procedure_heading_opt_0_built)),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 19:
+    ///
+    /// `ProcedureHeadingOpt /* Option<T>::None */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_heading_opt_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::ProcedureHeadingOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 20:
+    ///
+    /// `FormalParameters: '(' FormalParametersSuffix;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn formal_parameters(
+        &mut self,
+        l_paren: &ParseTreeType<'t>,
+        _formal_parameters_suffix: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_paren = l_paren.token()?.clone();
+        let formal_parameters_suffix = pop_item!(
+            self,
+            formal_parameters_suffix,
+            FormalParametersSuffix,
+            context
+        );
+        let formal_parameters_built = FormalParameters {
+            l_paren,
+            formal_parameters_suffix,
+        };
+        // Calling user action here
+        self.user_grammar
+            .formal_parameters(&formal_parameters_built)?;
+        self.push(ASTType::FormalParameters(formal_parameters_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 21:
+    ///
+    /// `FormalParametersSuffix: ')';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn formal_parameters_suffix_0(&mut self, r_paren: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_paren = r_paren.token()?.clone();
+        let formal_parameters_suffix_0_built = FormalParametersSuffixRParen { r_paren };
+        let formal_parameters_suffix_0_built =
+            FormalParametersSuffix::RParen(formal_parameters_suffix_0_built);
+        self.push(
+            ASTType::FormalParametersSuffix(formal_parameters_suffix_0_built),
             context,
         );
         Ok(())
     }
 
     /// Semantic action for production 22:
+    ///
+    /// `FormalParametersSuffix: FPSection FPSectionRest ')';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn formal_parameters_suffix_1(
+        &mut self,
+        _f_p_section: &ParseTreeType<'t>,
+        _f_p_section_rest: &ParseTreeType<'t>,
+        r_paren: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_paren = r_paren.token()?.clone();
+        let f_p_section_rest = pop_item!(self, f_p_section_rest, FPSectionRest, context);
+        let f_p_section = pop_item!(self, f_p_section, FPSection, context);
+        let formal_parameters_suffix_1_built = FormalParametersSuffixFPSectionFPSectionRestRParen {
+            f_p_section,
+            f_p_section_rest,
+            r_paren,
+        };
+        let formal_parameters_suffix_1_built =
+            FormalParametersSuffix::FPSectionFPSectionRestRParen(formal_parameters_suffix_1_built);
+        self.push(
+            ASTType::FormalParametersSuffix(formal_parameters_suffix_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 23:
+    ///
+    /// `FPSectionRest: FPSectionRestList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn f_p_section_rest(&mut self, _f_p_section_rest_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let f_p_section_rest_list =
+            pop_and_reverse_item!(self, f_p_section_rest_list, FPSectionRestList, context);
+        let f_p_section_rest_built = FPSectionRest {
+            f_p_section_rest_list,
+        };
+        // Calling user action here
+        self.user_grammar
+            .f_p_section_rest(&f_p_section_rest_built)?;
+        self.push(ASTType::FPSectionRest(f_p_section_rest_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 24:
+    ///
+    /// `FPSectionRestList /* Vec<T>::Push */: ';' FPSection FPSectionRestList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn f_p_section_rest_list_0(
+        &mut self,
+        semicolon: &ParseTreeType<'t>,
+        _f_p_section: &ParseTreeType<'t>,
+        _f_p_section_rest_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let mut f_p_section_rest_list =
+            pop_item!(self, f_p_section_rest_list, FPSectionRestList, context);
+        let f_p_section = pop_item!(self, f_p_section, FPSection, context);
+        let f_p_section_rest_list_0_built = FPSectionRestList {
+            f_p_section,
+            semicolon,
+        };
+        // Add an element to the vector
+        f_p_section_rest_list.push(f_p_section_rest_list_0_built);
+        self.push(ASTType::FPSectionRestList(f_p_section_rest_list), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 25:
+    ///
+    /// `FPSectionRestList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn f_p_section_rest_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let f_p_section_rest_list_1_built = Vec::new();
+        self.push(
+            ASTType::FPSectionRestList(f_p_section_rest_list_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 26:
+    ///
+    /// `FPSection: 'VAR' IdentList ':' Type;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn f_p_section_0(
+        &mut self,
+        v_a_r: &ParseTreeType<'t>,
+        _ident_list: &ParseTreeType<'t>,
+        colon: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let v_a_r = v_a_r.token()?.clone();
+        let colon = colon.token()?.clone();
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
+        let f_p_section_0_built = FPSectionVARIdentListColonType {
+            v_a_r,
+            ident_list,
+            colon,
+            r#type,
+        };
+        let f_p_section_0_built = FPSection::VARIdentListColonType(f_p_section_0_built);
+        // Calling user action here
+        self.user_grammar.f_p_section(&f_p_section_0_built)?;
+        self.push(ASTType::FPSection(f_p_section_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 27:
+    ///
+    /// `FPSection: IdentList ':' Type;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn f_p_section_1(
+        &mut self,
+        _ident_list: &ParseTreeType<'t>,
+        colon: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let colon = colon.token()?.clone();
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
+        let f_p_section_1_built = FPSectionIdentListColonType {
+            ident_list,
+            colon,
+            r#type,
+        };
+        let f_p_section_1_built = FPSection::IdentListColonType(f_p_section_1_built);
+        // Calling user action here
+        self.user_grammar.f_p_section(&f_p_section_1_built)?;
+        self.push(ASTType::FPSection(f_p_section_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 28:
+    ///
+    /// `ProcedureBody: Declarations ProcedureBodyOpt /* Option */ ProcedureBodyOpt0 /* Option */ 'END' Ident;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_body(
+        &mut self,
+        _declarations: &ParseTreeType<'t>,
+        _procedure_body_opt: &ParseTreeType<'t>,
+        _procedure_body_opt0: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let e_n_d = e_n_d.token()?.clone();
+        let ident = pop_item!(self, ident, Ident, context);
+        let procedure_body_opt0 = pop_item!(self, procedure_body_opt0, ProcedureBodyOpt0, context);
+        let procedure_body_opt = pop_item!(self, procedure_body_opt, ProcedureBodyOpt, context);
+        let declarations = pop_item!(self, declarations, Declarations, context);
+        let procedure_body_built = ProcedureBody {
+            declarations,
+            procedure_body_opt,
+            procedure_body_opt0,
+            e_n_d,
+            ident,
+        };
+        // Calling user action here
+        self.user_grammar.procedure_body(&procedure_body_built)?;
+        self.push(ASTType::ProcedureBody(procedure_body_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 29:
+    ///
+    /// `ProcedureBodyOpt0 /* Option<T>::Some */: 'RETURN' Expression;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_body_opt0_0(
+        &mut self,
+        r_e_t_u_r_n: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_e_t_u_r_n = r_e_t_u_r_n.token()?.clone();
+        let expression = pop_item!(self, expression, Expression, context);
+        let procedure_body_opt0_0_built = ProcedureBodyOpt0 {
+            r_e_t_u_r_n,
+            expression,
+        };
+        self.push(
+            ASTType::ProcedureBodyOpt0(Some(procedure_body_opt0_0_built)),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 30:
+    ///
+    /// `ProcedureBodyOpt0 /* Option<T>::None */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_body_opt0_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::ProcedureBodyOpt0(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 31:
+    ///
+    /// `ProcedureBodyOpt /* Option<T>::Some */: 'BEGIN' StatementSequence;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_body_opt_0(
+        &mut self,
+        b_e_g_i_n: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let b_e_g_i_n = b_e_g_i_n.token()?.clone();
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let procedure_body_opt_0_built = ProcedureBodyOpt {
+            b_e_g_i_n,
+            statement_sequence,
+        };
+        self.push(
+            ASTType::ProcedureBodyOpt(Some(procedure_body_opt_0_built)),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 32:
+    ///
+    /// `ProcedureBodyOpt /* Option<T>::None */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_body_opt_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::ProcedureBodyOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 33:
+    ///
+    /// `ConstDecls: ConstDeclsList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn const_decls(&mut self, _const_decls_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let const_decls_list =
+            pop_and_reverse_item!(self, const_decls_list, ConstDeclsList, context);
+        let const_decls_built = ConstDecls { const_decls_list };
+        // Calling user action here
+        self.user_grammar.const_decls(&const_decls_built)?;
+        self.push(ASTType::ConstDecls(const_decls_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 34:
+    ///
+    /// `ConstDeclsList /* Vec<T>::Push */: Ident '=' Expression ';' ConstDeclsList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn const_decls_list_0(
+        &mut self,
+        _ident: &ParseTreeType<'t>,
+        equ: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _const_decls_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let equ = equ.token()?.clone();
+        let semicolon = semicolon.token()?.clone();
+        let mut const_decls_list = pop_item!(self, const_decls_list, ConstDeclsList, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let const_decls_list_0_built = ConstDeclsList {
+            semicolon,
+            expression,
+            equ,
+            ident,
+        };
+        // Add an element to the vector
+        const_decls_list.push(const_decls_list_0_built);
+        self.push(ASTType::ConstDeclsList(const_decls_list), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 35:
+    ///
+    /// `ConstDeclsList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn const_decls_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let const_decls_list_1_built = Vec::new();
+        self.push(ASTType::ConstDeclsList(const_decls_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 36:
+    ///
+    /// `TypeDecls: TypeDeclsList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn type_decls(&mut self, _type_decls_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let type_decls_list = pop_and_reverse_item!(self, type_decls_list, TypeDeclsList, context);
+        let type_decls_built = TypeDecls { type_decls_list };
+        // Calling user action here
+        self.user_grammar.type_decls(&type_decls_built)?;
+        self.push(ASTType::TypeDecls(type_decls_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 37:
+    ///
+    /// `TypeDeclsList /* Vec<T>::Push */: Ident '=' Type ';' TypeDeclsList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn type_decls_list_0(
+        &mut self,
+        _ident: &ParseTreeType<'t>,
+        equ: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _type_decls_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let equ = equ.token()?.clone();
+        let semicolon = semicolon.token()?.clone();
+        let mut type_decls_list = pop_item!(self, type_decls_list, TypeDeclsList, context);
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let type_decls_list_0_built = TypeDeclsList {
+            semicolon,
+            r#type,
+            equ,
+            ident,
+        };
+        // Add an element to the vector
+        type_decls_list.push(type_decls_list_0_built);
+        self.push(ASTType::TypeDeclsList(type_decls_list), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 38:
+    ///
+    /// `TypeDeclsList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn type_decls_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let type_decls_list_1_built = Vec::new();
+        self.push(ASTType::TypeDeclsList(type_decls_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 39:
+    ///
+    /// `VarDecls: VarDeclsList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn var_decls(&mut self, _var_decls_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let var_decls_list = pop_and_reverse_item!(self, var_decls_list, VarDeclsList, context);
+        let var_decls_built = VarDecls { var_decls_list };
+        // Calling user action here
+        self.user_grammar.var_decls(&var_decls_built)?;
+        self.push(ASTType::VarDecls(var_decls_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 40:
+    ///
+    /// `VarDeclsList /* Vec<T>::Push */: IdentList ':' Type ';' VarDeclsList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn var_decls_list_0(
+        &mut self,
+        _ident_list: &ParseTreeType<'t>,
+        colon: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
+        semicolon: &ParseTreeType<'t>,
+        _var_decls_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let colon = colon.token()?.clone();
+        let semicolon = semicolon.token()?.clone();
+        let mut var_decls_list = pop_item!(self, var_decls_list, VarDeclsList, context);
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
+        let var_decls_list_0_built = VarDeclsList {
+            semicolon,
+            r#type,
+            colon,
+            ident_list,
+        };
+        // Add an element to the vector
+        var_decls_list.push(var_decls_list_0_built);
+        self.push(ASTType::VarDeclsList(var_decls_list), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 41:
+    ///
+    /// `VarDeclsList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn var_decls_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let var_decls_list_1_built = Vec::new();
+        self.push(ASTType::VarDeclsList(var_decls_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 42:
+    ///
+    /// `StatementSequence: StatementSequenceOpt /* Option */ StatementSequenceList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_sequence(
+        &mut self,
+        _statement_sequence_opt: &ParseTreeType<'t>,
+        _statement_sequence_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_sequence_list = pop_and_reverse_item!(
+            self,
+            statement_sequence_list,
+            StatementSequenceList,
+            context
+        );
+        let statement_sequence_opt =
+            pop_item!(self, statement_sequence_opt, StatementSequenceOpt, context);
+        let statement_sequence_built = StatementSequence {
+            statement_sequence_opt,
+            statement_sequence_list,
+        };
+        // Calling user action here
+        self.user_grammar
+            .statement_sequence(&statement_sequence_built)?;
+        self.push(
+            ASTType::StatementSequence(statement_sequence_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 43:
+    ///
+    /// `StatementSequenceList /* Vec<T>::Push */: ';' Statement StatementSequenceList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_sequence_list_0(
+        &mut self,
+        semicolon: &ParseTreeType<'t>,
+        _statement: &ParseTreeType<'t>,
+        _statement_sequence_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let mut statement_sequence_list = pop_item!(
+            self,
+            statement_sequence_list,
+            StatementSequenceList,
+            context
+        );
+        let statement = pop_item!(self, statement, Statement, context);
+        let statement_sequence_list_0_built = StatementSequenceList {
+            statement,
+            semicolon,
+        };
+        // Add an element to the vector
+        statement_sequence_list.push(statement_sequence_list_0_built);
+        self.push(
+            ASTType::StatementSequenceList(statement_sequence_list),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 44:
+    ///
+    /// `StatementSequenceList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_sequence_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_sequence_list_1_built = Vec::new();
+        self.push(
+            ASTType::StatementSequenceList(statement_sequence_list_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 45:
+    ///
+    /// `StatementSequenceOpt /* Option<T>::Some */: Statement;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_sequence_opt_0(&mut self, _statement: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement = pop_item!(self, statement, Statement, context);
+        let statement_sequence_opt_0_built = StatementSequenceOpt { statement };
+        self.push(
+            ASTType::StatementSequenceOpt(Some(statement_sequence_opt_0_built)),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 46:
+    ///
+    /// `StatementSequenceOpt /* Option<T>::None */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_sequence_opt_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::StatementSequenceOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 47:
+    ///
+    /// `Statement: Assignment;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_0(&mut self, _assignment: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let assignment = pop_item!(self, assignment, Assignment, context);
+        let statement_0_built = StatementAssignment { assignment };
+        let statement_0_built = Statement::Assignment(statement_0_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_0_built)?;
+        self.push(ASTType::Statement(statement_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 48:
+    ///
+    /// `Statement: ProcedureCall;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_1(&mut self, _procedure_call: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_call = pop_item!(self, procedure_call, ProcedureCall, context);
+        let statement_1_built = StatementProcedureCall { procedure_call };
+        let statement_1_built = Statement::ProcedureCall(statement_1_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_1_built)?;
+        self.push(ASTType::Statement(statement_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 49:
+    ///
+    /// `Statement: IfStatement;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_2(&mut self, _if_statement: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let if_statement = pop_item!(self, if_statement, IfStatement, context);
+        let statement_2_built = StatementIfStatement {
+            if_statement: Box::new(if_statement),
+        };
+        let statement_2_built = Statement::IfStatement(statement_2_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_2_built)?;
+        self.push(ASTType::Statement(statement_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 50:
+    ///
+    /// `Statement: WhileStatement;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_3(&mut self, _while_statement: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let while_statement = pop_item!(self, while_statement, WhileStatement, context);
+        let statement_3_built = StatementWhileStatement {
+            while_statement: Box::new(while_statement),
+        };
+        let statement_3_built = Statement::WhileStatement(statement_3_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_3_built)?;
+        self.push(ASTType::Statement(statement_3_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 51:
+    ///
+    /// `Statement: RepeatStatement;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn statement_4(&mut self, _repeat_statement: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let repeat_statement = pop_item!(self, repeat_statement, RepeatStatement, context);
+        let statement_4_built = StatementRepeatStatement {
+            repeat_statement: Box::new(repeat_statement),
+        };
+        let statement_4_built = Statement::RepeatStatement(statement_4_built);
+        // Calling user action here
+        self.user_grammar.statement(&statement_4_built)?;
+        self.push(ASTType::Statement(statement_4_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 52:
     ///
     /// `Assignment: Ident Selector AssignOp Expression;`
     ///
@@ -2430,7 +2592,60 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 23:
+    /// Semantic action for production 53:
+    ///
+    /// `ProcedureCall: Ident ProcedureCallOpt /* Option */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_call(
+        &mut self,
+        _ident: &ParseTreeType<'t>,
+        _procedure_call_opt: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let procedure_call_opt = pop_item!(self, procedure_call_opt, ProcedureCallOpt, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let procedure_call_built = ProcedureCall {
+            ident,
+            procedure_call_opt,
+        };
+        // Calling user action here
+        self.user_grammar.procedure_call(&procedure_call_built)?;
+        self.push(ASTType::ProcedureCall(procedure_call_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 54:
+    ///
+    /// `ProcedureCallOpt /* Option<T>::Some */: ActualParameters;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_call_opt_0(&mut self, _actual_parameters: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let actual_parameters = pop_item!(self, actual_parameters, ActualParameters, context);
+        let procedure_call_opt_0_built = ProcedureCallOpt { actual_parameters };
+        self.push(
+            ASTType::ProcedureCallOpt(Some(procedure_call_opt_0_built)),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 55:
+    ///
+    /// `ProcedureCallOpt /* Option<T>::None */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn procedure_call_opt_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::ProcedureCallOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 56:
     ///
     /// `ActualParameters: '(' ActualParametersSuffix;`
     ///
@@ -2460,7 +2675,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 24:
+    /// Semantic action for production 57:
     ///
     /// `ActualParametersSuffix: ')';`
     ///
@@ -2479,7 +2694,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 25:
+    /// Semantic action for production 58:
     ///
     /// `ActualParametersSuffix: Expression ExpressionListRest ')';`
     ///
@@ -2513,141 +2728,115 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 26:
+    /// Semantic action for production 59:
     ///
-    /// `ExpressionListRest: ',' Expression ExpressionListRest;`
+    /// `ExpressionListRest: ExpressionListRestList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
-    fn expression_list_rest_0(
+    fn expression_list_rest(
+        &mut self,
+        _expression_list_rest_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let expression_list_rest_list = pop_and_reverse_item!(
+            self,
+            expression_list_rest_list,
+            ExpressionListRestList,
+            context
+        );
+        let expression_list_rest_built = ExpressionListRest {
+            expression_list_rest_list,
+        };
+        // Calling user action here
+        self.user_grammar
+            .expression_list_rest(&expression_list_rest_built)?;
+        self.push(
+            ASTType::ExpressionListRest(expression_list_rest_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 60:
+    ///
+    /// `ExpressionListRestList /* Vec<T>::Push */: ',' Expression ExpressionListRestList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn expression_list_rest_list_0(
         &mut self,
         comma: &ParseTreeType<'t>,
         _expression: &ParseTreeType<'t>,
-        _expression_list_rest: &ParseTreeType<'t>,
+        _expression_list_rest_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comma = comma.token()?.clone();
-        let expression_list_rest =
-            pop_item!(self, expression_list_rest, ExpressionListRest, context);
+        let mut expression_list_rest_list = pop_item!(
+            self,
+            expression_list_rest_list,
+            ExpressionListRestList,
+            context
+        );
         let expression = pop_item!(self, expression, Expression, context);
-        let expression_list_rest_0_built = ExpressionListRestCommaExpressionExpressionListRest {
-            comma,
-            expression,
-            expression_list_rest: Box::new(expression_list_rest),
-        };
-        let expression_list_rest_0_built =
-            ExpressionListRest::CommaExpressionExpressionListRest(expression_list_rest_0_built);
-        // Calling user action here
-        self.user_grammar
-            .expression_list_rest(&expression_list_rest_0_built)?;
+        let expression_list_rest_list_0_built = ExpressionListRestList { expression, comma };
+        // Add an element to the vector
+        expression_list_rest_list.push(expression_list_rest_list_0_built);
         self.push(
-            ASTType::ExpressionListRest(expression_list_rest_0_built),
+            ASTType::ExpressionListRestList(expression_list_rest_list),
             context,
         );
         Ok(())
     }
 
-    /// Semantic action for production 27:
+    /// Semantic action for production 61:
     ///
-    /// `ExpressionListRest: ;`
+    /// `ExpressionListRestList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn expression_list_rest_1(&mut self) -> Result<()> {
+    fn expression_list_rest_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expression_list_rest_1_built = ExpressionListRestExpressionListRestEmpty {};
-        let expression_list_rest_1_built =
-            ExpressionListRest::ExpressionListRestEmpty(expression_list_rest_1_built);
-        // Calling user action here
-        self.user_grammar
-            .expression_list_rest(&expression_list_rest_1_built)?;
+        let expression_list_rest_list_1_built = Vec::new();
         self.push(
-            ASTType::ExpressionListRest(expression_list_rest_1_built),
+            ASTType::ExpressionListRestList(expression_list_rest_list_1_built),
             context,
         );
         Ok(())
     }
 
-    /// Semantic action for production 28:
+    /// Semantic action for production 62:
     ///
-    /// `ProcedureCall: Ident ProcedureCallSuffix;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_call(
-        &mut self,
-        _ident: &ParseTreeType<'t>,
-        _procedure_call_suffix: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_call_suffix =
-            pop_item!(self, procedure_call_suffix, ProcedureCallSuffix, context);
-        let ident = pop_item!(self, ident, Ident, context);
-        let procedure_call_built = ProcedureCall {
-            ident,
-            procedure_call_suffix,
-        };
-        // Calling user action here
-        self.user_grammar.procedure_call(&procedure_call_built)?;
-        self.push(ASTType::ProcedureCall(procedure_call_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 29:
-    ///
-    /// `ProcedureCallSuffix: ActualParameters;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_call_suffix_0(&mut self, _actual_parameters: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let actual_parameters = pop_item!(self, actual_parameters, ActualParameters, context);
-        let procedure_call_suffix_0_built =
-            ProcedureCallSuffixActualParameters { actual_parameters };
-        let procedure_call_suffix_0_built =
-            ProcedureCallSuffix::ActualParameters(procedure_call_suffix_0_built);
-        self.push(
-            ASTType::ProcedureCallSuffix(procedure_call_suffix_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 30:
-    ///
-    /// `ProcedureCallSuffix: ;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_call_suffix_1(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_call_suffix_1_built = ProcedureCallSuffixProcedureCallSuffixEmpty {};
-        let procedure_call_suffix_1_built =
-            ProcedureCallSuffix::ProcedureCallSuffixEmpty(procedure_call_suffix_1_built);
-        self.push(
-            ASTType::ProcedureCallSuffix(procedure_call_suffix_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 31:
-    ///
-    /// `IfStatement: IfPrefix IfStatementSuffix;`
+    /// `IfStatement: 'IF' Expression 'THEN' StatementSequence ElseIfList IfStatementOpt /* Option */ 'END';`
     ///
     #[parol_runtime::function_name::named]
     fn if_statement(
         &mut self,
-        _if_prefix: &ParseTreeType<'t>,
-        _if_statement_suffix: &ParseTreeType<'t>,
+        i_f: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        t_h_e_n: &ParseTreeType<'t>,
+        _statement_sequence: &ParseTreeType<'t>,
+        _else_if_list: &ParseTreeType<'t>,
+        _if_statement_opt: &ParseTreeType<'t>,
+        e_n_d: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let if_statement_suffix = pop_item!(self, if_statement_suffix, IfStatementSuffix, context);
-        let if_prefix = pop_item!(self, if_prefix, IfPrefix, context);
+        let i_f = i_f.token()?.clone();
+        let t_h_e_n = t_h_e_n.token()?.clone();
+        let e_n_d = e_n_d.token()?.clone();
+        let if_statement_opt = pop_item!(self, if_statement_opt, IfStatementOpt, context);
+        let else_if_list = pop_item!(self, else_if_list, ElseIfList, context);
+        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
+        let expression = pop_item!(self, expression, Expression, context);
         let if_statement_built = IfStatement {
-            if_prefix,
-            if_statement_suffix,
+            i_f,
+            expression,
+            t_h_e_n,
+            statement_sequence,
+            else_if_list,
+            if_statement_opt,
+            e_n_d,
         };
         // Calling user action here
         self.user_grammar.if_statement(&if_statement_built)?;
@@ -2655,139 +2844,106 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 32:
+    /// Semantic action for production 63:
     ///
-    /// `IfStatementSuffix: 'ELSE' StatementSequence 'END';`
+    /// `IfStatementOpt /* Option<T>::Some */: 'ELSE' StatementSequence;`
     ///
     #[parol_runtime::function_name::named]
-    fn if_statement_suffix_0(
+    fn if_statement_opt_0(
         &mut self,
         e_l_s_e: &ParseTreeType<'t>,
         _statement_sequence: &ParseTreeType<'t>,
-        e_n_d: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let e_l_s_e = e_l_s_e.token()?.clone();
-        let e_n_d = e_n_d.token()?.clone();
         let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
-        let if_statement_suffix_0_built = IfStatementSuffixELSEStatementSequenceEND {
+        let if_statement_opt_0_built = IfStatementOpt {
             e_l_s_e,
-            statement_sequence: Box::new(statement_sequence),
-            e_n_d,
-        };
-        let if_statement_suffix_0_built =
-            IfStatementSuffix::ELSEStatementSequenceEND(if_statement_suffix_0_built);
-        self.push(
-            ASTType::IfStatementSuffix(if_statement_suffix_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 33:
-    ///
-    /// `IfStatementSuffix: 'END';`
-    ///
-    #[parol_runtime::function_name::named]
-    fn if_statement_suffix_1(&mut self, e_n_d: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let e_n_d = e_n_d.token()?.clone();
-        let if_statement_suffix_1_built = IfStatementSuffixEND { e_n_d };
-        let if_statement_suffix_1_built = IfStatementSuffix::END(if_statement_suffix_1_built);
-        self.push(
-            ASTType::IfStatementSuffix(if_statement_suffix_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 34:
-    ///
-    /// `IfPrefix: 'IF' Expression 'THEN' StatementSequence ElseIfList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn if_prefix(
-        &mut self,
-        i_f: &ParseTreeType<'t>,
-        _expression: &ParseTreeType<'t>,
-        t_h_e_n: &ParseTreeType<'t>,
-        _statement_sequence: &ParseTreeType<'t>,
-        _else_if_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let i_f = i_f.token()?.clone();
-        let t_h_e_n = t_h_e_n.token()?.clone();
-        let else_if_list = pop_item!(self, else_if_list, ElseIfList, context);
-        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
-        let expression = pop_item!(self, expression, Expression, context);
-        let if_prefix_built = IfPrefix {
-            i_f,
-            expression,
-            t_h_e_n,
             statement_sequence,
-            else_if_list,
         };
-        // Calling user action here
-        self.user_grammar.if_prefix(&if_prefix_built)?;
-        self.push(ASTType::IfPrefix(if_prefix_built), context);
+        self.push(
+            ASTType::IfStatementOpt(Some(if_statement_opt_0_built)),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 35:
+    /// Semantic action for production 64:
     ///
-    /// `ElseIfList: 'ELSIF' Expression 'THEN' StatementSequence ElseIfList;`
+    /// `IfStatementOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn else_if_list_0(
+    fn if_statement_opt_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::IfStatementOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 65:
+    ///
+    /// `ElseIfList: ElseIfListList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn else_if_list(&mut self, _else_if_list_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let else_if_list_list =
+            pop_and_reverse_item!(self, else_if_list_list, ElseIfListList, context);
+        let else_if_list_built = ElseIfList { else_if_list_list };
+        // Calling user action here
+        self.user_grammar.else_if_list(&else_if_list_built)?;
+        self.push(ASTType::ElseIfList(else_if_list_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 66:
+    ///
+    /// `ElseIfListList /* Vec<T>::Push */: 'ELSIF' Expression 'THEN' StatementSequence ElseIfListList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn else_if_list_list_0(
         &mut self,
         e_l_s_i_f: &ParseTreeType<'t>,
         _expression: &ParseTreeType<'t>,
         t_h_e_n: &ParseTreeType<'t>,
         _statement_sequence: &ParseTreeType<'t>,
-        _else_if_list: &ParseTreeType<'t>,
+        _else_if_list_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let e_l_s_i_f = e_l_s_i_f.token()?.clone();
         let t_h_e_n = t_h_e_n.token()?.clone();
-        let else_if_list = pop_item!(self, else_if_list, ElseIfList, context);
+        let mut else_if_list_list = pop_item!(self, else_if_list_list, ElseIfListList, context);
         let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
         let expression = pop_item!(self, expression, Expression, context);
-        let else_if_list_0_built = ElseIfListELSIFExpressionTHENStatementSequenceElseIfList {
-            e_l_s_i_f,
-            expression,
+        let else_if_list_list_0_built = ElseIfListList {
+            statement_sequence,
             t_h_e_n,
-            statement_sequence: Box::new(statement_sequence),
-            else_if_list: Box::new(else_if_list),
+            expression,
+            e_l_s_i_f,
         };
-        let else_if_list_0_built =
-            ElseIfList::ELSIFExpressionTHENStatementSequenceElseIfList(else_if_list_0_built);
-        // Calling user action here
-        self.user_grammar.else_if_list(&else_if_list_0_built)?;
-        self.push(ASTType::ElseIfList(else_if_list_0_built), context);
+        // Add an element to the vector
+        else_if_list_list.push(else_if_list_list_0_built);
+        self.push(ASTType::ElseIfListList(else_if_list_list), context);
         Ok(())
     }
 
-    /// Semantic action for production 36:
+    /// Semantic action for production 67:
     ///
-    /// `ElseIfList: ;`
+    /// `ElseIfListList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn else_if_list_1(&mut self) -> Result<()> {
+    fn else_if_list_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let else_if_list_1_built = ElseIfListElseIfListEmpty {};
-        let else_if_list_1_built = ElseIfList::ElseIfListEmpty(else_if_list_1_built);
-        // Calling user action here
-        self.user_grammar.else_if_list(&else_if_list_1_built)?;
-        self.push(ASTType::ElseIfList(else_if_list_1_built), context);
+        let else_if_list_list_1_built = Vec::new();
+        self.push(ASTType::ElseIfListList(else_if_list_list_1_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 37:
+    /// Semantic action for production 68:
     ///
     /// `WhileStatement: 'WHILE' Expression 'DO' StatementSequence 'END';`
     ///
@@ -2820,7 +2976,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 69:
     ///
     /// `RepeatStatement: 'REPEAT' StatementSequence 'UNTIL' Expression;`
     ///
@@ -2851,280 +3007,620 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 70:
     ///
-    /// `Statement: Assignment;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn statement_0(&mut self, _assignment: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let assignment = pop_item!(self, assignment, Assignment, context);
-        let statement_0_built = StatementAssignment { assignment };
-        let statement_0_built = Statement::Assignment(statement_0_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_0_built)?;
-        self.push(ASTType::Statement(statement_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 40:
-    ///
-    /// `Statement: ProcedureCall;`
+    /// `Expression: SimpleExpression ExpressionOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
-    fn statement_1(&mut self, _procedure_call: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_call = pop_item!(self, procedure_call, ProcedureCall, context);
-        let statement_1_built = StatementProcedureCall { procedure_call };
-        let statement_1_built = Statement::ProcedureCall(statement_1_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_1_built)?;
-        self.push(ASTType::Statement(statement_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 41:
-    ///
-    /// `Statement: IfStatement;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn statement_2(&mut self, _if_statement: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let if_statement = pop_item!(self, if_statement, IfStatement, context);
-        let statement_2_built = StatementIfStatement {
-            if_statement: Box::new(if_statement),
-        };
-        let statement_2_built = Statement::IfStatement(statement_2_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_2_built)?;
-        self.push(ASTType::Statement(statement_2_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 42:
-    ///
-    /// `Statement: WhileStatement;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn statement_3(&mut self, _while_statement: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let while_statement = pop_item!(self, while_statement, WhileStatement, context);
-        let statement_3_built = StatementWhileStatement {
-            while_statement: Box::new(while_statement),
-        };
-        let statement_3_built = Statement::WhileStatement(statement_3_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_3_built)?;
-        self.push(ASTType::Statement(statement_3_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 43:
-    ///
-    /// `Statement: RepeatStatement;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn statement_4(&mut self, _repeat_statement: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let repeat_statement = pop_item!(self, repeat_statement, RepeatStatement, context);
-        let statement_4_built = StatementRepeatStatement {
-            repeat_statement: Box::new(repeat_statement),
-        };
-        let statement_4_built = Statement::RepeatStatement(statement_4_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_4_built)?;
-        self.push(ASTType::Statement(statement_4_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 44:
-    ///
-    /// `Statement: ;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn statement_5(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let statement_5_built = StatementStatementEmpty {};
-        let statement_5_built = Statement::StatementEmpty(statement_5_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_5_built)?;
-        self.push(ASTType::Statement(statement_5_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 45:
-    ///
-    /// `StatementSequence: Statement StatementSequenceRest;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn statement_sequence(
+    fn expression(
         &mut self,
-        _statement: &ParseTreeType<'t>,
-        _statement_sequence_rest: &ParseTreeType<'t>,
+        _simple_expression: &ParseTreeType<'t>,
+        _expression_opt: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_sequence_rest = pop_item!(
-            self,
-            statement_sequence_rest,
-            StatementSequenceRest,
-            context
-        );
-        let statement = pop_item!(self, statement, Statement, context);
-        let statement_sequence_built = StatementSequence {
-            statement,
-            statement_sequence_rest,
+        let expression_opt = pop_item!(self, expression_opt, ExpressionOpt, context);
+        let simple_expression = pop_item!(self, simple_expression, SimpleExpression, context);
+        let expression_built = Expression {
+            simple_expression,
+            expression_opt,
         };
         // Calling user action here
-        self.user_grammar
-            .statement_sequence(&statement_sequence_built)?;
-        self.push(
-            ASTType::StatementSequence(statement_sequence_built),
-            context,
-        );
+        self.user_grammar.expression(&expression_built)?;
+        self.push(ASTType::Expression(expression_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 71:
     ///
-    /// `StatementSequenceRest: ';' Statement StatementSequenceRest;`
+    /// `ExpressionOpt /* Option<T>::Some */: RelationOp SimpleExpression;`
     ///
     #[parol_runtime::function_name::named]
-    fn statement_sequence_rest_0(
+    fn expression_opt_0(
         &mut self,
-        semicolon: &ParseTreeType<'t>,
-        _statement: &ParseTreeType<'t>,
-        _statement_sequence_rest: &ParseTreeType<'t>,
+        _relation_op: &ParseTreeType<'t>,
+        _simple_expression: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = semicolon.token()?.clone();
-        let statement_sequence_rest = pop_item!(
-            self,
-            statement_sequence_rest,
-            StatementSequenceRest,
-            context
-        );
-        let statement = pop_item!(self, statement, Statement, context);
-        let statement_sequence_rest_0_built =
-            StatementSequenceRestSemicolonStatementStatementSequenceRest {
-                semicolon,
-                statement,
-                statement_sequence_rest: Box::new(statement_sequence_rest),
-            };
-        let statement_sequence_rest_0_built =
-            StatementSequenceRest::SemicolonStatementStatementSequenceRest(
-                statement_sequence_rest_0_built,
-            );
-        // Calling user action here
-        self.user_grammar
-            .statement_sequence_rest(&statement_sequence_rest_0_built)?;
+        let simple_expression = pop_item!(self, simple_expression, SimpleExpression, context);
+        let relation_op = pop_item!(self, relation_op, RelationOp, context);
+        let expression_opt_0_built = ExpressionOpt {
+            relation_op,
+            simple_expression,
+        };
         self.push(
-            ASTType::StatementSequenceRest(statement_sequence_rest_0_built),
+            ASTType::ExpressionOpt(Some(expression_opt_0_built)),
             context,
         );
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 72:
     ///
-    /// `StatementSequenceRest: ;`
+    /// `ExpressionOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn statement_sequence_rest_1(&mut self) -> Result<()> {
+    fn expression_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_sequence_rest_1_built = StatementSequenceRestStatementSequenceRestEmpty {};
-        let statement_sequence_rest_1_built =
-            StatementSequenceRest::StatementSequenceRestEmpty(statement_sequence_rest_1_built);
+        self.push(ASTType::ExpressionOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 73:
+    ///
+    /// `SimpleExpression: Term SimpleExpressionList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn simple_expression(
+        &mut self,
+        _term: &ParseTreeType<'t>,
+        _simple_expression_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let simple_expression_list =
+            pop_and_reverse_item!(self, simple_expression_list, SimpleExpressionList, context);
+        let term = pop_item!(self, term, Term, context);
+        let simple_expression_built = SimpleExpression {
+            term,
+            simple_expression_list,
+        };
         // Calling user action here
         self.user_grammar
-            .statement_sequence_rest(&statement_sequence_rest_1_built)?;
+            .simple_expression(&simple_expression_built)?;
+        self.push(ASTType::SimpleExpression(simple_expression_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 74:
+    ///
+    /// `SimpleExpressionList /* Vec<T>::Push */: AddOperator Term SimpleExpressionList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn simple_expression_list_0(
+        &mut self,
+        _add_operator: &ParseTreeType<'t>,
+        _term: &ParseTreeType<'t>,
+        _simple_expression_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut simple_expression_list =
+            pop_item!(self, simple_expression_list, SimpleExpressionList, context);
+        let term = pop_item!(self, term, Term, context);
+        let add_operator = pop_item!(self, add_operator, AddOperator, context);
+        let simple_expression_list_0_built = SimpleExpressionList { term, add_operator };
+        // Add an element to the vector
+        simple_expression_list.push(simple_expression_list_0_built);
         self.push(
-            ASTType::StatementSequenceRest(statement_sequence_rest_1_built),
+            ASTType::SimpleExpressionList(simple_expression_list),
             context,
         );
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 75:
     ///
-    /// `IdentList: Ident IdentListRest;`
+    /// `SimpleExpressionList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn ident_list(
+    fn simple_expression_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let simple_expression_list_1_built = Vec::new();
+        self.push(
+            ASTType::SimpleExpressionList(simple_expression_list_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 76:
+    ///
+    /// `Term: Factor TermList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn term(&mut self, _factor: &ParseTreeType<'t>, _term_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let term_list = pop_and_reverse_item!(self, term_list, TermList, context);
+        let factor = pop_item!(self, factor, Factor, context);
+        let term_built = Term { factor, term_list };
+        // Calling user action here
+        self.user_grammar.term(&term_built)?;
+        self.push(ASTType::Term(term_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 77:
+    ///
+    /// `TermList /* Vec<T>::Push */: MulOperator Factor TermList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn term_list_0(
+        &mut self,
+        _mul_operator: &ParseTreeType<'t>,
+        _factor: &ParseTreeType<'t>,
+        _term_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut term_list = pop_item!(self, term_list, TermList, context);
+        let factor = pop_item!(self, factor, Factor, context);
+        let mul_operator = pop_item!(self, mul_operator, MulOperator, context);
+        let term_list_0_built = TermList {
+            factor,
+            mul_operator,
+        };
+        // Add an element to the vector
+        term_list.push(term_list_0_built);
+        self.push(ASTType::TermList(term_list), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 78:
+    ///
+    /// `TermList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn term_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let term_list_1_built = Vec::new();
+        self.push(ASTType::TermList(term_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 79:
+    ///
+    /// `Factor: Ident Selector;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn factor_0(
         &mut self,
         _ident: &ParseTreeType<'t>,
-        _ident_list_rest: &ParseTreeType<'t>,
+        _selector: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident_list_rest = pop_item!(self, ident_list_rest, IdentListRest, context);
+        let selector = pop_item!(self, selector, Selector, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let ident_list_built = IdentList {
+        let factor_0_built = FactorIdentSelector {
             ident,
-            ident_list_rest,
+            selector: Box::new(selector),
         };
+        let factor_0_built = Factor::IdentSelector(factor_0_built);
         // Calling user action here
-        self.user_grammar.ident_list(&ident_list_built)?;
-        self.push(ASTType::IdentList(ident_list_built), context);
+        self.user_grammar.factor(&factor_0_built)?;
+        self.push(ASTType::Factor(factor_0_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 80:
     ///
-    /// `IdentListRest: ',' Ident IdentListRest;`
+    /// `Factor: Integer;`
     ///
     #[parol_runtime::function_name::named]
-    fn ident_list_rest_0(
+    fn factor_1(&mut self, _integer: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let integer = pop_item!(self, integer, Integer, context);
+        let factor_1_built = FactorInteger { integer };
+        let factor_1_built = Factor::Integer(factor_1_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_1_built)?;
+        self.push(ASTType::Factor(factor_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 81:
+    ///
+    /// `Factor: '(' Expression ')';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn factor_2(
         &mut self,
-        comma: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
-        _ident_list_rest: &ParseTreeType<'t>,
+        l_paren: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = comma.token()?.clone();
-        let ident_list_rest = pop_item!(self, ident_list_rest, IdentListRest, context);
-        let ident = pop_item!(self, ident, Ident, context);
-        let ident_list_rest_0_built = IdentListRestCommaIdentIdentListRest {
-            comma,
-            ident,
-            ident_list_rest: Box::new(ident_list_rest),
+        let l_paren = l_paren.token()?.clone();
+        let r_paren = r_paren.token()?.clone();
+        let expression = pop_item!(self, expression, Expression, context);
+        let factor_2_built = FactorLParenExpressionRParen {
+            l_paren,
+            expression: Box::new(expression),
+            r_paren,
         };
-        let ident_list_rest_0_built =
-            IdentListRest::CommaIdentIdentListRest(ident_list_rest_0_built);
+        let factor_2_built = Factor::LParenExpressionRParen(factor_2_built);
         // Calling user action here
-        self.user_grammar
-            .ident_list_rest(&ident_list_rest_0_built)?;
-        self.push(ASTType::IdentListRest(ident_list_rest_0_built), context);
+        self.user_grammar.factor(&factor_2_built)?;
+        self.push(ASTType::Factor(factor_2_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 82:
     ///
-    /// `IdentListRest: ;`
+    /// `Factor: '~' Factor;`
     ///
     #[parol_runtime::function_name::named]
-    fn ident_list_rest_1(&mut self) -> Result<()> {
+    fn factor_3(&mut self, tilde: &ParseTreeType<'t>, _factor: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident_list_rest_1_built = IdentListRestIdentListRestEmpty {};
-        let ident_list_rest_1_built = IdentListRest::IdentListRestEmpty(ident_list_rest_1_built);
+        let tilde = tilde.token()?.clone();
+        let factor = pop_item!(self, factor, Factor, context);
+        let factor_3_built = FactorTildeFactor {
+            tilde,
+            factor: Box::new(factor),
+        };
+        let factor_3_built = Factor::TildeFactor(factor_3_built);
         // Calling user action here
-        self.user_grammar
-            .ident_list_rest(&ident_list_rest_1_built)?;
-        self.push(ASTType::IdentListRest(ident_list_rest_1_built), context);
+        self.user_grammar.factor(&factor_3_built)?;
+        self.push(ASTType::Factor(factor_3_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 51:
+    /// Semantic action for production 83:
+    ///
+    /// `Factor: UnaryOp Factor;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn factor_4(
+        &mut self,
+        _unary_op: &ParseTreeType<'t>,
+        _factor: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let factor = pop_item!(self, factor, Factor, context);
+        let unary_op = pop_item!(self, unary_op, UnaryOp, context);
+        let factor_4_built = FactorUnaryOpFactor {
+            unary_op,
+            factor: Box::new(factor),
+        };
+        let factor_4_built = Factor::UnaryOpFactor(factor_4_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_4_built)?;
+        self.push(ASTType::Factor(factor_4_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 84:
+    ///
+    /// `Selector: SelectorList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn selector(&mut self, _selector_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let selector_list = pop_item!(self, selector_list, SelectorList, context);
+        let selector_built = Selector { selector_list };
+        // Calling user action here
+        self.user_grammar.selector(&selector_built)?;
+        self.push(ASTType::Selector(selector_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 85:
+    ///
+    /// `SelectorList: '.' Ident SelectorList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn selector_list_0(
+        &mut self,
+        dot: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
+        _selector_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let dot = dot.token()?.clone();
+        let selector_list = pop_item!(self, selector_list, SelectorList, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let selector_list_0_built = SelectorListDotIdentSelectorList {
+            dot,
+            ident,
+            selector_list: Box::new(selector_list),
+        };
+        let selector_list_0_built = SelectorList::DotIdentSelectorList(selector_list_0_built);
+        // Calling user action here
+        self.user_grammar.selector_list(&selector_list_0_built)?;
+        self.push(ASTType::SelectorList(selector_list_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 86:
+    ///
+    /// `SelectorList: '[' Expression ']' SelectorList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn selector_list_1(
+        &mut self,
+        l_bracket: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        r_bracket: &ParseTreeType<'t>,
+        _selector_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_bracket = l_bracket.token()?.clone();
+        let r_bracket = r_bracket.token()?.clone();
+        let selector_list = pop_item!(self, selector_list, SelectorList, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let selector_list_1_built = SelectorListLBracketExpressionRBracketSelectorList {
+            l_bracket,
+            expression,
+            r_bracket,
+            selector_list: Box::new(selector_list),
+        };
+        let selector_list_1_built =
+            SelectorList::LBracketExpressionRBracketSelectorList(selector_list_1_built);
+        // Calling user action here
+        self.user_grammar.selector_list(&selector_list_1_built)?;
+        self.push(ASTType::SelectorList(selector_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 87:
+    ///
+    /// `SelectorList: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn selector_list_2(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let selector_list_2_built = SelectorListSelectorListEmpty {};
+        let selector_list_2_built = SelectorList::SelectorListEmpty(selector_list_2_built);
+        // Calling user action here
+        self.user_grammar.selector_list(&selector_list_2_built)?;
+        self.push(ASTType::SelectorList(selector_list_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 88:
+    ///
+    /// `AssignOp: ':=';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn assign_op(&mut self, assign_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let assign_op = assign_op.token()?.clone();
+        let assign_op_built = AssignOp { assign_op };
+        // Calling user action here
+        self.user_grammar.assign_op(&assign_op_built)?;
+        self.push(ASTType::AssignOp(assign_op_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 89:
+    ///
+    /// `RelationOp: '>=';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn relation_op_0(&mut self, g_t_equ: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let g_t_equ = g_t_equ.token()?.clone();
+        let relation_op_0_built = RelationOpGTEqu { g_t_equ };
+        let relation_op_0_built = RelationOp::GTEqu(relation_op_0_built);
+        // Calling user action here
+        self.user_grammar.relation_op(&relation_op_0_built)?;
+        self.push(ASTType::RelationOp(relation_op_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 90:
+    ///
+    /// `RelationOp: '<=';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn relation_op_1(&mut self, l_t_equ: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_t_equ = l_t_equ.token()?.clone();
+        let relation_op_1_built = RelationOpLTEqu { l_t_equ };
+        let relation_op_1_built = RelationOp::LTEqu(relation_op_1_built);
+        // Calling user action here
+        self.user_grammar.relation_op(&relation_op_1_built)?;
+        self.push(ASTType::RelationOp(relation_op_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 91:
+    ///
+    /// `RelationOp: '=';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn relation_op_2(&mut self, equ: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let equ = equ.token()?.clone();
+        let relation_op_2_built = RelationOpEqu { equ };
+        let relation_op_2_built = RelationOp::Equ(relation_op_2_built);
+        // Calling user action here
+        self.user_grammar.relation_op(&relation_op_2_built)?;
+        self.push(ASTType::RelationOp(relation_op_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 92:
+    ///
+    /// `RelationOp: '#';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn relation_op_3(&mut self, hash: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let hash = hash.token()?.clone();
+        let relation_op_3_built = RelationOpHash { hash };
+        let relation_op_3_built = RelationOp::Hash(relation_op_3_built);
+        // Calling user action here
+        self.user_grammar.relation_op(&relation_op_3_built)?;
+        self.push(ASTType::RelationOp(relation_op_3_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 93:
+    ///
+    /// `RelationOp: '<';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn relation_op_4(&mut self, l_t: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_t = l_t.token()?.clone();
+        let relation_op_4_built = RelationOpLT { l_t };
+        let relation_op_4_built = RelationOp::LT(relation_op_4_built);
+        // Calling user action here
+        self.user_grammar.relation_op(&relation_op_4_built)?;
+        self.push(ASTType::RelationOp(relation_op_4_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 94:
+    ///
+    /// `RelationOp: '>';`
+    ///
+    #[parol_runtime::function_name::named]
+    fn relation_op_5(&mut self, g_t: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let g_t = g_t.token()?.clone();
+        let relation_op_5_built = RelationOpGT { g_t };
+        let relation_op_5_built = RelationOp::GT(relation_op_5_built);
+        // Calling user action here
+        self.user_grammar.relation_op(&relation_op_5_built)?;
+        self.push(ASTType::RelationOp(relation_op_5_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 95:
+    ///
+    /// `AddOperator: /\+|-|OR/;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn add_operator(&mut self, add_operator: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let add_operator = add_operator.token()?.clone();
+        let add_operator_built = AddOperator { add_operator };
+        // Calling user action here
+        self.user_grammar.add_operator(&add_operator_built)?;
+        self.push(ASTType::AddOperator(add_operator_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 96:
+    ///
+    /// `MulOperator: "\*|/|DIV|MOD|&";`
+    ///
+    #[parol_runtime::function_name::named]
+    fn mul_operator(&mut self, mul_operator: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mul_operator = mul_operator.token()?.clone();
+        let mul_operator_built = MulOperator { mul_operator };
+        // Calling user action here
+        self.user_grammar.mul_operator(&mul_operator_built)?;
+        self.push(ASTType::MulOperator(mul_operator_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 97:
+    ///
+    /// `UnaryOp: /\+|-/;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn unary_op(&mut self, unary_op: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let unary_op = unary_op.token()?.clone();
+        let unary_op_built = UnaryOp { unary_op };
+        // Calling user action here
+        self.user_grammar.unary_op(&unary_op_built)?;
+        self.push(ASTType::UnaryOp(unary_op_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 98:
+    ///
+    /// `Type: Ident;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn type_0(&mut self, _ident: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let ident = pop_item!(self, ident, Ident, context);
+        let type_0_built = TypeIdent { ident };
+        let type_0_built = Type::Ident(type_0_built);
+        // Calling user action here
+        self.user_grammar.r#type(&type_0_built)?;
+        self.push(ASTType::Type(type_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 99:
+    ///
+    /// `Type: ArrayType;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn type_1(&mut self, _array_type: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let array_type = pop_item!(self, array_type, ArrayType, context);
+        let type_1_built = TypeArrayType {
+            array_type: Box::new(array_type),
+        };
+        let type_1_built = Type::ArrayType(type_1_built);
+        // Calling user action here
+        self.user_grammar.r#type(&type_1_built)?;
+        self.push(ASTType::Type(type_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 100:
+    ///
+    /// `Type: RecordType;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn type_2(&mut self, _record_type: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let record_type = pop_item!(self, record_type, RecordType, context);
+        let type_2_built = TypeRecordType { record_type };
+        let type_2_built = Type::RecordType(type_2_built);
+        // Calling user action here
+        self.user_grammar.r#type(&type_2_built)?;
+        self.push(ASTType::Type(type_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 101:
     ///
     /// `ArrayType: 'ARRAY' Expression 'OF' Type;`
     ///
@@ -3154,51 +3650,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 52:
-    ///
-    /// `FieldList: IdentList ':' Type;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn field_list_0(
-        &mut self,
-        _ident_list: &ParseTreeType<'t>,
-        colon: &ParseTreeType<'t>,
-        _type: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let colon = colon.token()?.clone();
-        let r#type = pop_item!(self, r#type, Type, context);
-        let ident_list = pop_item!(self, ident_list, IdentList, context);
-        let field_list_0_built = FieldListIdentListColonType {
-            ident_list,
-            colon,
-            r#type: Box::new(r#type),
-        };
-        let field_list_0_built = FieldList::IdentListColonType(field_list_0_built);
-        // Calling user action here
-        self.user_grammar.field_list(&field_list_0_built)?;
-        self.push(ASTType::FieldList(field_list_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 53:
-    ///
-    /// `FieldList: ;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn field_list_1(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let field_list_1_built = FieldListFieldListEmpty {};
-        let field_list_1_built = FieldList::FieldListEmpty(field_list_1_built);
-        // Calling user action here
-        self.user_grammar.field_list(&field_list_1_built)?;
-        self.push(ASTType::FieldList(field_list_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 54:
+    /// Semantic action for production 102:
     ///
     /// `RecordType: 'RECORD' FieldList FieldListRest 'END';`
     ///
@@ -3228,7 +3680,65 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 55:
+    /// Semantic action for production 103:
+    ///
+    /// `FieldList: FieldListList /* Vec */;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn field_list(&mut self, _field_list_list: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let field_list_list = pop_and_reverse_item!(self, field_list_list, FieldListList, context);
+        let field_list_built = FieldList { field_list_list };
+        // Calling user action here
+        self.user_grammar.field_list(&field_list_built)?;
+        self.push(ASTType::FieldList(field_list_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 104:
+    ///
+    /// `FieldListList /* Vec<T>::Push */: IdentList ':' Type FieldListList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn field_list_list_0(
+        &mut self,
+        _ident_list: &ParseTreeType<'t>,
+        colon: &ParseTreeType<'t>,
+        _type: &ParseTreeType<'t>,
+        _field_list_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let colon = colon.token()?.clone();
+        let mut field_list_list = pop_item!(self, field_list_list, FieldListList, context);
+        let r#type = pop_item!(self, r#type, Type, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
+        let field_list_list_0_built = FieldListList {
+            r#type,
+            colon,
+            ident_list,
+        };
+        // Add an element to the vector
+        field_list_list.push(field_list_list_0_built);
+        self.push(ASTType::FieldListList(field_list_list), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 105:
+    ///
+    /// `FieldListList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn field_list_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let field_list_list_1_built = Vec::new();
+        self.push(ASTType::FieldListList(field_list_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 106:
     ///
     /// `FieldListRest: ';' FieldList FieldListRest;`
     ///
@@ -3258,7 +3768,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 56:
+    /// Semantic action for production 107:
     ///
     /// `FieldListRest: ;`
     ///
@@ -3275,1213 +3785,67 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 57:
+    /// Semantic action for production 108:
     ///
-    /// `Type: Ident;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn type_0(&mut self, _ident: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let ident = pop_item!(self, ident, Ident, context);
-        let type_0_built = TypeIdent { ident };
-        let type_0_built = Type::Ident(type_0_built);
-        // Calling user action here
-        self.user_grammar.r#type(&type_0_built)?;
-        self.push(ASTType::Type(type_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 58:
-    ///
-    /// `Type: ArrayType;`
+    /// `IdentList: Ident IdentListList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
-    fn type_1(&mut self, _array_type: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let array_type = pop_item!(self, array_type, ArrayType, context);
-        let type_1_built = TypeArrayType {
-            array_type: Box::new(array_type),
-        };
-        let type_1_built = Type::ArrayType(type_1_built);
-        // Calling user action here
-        self.user_grammar.r#type(&type_1_built)?;
-        self.push(ASTType::Type(type_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 59:
-    ///
-    /// `Type: RecordType;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn type_2(&mut self, _record_type: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let record_type = pop_item!(self, record_type, RecordType, context);
-        let type_2_built = TypeRecordType { record_type };
-        let type_2_built = Type::RecordType(type_2_built);
-        // Calling user action here
-        self.user_grammar.r#type(&type_2_built)?;
-        self.push(ASTType::Type(type_2_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 60:
-    ///
-    /// `FPSection: 'VAR' IdentList ':' Type;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn f_p_section_0(
+    fn ident_list(
         &mut self,
-        v_a_r: &ParseTreeType<'t>,
-        _ident_list: &ParseTreeType<'t>,
-        colon: &ParseTreeType<'t>,
-        _type: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let v_a_r = v_a_r.token()?.clone();
-        let colon = colon.token()?.clone();
-        let r#type = pop_item!(self, r#type, Type, context);
-        let ident_list = pop_item!(self, ident_list, IdentList, context);
-        let f_p_section_0_built = FPSectionVARIdentListColonType {
-            v_a_r,
-            ident_list,
-            colon,
-            r#type,
-        };
-        let f_p_section_0_built = FPSection::VARIdentListColonType(f_p_section_0_built);
-        // Calling user action here
-        self.user_grammar.f_p_section(&f_p_section_0_built)?;
-        self.push(ASTType::FPSection(f_p_section_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 61:
-    ///
-    /// `FPSection: IdentList ':' Type;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn f_p_section_1(
-        &mut self,
-        _ident_list: &ParseTreeType<'t>,
-        colon: &ParseTreeType<'t>,
-        _type: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let colon = colon.token()?.clone();
-        let r#type = pop_item!(self, r#type, Type, context);
-        let ident_list = pop_item!(self, ident_list, IdentList, context);
-        let f_p_section_1_built = FPSectionIdentListColonType {
-            ident_list,
-            colon,
-            r#type,
-        };
-        let f_p_section_1_built = FPSection::IdentListColonType(f_p_section_1_built);
-        // Calling user action here
-        self.user_grammar.f_p_section(&f_p_section_1_built)?;
-        self.push(ASTType::FPSection(f_p_section_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 62:
-    ///
-    /// `FormalParameters: '(' FormalParametersSuffix;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn formal_parameters(
-        &mut self,
-        l_paren: &ParseTreeType<'t>,
-        _formal_parameters_suffix: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let l_paren = l_paren.token()?.clone();
-        let formal_parameters_suffix = pop_item!(
-            self,
-            formal_parameters_suffix,
-            FormalParametersSuffix,
-            context
-        );
-        let formal_parameters_built = FormalParameters {
-            l_paren,
-            formal_parameters_suffix,
-        };
-        // Calling user action here
-        self.user_grammar
-            .formal_parameters(&formal_parameters_built)?;
-        self.push(ASTType::FormalParameters(formal_parameters_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 63:
-    ///
-    /// `FormalParametersSuffix: ')';`
-    ///
-    #[parol_runtime::function_name::named]
-    fn formal_parameters_suffix_0(&mut self, r_paren: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let r_paren = r_paren.token()?.clone();
-        let formal_parameters_suffix_0_built = FormalParametersSuffixRParen { r_paren };
-        let formal_parameters_suffix_0_built =
-            FormalParametersSuffix::RParen(formal_parameters_suffix_0_built);
-        self.push(
-            ASTType::FormalParametersSuffix(formal_parameters_suffix_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 64:
-    ///
-    /// `FormalParametersSuffix: FPSection FPSectionRest ')';`
-    ///
-    #[parol_runtime::function_name::named]
-    fn formal_parameters_suffix_1(
-        &mut self,
-        _f_p_section: &ParseTreeType<'t>,
-        _f_p_section_rest: &ParseTreeType<'t>,
-        r_paren: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let r_paren = r_paren.token()?.clone();
-        let f_p_section_rest = pop_item!(self, f_p_section_rest, FPSectionRest, context);
-        let f_p_section = pop_item!(self, f_p_section, FPSection, context);
-        let formal_parameters_suffix_1_built = FormalParametersSuffixFPSectionFPSectionRestRParen {
-            f_p_section,
-            f_p_section_rest,
-            r_paren,
-        };
-        let formal_parameters_suffix_1_built =
-            FormalParametersSuffix::FPSectionFPSectionRestRParen(formal_parameters_suffix_1_built);
-        self.push(
-            ASTType::FormalParametersSuffix(formal_parameters_suffix_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 65:
-    ///
-    /// `FPSectionRest: ';' FPSection FPSectionRest;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn f_p_section_rest_0(
-        &mut self,
-        semicolon: &ParseTreeType<'t>,
-        _f_p_section: &ParseTreeType<'t>,
-        _f_p_section_rest: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let semicolon = semicolon.token()?.clone();
-        let f_p_section_rest = pop_item!(self, f_p_section_rest, FPSectionRest, context);
-        let f_p_section = pop_item!(self, f_p_section, FPSection, context);
-        let f_p_section_rest_0_built = FPSectionRestSemicolonFPSectionFPSectionRest {
-            semicolon,
-            f_p_section,
-            f_p_section_rest: Box::new(f_p_section_rest),
-        };
-        let f_p_section_rest_0_built =
-            FPSectionRest::SemicolonFPSectionFPSectionRest(f_p_section_rest_0_built);
-        // Calling user action here
-        self.user_grammar
-            .f_p_section_rest(&f_p_section_rest_0_built)?;
-        self.push(ASTType::FPSectionRest(f_p_section_rest_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 66:
-    ///
-    /// `FPSectionRest: ;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn f_p_section_rest_1(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let f_p_section_rest_1_built = FPSectionRestFPSectionRestEmpty {};
-        let f_p_section_rest_1_built = FPSectionRest::FPSectionRestEmpty(f_p_section_rest_1_built);
-        // Calling user action here
-        self.user_grammar
-            .f_p_section_rest(&f_p_section_rest_1_built)?;
-        self.push(ASTType::FPSectionRest(f_p_section_rest_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 67:
-    ///
-    /// `ProcedureHeading: 'PROCEDURE' Ident ProcedureHeadingSuffix;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_heading(
-        &mut self,
-        p_r_o_c_e_d_u_r_e: &ParseTreeType<'t>,
         _ident: &ParseTreeType<'t>,
-        _procedure_heading_suffix: &ParseTreeType<'t>,
+        _ident_list_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let p_r_o_c_e_d_u_r_e = p_r_o_c_e_d_u_r_e.token()?.clone();
-        let procedure_heading_suffix = pop_item!(
-            self,
-            procedure_heading_suffix,
-            ProcedureHeadingSuffix,
-            context
-        );
+        let ident_list_list = pop_and_reverse_item!(self, ident_list_list, IdentListList, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let procedure_heading_built = ProcedureHeading {
-            p_r_o_c_e_d_u_r_e,
+        let ident_list_built = IdentList {
             ident,
-            procedure_heading_suffix,
+            ident_list_list,
         };
         // Calling user action here
-        self.user_grammar
-            .procedure_heading(&procedure_heading_built)?;
-        self.push(ASTType::ProcedureHeading(procedure_heading_built), context);
+        self.user_grammar.ident_list(&ident_list_built)?;
+        self.push(ASTType::IdentList(ident_list_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 68:
+    /// Semantic action for production 109:
     ///
-    /// `ProcedureHeadingSuffix: FormalParameters;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_heading_suffix_0(&mut self, _formal_parameters: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let formal_parameters = pop_item!(self, formal_parameters, FormalParameters, context);
-        let procedure_heading_suffix_0_built =
-            ProcedureHeadingSuffixFormalParameters { formal_parameters };
-        let procedure_heading_suffix_0_built =
-            ProcedureHeadingSuffix::FormalParameters(procedure_heading_suffix_0_built);
-        self.push(
-            ASTType::ProcedureHeadingSuffix(procedure_heading_suffix_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 69:
-    ///
-    /// `ProcedureHeadingSuffix: ;`
+    /// `IdentListList /* Vec<T>::Push */: ',' Ident IdentListList;`
     ///
     #[parol_runtime::function_name::named]
-    fn procedure_heading_suffix_1(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_heading_suffix_1_built = ProcedureHeadingSuffixProcedureHeadingSuffixEmpty {};
-        let procedure_heading_suffix_1_built =
-            ProcedureHeadingSuffix::ProcedureHeadingSuffixEmpty(procedure_heading_suffix_1_built);
-        self.push(
-            ASTType::ProcedureHeadingSuffix(procedure_heading_suffix_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 70:
-    ///
-    /// `ProcedureBody: Declarations ProcedureBodySuffix0;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_body(
+    fn ident_list_list_0(
         &mut self,
-        _declarations: &ParseTreeType<'t>,
-        _procedure_body_suffix0: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_body_suffix0 =
-            pop_item!(self, procedure_body_suffix0, ProcedureBodySuffix0, context);
-        let declarations = pop_item!(self, declarations, Declarations, context);
-        let procedure_body_built = ProcedureBody {
-            declarations,
-            procedure_body_suffix0,
-        };
-        // Calling user action here
-        self.user_grammar.procedure_body(&procedure_body_built)?;
-        self.push(ASTType::ProcedureBody(procedure_body_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 71:
-    ///
-    /// `ProcedureBodySuffix0: 'BEGIN' StatementSequence ProcedureBodySuffix;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_body_suffix0_0(
-        &mut self,
-        b_e_g_i_n: &ParseTreeType<'t>,
-        _statement_sequence: &ParseTreeType<'t>,
-        _procedure_body_suffix: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let b_e_g_i_n = b_e_g_i_n.token()?.clone();
-        let procedure_body_suffix =
-            pop_item!(self, procedure_body_suffix, ProcedureBodySuffix, context);
-        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
-        let procedure_body_suffix0_0_built =
-            ProcedureBodySuffix0BEGINStatementSequenceProcedureBodySuffix {
-                b_e_g_i_n,
-                statement_sequence,
-                procedure_body_suffix,
-            };
-        let procedure_body_suffix0_0_built =
-            ProcedureBodySuffix0::BEGINStatementSequenceProcedureBodySuffix(
-                procedure_body_suffix0_0_built,
-            );
-        self.push(
-            ASTType::ProcedureBodySuffix0(procedure_body_suffix0_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 72:
-    ///
-    /// `ProcedureBodySuffix0: 'RETURN' Expression 'END' Ident;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_body_suffix0_1(
-        &mut self,
-        r_e_t_u_r_n: &ParseTreeType<'t>,
-        _expression: &ParseTreeType<'t>,
-        e_n_d: &ParseTreeType<'t>,
+        comma: &ParseTreeType<'t>,
         _ident: &ParseTreeType<'t>,
+        _ident_list_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_e_t_u_r_n = r_e_t_u_r_n.token()?.clone();
-        let e_n_d = e_n_d.token()?.clone();
+        let comma = comma.token()?.clone();
+        let mut ident_list_list = pop_item!(self, ident_list_list, IdentListList, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let expression = pop_item!(self, expression, Expression, context);
-        let procedure_body_suffix0_1_built = ProcedureBodySuffix0RETURNExpressionENDIdent {
-            r_e_t_u_r_n,
-            expression,
-            e_n_d,
-            ident,
-        };
-        let procedure_body_suffix0_1_built =
-            ProcedureBodySuffix0::RETURNExpressionENDIdent(procedure_body_suffix0_1_built);
-        self.push(
-            ASTType::ProcedureBodySuffix0(procedure_body_suffix0_1_built),
-            context,
-        );
+        let ident_list_list_0_built = IdentListList { ident, comma };
+        // Add an element to the vector
+        ident_list_list.push(ident_list_list_0_built);
+        self.push(ASTType::IdentListList(ident_list_list), context);
         Ok(())
     }
 
-    /// Semantic action for production 73:
+    /// Semantic action for production 110:
     ///
-    /// `ProcedureBodySuffix0: 'END' Ident;`
+    /// `IdentListList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
-    fn procedure_body_suffix0_2(
-        &mut self,
-        e_n_d: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
-    ) -> Result<()> {
+    fn ident_list_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let e_n_d = e_n_d.token()?.clone();
-        let ident = pop_item!(self, ident, Ident, context);
-        let procedure_body_suffix0_2_built = ProcedureBodySuffix0ENDIdent { e_n_d, ident };
-        let procedure_body_suffix0_2_built =
-            ProcedureBodySuffix0::ENDIdent(procedure_body_suffix0_2_built);
-        self.push(
-            ASTType::ProcedureBodySuffix0(procedure_body_suffix0_2_built),
-            context,
-        );
+        let ident_list_list_1_built = Vec::new();
+        self.push(ASTType::IdentListList(ident_list_list_1_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 74:
-    ///
-    /// `ProcedureBodySuffix: 'RETURN' Expression 'END' Ident;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_body_suffix_0(
-        &mut self,
-        r_e_t_u_r_n: &ParseTreeType<'t>,
-        _expression: &ParseTreeType<'t>,
-        e_n_d: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let r_e_t_u_r_n = r_e_t_u_r_n.token()?.clone();
-        let e_n_d = e_n_d.token()?.clone();
-        let ident = pop_item!(self, ident, Ident, context);
-        let expression = pop_item!(self, expression, Expression, context);
-        let procedure_body_suffix_0_built = ProcedureBodySuffixRETURNExpressionENDIdent {
-            r_e_t_u_r_n,
-            expression,
-            e_n_d,
-            ident,
-        };
-        let procedure_body_suffix_0_built =
-            ProcedureBodySuffix::RETURNExpressionENDIdent(procedure_body_suffix_0_built);
-        self.push(
-            ASTType::ProcedureBodySuffix(procedure_body_suffix_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 75:
-    ///
-    /// `ProcedureBodySuffix: 'END' Ident;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_body_suffix_1(
-        &mut self,
-        e_n_d: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let e_n_d = e_n_d.token()?.clone();
-        let ident = pop_item!(self, ident, Ident, context);
-        let procedure_body_suffix_1_built = ProcedureBodySuffixENDIdent { e_n_d, ident };
-        let procedure_body_suffix_1_built =
-            ProcedureBodySuffix::ENDIdent(procedure_body_suffix_1_built);
-        self.push(
-            ASTType::ProcedureBodySuffix(procedure_body_suffix_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 76:
-    ///
-    /// `ProcedureDeclaration: ProcedureHeading ';' ProcedureBody;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_declaration(
-        &mut self,
-        _procedure_heading: &ParseTreeType<'t>,
-        semicolon: &ParseTreeType<'t>,
-        _procedure_body: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let semicolon = semicolon.token()?.clone();
-        let procedure_body = pop_item!(self, procedure_body, ProcedureBody, context);
-        let procedure_heading = pop_item!(self, procedure_heading, ProcedureHeading, context);
-        let procedure_declaration_built = ProcedureDeclaration {
-            procedure_heading,
-            semicolon,
-            procedure_body,
-        };
-        // Calling user action here
-        self.user_grammar
-            .procedure_declaration(&procedure_declaration_built)?;
-        self.push(
-            ASTType::ProcedureDeclaration(procedure_declaration_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 77:
-    ///
-    /// `Declarations: 'TYPE' TypeDecls DeclarationsSuffix1;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_0(
-        &mut self,
-        t_y_p_e: &ParseTreeType<'t>,
-        _type_decls: &ParseTreeType<'t>,
-        _declarations_suffix1: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let t_y_p_e = t_y_p_e.token()?.clone();
-        let declarations_suffix1 =
-            pop_item!(self, declarations_suffix1, DeclarationsSuffix1, context);
-        let type_decls = pop_item!(self, type_decls, TypeDecls, context);
-        let declarations_0_built = DeclarationsTYPETypeDeclsDeclarationsSuffix1 {
-            t_y_p_e,
-            type_decls,
-            declarations_suffix1: Box::new(declarations_suffix1),
-        };
-        let declarations_0_built =
-            Declarations::TYPETypeDeclsDeclarationsSuffix1(declarations_0_built);
-        // Calling user action here
-        self.user_grammar.declarations(&declarations_0_built)?;
-        self.push(ASTType::Declarations(declarations_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 78:
-    ///
-    /// `Declarations: 'CONST' ConstDecls DeclarationsSuffix0;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_1(
-        &mut self,
-        c_o_n_s_t: &ParseTreeType<'t>,
-        _const_decls: &ParseTreeType<'t>,
-        _declarations_suffix0: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let c_o_n_s_t = c_o_n_s_t.token()?.clone();
-        let declarations_suffix0 =
-            pop_item!(self, declarations_suffix0, DeclarationsSuffix0, context);
-        let const_decls = pop_item!(self, const_decls, ConstDecls, context);
-        let declarations_1_built = DeclarationsCONSTConstDeclsDeclarationsSuffix0 {
-            c_o_n_s_t,
-            const_decls,
-            declarations_suffix0: Box::new(declarations_suffix0),
-        };
-        let declarations_1_built =
-            Declarations::CONSTConstDeclsDeclarationsSuffix0(declarations_1_built);
-        // Calling user action here
-        self.user_grammar.declarations(&declarations_1_built)?;
-        self.push(ASTType::Declarations(declarations_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 79:
-    ///
-    /// `DeclarationsSuffix1: 'VAR' VarDecls ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_suffix1_0(
-        &mut self,
-        v_a_r: &ParseTreeType<'t>,
-        _var_decls: &ParseTreeType<'t>,
-        _procedure_declaration_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let v_a_r = v_a_r.token()?.clone();
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let var_decls = pop_item!(self, var_decls, VarDecls, context);
-        let declarations_suffix1_0_built = DeclarationsSuffix1VARVarDeclsProcedureDeclarationList {
-            v_a_r,
-            var_decls,
-            procedure_declaration_list,
-        };
-        let declarations_suffix1_0_built =
-            DeclarationsSuffix1::VARVarDeclsProcedureDeclarationList(declarations_suffix1_0_built);
-        self.push(
-            ASTType::DeclarationsSuffix1(declarations_suffix1_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 80:
-    ///
-    /// `DeclarationsSuffix1: ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_suffix1_1(
-        &mut self,
-        _procedure_declaration_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let declarations_suffix1_1_built = DeclarationsSuffix1ProcedureDeclarationList {
-            procedure_declaration_list,
-        };
-        let declarations_suffix1_1_built =
-            DeclarationsSuffix1::ProcedureDeclarationList(declarations_suffix1_1_built);
-        self.push(
-            ASTType::DeclarationsSuffix1(declarations_suffix1_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 81:
-    ///
-    /// `Declarations: 'VAR' VarDecls ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_2(
-        &mut self,
-        v_a_r: &ParseTreeType<'t>,
-        _var_decls: &ParseTreeType<'t>,
-        _procedure_declaration_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let v_a_r = v_a_r.token()?.clone();
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let var_decls = pop_item!(self, var_decls, VarDecls, context);
-        let declarations_2_built = DeclarationsVARVarDeclsProcedureDeclarationList {
-            v_a_r,
-            var_decls,
-            procedure_declaration_list: Box::new(procedure_declaration_list),
-        };
-        let declarations_2_built =
-            Declarations::VARVarDeclsProcedureDeclarationList(declarations_2_built);
-        // Calling user action here
-        self.user_grammar.declarations(&declarations_2_built)?;
-        self.push(ASTType::Declarations(declarations_2_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 82:
-    ///
-    /// `Declarations: ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_3(&mut self, _procedure_declaration_list: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let declarations_3_built = DeclarationsProcedureDeclarationList {
-            procedure_declaration_list: Box::new(procedure_declaration_list),
-        };
-        let declarations_3_built = Declarations::ProcedureDeclarationList(declarations_3_built);
-        // Calling user action here
-        self.user_grammar.declarations(&declarations_3_built)?;
-        self.push(ASTType::Declarations(declarations_3_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 83:
-    ///
-    /// `DeclarationsSuffix0: 'TYPE' TypeDecls DeclarationsSuffix;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_suffix0_0(
-        &mut self,
-        t_y_p_e: &ParseTreeType<'t>,
-        _type_decls: &ParseTreeType<'t>,
-        _declarations_suffix: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let t_y_p_e = t_y_p_e.token()?.clone();
-        let declarations_suffix = pop_item!(self, declarations_suffix, DeclarationsSuffix, context);
-        let type_decls = pop_item!(self, type_decls, TypeDecls, context);
-        let declarations_suffix0_0_built = DeclarationsSuffix0TYPETypeDeclsDeclarationsSuffix {
-            t_y_p_e,
-            type_decls,
-            declarations_suffix,
-        };
-        let declarations_suffix0_0_built =
-            DeclarationsSuffix0::TYPETypeDeclsDeclarationsSuffix(declarations_suffix0_0_built);
-        self.push(
-            ASTType::DeclarationsSuffix0(declarations_suffix0_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 84:
-    ///
-    /// `DeclarationsSuffix0: 'VAR' VarDecls ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_suffix0_1(
-        &mut self,
-        v_a_r: &ParseTreeType<'t>,
-        _var_decls: &ParseTreeType<'t>,
-        _procedure_declaration_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let v_a_r = v_a_r.token()?.clone();
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let var_decls = pop_item!(self, var_decls, VarDecls, context);
-        let declarations_suffix0_1_built = DeclarationsSuffix0VARVarDeclsProcedureDeclarationList {
-            v_a_r,
-            var_decls,
-            procedure_declaration_list,
-        };
-        let declarations_suffix0_1_built =
-            DeclarationsSuffix0::VARVarDeclsProcedureDeclarationList(declarations_suffix0_1_built);
-        self.push(
-            ASTType::DeclarationsSuffix0(declarations_suffix0_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 85:
-    ///
-    /// `DeclarationsSuffix0: ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_suffix0_2(
-        &mut self,
-        _procedure_declaration_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let declarations_suffix0_2_built = DeclarationsSuffix0ProcedureDeclarationList {
-            procedure_declaration_list,
-        };
-        let declarations_suffix0_2_built =
-            DeclarationsSuffix0::ProcedureDeclarationList(declarations_suffix0_2_built);
-        self.push(
-            ASTType::DeclarationsSuffix0(declarations_suffix0_2_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 86:
-    ///
-    /// `DeclarationsSuffix: 'VAR' VarDecls ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_suffix_0(
-        &mut self,
-        v_a_r: &ParseTreeType<'t>,
-        _var_decls: &ParseTreeType<'t>,
-        _procedure_declaration_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let v_a_r = v_a_r.token()?.clone();
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let var_decls = pop_item!(self, var_decls, VarDecls, context);
-        let declarations_suffix_0_built = DeclarationsSuffixVARVarDeclsProcedureDeclarationList {
-            v_a_r,
-            var_decls,
-            procedure_declaration_list,
-        };
-        let declarations_suffix_0_built =
-            DeclarationsSuffix::VARVarDeclsProcedureDeclarationList(declarations_suffix_0_built);
-        self.push(
-            ASTType::DeclarationsSuffix(declarations_suffix_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 87:
-    ///
-    /// `DeclarationsSuffix: ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn declarations_suffix_1(
-        &mut self,
-        _procedure_declaration_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let declarations_suffix_1_built = DeclarationsSuffixProcedureDeclarationList {
-            procedure_declaration_list,
-        };
-        let declarations_suffix_1_built =
-            DeclarationsSuffix::ProcedureDeclarationList(declarations_suffix_1_built);
-        self.push(
-            ASTType::DeclarationsSuffix(declarations_suffix_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 88:
-    ///
-    /// `ProcedureDeclarationList: ProcedureDeclaration ';' ProcedureDeclarationList;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_declaration_list_0(
-        &mut self,
-        _procedure_declaration: &ParseTreeType<'t>,
-        semicolon: &ParseTreeType<'t>,
-        _procedure_declaration_list: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let semicolon = semicolon.token()?.clone();
-        let procedure_declaration_list = pop_item!(
-            self,
-            procedure_declaration_list,
-            ProcedureDeclarationList,
-            context
-        );
-        let procedure_declaration =
-            pop_item!(self, procedure_declaration, ProcedureDeclaration, context);
-        let procedure_declaration_list_0_built =
-            ProcedureDeclarationListProcedureDeclarationSemicolonProcedureDeclarationList {
-                procedure_declaration,
-                semicolon,
-                procedure_declaration_list: Box::new(procedure_declaration_list),
-            };
-        let procedure_declaration_list_0_built =
-            ProcedureDeclarationList::ProcedureDeclarationSemicolonProcedureDeclarationList(
-                procedure_declaration_list_0_built,
-            );
-        // Calling user action here
-        self.user_grammar
-            .procedure_declaration_list(&procedure_declaration_list_0_built)?;
-        self.push(
-            ASTType::ProcedureDeclarationList(procedure_declaration_list_0_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 89:
-    ///
-    /// `ProcedureDeclarationList: ;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn procedure_declaration_list_1(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let procedure_declaration_list_1_built =
-            ProcedureDeclarationListProcedureDeclarationListEmpty {};
-        let procedure_declaration_list_1_built =
-            ProcedureDeclarationList::ProcedureDeclarationListEmpty(
-                procedure_declaration_list_1_built,
-            );
-        // Calling user action here
-        self.user_grammar
-            .procedure_declaration_list(&procedure_declaration_list_1_built)?;
-        self.push(
-            ASTType::ProcedureDeclarationList(procedure_declaration_list_1_built),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 90:
-    ///
-    /// `ConstDecls: Ident AssignOp Expression ';' ConstDecls;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn const_decls_0(
-        &mut self,
-        _ident: &ParseTreeType<'t>,
-        _assign_op: &ParseTreeType<'t>,
-        _expression: &ParseTreeType<'t>,
-        semicolon: &ParseTreeType<'t>,
-        _const_decls: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let semicolon = semicolon.token()?.clone();
-        let const_decls = pop_item!(self, const_decls, ConstDecls, context);
-        let expression = pop_item!(self, expression, Expression, context);
-        let assign_op = pop_item!(self, assign_op, AssignOp, context);
-        let ident = pop_item!(self, ident, Ident, context);
-        let const_decls_0_built = ConstDeclsIdentAssignOpExpressionSemicolonConstDecls {
-            ident,
-            assign_op,
-            expression,
-            semicolon,
-            const_decls: Box::new(const_decls),
-        };
-        let const_decls_0_built =
-            ConstDecls::IdentAssignOpExpressionSemicolonConstDecls(const_decls_0_built);
-        // Calling user action here
-        self.user_grammar.const_decls(&const_decls_0_built)?;
-        self.push(ASTType::ConstDecls(const_decls_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 91:
-    ///
-    /// `ConstDecls: ;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn const_decls_1(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let const_decls_1_built = ConstDeclsConstDeclsEmpty {};
-        let const_decls_1_built = ConstDecls::ConstDeclsEmpty(const_decls_1_built);
-        // Calling user action here
-        self.user_grammar.const_decls(&const_decls_1_built)?;
-        self.push(ASTType::ConstDecls(const_decls_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 92:
-    ///
-    /// `TypeDecls: Ident AssignOp Type ';' TypeDecls;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn type_decls_0(
-        &mut self,
-        _ident: &ParseTreeType<'t>,
-        _assign_op: &ParseTreeType<'t>,
-        _type: &ParseTreeType<'t>,
-        semicolon: &ParseTreeType<'t>,
-        _type_decls: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let semicolon = semicolon.token()?.clone();
-        let type_decls = pop_item!(self, type_decls, TypeDecls, context);
-        let r#type = pop_item!(self, r#type, Type, context);
-        let assign_op = pop_item!(self, assign_op, AssignOp, context);
-        let ident = pop_item!(self, ident, Ident, context);
-        let type_decls_0_built = TypeDeclsIdentAssignOpTypeSemicolonTypeDecls {
-            ident,
-            assign_op,
-            r#type,
-            semicolon,
-            type_decls: Box::new(type_decls),
-        };
-        let type_decls_0_built = TypeDecls::IdentAssignOpTypeSemicolonTypeDecls(type_decls_0_built);
-        // Calling user action here
-        self.user_grammar.type_decls(&type_decls_0_built)?;
-        self.push(ASTType::TypeDecls(type_decls_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 93:
-    ///
-    /// `TypeDecls: ;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn type_decls_1(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let type_decls_1_built = TypeDeclsTypeDeclsEmpty {};
-        let type_decls_1_built = TypeDecls::TypeDeclsEmpty(type_decls_1_built);
-        // Calling user action here
-        self.user_grammar.type_decls(&type_decls_1_built)?;
-        self.push(ASTType::TypeDecls(type_decls_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 94:
-    ///
-    /// `VarDecls: IdentList ':' Type ';' VarDecls;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn var_decls_0(
-        &mut self,
-        _ident_list: &ParseTreeType<'t>,
-        colon: &ParseTreeType<'t>,
-        _type: &ParseTreeType<'t>,
-        semicolon: &ParseTreeType<'t>,
-        _var_decls: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let colon = colon.token()?.clone();
-        let semicolon = semicolon.token()?.clone();
-        let var_decls = pop_item!(self, var_decls, VarDecls, context);
-        let r#type = pop_item!(self, r#type, Type, context);
-        let ident_list = pop_item!(self, ident_list, IdentList, context);
-        let var_decls_0_built = VarDeclsIdentListColonTypeSemicolonVarDecls {
-            ident_list,
-            colon,
-            r#type,
-            semicolon,
-            var_decls: Box::new(var_decls),
-        };
-        let var_decls_0_built = VarDecls::IdentListColonTypeSemicolonVarDecls(var_decls_0_built);
-        // Calling user action here
-        self.user_grammar.var_decls(&var_decls_0_built)?;
-        self.push(ASTType::VarDecls(var_decls_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 95:
-    ///
-    /// `VarDecls: ;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn var_decls_1(&mut self) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let var_decls_1_built = VarDeclsVarDeclsEmpty {};
-        let var_decls_1_built = VarDecls::VarDeclsEmpty(var_decls_1_built);
-        // Calling user action here
-        self.user_grammar.var_decls(&var_decls_1_built)?;
-        self.push(ASTType::VarDecls(var_decls_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 96:
-    ///
-    /// `Module: 'MODULE' Ident ';' Declarations ModuleSuffix;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn module(
-        &mut self,
-        m_o_d_u_l_e: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
-        semicolon: &ParseTreeType<'t>,
-        _declarations: &ParseTreeType<'t>,
-        _module_suffix: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let m_o_d_u_l_e = m_o_d_u_l_e.token()?.clone();
-        let semicolon = semicolon.token()?.clone();
-        let module_suffix = pop_item!(self, module_suffix, ModuleSuffix, context);
-        let declarations = pop_item!(self, declarations, Declarations, context);
-        let ident = pop_item!(self, ident, Ident, context);
-        let module_built = Module {
-            m_o_d_u_l_e,
-            ident,
-            semicolon,
-            declarations,
-            module_suffix,
-        };
-        // Calling user action here
-        self.user_grammar.module(&module_built)?;
-        self.push(ASTType::Module(module_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 97:
-    ///
-    /// `ModuleSuffix: 'BEGIN' StatementSequence 'END' Ident '\.';`
-    ///
-    #[parol_runtime::function_name::named]
-    fn module_suffix_0(
-        &mut self,
-        b_e_g_i_n: &ParseTreeType<'t>,
-        _statement_sequence: &ParseTreeType<'t>,
-        e_n_d: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
-        dot: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let b_e_g_i_n = b_e_g_i_n.token()?.clone();
-        let e_n_d = e_n_d.token()?.clone();
-        let dot = dot.token()?.clone();
-        let ident = pop_item!(self, ident, Ident, context);
-        let statement_sequence = pop_item!(self, statement_sequence, StatementSequence, context);
-        let module_suffix_0_built = ModuleSuffixBEGINStatementSequenceENDIdentDot {
-            b_e_g_i_n,
-            statement_sequence,
-            e_n_d,
-            ident,
-            dot,
-        };
-        let module_suffix_0_built =
-            ModuleSuffix::BEGINStatementSequenceENDIdentDot(module_suffix_0_built);
-        self.push(ASTType::ModuleSuffix(module_suffix_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 98:
-    ///
-    /// `ModuleSuffix: 'END' Ident '\.';`
-    ///
-    #[parol_runtime::function_name::named]
-    fn module_suffix_1(
-        &mut self,
-        e_n_d: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
-        dot: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let e_n_d = e_n_d.token()?.clone();
-        let dot = dot.token()?.clone();
-        let ident = pop_item!(self, ident, Ident, context);
-        let module_suffix_1_built = ModuleSuffixENDIdentDot { e_n_d, ident, dot };
-        let module_suffix_1_built = ModuleSuffix::ENDIdentDot(module_suffix_1_built);
-        self.push(ASTType::ModuleSuffix(module_suffix_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 99:
-    ///
-    /// `MulOperator: "\*|/|DIV|MOD|&";`
-    ///
-    #[parol_runtime::function_name::named]
-    fn mul_operator(&mut self, mul_operator: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let mul_operator = mul_operator.token()?.clone();
-        let mul_operator_built = MulOperator { mul_operator };
-        // Calling user action here
-        self.user_grammar.mul_operator(&mul_operator_built)?;
-        self.push(ASTType::MulOperator(mul_operator_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 100:
-    ///
-    /// `AddOperator: /\+|-|OR/;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn add_operator(&mut self, add_operator: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let add_operator = add_operator.token()?.clone();
-        let add_operator_built = AddOperator { add_operator };
-        // Calling user action here
-        self.user_grammar.add_operator(&add_operator_built)?;
-        self.push(ASTType::AddOperator(add_operator_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 101:
-    ///
-    /// `UnaryOp: /\+|-/;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn unary_op(&mut self, unary_op: &ParseTreeType<'t>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let unary_op = unary_op.token()?.clone();
-        let unary_op_built = UnaryOp { unary_op };
-        // Calling user action here
-        self.user_grammar.unary_op(&unary_op_built)?;
-        self.push(ASTType::UnaryOp(unary_op_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 102:
+    /// Semantic action for production 111:
     ///
     /// `Ident: /[a-zA-Z][a-zA-Z0-9]*/;`
     ///
@@ -4497,7 +3861,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 103:
+    /// Semantic action for production 112:
     ///
     /// `Integer: /[0-9]+/;`
     ///
@@ -4524,165 +3888,172 @@ impl<'t> UserActionsTrait<'t> for Oberon0GrammarAuto<'t, '_> {
         children: &[ParseTreeType<'t>],
     ) -> Result<()> {
         match prod_num {
-            0 => self.selector(&children[0]),
-            1 => self.selector_list_0(&children[0], &children[1], &children[2]),
-            2 => self.selector_list_1(&children[0], &children[1], &children[2], &children[3]),
-            3 => self.selector_list_2(),
-            4 => self.factor_0(&children[0], &children[1]),
-            5 => self.factor_1(&children[0]),
-            6 => self.factor_2(&children[0], &children[1], &children[2]),
-            7 => self.factor_3(&children[0], &children[1]),
-            8 => self.factor_4(&children[0], &children[1]),
-            9 => self.term(&children[0], &children[1]),
-            10 => self.mul_expression_0(&children[0], &children[1], &children[2]),
-            11 => self.mul_expression_1(),
-            12 => self.simple_expression(&children[0], &children[1]),
-            13 => self.add_expression_0(&children[0], &children[1], &children[2]),
-            14 => self.add_expression_1(),
-            15 => self.assign_op(&children[0]),
-            16 => self.relation_op_0(&children[0]),
-            17 => self.relation_op_1(&children[0]),
-            18 => self.relational_ops(&children[0]),
-            19 => self.expression(&children[0], &children[1]),
-            20 => self.expression_suffix_0(&children[0], &children[1]),
-            21 => self.expression_suffix_1(),
-            22 => self.assignment(&children[0], &children[1], &children[2], &children[3]),
-            23 => self.actual_parameters(&children[0], &children[1]),
-            24 => self.actual_parameters_suffix_0(&children[0]),
-            25 => self.actual_parameters_suffix_1(&children[0], &children[1], &children[2]),
-            26 => self.expression_list_rest_0(&children[0], &children[1], &children[2]),
-            27 => self.expression_list_rest_1(),
-            28 => self.procedure_call(&children[0], &children[1]),
-            29 => self.procedure_call_suffix_0(&children[0]),
-            30 => self.procedure_call_suffix_1(),
-            31 => self.if_statement(&children[0], &children[1]),
-            32 => self.if_statement_suffix_0(&children[0], &children[1], &children[2]),
-            33 => self.if_statement_suffix_1(&children[0]),
-            34 => self.if_prefix(
+            0 => self.module(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                &children[4],
+                &children[5],
+                &children[6],
+                &children[7],
+            ),
+            1 => self.module_opt_0(&children[0], &children[1]),
+            2 => self.module_opt_1(),
+            3 => self.declarations(&children[0], &children[1], &children[2], &children[3]),
+            4 => self.const_part(&children[0]),
+            5 => self.const_part_opt_0(&children[0], &children[1]),
+            6 => self.const_part_opt_1(),
+            7 => self.type_part(&children[0]),
+            8 => self.type_part_opt_0(&children[0], &children[1]),
+            9 => self.type_part_opt_1(),
+            10 => self.var_part(&children[0]),
+            11 => self.var_part_opt_0(&children[0], &children[1]),
+            12 => self.var_part_opt_1(),
+            13 => self.procedure_part(&children[0]),
+            14 => self.procedure_part_list_0(&children[0], &children[1], &children[2]),
+            15 => self.procedure_part_list_1(),
+            16 => self.procedure_declaration(&children[0], &children[1], &children[2]),
+            17 => self.procedure_heading(&children[0], &children[1], &children[2]),
+            18 => self.procedure_heading_opt_0(&children[0]),
+            19 => self.procedure_heading_opt_1(),
+            20 => self.formal_parameters(&children[0], &children[1]),
+            21 => self.formal_parameters_suffix_0(&children[0]),
+            22 => self.formal_parameters_suffix_1(&children[0], &children[1], &children[2]),
+            23 => self.f_p_section_rest(&children[0]),
+            24 => self.f_p_section_rest_list_0(&children[0], &children[1], &children[2]),
+            25 => self.f_p_section_rest_list_1(),
+            26 => self.f_p_section_0(&children[0], &children[1], &children[2], &children[3]),
+            27 => self.f_p_section_1(&children[0], &children[1], &children[2]),
+            28 => self.procedure_body(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            35 => self.else_if_list_0(
+            29 => self.procedure_body_opt0_0(&children[0], &children[1]),
+            30 => self.procedure_body_opt0_1(),
+            31 => self.procedure_body_opt_0(&children[0], &children[1]),
+            32 => self.procedure_body_opt_1(),
+            33 => self.const_decls(&children[0]),
+            34 => self.const_decls_list_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            36 => self.else_if_list_1(),
-            37 => self.while_statement(
+            35 => self.const_decls_list_1(),
+            36 => self.type_decls(&children[0]),
+            37 => self.type_decls_list_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            38 => self.repeat_statement(&children[0], &children[1], &children[2], &children[3]),
-            39 => self.statement_0(&children[0]),
-            40 => self.statement_1(&children[0]),
-            41 => self.statement_2(&children[0]),
-            42 => self.statement_3(&children[0]),
-            43 => self.statement_4(&children[0]),
-            44 => self.statement_5(),
-            45 => self.statement_sequence(&children[0], &children[1]),
-            46 => self.statement_sequence_rest_0(&children[0], &children[1], &children[2]),
-            47 => self.statement_sequence_rest_1(),
-            48 => self.ident_list(&children[0], &children[1]),
-            49 => self.ident_list_rest_0(&children[0], &children[1], &children[2]),
-            50 => self.ident_list_rest_1(),
-            51 => self.array_type(&children[0], &children[1], &children[2], &children[3]),
-            52 => self.field_list_0(&children[0], &children[1], &children[2]),
-            53 => self.field_list_1(),
-            54 => self.record_type(&children[0], &children[1], &children[2], &children[3]),
-            55 => self.field_list_rest_0(&children[0], &children[1], &children[2]),
-            56 => self.field_list_rest_1(),
-            57 => self.type_0(&children[0]),
-            58 => self.type_1(&children[0]),
-            59 => self.type_2(&children[0]),
-            60 => self.f_p_section_0(&children[0], &children[1], &children[2], &children[3]),
-            61 => self.f_p_section_1(&children[0], &children[1], &children[2]),
-            62 => self.formal_parameters(&children[0], &children[1]),
-            63 => self.formal_parameters_suffix_0(&children[0]),
-            64 => self.formal_parameters_suffix_1(&children[0], &children[1], &children[2]),
-            65 => self.f_p_section_rest_0(&children[0], &children[1], &children[2]),
-            66 => self.f_p_section_rest_1(),
-            67 => self.procedure_heading(&children[0], &children[1], &children[2]),
-            68 => self.procedure_heading_suffix_0(&children[0]),
-            69 => self.procedure_heading_suffix_1(),
-            70 => self.procedure_body(&children[0], &children[1]),
-            71 => self.procedure_body_suffix0_0(&children[0], &children[1], &children[2]),
-            72 => self.procedure_body_suffix0_1(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-            ),
-            73 => self.procedure_body_suffix0_2(&children[0], &children[1]),
-            74 => {
-                self.procedure_body_suffix_0(&children[0], &children[1], &children[2], &children[3])
-            }
-            75 => self.procedure_body_suffix_1(&children[0], &children[1]),
-            76 => self.procedure_declaration(&children[0], &children[1], &children[2]),
-            77 => self.declarations_0(&children[0], &children[1], &children[2]),
-            78 => self.declarations_1(&children[0], &children[1], &children[2]),
-            79 => self.declarations_suffix1_0(&children[0], &children[1], &children[2]),
-            80 => self.declarations_suffix1_1(&children[0]),
-            81 => self.declarations_2(&children[0], &children[1], &children[2]),
-            82 => self.declarations_3(&children[0]),
-            83 => self.declarations_suffix0_0(&children[0], &children[1], &children[2]),
-            84 => self.declarations_suffix0_1(&children[0], &children[1], &children[2]),
-            85 => self.declarations_suffix0_2(&children[0]),
-            86 => self.declarations_suffix_0(&children[0], &children[1], &children[2]),
-            87 => self.declarations_suffix_1(&children[0]),
-            88 => self.procedure_declaration_list_0(&children[0], &children[1], &children[2]),
-            89 => self.procedure_declaration_list_1(),
-            90 => self.const_decls_0(
+            38 => self.type_decls_list_1(),
+            39 => self.var_decls(&children[0]),
+            40 => self.var_decls_list_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            91 => self.const_decls_1(),
-            92 => self.type_decls_0(
+            41 => self.var_decls_list_1(),
+            42 => self.statement_sequence(&children[0], &children[1]),
+            43 => self.statement_sequence_list_0(&children[0], &children[1], &children[2]),
+            44 => self.statement_sequence_list_1(),
+            45 => self.statement_sequence_opt_0(&children[0]),
+            46 => self.statement_sequence_opt_1(),
+            47 => self.statement_0(&children[0]),
+            48 => self.statement_1(&children[0]),
+            49 => self.statement_2(&children[0]),
+            50 => self.statement_3(&children[0]),
+            51 => self.statement_4(&children[0]),
+            52 => self.assignment(&children[0], &children[1], &children[2], &children[3]),
+            53 => self.procedure_call(&children[0], &children[1]),
+            54 => self.procedure_call_opt_0(&children[0]),
+            55 => self.procedure_call_opt_1(),
+            56 => self.actual_parameters(&children[0], &children[1]),
+            57 => self.actual_parameters_suffix_0(&children[0]),
+            58 => self.actual_parameters_suffix_1(&children[0], &children[1], &children[2]),
+            59 => self.expression_list_rest(&children[0]),
+            60 => self.expression_list_rest_list_0(&children[0], &children[1], &children[2]),
+            61 => self.expression_list_rest_list_1(),
+            62 => self.if_statement(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                &children[4],
+                &children[5],
+                &children[6],
+            ),
+            63 => self.if_statement_opt_0(&children[0], &children[1]),
+            64 => self.if_statement_opt_1(),
+            65 => self.else_if_list(&children[0]),
+            66 => self.else_if_list_list_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            93 => self.type_decls_1(),
-            94 => self.var_decls_0(
+            67 => self.else_if_list_list_1(),
+            68 => self.while_statement(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            95 => self.var_decls_1(),
-            96 => self.module(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                &children[4],
-            ),
-            97 => self.module_suffix_0(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                &children[4],
-            ),
-            98 => self.module_suffix_1(&children[0], &children[1], &children[2]),
-            99 => self.mul_operator(&children[0]),
-            100 => self.add_operator(&children[0]),
-            101 => self.unary_op(&children[0]),
-            102 => self.ident(&children[0]),
-            103 => self.integer(&children[0]),
+            69 => self.repeat_statement(&children[0], &children[1], &children[2], &children[3]),
+            70 => self.expression(&children[0], &children[1]),
+            71 => self.expression_opt_0(&children[0], &children[1]),
+            72 => self.expression_opt_1(),
+            73 => self.simple_expression(&children[0], &children[1]),
+            74 => self.simple_expression_list_0(&children[0], &children[1], &children[2]),
+            75 => self.simple_expression_list_1(),
+            76 => self.term(&children[0], &children[1]),
+            77 => self.term_list_0(&children[0], &children[1], &children[2]),
+            78 => self.term_list_1(),
+            79 => self.factor_0(&children[0], &children[1]),
+            80 => self.factor_1(&children[0]),
+            81 => self.factor_2(&children[0], &children[1], &children[2]),
+            82 => self.factor_3(&children[0], &children[1]),
+            83 => self.factor_4(&children[0], &children[1]),
+            84 => self.selector(&children[0]),
+            85 => self.selector_list_0(&children[0], &children[1], &children[2]),
+            86 => self.selector_list_1(&children[0], &children[1], &children[2], &children[3]),
+            87 => self.selector_list_2(),
+            88 => self.assign_op(&children[0]),
+            89 => self.relation_op_0(&children[0]),
+            90 => self.relation_op_1(&children[0]),
+            91 => self.relation_op_2(&children[0]),
+            92 => self.relation_op_3(&children[0]),
+            93 => self.relation_op_4(&children[0]),
+            94 => self.relation_op_5(&children[0]),
+            95 => self.add_operator(&children[0]),
+            96 => self.mul_operator(&children[0]),
+            97 => self.unary_op(&children[0]),
+            98 => self.type_0(&children[0]),
+            99 => self.type_1(&children[0]),
+            100 => self.type_2(&children[0]),
+            101 => self.array_type(&children[0], &children[1], &children[2], &children[3]),
+            102 => self.record_type(&children[0], &children[1], &children[2], &children[3]),
+            103 => self.field_list(&children[0]),
+            104 => self.field_list_list_0(&children[0], &children[1], &children[2], &children[3]),
+            105 => self.field_list_list_1(),
+            106 => self.field_list_rest_0(&children[0], &children[1], &children[2]),
+            107 => self.field_list_rest_1(),
+            108 => self.ident_list(&children[0], &children[1]),
+            109 => self.ident_list_list_0(&children[0], &children[1], &children[2]),
+            110 => self.ident_list_list_1(),
+            111 => self.ident(&children[0]),
+            112 => self.integer(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {prod_num}"
             ))
