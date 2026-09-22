@@ -1,138 +1,106 @@
 %start Module
-%title "Oberon-0 Grammar"
+%title "Oberon-0 Grammar (LL-style)"
 %block_comment "\(\*" "\*\)"
 
 %%
 
-Selector
-    : SelectorList
+Module
+    : 'MODULE' Ident ';' Declarations [ 'BEGIN' StatementSequence ] 'END' Ident '.'
     ;
 
-SelectorList
-    : "\." Ident SelectorList
+Declarations
+    : ConstPart TypePart VarPart ProcedurePart
     ;
 
-SelectorList
-    : "\[" Expression "]" SelectorList
+ConstPart
+    : [ 'CONST' ConstDecls ]
     ;
 
-SelectorList
-    : 
+TypePart
+    : [ 'TYPE' TypeDecls ]
     ;
 
-Factor
-    : Ident Selector
+VarPart
+    : [ 'VAR' VarDecls ]
     ;
 
-Factor
-    : Integer
+ProcedurePart
+    : { ProcedureDeclaration ';' }
     ;
 
-Factor
-    : "\(" Expression "\)"
+ProcedureDeclaration
+    : ProcedureHeading ';' ProcedureBody
     ;
 
-Factor
-    : "~" Factor
+ProcedureHeading
+    : 'PROCEDURE' Ident [ FormalParameters ]
     ;
 
-Factor
-    : UnaryOp Factor
+FormalParameters
+    : '(' ')'
+    | '(' FPSection FPSectionRest ')'
     ;
 
-Term: Factor MulExpression
+FPSectionRest
+    : { ';' FPSection }
     ;
 
-MulExpression
-    : MulOperator Factor MulExpression
+FPSection
+    : 'VAR' IdentList ':' Type
+    | IdentList ':' Type
     ;
 
-MulExpression
-    : 
+ProcedureBody
+    : Declarations [ 'BEGIN' StatementSequence ] [ 'RETURN' Expression ] 'END' Ident
     ;
 
-SimpleExpression
-    : Term AddExpression
+ConstDecls
+    : { Ident '=' Expression ';' }
     ;
 
-AddExpression
-    : AddOperator Term AddExpression
+TypeDecls
+    : { Ident '=' Type ';' }
     ;
 
-AddExpression
-    : 
+VarDecls
+    : { IdentList ':' Type ';' }
     ;
 
-AssignOp
-    : ':='
+StatementSequence
+    : [ Statement ] { ';' Statement }
     ;
 
-RelationOp
-    : AssignOp
-    ;
-
-RelationOp
-    : RelationalOps
-    ;
-
-RelationalOps
-    : />=|<=|\#|<|>/
-    ;
-
-Expression
-    : SimpleExpression RelationOp SimpleExpression
-    ;
-
-Expression
-    : SimpleExpression
+Statement
+    : Assignment
+    | ProcedureCall
+    | IfStatement
+    | WhileStatement
+    | RepeatStatement
     ;
 
 Assignment
     : Ident Selector AssignOp Expression
     ;
 
+ProcedureCall
+    : Ident [ ActualParameters ]
+    ;
+
 ActualParameters
     : '(' ')'
-    ;
-
-ActualParameters
-    : '(' Expression ExpressionListRest ')'
+    | '(' Expression ExpressionListRest ')'
     ;
 
 ExpressionListRest
-    : ',' Expression ExpressionListRest
-    ;
-
-ExpressionListRest
-    : 
-    ;
-
-ProcedureCall
-    : Ident ActualParameters
-    ;
-
-ProcedureCall
-    : Ident
+    : { ',' Expression }
     ;
 
 IfStatement
-    : IfPrefix 'ELSE' StatementSequence 'END'
-    ;
-
-IfStatement
-    : IfPrefix 'END'
-    ;
-
-IfPrefix
-    : 'IF' Expression 'THEN' StatementSequence ElseIfList
+    : 'IF' Expression 'THEN' StatementSequence ElseIfList [ 'ELSE' StatementSequence ] 'END'
     ;
 
 ElseIfList
-    : 'ELSIF' Expression 'THEN' StatementSequence ElseIfList
-    ;
-
-ElseIfList
-    : 
+    : { 'ELSIF' Expression 'THEN' StatementSequence }
     ;
 
 WhileStatement
@@ -143,221 +111,79 @@ RepeatStatement
     : 'REPEAT' StatementSequence 'UNTIL' Expression
     ;
 
-Statement
-    : Assignment
+Expression
+    : SimpleExpression [ RelationOp SimpleExpression ]
     ;
 
-Statement
-    : ProcedureCall
+SimpleExpression
+    : Term { AddOperator Term }
     ;
 
-Statement
-    : IfStatement
+Term
+    : Factor { MulOperator Factor }
     ;
 
-Statement
-    : WhileStatement
+Factor
+    : Ident Selector
+    | Integer
+    | '(' Expression ')'
+    | '~' Factor
+    | UnaryOp Factor
     ;
 
-Statement
-    : RepeatStatement
+Selector
+    : { '.' Ident | '[' Expression ']' }
     ;
 
-Statement
-    : 
+AssignOp
+    : ':='
     ;
 
-StatementSequence
-    : Statement StatementSequenceRest
-    ;
-
-StatementSequenceRest
-    : ';' Statement StatementSequenceRest
-    ;
-
-StatementSequenceRest
-    : 
-    ;
-
-IdentList
-    : Ident IdentListRest
-    ;
-
-IdentListRest
-    : ',' Ident IdentListRest
-    ;
-
-IdentListRest
-    : 
-    ;
-
-ArrayType
-    : 'ARRAY' Expression 'OF' Type
-    ;
-
-FieldList
-    : IdentList ':' Type
-    ;
-
-FieldList
-    : 
-    ;
-
-RecordType
-    : 'RECORD' FieldList FieldListRest 'END'
-    ;
-
-FieldListRest
-    : ';' FieldList FieldListRest
-    ;
-
-FieldListRest
-    : 
-    ;
-
-Type: Ident
-    ;
-
-Type: ArrayType
-    ;
-
-Type: RecordType
-    ;
-
-FPSection
-    : 'VAR' IdentList ':' Type
-    ;
-
-FPSection
-    : IdentList ':' Type
-    ;
-
-FormalParameters
-    : '(' ')'
-    ;
-
-FormalParameters
-    : '(' FPSection FPSectionRest ')'
-    ;
-
-FPSectionRest
-    : ';' FPSection FPSectionRest
-    ;
-
-FPSectionRest
-    : 
-    ;
-
-ProcedureHeading
-    : 'PROCEDURE' Ident FormalParameters
-    ;
-
-ProcedureHeading
-    : 'PROCEDURE' Ident
-    ;
-
-ProcedureBody
-    : Declarations 'BEGIN' StatementSequence 'RETURN' Expression 'END' Ident
-    ;
-
-ProcedureBody
-    : Declarations 'RETURN' Expression 'END' Ident
-    ;
-
-ProcedureBody
-    : Declarations 'BEGIN' StatementSequence 'END' Ident
-    ;
-
-ProcedureBody
-    : Declarations 'END' Ident
-    ;
-
-ProcedureDeclaration
-    : ProcedureHeading ';' ProcedureBody
-    ;
-
-Declarations
-    : 'CONST' ConstDecls 'TYPE' TypeDecls 'VAR' VarDecls ProcedureDeclarationList
-    ;
-
-Declarations
-    : 'CONST' ConstDecls 'TYPE' TypeDecls ProcedureDeclarationList
-    ;
-
-Declarations
-    : 'CONST' ConstDecls 'VAR' VarDecls ProcedureDeclarationList
-    ;
-
-Declarations
-    : 'CONST' ConstDecls ProcedureDeclarationList
-    ;
-
-Declarations
-    : 'TYPE' TypeDecls 'VAR' VarDecls ProcedureDeclarationList
-    ;
-
-Declarations
-    : 'TYPE' TypeDecls ProcedureDeclarationList
-    ;
-
-Declarations
-    : 'VAR' VarDecls ProcedureDeclarationList
-    ;
-
-Declarations
-    : ProcedureDeclarationList
-    ;
-
-ProcedureDeclarationList
-    : ProcedureDeclaration ';' ProcedureDeclarationList
-    ;
-
-ProcedureDeclarationList
-    : 
-    ;
-
-ConstDecls
-    : Ident AssignOp Expression ';' ConstDecls
-    ;
-
-ConstDecls
-    : 
-    ;
-
-TypeDecls
-    : Ident AssignOp Type ';' TypeDecls
-    ;
-
-TypeDecls
-    : 
-    ;
-
-VarDecls
-    : IdentList ':' Type ';' VarDecls
-    ;
-
-VarDecls
-    : 
-    ;
-
-Module
-    : 'MODULE' Ident ';' Declarations 'BEGIN' StatementSequence 'END' Ident '\.'
-    ;
-
-Module
-    : 'MODULE' Ident ';' Declarations 'END' Ident '\.'
-    ;
-
-MulOperator
-    : "\*|/|DIV|MOD|&"
+RelationOp
+    : '>='
+    | '<='
+    | '='
+    | '#'
+    | '<'
+    | '>'
     ;
 
 AddOperator
     : /\+|-|OR/
     ;
 
+MulOperator
+    : "\*|/|DIV|MOD|&"
+    ;
+
 UnaryOp
     : /\+|-/
+    ;
+
+Type
+    : Ident
+    | ArrayType
+    | RecordType
+    ;
+
+ArrayType
+    : 'ARRAY' Expression 'OF' Type
+    ;
+
+RecordType
+    : 'RECORD' FieldList FieldListRest 'END'
+    ;
+
+FieldList
+    : { IdentList ':' Type }
+    ;
+
+FieldListRest
+    : { ';' FieldList }
+    ;
+
+IdentList
+    : Ident { ',' Ident }
     ;
 
 Ident
