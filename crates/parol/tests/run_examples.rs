@@ -72,6 +72,9 @@ fn run_examples_test() -> Result<()> {
         )],
     )?;
 
+    println!("Running Oberon-0 sample suite...");
+    run_oberon_0_sample_suite()?;
+
     println!("Running Scanner States example...");
     run(
         &example_path!("scanner_states"),
@@ -151,6 +154,52 @@ fn run_parol_examples() -> Result<()> {
             assert!(!exit_status.success());
         }
     }
+    Ok(())
+}
+
+fn run_oberon_0_sample_suite() -> Result<()> {
+    let suite_dir = concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/oberon_0/test_suite"
+    );
+    let mut valid = Vec::new();
+    let mut invalid = Vec::new();
+
+    for entry in std::path::Path::new(suite_dir).read_dir()?.flatten() {
+        let path = entry.path();
+        let Some(ext) = path.extension().and_then(|e| e.to_str()) else {
+            continue;
+        };
+        if ext != "mod" {
+            continue;
+        }
+        let filename = path.file_name().and_then(|n| n.to_str()).unwrap();
+        if filename.starts_with("valid_") {
+            valid.push(path.to_string_lossy().to_string());
+        } else if filename.starts_with("invalid_") {
+            invalid.push(path.to_string_lossy().to_string());
+        }
+    }
+
+    valid.sort();
+    invalid.sort();
+
+    for path in valid {
+        println!("Parsing valid Oberon-0 sample {}...", path);
+        let exit_status = run(&example_path!("oberon_0"), &[&path])?;
+        assert!(exit_status.success(), "Parsing {} failed", path);
+    }
+
+    for path in invalid {
+        println!("Parsing invalid Oberon-0 sample {} should fail...", path);
+        let exit_status = run(&example_path!("oberon_0"), &[&path])?;
+        assert!(
+            !exit_status.success(),
+            "Parsing {} unexpectedly succeeded",
+            path
+        );
+    }
+
     Ok(())
 }
 
