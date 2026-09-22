@@ -119,7 +119,7 @@ scanner! {
 const MAX_K: usize = 2;
 pub const SKIP_TOKENS_BY_SCANNER_STATE: &[&[parol_runtime::TerminalIndex]; 1] = &[&[]];
 
-pub const NON_TERMINALS: &[&str; 69] = &[
+pub const NON_TERMINALS: &[&str; 71] = &[
     /*  0 */ "ActualParameters",
     /*  1 */ "ActualParametersSuffix",
     /*  2 */ "AddOperator",
@@ -144,54 +144,56 @@ pub const NON_TERMINALS: &[&str; 69] = &[
     /* 21 */ "FieldList",
     /* 22 */ "FieldListList",
     /* 23 */ "FieldListRest",
-    /* 24 */ "FormalParameters",
-    /* 25 */ "FormalParametersSuffix",
-    /* 26 */ "Ident",
-    /* 27 */ "IdentList",
-    /* 28 */ "IdentListList",
-    /* 29 */ "IfStatement",
-    /* 30 */ "IfStatementOpt",
-    /* 31 */ "Integer",
-    /* 32 */ "Module",
-    /* 33 */ "ModuleOpt",
-    /* 34 */ "MulOperator",
-    /* 35 */ "ProcedureBody",
-    /* 36 */ "ProcedureBodyOpt",
-    /* 37 */ "ProcedureBodyOpt0",
-    /* 38 */ "ProcedureCall",
-    /* 39 */ "ProcedureCallOpt",
-    /* 40 */ "ProcedureDeclaration",
-    /* 41 */ "ProcedureHeading",
-    /* 42 */ "ProcedureHeadingOpt",
-    /* 43 */ "ProcedurePart",
-    /* 44 */ "ProcedurePartList",
-    /* 45 */ "RecordType",
-    /* 46 */ "RelationOp",
-    /* 47 */ "RepeatStatement",
-    /* 48 */ "Selector",
-    /* 49 */ "SelectorList",
-    /* 50 */ "SimpleExpression",
-    /* 51 */ "SimpleExpressionList",
-    /* 52 */ "Statement",
-    /* 53 */ "StatementSequence",
-    /* 54 */ "StatementSequenceList",
-    /* 55 */ "StatementSequenceOpt",
-    /* 56 */ "Term",
-    /* 57 */ "TermList",
-    /* 58 */ "Type",
-    /* 59 */ "TypeDecls",
-    /* 60 */ "TypeDeclsList",
-    /* 61 */ "TypePart",
-    /* 62 */ "TypePartOpt",
-    /* 63 */ "UnaryOp",
-    /* 64 */ "VarDecls",
-    /* 65 */ "VarDeclsList",
-    /* 66 */ "VarPart",
-    /* 67 */ "VarPartOpt",
-    /* 68 */ "WhileStatement",
+    /* 24 */ "FieldListRestList",
+    /* 25 */ "FormalParameters",
+    /* 26 */ "FormalParametersSuffix",
+    /* 27 */ "Ident",
+    /* 28 */ "IdentList",
+    /* 29 */ "IdentListList",
+    /* 30 */ "IfStatement",
+    /* 31 */ "IfStatementOpt",
+    /* 32 */ "Integer",
+    /* 33 */ "Module",
+    /* 34 */ "ModuleOpt",
+    /* 35 */ "MulOperator",
+    /* 36 */ "ProcedureBody",
+    /* 37 */ "ProcedureBodyOpt",
+    /* 38 */ "ProcedureBodyOpt0",
+    /* 39 */ "ProcedureCall",
+    /* 40 */ "ProcedureCallOpt",
+    /* 41 */ "ProcedureDeclaration",
+    /* 42 */ "ProcedureHeading",
+    /* 43 */ "ProcedureHeadingOpt",
+    /* 44 */ "ProcedurePart",
+    /* 45 */ "ProcedurePartList",
+    /* 46 */ "RecordType",
+    /* 47 */ "RelationOp",
+    /* 48 */ "RepeatStatement",
+    /* 49 */ "Selector",
+    /* 50 */ "SelectorList",
+    /* 51 */ "SelectorListGroup",
+    /* 52 */ "SimpleExpression",
+    /* 53 */ "SimpleExpressionList",
+    /* 54 */ "Statement",
+    /* 55 */ "StatementSequence",
+    /* 56 */ "StatementSequenceList",
+    /* 57 */ "StatementSequenceOpt",
+    /* 58 */ "Term",
+    /* 59 */ "TermList",
+    /* 60 */ "Type",
+    /* 61 */ "TypeDecls",
+    /* 62 */ "TypeDeclsList",
+    /* 63 */ "TypePart",
+    /* 64 */ "TypePartOpt",
+    /* 65 */ "UnaryOp",
+    /* 66 */ "VarDecls",
+    /* 67 */ "VarDeclsList",
+    /* 68 */ "VarPart",
+    /* 69 */ "VarPartOpt",
+    /* 70 */ "WhileStatement",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 71] = &[
     /* 0 - "ActualParameters" */
     LookaheadDFA {
         prod0: 56,
@@ -213,19 +215,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
     },
     /* 2 - "AddOperator" */
     LookaheadDFA {
-        prod0: 95,
+        prod0: 96,
         transitions: &[],
         k: 0,
     },
     /* 3 - "ArrayType" */
     LookaheadDFA {
-        prod0: 101,
+        prod0: 102,
         transitions: &[],
         k: 0,
     },
     /* 4 - "AssignOp" */
     LookaheadDFA {
-        prod0: 88,
+        prod0: 89,
         transitions: &[],
         k: 0,
     },
@@ -368,7 +370,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
     },
     /* 21 - "FieldList" */
     LookaheadDFA {
-        prod0: 103,
+        prod0: 104,
         transitions: &[],
         k: 0,
     },
@@ -376,25 +378,31 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 6, 2, 105),
-            Trans(0, 7, 2, 105),
-            Trans(0, 43, 1, 104),
+            Trans(0, 6, 2, 106),
+            Trans(0, 7, 2, 106),
+            Trans(0, 43, 1, 105),
         ],
         k: 1,
     },
     /* 23 - "FieldListRest" */
     LookaheadDFA {
+        prod0: 107,
+        transitions: &[],
+        k: 0,
+    },
+    /* 24 - "FieldListRestList" */
+    LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 6, 1, 106), Trans(0, 7, 2, 107)],
+        transitions: &[Trans(0, 6, 1, 108), Trans(0, 7, 2, 109)],
         k: 1,
     },
-    /* 24 - "FormalParameters" */
+    /* 25 - "FormalParameters" */
     LookaheadDFA {
         prod0: 20,
         transitions: &[],
         k: 0,
     },
-    /* 25 - "FormalParametersSuffix" */
+    /* 26 - "FormalParametersSuffix" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -404,85 +412,85 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 26 - "Ident" */
+    /* 27 - "Ident" */
     LookaheadDFA {
-        prod0: 111,
+        prod0: 113,
         transitions: &[],
         k: 0,
     },
-    /* 27 - "IdentList" */
+    /* 28 - "IdentList" */
     LookaheadDFA {
-        prod0: 108,
+        prod0: 110,
         transitions: &[],
         k: 0,
     },
-    /* 28 - "IdentListList" */
+    /* 29 - "IdentListList" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 16, 2, 110), Trans(0, 19, 1, 109)],
+        transitions: &[Trans(0, 16, 2, 112), Trans(0, 19, 1, 111)],
         k: 1,
     },
-    /* 29 - "IfStatement" */
+    /* 30 - "IfStatement" */
     LookaheadDFA {
         prod0: 62,
         transitions: &[],
         k: 0,
     },
-    /* 30 - "IfStatementOpt" */
+    /* 31 - "IfStatementOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 7, 2, 64), Trans(0, 22, 1, 63)],
         k: 1,
     },
-    /* 31 - "Integer" */
+    /* 32 - "Integer" */
     LookaheadDFA {
-        prod0: 112,
+        prod0: 114,
         transitions: &[],
         k: 0,
     },
-    /* 32 - "Module" */
+    /* 33 - "Module" */
     LookaheadDFA {
         prod0: 0,
         transitions: &[],
         k: 0,
     },
-    /* 33 - "ModuleOpt" */
+    /* 34 - "ModuleOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 7, 2, 2), Trans(0, 9, 1, 1)],
         k: 1,
     },
-    /* 34 - "MulOperator" */
+    /* 35 - "MulOperator" */
     LookaheadDFA {
-        prod0: 96,
+        prod0: 97,
         transitions: &[],
         k: 0,
     },
-    /* 35 - "ProcedureBody" */
+    /* 36 - "ProcedureBody" */
     LookaheadDFA {
         prod0: 28,
         transitions: &[],
         k: 0,
     },
-    /* 36 - "ProcedureBodyOpt" */
+    /* 37 - "ProcedureBodyOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 7, 2, 32), Trans(0, 9, 1, 31), Trans(0, 17, 2, 32)],
         k: 1,
     },
-    /* 37 - "ProcedureBodyOpt0" */
+    /* 38 - "ProcedureBodyOpt0" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 7, 2, 30), Trans(0, 17, 1, 29)],
         k: 1,
     },
-    /* 38 - "ProcedureCall" */
+    /* 39 - "ProcedureCall" */
     LookaheadDFA {
         prod0: 53,
         transitions: &[],
         k: 0,
     },
-    /* 39 - "ProcedureCallOpt" */
+    /* 40 - "ProcedureCallOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -496,31 +504,31 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 40 - "ProcedureDeclaration" */
+    /* 41 - "ProcedureDeclaration" */
     LookaheadDFA {
         prod0: 16,
         transitions: &[],
         k: 0,
     },
-    /* 41 - "ProcedureHeading" */
+    /* 42 - "ProcedureHeading" */
     LookaheadDFA {
         prod0: 17,
         transitions: &[],
         k: 0,
     },
-    /* 42 - "ProcedureHeadingOpt" */
+    /* 43 - "ProcedureHeadingOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 6, 2, 19), Trans(0, 14, 1, 18)],
         k: 1,
     },
-    /* 43 - "ProcedurePart" */
+    /* 44 - "ProcedurePart" */
     LookaheadDFA {
         prod0: 13,
         transitions: &[],
         k: 0,
     },
-    /* 44 - "ProcedurePartList" */
+    /* 45 - "ProcedurePartList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -531,74 +539,80 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 45 - "RecordType" */
+    /* 46 - "RecordType" */
     LookaheadDFA {
-        prod0: 102,
+        prod0: 103,
         transitions: &[],
         k: 0,
     },
-    /* 46 - "RelationOp" */
+    /* 47 - "RelationOp" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 18, 3, 91),
-            Trans(0, 32, 1, 89),
-            Trans(0, 33, 2, 90),
-            Trans(0, 34, 4, 92),
-            Trans(0, 35, 5, 93),
-            Trans(0, 36, 6, 94),
+            Trans(0, 18, 3, 92),
+            Trans(0, 32, 1, 90),
+            Trans(0, 33, 2, 91),
+            Trans(0, 34, 4, 93),
+            Trans(0, 35, 5, 94),
+            Trans(0, 36, 6, 95),
         ],
         k: 1,
     },
-    /* 47 - "RepeatStatement" */
+    /* 48 - "RepeatStatement" */
     LookaheadDFA {
         prod0: 69,
         transitions: &[],
         k: 0,
     },
-    /* 48 - "Selector" */
+    /* 49 - "Selector" */
     LookaheadDFA {
         prod0: 84,
         transitions: &[],
         k: 0,
     },
-    /* 49 - "SelectorList" */
+    /* 50 - "SelectorList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 6, 3, 87),
-            Trans(0, 7, 3, 87),
+            Trans(0, 6, 2, 88),
+            Trans(0, 7, 2, 88),
             Trans(0, 8, 1, 85),
-            Trans(0, 15, 3, 87),
-            Trans(0, 17, 3, 87),
-            Trans(0, 18, 3, 87),
-            Trans(0, 19, 3, 87),
-            Trans(0, 21, 3, 87),
-            Trans(0, 22, 3, 87),
-            Trans(0, 23, 3, 87),
-            Trans(0, 25, 3, 87),
-            Trans(0, 27, 3, 87),
-            Trans(0, 29, 2, 86),
-            Trans(0, 30, 3, 87),
-            Trans(0, 31, 3, 87),
-            Trans(0, 32, 3, 87),
-            Trans(0, 33, 3, 87),
-            Trans(0, 34, 3, 87),
-            Trans(0, 35, 3, 87),
-            Trans(0, 36, 3, 87),
-            Trans(0, 37, 3, 87),
-            Trans(0, 38, 3, 87),
-            Trans(0, 41, 3, 87),
+            Trans(0, 15, 2, 88),
+            Trans(0, 17, 2, 88),
+            Trans(0, 18, 2, 88),
+            Trans(0, 19, 2, 88),
+            Trans(0, 21, 2, 88),
+            Trans(0, 22, 2, 88),
+            Trans(0, 23, 2, 88),
+            Trans(0, 25, 2, 88),
+            Trans(0, 27, 2, 88),
+            Trans(0, 29, 1, 85),
+            Trans(0, 30, 2, 88),
+            Trans(0, 31, 2, 88),
+            Trans(0, 32, 2, 88),
+            Trans(0, 33, 2, 88),
+            Trans(0, 34, 2, 88),
+            Trans(0, 35, 2, 88),
+            Trans(0, 36, 2, 88),
+            Trans(0, 37, 2, 88),
+            Trans(0, 38, 2, 88),
+            Trans(0, 41, 2, 88),
         ],
         k: 1,
     },
-    /* 50 - "SimpleExpression" */
+    /* 51 - "SelectorListGroup" */
+    LookaheadDFA {
+        prod0: -1,
+        transitions: &[Trans(0, 8, 1, 86), Trans(0, 29, 2, 87)],
+        k: 1,
+    },
+    /* 52 - "SimpleExpression" */
     LookaheadDFA {
         prod0: 73,
         transitions: &[],
         k: 0,
     },
-    /* 51 - "SimpleExpressionList" */
+    /* 53 - "SimpleExpressionList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -624,7 +638,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 52 - "Statement" */
+    /* 54 - "Statement" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -661,13 +675,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 2,
     },
-    /* 53 - "StatementSequence" */
+    /* 55 - "StatementSequence" */
     LookaheadDFA {
         prod0: 42,
         transitions: &[],
         k: 0,
     },
-    /* 54 - "StatementSequenceList" */
+    /* 56 - "StatementSequenceList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -680,7 +694,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 55 - "StatementSequenceOpt" */
+    /* 57 - "StatementSequenceOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -697,13 +711,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 56 - "Term" */
+    /* 58 - "Term" */
     LookaheadDFA {
         prod0: 76,
         transitions: &[],
         k: 0,
     },
-    /* 57 - "TermList" */
+    /* 59 - "TermList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -730,23 +744,23 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 58 - "Type" */
+    /* 60 - "Type" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 40, 2, 99),
-            Trans(0, 42, 3, 100),
-            Trans(0, 43, 1, 98),
+            Trans(0, 40, 2, 100),
+            Trans(0, 42, 3, 101),
+            Trans(0, 43, 1, 99),
         ],
         k: 1,
     },
-    /* 59 - "TypeDecls" */
+    /* 61 - "TypeDecls" */
     LookaheadDFA {
         prod0: 36,
         transitions: &[],
         k: 0,
     },
-    /* 60 - "TypeDeclsList" */
+    /* 62 - "TypeDeclsList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -759,13 +773,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 61 - "TypePart" */
+    /* 63 - "TypePart" */
     LookaheadDFA {
         prod0: 7,
         transitions: &[],
         k: 0,
     },
-    /* 62 - "TypePartOpt" */
+    /* 64 - "TypePartOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -778,19 +792,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 63 - "UnaryOp" */
+    /* 65 - "UnaryOp" */
     LookaheadDFA {
-        prod0: 97,
+        prod0: 98,
         transitions: &[],
         k: 0,
     },
-    /* 64 - "VarDecls" */
+    /* 66 - "VarDecls" */
     LookaheadDFA {
         prod0: 39,
         transitions: &[],
         k: 0,
     },
-    /* 65 - "VarDeclsList" */
+    /* 67 - "VarDeclsList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -802,13 +816,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 66 - "VarPart" */
+    /* 68 - "VarPart" */
     LookaheadDFA {
         prod0: 10,
         transitions: &[],
         k: 0,
     },
-    /* 67 - "VarPartOpt" */
+    /* 69 - "VarPartOpt" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -820,7 +834,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
         ],
         k: 1,
     },
-    /* 68 - "WhileStatement" */
+    /* 70 - "WhileStatement" */
     LookaheadDFA {
         prod0: 68,
         transitions: &[],
@@ -828,31 +842,31 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 69] = &[
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 113] = &[
+pub const PRODUCTIONS: &[Production; 115] = &[
     // 0 - Module: 'MODULE' Ident ';' Declarations ModuleOpt /* Option */ 'END' Ident '.';
     Production {
-        lhs: 32,
+        lhs: 33,
         production: &[
             ParseType::T(8),
-            ParseType::N(26),
+            ParseType::N(27),
             ParseType::T(7),
-            ParseType::N(33),
+            ParseType::N(34),
             ParseType::N(10),
             ParseType::T(6),
-            ParseType::N(26),
+            ParseType::N(27),
             ParseType::T(5),
         ],
         is_push_production: false,
     },
     // 1 - ModuleOpt: 'BEGIN' StatementSequence;
     Production {
-        lhs: 33,
-        production: &[ParseType::N(53), ParseType::T(9)],
+        lhs: 34,
+        production: &[ParseType::N(55), ParseType::T(9)],
         is_push_production: false,
     },
     // 2 - ModuleOpt: ;
     Production {
-        lhs: 33,
+        lhs: 34,
         production: &[],
         is_push_production: false,
     },
@@ -860,9 +874,9 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     Production {
         lhs: 10,
         production: &[
-            ParseType::N(43),
-            ParseType::N(66),
-            ParseType::N(61),
+            ParseType::N(44),
+            ParseType::N(68),
+            ParseType::N(63),
             ParseType::N(8),
         ],
         is_push_production: false,
@@ -887,97 +901,97 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     },
     // 7 - TypePart: TypePartOpt /* Option */;
     Production {
-        lhs: 61,
-        production: &[ParseType::N(62)],
+        lhs: 63,
+        production: &[ParseType::N(64)],
         is_push_production: false,
     },
     // 8 - TypePartOpt: 'TYPE' TypeDecls;
     Production {
-        lhs: 62,
-        production: &[ParseType::N(59), ParseType::T(11)],
+        lhs: 64,
+        production: &[ParseType::N(61), ParseType::T(11)],
         is_push_production: false,
     },
     // 9 - TypePartOpt: ;
     Production {
-        lhs: 62,
+        lhs: 64,
         production: &[],
         is_push_production: false,
     },
     // 10 - VarPart: VarPartOpt /* Option */;
     Production {
-        lhs: 66,
-        production: &[ParseType::N(67)],
+        lhs: 68,
+        production: &[ParseType::N(69)],
         is_push_production: false,
     },
     // 11 - VarPartOpt: 'VAR' VarDecls;
     Production {
-        lhs: 67,
-        production: &[ParseType::N(64), ParseType::T(12)],
+        lhs: 69,
+        production: &[ParseType::N(66), ParseType::T(12)],
         is_push_production: false,
     },
     // 12 - VarPartOpt: ;
     Production {
-        lhs: 67,
+        lhs: 69,
         production: &[],
         is_push_production: false,
     },
     // 13 - ProcedurePart: ProcedurePartList /* Vec */;
     Production {
-        lhs: 43,
-        production: &[ParseType::N(44)],
+        lhs: 44,
+        production: &[ParseType::N(45)],
         is_push_production: false,
     },
     // 14 - ProcedurePartList: ProcedureDeclaration ';' ProcedurePartList;
     Production {
-        lhs: 44,
-        production: &[ParseType::N(44), ParseType::T(6), ParseType::N(40)],
+        lhs: 45,
+        production: &[ParseType::N(45), ParseType::T(6), ParseType::N(41)],
         is_push_production: true,
     },
     // 15 - ProcedurePartList: ;
     Production {
-        lhs: 44,
+        lhs: 45,
         production: &[],
         is_push_production: false,
     },
     // 16 - ProcedureDeclaration: ProcedureHeading ';' ProcedureBody;
     Production {
-        lhs: 40,
-        production: &[ParseType::N(35), ParseType::T(6), ParseType::N(41)],
+        lhs: 41,
+        production: &[ParseType::N(36), ParseType::T(6), ParseType::N(42)],
         is_push_production: false,
     },
     // 17 - ProcedureHeading: 'PROCEDURE' Ident ProcedureHeadingOpt /* Option */;
     Production {
-        lhs: 41,
-        production: &[ParseType::N(42), ParseType::N(26), ParseType::T(13)],
+        lhs: 42,
+        production: &[ParseType::N(43), ParseType::N(27), ParseType::T(13)],
         is_push_production: false,
     },
     // 18 - ProcedureHeadingOpt: FormalParameters;
     Production {
-        lhs: 42,
-        production: &[ParseType::N(24)],
+        lhs: 43,
+        production: &[ParseType::N(25)],
         is_push_production: false,
     },
     // 19 - ProcedureHeadingOpt: ;
     Production {
-        lhs: 42,
+        lhs: 43,
         production: &[],
         is_push_production: false,
     },
     // 20 - FormalParameters: '(' FormalParametersSuffix;
     Production {
-        lhs: 24,
-        production: &[ParseType::N(25), ParseType::T(14)],
+        lhs: 25,
+        production: &[ParseType::N(26), ParseType::T(14)],
         is_push_production: false,
     },
     // 21 - FormalParametersSuffix: ')';
     Production {
-        lhs: 25,
+        lhs: 26,
         production: &[ParseType::T(15)],
         is_push_production: false,
     },
     // 22 - FormalParametersSuffix: FPSection FPSectionRest ')';
     Production {
-        lhs: 25,
+        lhs: 26,
         production: &[ParseType::T(15), ParseType::N(18), ParseType::N(17)],
         is_push_production: false,
     },
@@ -1003,9 +1017,9 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     Production {
         lhs: 17,
         production: &[
-            ParseType::N(58),
+            ParseType::N(60),
             ParseType::T(16),
-            ParseType::N(27),
+            ParseType::N(28),
             ParseType::T(12),
         ],
         is_push_production: false,
@@ -1013,42 +1027,42 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     // 27 - FPSection: IdentList ':' Type;
     Production {
         lhs: 17,
-        production: &[ParseType::N(58), ParseType::T(16), ParseType::N(27)],
+        production: &[ParseType::N(60), ParseType::T(16), ParseType::N(28)],
         is_push_production: false,
     },
     // 28 - ProcedureBody: Declarations ProcedureBodyOpt /* Option */ ProcedureBodyOpt0 /* Option */ 'END' Ident;
     Production {
-        lhs: 35,
+        lhs: 36,
         production: &[
-            ParseType::N(26),
+            ParseType::N(27),
             ParseType::T(7),
+            ParseType::N(38),
             ParseType::N(37),
-            ParseType::N(36),
             ParseType::N(10),
         ],
         is_push_production: false,
     },
     // 29 - ProcedureBodyOpt0: 'RETURN' Expression;
     Production {
-        lhs: 37,
+        lhs: 38,
         production: &[ParseType::N(13), ParseType::T(17)],
         is_push_production: false,
     },
     // 30 - ProcedureBodyOpt0: ;
     Production {
-        lhs: 37,
+        lhs: 38,
         production: &[],
         is_push_production: false,
     },
     // 31 - ProcedureBodyOpt: 'BEGIN' StatementSequence;
     Production {
-        lhs: 36,
-        production: &[ParseType::N(53), ParseType::T(9)],
+        lhs: 37,
+        production: &[ParseType::N(55), ParseType::T(9)],
         is_push_production: false,
     },
     // 32 - ProcedureBodyOpt: ;
     Production {
-        lhs: 36,
+        lhs: 37,
         production: &[],
         is_push_production: false,
     },
@@ -1066,7 +1080,7 @@ pub const PRODUCTIONS: &[Production; 113] = &[
             ParseType::T(6),
             ParseType::N(13),
             ParseType::T(18),
-            ParseType::N(26),
+            ParseType::N(27),
         ],
         is_push_production: true,
     },
@@ -1078,110 +1092,110 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     },
     // 36 - TypeDecls: TypeDeclsList /* Vec */;
     Production {
-        lhs: 59,
-        production: &[ParseType::N(60)],
+        lhs: 61,
+        production: &[ParseType::N(62)],
         is_push_production: false,
     },
     // 37 - TypeDeclsList: Ident '=' Type ';' TypeDeclsList;
     Production {
-        lhs: 60,
+        lhs: 62,
         production: &[
-            ParseType::N(60),
+            ParseType::N(62),
             ParseType::T(6),
-            ParseType::N(58),
+            ParseType::N(60),
             ParseType::T(18),
-            ParseType::N(26),
+            ParseType::N(27),
         ],
         is_push_production: true,
     },
     // 38 - TypeDeclsList: ;
     Production {
-        lhs: 60,
+        lhs: 62,
         production: &[],
         is_push_production: false,
     },
     // 39 - VarDecls: VarDeclsList /* Vec */;
     Production {
-        lhs: 64,
-        production: &[ParseType::N(65)],
+        lhs: 66,
+        production: &[ParseType::N(67)],
         is_push_production: false,
     },
     // 40 - VarDeclsList: IdentList ':' Type ';' VarDeclsList;
     Production {
-        lhs: 65,
+        lhs: 67,
         production: &[
-            ParseType::N(65),
+            ParseType::N(67),
             ParseType::T(6),
-            ParseType::N(58),
+            ParseType::N(60),
             ParseType::T(16),
-            ParseType::N(27),
+            ParseType::N(28),
         ],
         is_push_production: true,
     },
     // 41 - VarDeclsList: ;
     Production {
-        lhs: 65,
+        lhs: 67,
         production: &[],
         is_push_production: false,
     },
     // 42 - StatementSequence: StatementSequenceOpt /* Option */ StatementSequenceList /* Vec */;
     Production {
-        lhs: 53,
-        production: &[ParseType::N(54), ParseType::N(55)],
+        lhs: 55,
+        production: &[ParseType::N(56), ParseType::N(57)],
         is_push_production: false,
     },
     // 43 - StatementSequenceList: ';' Statement StatementSequenceList;
     Production {
-        lhs: 54,
-        production: &[ParseType::N(54), ParseType::N(52), ParseType::T(6)],
+        lhs: 56,
+        production: &[ParseType::N(56), ParseType::N(54), ParseType::T(6)],
         is_push_production: true,
     },
     // 44 - StatementSequenceList: ;
     Production {
-        lhs: 54,
+        lhs: 56,
         production: &[],
         is_push_production: false,
     },
     // 45 - StatementSequenceOpt: Statement;
     Production {
-        lhs: 55,
-        production: &[ParseType::N(52)],
+        lhs: 57,
+        production: &[ParseType::N(54)],
         is_push_production: false,
     },
     // 46 - StatementSequenceOpt: ;
     Production {
-        lhs: 55,
+        lhs: 57,
         production: &[],
         is_push_production: false,
     },
     // 47 - Statement: Assignment;
     Production {
-        lhs: 52,
+        lhs: 54,
         production: &[ParseType::N(5)],
         is_push_production: false,
     },
     // 48 - Statement: ProcedureCall;
     Production {
-        lhs: 52,
-        production: &[ParseType::N(38)],
+        lhs: 54,
+        production: &[ParseType::N(39)],
         is_push_production: false,
     },
     // 49 - Statement: IfStatement;
     Production {
-        lhs: 52,
-        production: &[ParseType::N(29)],
+        lhs: 54,
+        production: &[ParseType::N(30)],
         is_push_production: false,
     },
     // 50 - Statement: WhileStatement;
     Production {
-        lhs: 52,
-        production: &[ParseType::N(68)],
+        lhs: 54,
+        production: &[ParseType::N(70)],
         is_push_production: false,
     },
     // 51 - Statement: RepeatStatement;
     Production {
-        lhs: 52,
-        production: &[ParseType::N(47)],
+        lhs: 54,
+        production: &[ParseType::N(48)],
         is_push_production: false,
     },
     // 52 - Assignment: Ident Selector AssignOp Expression;
@@ -1190,26 +1204,26 @@ pub const PRODUCTIONS: &[Production; 113] = &[
         production: &[
             ParseType::N(13),
             ParseType::N(4),
-            ParseType::N(48),
-            ParseType::N(26),
+            ParseType::N(49),
+            ParseType::N(27),
         ],
         is_push_production: false,
     },
     // 53 - ProcedureCall: Ident ProcedureCallOpt /* Option */;
     Production {
-        lhs: 38,
-        production: &[ParseType::N(39), ParseType::N(26)],
+        lhs: 39,
+        production: &[ParseType::N(40), ParseType::N(27)],
         is_push_production: false,
     },
     // 54 - ProcedureCallOpt: ActualParameters;
     Production {
-        lhs: 39,
+        lhs: 40,
         production: &[ParseType::N(0)],
         is_push_production: false,
     },
     // 55 - ProcedureCallOpt: ;
     Production {
-        lhs: 39,
+        lhs: 40,
         production: &[],
         is_push_production: false,
     },
@@ -1251,12 +1265,12 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     },
     // 62 - IfStatement: 'IF' Expression 'THEN' StatementSequence ElseIfList IfStatementOpt /* Option */ 'END';
     Production {
-        lhs: 29,
+        lhs: 30,
         production: &[
             ParseType::T(7),
-            ParseType::N(30),
+            ParseType::N(31),
             ParseType::N(11),
-            ParseType::N(53),
+            ParseType::N(55),
             ParseType::T(21),
             ParseType::N(13),
             ParseType::T(20),
@@ -1265,13 +1279,13 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     },
     // 63 - IfStatementOpt: 'ELSE' StatementSequence;
     Production {
-        lhs: 30,
-        production: &[ParseType::N(53), ParseType::T(22)],
+        lhs: 31,
+        production: &[ParseType::N(55), ParseType::T(22)],
         is_push_production: false,
     },
     // 64 - IfStatementOpt: ;
     Production {
-        lhs: 30,
+        lhs: 31,
         production: &[],
         is_push_production: false,
     },
@@ -1286,7 +1300,7 @@ pub const PRODUCTIONS: &[Production; 113] = &[
         lhs: 12,
         production: &[
             ParseType::N(12),
-            ParseType::N(53),
+            ParseType::N(55),
             ParseType::T(21),
             ParseType::N(13),
             ParseType::T(23),
@@ -1301,10 +1315,10 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     },
     // 68 - WhileStatement: 'WHILE' Expression 'DO' StatementSequence 'END';
     Production {
-        lhs: 68,
+        lhs: 70,
         production: &[
             ParseType::T(7),
-            ParseType::N(53),
+            ParseType::N(55),
             ParseType::T(25),
             ParseType::N(13),
             ParseType::T(24),
@@ -1313,11 +1327,11 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     },
     // 69 - RepeatStatement: 'REPEAT' StatementSequence 'UNTIL' Expression;
     Production {
-        lhs: 47,
+        lhs: 48,
         production: &[
             ParseType::N(13),
             ParseType::T(27),
-            ParseType::N(53),
+            ParseType::N(55),
             ParseType::T(26),
         ],
         is_push_production: false,
@@ -1325,13 +1339,13 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     // 70 - Expression: SimpleExpression ExpressionOpt /* Option */;
     Production {
         lhs: 13,
-        production: &[ParseType::N(16), ParseType::N(50)],
+        production: &[ParseType::N(16), ParseType::N(52)],
         is_push_production: false,
     },
     // 71 - ExpressionOpt: RelationOp SimpleExpression;
     Production {
         lhs: 16,
-        production: &[ParseType::N(50), ParseType::N(46)],
+        production: &[ParseType::N(52), ParseType::N(47)],
         is_push_production: false,
     },
     // 72 - ExpressionOpt: ;
@@ -1342,50 +1356,50 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     },
     // 73 - SimpleExpression: Term SimpleExpressionList /* Vec */;
     Production {
-        lhs: 50,
-        production: &[ParseType::N(51), ParseType::N(56)],
+        lhs: 52,
+        production: &[ParseType::N(53), ParseType::N(58)],
         is_push_production: false,
     },
     // 74 - SimpleExpressionList: AddOperator Term SimpleExpressionList;
     Production {
-        lhs: 51,
-        production: &[ParseType::N(51), ParseType::N(56), ParseType::N(2)],
+        lhs: 53,
+        production: &[ParseType::N(53), ParseType::N(58), ParseType::N(2)],
         is_push_production: true,
     },
     // 75 - SimpleExpressionList: ;
     Production {
-        lhs: 51,
+        lhs: 53,
         production: &[],
         is_push_production: false,
     },
     // 76 - Term: Factor TermList /* Vec */;
     Production {
-        lhs: 56,
-        production: &[ParseType::N(57), ParseType::N(20)],
+        lhs: 58,
+        production: &[ParseType::N(59), ParseType::N(20)],
         is_push_production: false,
     },
     // 77 - TermList: MulOperator Factor TermList;
     Production {
-        lhs: 57,
-        production: &[ParseType::N(57), ParseType::N(20), ParseType::N(34)],
+        lhs: 59,
+        production: &[ParseType::N(59), ParseType::N(20), ParseType::N(35)],
         is_push_production: true,
     },
     // 78 - TermList: ;
     Production {
-        lhs: 57,
+        lhs: 59,
         production: &[],
         is_push_production: false,
     },
     // 79 - Factor: Ident Selector;
     Production {
         lhs: 20,
-        production: &[ParseType::N(48), ParseType::N(26)],
+        production: &[ParseType::N(49), ParseType::N(27)],
         is_push_production: false,
     },
     // 80 - Factor: Integer;
     Production {
         lhs: 20,
-        production: &[ParseType::N(31)],
+        production: &[ParseType::N(32)],
         is_push_production: false,
     },
     // 81 - Factor: '(' Expression ')';
@@ -1403,130 +1417,131 @@ pub const PRODUCTIONS: &[Production; 113] = &[
     // 83 - Factor: UnaryOp Factor;
     Production {
         lhs: 20,
-        production: &[ParseType::N(20), ParseType::N(63)],
+        production: &[ParseType::N(20), ParseType::N(65)],
         is_push_production: false,
     },
-    // 84 - Selector: SelectorList;
-    Production {
-        lhs: 48,
-        production: &[ParseType::N(49)],
-        is_push_production: false,
-    },
-    // 85 - SelectorList: '.' Ident SelectorList;
+    // 84 - Selector: SelectorList /* Vec */;
     Production {
         lhs: 49,
-        production: &[ParseType::N(49), ParseType::N(26), ParseType::T(8)],
+        production: &[ParseType::N(50)],
         is_push_production: false,
     },
-    // 86 - SelectorList: '[' Expression ']' SelectorList;
+    // 85 - SelectorList: SelectorListGroup SelectorList;
     Production {
-        lhs: 49,
-        production: &[
-            ParseType::N(49),
-            ParseType::T(30),
-            ParseType::N(13),
-            ParseType::T(29),
-        ],
+        lhs: 50,
+        production: &[ParseType::N(50), ParseType::N(51)],
+        is_push_production: true,
+    },
+    // 86 - SelectorListGroup: '.' Ident;
+    Production {
+        lhs: 51,
+        production: &[ParseType::N(27), ParseType::T(8)],
         is_push_production: false,
     },
-    // 87 - SelectorList: ;
+    // 87 - SelectorListGroup: '[' Expression ']';
     Production {
-        lhs: 49,
+        lhs: 51,
+        production: &[ParseType::T(30), ParseType::N(13), ParseType::T(29)],
+        is_push_production: false,
+    },
+    // 88 - SelectorList: ;
+    Production {
+        lhs: 50,
         production: &[],
         is_push_production: false,
     },
-    // 88 - AssignOp: ':=';
+    // 89 - AssignOp: ':=';
     Production {
         lhs: 4,
         production: &[ParseType::T(31)],
         is_push_production: false,
     },
-    // 89 - RelationOp: '>=';
+    // 90 - RelationOp: '>=';
     Production {
-        lhs: 46,
+        lhs: 47,
         production: &[ParseType::T(32)],
         is_push_production: false,
     },
-    // 90 - RelationOp: '<=';
+    // 91 - RelationOp: '<=';
     Production {
-        lhs: 46,
+        lhs: 47,
         production: &[ParseType::T(33)],
         is_push_production: false,
     },
-    // 91 - RelationOp: '=';
+    // 92 - RelationOp: '=';
     Production {
-        lhs: 46,
+        lhs: 47,
         production: &[ParseType::T(18)],
         is_push_production: false,
     },
-    // 92 - RelationOp: '#';
+    // 93 - RelationOp: '#';
     Production {
-        lhs: 46,
+        lhs: 47,
         production: &[ParseType::T(34)],
         is_push_production: false,
     },
-    // 93 - RelationOp: '<';
+    // 94 - RelationOp: '<';
     Production {
-        lhs: 46,
+        lhs: 47,
         production: &[ParseType::T(35)],
         is_push_production: false,
     },
-    // 94 - RelationOp: '>';
+    // 95 - RelationOp: '>';
     Production {
-        lhs: 46,
+        lhs: 47,
         production: &[ParseType::T(36)],
         is_push_production: false,
     },
-    // 95 - AddOperator: /\+|-|OR/;
+    // 96 - AddOperator: /\+|-|OR/;
     Production {
         lhs: 2,
         production: &[ParseType::T(37)],
         is_push_production: false,
     },
-    // 96 - MulOperator: "\*|/|DIV|MOD|&";
+    // 97 - MulOperator: "\*|/|DIV|MOD|&";
     Production {
-        lhs: 34,
+        lhs: 35,
         production: &[ParseType::T(38)],
         is_push_production: false,
     },
-    // 97 - UnaryOp: /\+|-/;
+    // 98 - UnaryOp: /\+|-/;
     Production {
-        lhs: 63,
+        lhs: 65,
         production: &[ParseType::T(39)],
         is_push_production: false,
     },
-    // 98 - Type: Ident;
+    // 99 - Type: Ident;
     Production {
-        lhs: 58,
-        production: &[ParseType::N(26)],
+        lhs: 60,
+        production: &[ParseType::N(27)],
         is_push_production: false,
     },
-    // 99 - Type: ArrayType;
+    // 100 - Type: ArrayType;
     Production {
-        lhs: 58,
+        lhs: 60,
         production: &[ParseType::N(3)],
         is_push_production: false,
     },
-    // 100 - Type: RecordType;
+    // 101 - Type: RecordType;
     Production {
-        lhs: 58,
-        production: &[ParseType::N(45)],
+        lhs: 60,
+        production: &[ParseType::N(46)],
         is_push_production: false,
     },
-    // 101 - ArrayType: 'ARRAY' Expression 'OF' Type;
+    // 102 - ArrayType: 'ARRAY' Expression 'OF' Type;
     Production {
         lhs: 3,
         production: &[
-            ParseType::N(58),
+            ParseType::N(60),
             ParseType::T(41),
             ParseType::N(13),
             ParseType::T(40),
         ],
         is_push_production: false,
     },
-    // 102 - RecordType: 'RECORD' FieldList FieldListRest 'END';
+    // 103 - RecordType: 'RECORD' FieldList FieldListRest 'END';
     Production {
-        lhs: 45,
+        lhs: 46,
         production: &[
             ParseType::T(7),
             ParseType::N(23),
@@ -1535,68 +1550,74 @@ pub const PRODUCTIONS: &[Production; 113] = &[
         ],
         is_push_production: false,
     },
-    // 103 - FieldList: FieldListList /* Vec */;
+    // 104 - FieldList: FieldListList /* Vec */;
     Production {
         lhs: 21,
         production: &[ParseType::N(22)],
         is_push_production: false,
     },
-    // 104 - FieldListList: IdentList ':' Type FieldListList;
+    // 105 - FieldListList: IdentList ':' Type FieldListList;
     Production {
         lhs: 22,
         production: &[
             ParseType::N(22),
-            ParseType::N(58),
+            ParseType::N(60),
             ParseType::T(16),
-            ParseType::N(27),
+            ParseType::N(28),
         ],
         is_push_production: true,
     },
-    // 105 - FieldListList: ;
+    // 106 - FieldListList: ;
     Production {
         lhs: 22,
         production: &[],
         is_push_production: false,
     },
-    // 106 - FieldListRest: ';' FieldList FieldListRest;
+    // 107 - FieldListRest: FieldListRestList /* Vec */;
     Production {
         lhs: 23,
-        production: &[ParseType::N(23), ParseType::N(21), ParseType::T(6)],
+        production: &[ParseType::N(24)],
         is_push_production: false,
     },
-    // 107 - FieldListRest: ;
+    // 108 - FieldListRestList: ';' FieldList FieldListRestList;
     Production {
-        lhs: 23,
-        production: &[],
-        is_push_production: false,
-    },
-    // 108 - IdentList: Ident IdentListList /* Vec */;
-    Production {
-        lhs: 27,
-        production: &[ParseType::N(28), ParseType::N(26)],
-        is_push_production: false,
-    },
-    // 109 - IdentListList: ',' Ident IdentListList;
-    Production {
-        lhs: 28,
-        production: &[ParseType::N(28), ParseType::N(26), ParseType::T(19)],
+        lhs: 24,
+        production: &[ParseType::N(24), ParseType::N(21), ParseType::T(6)],
         is_push_production: true,
     },
-    // 110 - IdentListList: ;
+    // 109 - FieldListRestList: ;
     Production {
-        lhs: 28,
+        lhs: 24,
         production: &[],
         is_push_production: false,
     },
-    // 111 - Ident: /[a-zA-Z][a-zA-Z0-9]*/;
+    // 110 - IdentList: Ident IdentListList /* Vec */;
     Production {
-        lhs: 26,
+        lhs: 28,
+        production: &[ParseType::N(29), ParseType::N(27)],
+        is_push_production: false,
+    },
+    // 111 - IdentListList: ',' Ident IdentListList;
+    Production {
+        lhs: 29,
+        production: &[ParseType::N(29), ParseType::N(27), ParseType::T(19)],
+        is_push_production: true,
+    },
+    // 112 - IdentListList: ;
+    Production {
+        lhs: 29,
+        production: &[],
+        is_push_production: false,
+    },
+    // 113 - Ident: /[a-zA-Z][a-zA-Z0-9]*/;
+    Production {
+        lhs: 27,
         production: &[ParseType::T(43)],
         is_push_production: false,
     },
-    // 112 - Integer: /[0-9]+/;
+    // 114 - Integer: /[0-9]+/;
     Production {
-        lhs: 31,
+        lhs: 32,
         production: &[ParseType::T(44)],
         is_push_production: false,
     },
@@ -1630,7 +1651,7 @@ where
 {
     use oberon0_grammar_scanner::Oberon0GrammarScanner;
     let mut llk_parser = LLKParser::new(
-        32,
+        33,
         LOOKAHEAD_AUTOMATA,
         PRODUCTIONS,
         TERMINAL_NAMES,

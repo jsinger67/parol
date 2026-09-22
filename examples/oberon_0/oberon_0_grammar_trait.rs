@@ -168,11 +168,6 @@ pub trait Oberon0GrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'SelectorList'
-    fn selector_list(&mut self, _arg: &SelectorList<'t>) -> Result<()> {
-        Ok(())
-    }
-
     /// Semantic action for non-terminal 'AssignOp'
     fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
         Ok(())
@@ -387,7 +382,7 @@ pub struct ActualParametersSuffixExpressionExpressionListRestRParen<'t> {
 #[derive(Debug, Clone)]
 pub struct FactorIdentSelector<'t> {
     pub ident: Ident<'t>,
-    pub selector: Box<Selector<'t>>,
+    pub selector: Selector<'t>,
 }
 
 ///
@@ -439,43 +434,32 @@ pub struct FactorUnaryOpFactor<'t> {
 }
 
 ///
-/// Type derived for production 85
-///
-/// `SelectorList: '.' Ident SelectorList;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct SelectorListDotIdentSelectorList<'t> {
-    pub dot: Token<'t>, /* . */
-    pub ident: Ident<'t>,
-    pub selector_list: Box<SelectorList<'t>>,
-}
-
-///
 /// Type derived for production 86
 ///
-/// `SelectorList: '[' Expression ']' SelectorList;`
+/// `SelectorListGroup: '.' Ident;`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct SelectorListLBracketExpressionRBracketSelectorList<'t> {
-    pub l_bracket: Token<'t>, /* [ */
-    pub expression: Expression<'t>,
-    pub r_bracket: Token<'t>, /* ] */
-    pub selector_list: Box<SelectorList<'t>>,
+pub struct SelectorListGroupDotIdent<'t> {
+    pub dot: Token<'t>, /* . */
+    pub ident: Ident<'t>,
 }
 
 ///
 /// Type derived for production 87
 ///
-/// `SelectorList: ;`
+/// `SelectorListGroup: '[' Expression ']';`
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct SelectorListSelectorListEmpty {}
+pub struct SelectorListGroupLBracketExpressionRBracket<'t> {
+    pub l_bracket: Token<'t>, /* [ */
+    pub expression: Expression<'t>,
+    pub r_bracket: Token<'t>, /* ] */
+}
 
 ///
-/// Type derived for production 89
+/// Type derived for production 90
 ///
 /// `RelationOp: '>=';`
 ///
@@ -486,7 +470,7 @@ pub struct RelationOpGTEqu<'t> {
 }
 
 ///
-/// Type derived for production 90
+/// Type derived for production 91
 ///
 /// `RelationOp: '<=';`
 ///
@@ -497,7 +481,7 @@ pub struct RelationOpLTEqu<'t> {
 }
 
 ///
-/// Type derived for production 91
+/// Type derived for production 92
 ///
 /// `RelationOp: '=';`
 ///
@@ -508,7 +492,7 @@ pub struct RelationOpEqu<'t> {
 }
 
 ///
-/// Type derived for production 92
+/// Type derived for production 93
 ///
 /// `RelationOp: '#';`
 ///
@@ -519,7 +503,7 @@ pub struct RelationOpHash<'t> {
 }
 
 ///
-/// Type derived for production 93
+/// Type derived for production 94
 ///
 /// `RelationOp: '<';`
 ///
@@ -530,7 +514,7 @@ pub struct RelationOpLT<'t> {
 }
 
 ///
-/// Type derived for production 94
+/// Type derived for production 95
 ///
 /// `RelationOp: '>';`
 ///
@@ -541,7 +525,7 @@ pub struct RelationOpGT<'t> {
 }
 
 ///
-/// Type derived for production 98
+/// Type derived for production 99
 ///
 /// `Type: Ident;`
 ///
@@ -552,7 +536,7 @@ pub struct TypeIdent<'t> {
 }
 
 ///
-/// Type derived for production 99
+/// Type derived for production 100
 ///
 /// `Type: ArrayType;`
 ///
@@ -563,7 +547,7 @@ pub struct TypeArrayType<'t> {
 }
 
 ///
-/// Type derived for production 100
+/// Type derived for production 101
 ///
 /// `Type: RecordType;`
 ///
@@ -572,28 +556,6 @@ pub struct TypeArrayType<'t> {
 pub struct TypeRecordType<'t> {
     pub record_type: RecordType<'t>,
 }
-
-///
-/// Type derived for production 106
-///
-/// `FieldListRest: ';' FieldList FieldListRest;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FieldListRestSemicolonFieldListFieldListRest<'t> {
-    pub semicolon: Token<'t>, /* ; */
-    pub field_list: FieldList<'t>,
-    pub field_list_rest: Box<FieldListRest<'t>>,
-}
-
-///
-/// Type derived for production 107
-///
-/// `FieldListRest: ;`
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct FieldListRestFieldListRestEmpty {}
 
 // -------------------------------------------------------------------------------------------------
 //
@@ -843,9 +805,18 @@ pub struct FieldListList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum FieldListRest<'t> {
-    SemicolonFieldListFieldListRest(FieldListRestSemicolonFieldListFieldListRest<'t>),
-    FieldListRestEmpty(FieldListRestFieldListRestEmpty),
+pub struct FieldListRest<'t> {
+    pub field_list_rest_list: Vec<FieldListRestList<'t>>,
+}
+
+///
+/// Type derived for non-terminal FieldListRestList
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct FieldListRestList<'t> {
+    pub semicolon: Token<'t>, /* ; */
+    pub field_list: FieldList<'t>,
 }
 
 ///
@@ -1112,7 +1083,7 @@ pub struct RepeatStatement<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Selector<'t> {
-    pub selector_list: SelectorList<'t>,
+    pub selector_list: Vec<SelectorList<'t>>,
 }
 
 ///
@@ -1120,10 +1091,18 @@ pub struct Selector<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum SelectorList<'t> {
-    DotIdentSelectorList(SelectorListDotIdentSelectorList<'t>),
-    LBracketExpressionRBracketSelectorList(SelectorListLBracketExpressionRBracketSelectorList<'t>),
-    SelectorListEmpty(SelectorListSelectorListEmpty),
+pub struct SelectorList<'t> {
+    pub selector_list_group: SelectorListGroup<'t>,
+}
+
+///
+/// Type derived for non-terminal SelectorListGroup
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum SelectorListGroup<'t> {
+    DotIdent(SelectorListGroupDotIdent<'t>),
+    LBracketExpressionRBracket(SelectorListGroupLBracketExpressionRBracket<'t>),
 }
 
 ///
@@ -1353,6 +1332,7 @@ pub enum ASTType<'t> {
     FieldList(FieldList<'t>),
     FieldListList(Vec<FieldListList<'t>>),
     FieldListRest(FieldListRest<'t>),
+    FieldListRestList(Vec<FieldListRestList<'t>>),
     FormalParameters(FormalParameters<'t>),
     FormalParametersSuffix(FormalParametersSuffix<'t>),
     Ident(Ident<'t>),
@@ -1378,7 +1358,8 @@ pub enum ASTType<'t> {
     RelationOp(RelationOp<'t>),
     RepeatStatement(RepeatStatement<'t>),
     Selector(Selector<'t>),
-    SelectorList(SelectorList<'t>),
+    SelectorList(Vec<SelectorList<'t>>),
+    SelectorListGroup(SelectorListGroup<'t>),
     SimpleExpression(SimpleExpression<'t>),
     SimpleExpressionList(Vec<SimpleExpressionList<'t>>),
     Statement(Statement<'t>),
@@ -3207,10 +3188,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let selector = pop_item!(self, selector, Selector, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let factor_0_built = FactorIdentSelector {
-            ident,
-            selector: Box::new(selector),
-        };
+        let factor_0_built = FactorIdentSelector { ident, selector };
         let factor_0_built = Factor::IdentSelector(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -3311,13 +3289,13 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 84:
     ///
-    /// `Selector: SelectorList;`
+    /// `Selector: SelectorList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn selector(&mut self, _selector_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let selector_list = pop_item!(self, selector_list, SelectorList, context);
+        let selector_list = pop_and_reverse_item!(self, selector_list, SelectorList, context);
         let selector_built = Selector { selector_list };
         // Calling user action here
         self.user_grammar.selector(&selector_built)?;
@@ -3327,81 +3305,94 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 85:
     ///
-    /// `SelectorList: '.' Ident SelectorList;`
+    /// `SelectorList /* Vec<T>::Push */: SelectorListGroup SelectorList;`
     ///
     #[parol_runtime::function_name::named]
     fn selector_list_0(
         &mut self,
-        dot: &ParseTreeType<'t>,
-        _ident: &ParseTreeType<'t>,
+        _selector_list_group: &ParseTreeType<'t>,
         _selector_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let dot = dot.token()?.clone();
-        let selector_list = pop_item!(self, selector_list, SelectorList, context);
-        let ident = pop_item!(self, ident, Ident, context);
-        let selector_list_0_built = SelectorListDotIdentSelectorList {
-            dot,
-            ident,
-            selector_list: Box::new(selector_list),
+        let mut selector_list = pop_item!(self, selector_list, SelectorList, context);
+        let selector_list_group = pop_item!(self, selector_list_group, SelectorListGroup, context);
+        let selector_list_0_built = SelectorList {
+            selector_list_group,
         };
-        let selector_list_0_built = SelectorList::DotIdentSelectorList(selector_list_0_built);
-        // Calling user action here
-        self.user_grammar.selector_list(&selector_list_0_built)?;
-        self.push(ASTType::SelectorList(selector_list_0_built), context);
+        // Add an element to the vector
+        selector_list.push(selector_list_0_built);
+        self.push(ASTType::SelectorList(selector_list), context);
         Ok(())
     }
 
     /// Semantic action for production 86:
     ///
-    /// `SelectorList: '[' Expression ']' SelectorList;`
+    /// `SelectorListGroup: '.' Ident;`
     ///
     #[parol_runtime::function_name::named]
-    fn selector_list_1(
+    fn selector_list_group_0(
         &mut self,
-        l_bracket: &ParseTreeType<'t>,
-        _expression: &ParseTreeType<'t>,
-        r_bracket: &ParseTreeType<'t>,
-        _selector_list: &ParseTreeType<'t>,
+        dot: &ParseTreeType<'t>,
+        _ident: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_bracket = l_bracket.token()?.clone();
-        let r_bracket = r_bracket.token()?.clone();
-        let selector_list = pop_item!(self, selector_list, SelectorList, context);
-        let expression = pop_item!(self, expression, Expression, context);
-        let selector_list_1_built = SelectorListLBracketExpressionRBracketSelectorList {
-            l_bracket,
-            expression,
-            r_bracket,
-            selector_list: Box::new(selector_list),
-        };
-        let selector_list_1_built =
-            SelectorList::LBracketExpressionRBracketSelectorList(selector_list_1_built);
-        // Calling user action here
-        self.user_grammar.selector_list(&selector_list_1_built)?;
-        self.push(ASTType::SelectorList(selector_list_1_built), context);
+        let dot = dot.token()?.clone();
+        let ident = pop_item!(self, ident, Ident, context);
+        let selector_list_group_0_built = SelectorListGroupDotIdent { dot, ident };
+        let selector_list_group_0_built = SelectorListGroup::DotIdent(selector_list_group_0_built);
+        self.push(
+            ASTType::SelectorListGroup(selector_list_group_0_built),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 87:
     ///
-    /// `SelectorList: ;`
+    /// `SelectorListGroup: '[' Expression ']';`
     ///
     #[parol_runtime::function_name::named]
-    fn selector_list_2(&mut self) -> Result<()> {
+    fn selector_list_group_1(
+        &mut self,
+        l_bracket: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        r_bracket: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let selector_list_2_built = SelectorListSelectorListEmpty {};
-        let selector_list_2_built = SelectorList::SelectorListEmpty(selector_list_2_built);
-        // Calling user action here
-        self.user_grammar.selector_list(&selector_list_2_built)?;
-        self.push(ASTType::SelectorList(selector_list_2_built), context);
+        let l_bracket = l_bracket.token()?.clone();
+        let r_bracket = r_bracket.token()?.clone();
+        let expression = pop_item!(self, expression, Expression, context);
+        let selector_list_group_1_built = SelectorListGroupLBracketExpressionRBracket {
+            l_bracket,
+            expression,
+            r_bracket,
+        };
+        let selector_list_group_1_built =
+            SelectorListGroup::LBracketExpressionRBracket(selector_list_group_1_built);
+        self.push(
+            ASTType::SelectorListGroup(selector_list_group_1_built),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 88:
+    ///
+    /// `SelectorList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn selector_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let selector_list_1_built = Vec::new();
+        self.push(ASTType::SelectorList(selector_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 89:
     ///
     /// `AssignOp: ':=';`
     ///
@@ -3417,7 +3408,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 89:
+    /// Semantic action for production 90:
     ///
     /// `RelationOp: '>=';`
     ///
@@ -3434,7 +3425,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 90:
+    /// Semantic action for production 91:
     ///
     /// `RelationOp: '<=';`
     ///
@@ -3451,7 +3442,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 91:
+    /// Semantic action for production 92:
     ///
     /// `RelationOp: '=';`
     ///
@@ -3468,7 +3459,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 92:
+    /// Semantic action for production 93:
     ///
     /// `RelationOp: '#';`
     ///
@@ -3485,7 +3476,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 93:
+    /// Semantic action for production 94:
     ///
     /// `RelationOp: '<';`
     ///
@@ -3502,7 +3493,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 94:
+    /// Semantic action for production 95:
     ///
     /// `RelationOp: '>';`
     ///
@@ -3519,7 +3510,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 95:
+    /// Semantic action for production 96:
     ///
     /// `AddOperator: /\+|-|OR/;`
     ///
@@ -3535,7 +3526,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 96:
+    /// Semantic action for production 97:
     ///
     /// `MulOperator: "\*|/|DIV|MOD|&";`
     ///
@@ -3551,7 +3542,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 97:
+    /// Semantic action for production 98:
     ///
     /// `UnaryOp: /\+|-/;`
     ///
@@ -3567,7 +3558,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 98:
+    /// Semantic action for production 99:
     ///
     /// `Type: Ident;`
     ///
@@ -3584,7 +3575,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 99:
+    /// Semantic action for production 100:
     ///
     /// `Type: ArrayType;`
     ///
@@ -3603,7 +3594,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 100:
+    /// Semantic action for production 101:
     ///
     /// `Type: RecordType;`
     ///
@@ -3620,7 +3611,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 101:
+    /// Semantic action for production 102:
     ///
     /// `ArrayType: 'ARRAY' Expression 'OF' Type;`
     ///
@@ -3650,7 +3641,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 102:
+    /// Semantic action for production 103:
     ///
     /// `RecordType: 'RECORD' FieldList FieldListRest 'END';`
     ///
@@ -3680,7 +3671,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 103:
+    /// Semantic action for production 104:
     ///
     /// `FieldList: FieldListList /* Vec */;`
     ///
@@ -3696,7 +3687,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 104:
+    /// Semantic action for production 105:
     ///
     /// `FieldListList /* Vec<T>::Push */: IdentList ':' Type FieldListList;`
     ///
@@ -3725,7 +3716,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 105:
+    /// Semantic action for production 106:
     ///
     /// `FieldListList /* Vec<T>::New */: ;`
     ///
@@ -3738,54 +3729,69 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 106:
-    ///
-    /// `FieldListRest: ';' FieldList FieldListRest;`
-    ///
-    #[parol_runtime::function_name::named]
-    fn field_list_rest_0(
-        &mut self,
-        semicolon: &ParseTreeType<'t>,
-        _field_list: &ParseTreeType<'t>,
-        _field_list_rest: &ParseTreeType<'t>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let semicolon = semicolon.token()?.clone();
-        let field_list_rest = pop_item!(self, field_list_rest, FieldListRest, context);
-        let field_list = pop_item!(self, field_list, FieldList, context);
-        let field_list_rest_0_built = FieldListRestSemicolonFieldListFieldListRest {
-            semicolon,
-            field_list,
-            field_list_rest: Box::new(field_list_rest),
-        };
-        let field_list_rest_0_built =
-            FieldListRest::SemicolonFieldListFieldListRest(field_list_rest_0_built);
-        // Calling user action here
-        self.user_grammar
-            .field_list_rest(&field_list_rest_0_built)?;
-        self.push(ASTType::FieldListRest(field_list_rest_0_built), context);
-        Ok(())
-    }
-
     /// Semantic action for production 107:
     ///
-    /// `FieldListRest: ;`
+    /// `FieldListRest: FieldListRestList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
-    fn field_list_rest_1(&mut self) -> Result<()> {
+    fn field_list_rest(&mut self, _field_list_rest_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let field_list_rest_1_built = FieldListRestFieldListRestEmpty {};
-        let field_list_rest_1_built = FieldListRest::FieldListRestEmpty(field_list_rest_1_built);
+        let field_list_rest_list =
+            pop_and_reverse_item!(self, field_list_rest_list, FieldListRestList, context);
+        let field_list_rest_built = FieldListRest {
+            field_list_rest_list,
+        };
         // Calling user action here
-        self.user_grammar
-            .field_list_rest(&field_list_rest_1_built)?;
-        self.push(ASTType::FieldListRest(field_list_rest_1_built), context);
+        self.user_grammar.field_list_rest(&field_list_rest_built)?;
+        self.push(ASTType::FieldListRest(field_list_rest_built), context);
         Ok(())
     }
 
     /// Semantic action for production 108:
+    ///
+    /// `FieldListRestList /* Vec<T>::Push */: ';' FieldList FieldListRestList;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn field_list_rest_list_0(
+        &mut self,
+        semicolon: &ParseTreeType<'t>,
+        _field_list: &ParseTreeType<'t>,
+        _field_list_rest_list: &ParseTreeType<'t>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let semicolon = semicolon.token()?.clone();
+        let mut field_list_rest_list =
+            pop_item!(self, field_list_rest_list, FieldListRestList, context);
+        let field_list = pop_item!(self, field_list, FieldList, context);
+        let field_list_rest_list_0_built = FieldListRestList {
+            field_list,
+            semicolon,
+        };
+        // Add an element to the vector
+        field_list_rest_list.push(field_list_rest_list_0_built);
+        self.push(ASTType::FieldListRestList(field_list_rest_list), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 109:
+    ///
+    /// `FieldListRestList /* Vec<T>::New */: ;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn field_list_rest_list_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let field_list_rest_list_1_built = Vec::new();
+        self.push(
+            ASTType::FieldListRestList(field_list_rest_list_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 110:
     ///
     /// `IdentList: Ident IdentListList /* Vec */;`
     ///
@@ -3809,7 +3815,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 109:
+    /// Semantic action for production 111:
     ///
     /// `IdentListList /* Vec<T>::Push */: ',' Ident IdentListList;`
     ///
@@ -3832,7 +3838,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 110:
+    /// Semantic action for production 112:
     ///
     /// `IdentListList /* Vec<T>::New */: ;`
     ///
@@ -3845,7 +3851,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 111:
+    /// Semantic action for production 113:
     ///
     /// `Ident: /[a-zA-Z][a-zA-Z0-9]*/;`
     ///
@@ -3861,7 +3867,7 @@ impl<'t, 'u> Oberon0GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 112:
+    /// Semantic action for production 114:
     ///
     /// `Integer: /[0-9]+/;`
     ///
@@ -4026,34 +4032,36 @@ impl<'t> UserActionsTrait<'t> for Oberon0GrammarAuto<'t, '_> {
             82 => self.factor_3(&children[0], &children[1]),
             83 => self.factor_4(&children[0], &children[1]),
             84 => self.selector(&children[0]),
-            85 => self.selector_list_0(&children[0], &children[1], &children[2]),
-            86 => self.selector_list_1(&children[0], &children[1], &children[2], &children[3]),
-            87 => self.selector_list_2(),
-            88 => self.assign_op(&children[0]),
-            89 => self.relation_op_0(&children[0]),
-            90 => self.relation_op_1(&children[0]),
-            91 => self.relation_op_2(&children[0]),
-            92 => self.relation_op_3(&children[0]),
-            93 => self.relation_op_4(&children[0]),
-            94 => self.relation_op_5(&children[0]),
-            95 => self.add_operator(&children[0]),
-            96 => self.mul_operator(&children[0]),
-            97 => self.unary_op(&children[0]),
-            98 => self.type_0(&children[0]),
-            99 => self.type_1(&children[0]),
-            100 => self.type_2(&children[0]),
-            101 => self.array_type(&children[0], &children[1], &children[2], &children[3]),
-            102 => self.record_type(&children[0], &children[1], &children[2], &children[3]),
-            103 => self.field_list(&children[0]),
-            104 => self.field_list_list_0(&children[0], &children[1], &children[2], &children[3]),
-            105 => self.field_list_list_1(),
-            106 => self.field_list_rest_0(&children[0], &children[1], &children[2]),
-            107 => self.field_list_rest_1(),
-            108 => self.ident_list(&children[0], &children[1]),
-            109 => self.ident_list_list_0(&children[0], &children[1], &children[2]),
-            110 => self.ident_list_list_1(),
-            111 => self.ident(&children[0]),
-            112 => self.integer(&children[0]),
+            85 => self.selector_list_0(&children[0], &children[1]),
+            86 => self.selector_list_group_0(&children[0], &children[1]),
+            87 => self.selector_list_group_1(&children[0], &children[1], &children[2]),
+            88 => self.selector_list_1(),
+            89 => self.assign_op(&children[0]),
+            90 => self.relation_op_0(&children[0]),
+            91 => self.relation_op_1(&children[0]),
+            92 => self.relation_op_2(&children[0]),
+            93 => self.relation_op_3(&children[0]),
+            94 => self.relation_op_4(&children[0]),
+            95 => self.relation_op_5(&children[0]),
+            96 => self.add_operator(&children[0]),
+            97 => self.mul_operator(&children[0]),
+            98 => self.unary_op(&children[0]),
+            99 => self.type_0(&children[0]),
+            100 => self.type_1(&children[0]),
+            101 => self.type_2(&children[0]),
+            102 => self.array_type(&children[0], &children[1], &children[2], &children[3]),
+            103 => self.record_type(&children[0], &children[1], &children[2], &children[3]),
+            104 => self.field_list(&children[0]),
+            105 => self.field_list_list_0(&children[0], &children[1], &children[2], &children[3]),
+            106 => self.field_list_list_1(),
+            107 => self.field_list_rest(&children[0]),
+            108 => self.field_list_rest_list_0(&children[0], &children[1], &children[2]),
+            109 => self.field_list_rest_list_1(),
+            110 => self.ident_list(&children[0], &children[1]),
+            111 => self.ident_list_list_0(&children[0], &children[1], &children[2]),
+            112 => self.ident_list_list_1(),
+            113 => self.ident(&children[0]),
+            114 => self.integer(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {prod_num}"
             ))
