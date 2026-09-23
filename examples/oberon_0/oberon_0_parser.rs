@@ -1657,7 +1657,6 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
-    llk_parser.trim_parse_tree();
     let scanner = Oberon0GrammarScanner::new();
     // Initialize wrapper
     let mut user_actions = Oberon0GrammarAuto::new(user_actions);
