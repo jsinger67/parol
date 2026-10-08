@@ -25,8 +25,16 @@ impl DocumentState {
         self.parsed_data.hover(params, &self.input)
     }
 
-    pub(crate) fn document_symbols(&self, params: DocumentSymbolParams) -> DocumentSymbolResponse {
-        self.parsed_data.document_symbols(params, &self.input)
+    pub(crate) fn document_symbols(
+        &self,
+        params: DocumentSymbolParams,
+        supports_hierarchical_document_symbols: bool,
+    ) -> DocumentSymbolResponse {
+        self.parsed_data.document_symbols(
+            params,
+            &self.input,
+            supports_hierarchical_document_symbols,
+        )
     }
 
     pub(crate) fn prepare_rename(

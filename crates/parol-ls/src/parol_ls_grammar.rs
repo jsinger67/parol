@@ -12,10 +12,10 @@ use crate::{
 };
 use lsp_types::{
     DocumentChanges, DocumentFormattingParams, DocumentSymbol, DocumentSymbolParams,
-    DocumentSymbolResponse, Hover, HoverContents::Markup, HoverParams, MarkupContent, MarkupKind,
-    OneOf, OptionalVersionedTextDocumentIdentifier, Position, PrepareRenameResponse, Range,
-    RenameParams, SymbolKind, TextDocumentEdit, TextDocumentPositionParams, TextEdit,
-    WorkspaceEdit,
+    DocumentSymbolResponse, Hover, HoverContents::Markup, HoverParams, Location, MarkupContent,
+    MarkupKind, OneOf, OptionalVersionedTextDocumentIdentifier, Position, PrepareRenameResponse,
+    Range, RenameParams, SymbolInformation, SymbolKind, TextDocumentEdit,
+    TextDocumentPositionParams, TextEdit, Uri, WorkspaceEdit,
 };
 use parol::TerminalKind;
 #[allow(unused_imports)]
@@ -283,7 +283,8 @@ impl ParolLsGrammar {
                 // This is the first non-terminal in the struct `identifier_list`
                 self.add_non_terminal_ref(&skip.identifier_list.identifier.identifier);
 
-                let mut first_id: DocumentSymbol = (&skip.identifier_list.identifier.identifier).into();
+                let mut first_id: DocumentSymbol =
+                    (&skip.identifier_list.identifier.identifier).into();
                 first_id.detail = Some("Skipped terminal".to_string());
 
                 let children: Vec<DocumentSymbol> = skip
@@ -466,10 +467,47 @@ impl ParolLsGrammar {
 
     pub(crate) fn document_symbols(
         &self,
-        _params: DocumentSymbolParams,
+        params: DocumentSymbolParams,
         _input: &str,
+        supports_hierarchical_document_symbols: bool,
     ) -> DocumentSymbolResponse {
-        DocumentSymbolResponse::Nested(self.symbols.clone())
+        if supports_hierarchical_document_symbols {
+            return DocumentSymbolResponse::Nested(self.symbols.clone());
+        }
+        let mut flat_symbols = Vec::new();
+        Self::collect_flat_symbols(
+            &self.symbols,
+            &params.text_document.uri,
+            None,
+            &mut flat_symbols,
+        );
+        DocumentSymbolResponse::Flat(flat_symbols)
+    }
+
+    fn collect_flat_symbols(
+        symbols: &[DocumentSymbol],
+        uri: &Uri,
+        container_name: Option<&str>,
+        target: &mut Vec<SymbolInformation>,
+    ) {
+        for symbol in symbols {
+            #[allow(deprecated)]
+            target.push(SymbolInformation {
+                name: symbol.name.clone(),
+                kind: symbol.kind,
+                tags: symbol.tags.clone(),
+                deprecated: symbol.deprecated,
+                location: Location {
+                    uri: uri.clone(),
+                    range: symbol.selection_range,
+                },
+                container_name: container_name.map(ToOwned::to_owned),
+            });
+
+            if let Some(children) = symbol.children.as_ref() {
+                Self::collect_flat_symbols(children, uri, Some(symbol.name.as_str()), target);
+            }
+        }
     }
 
     pub(crate) fn prepare_rename(

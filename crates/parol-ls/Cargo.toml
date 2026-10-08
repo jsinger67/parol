@@ -32,6 +32,8 @@ scnr2 = { workspace = true }
 serde = "1.0.228"
 serde_json = "1.0.150"
 thiserror = { workspace = true }
+file_url = "0.3.2"
+url = "2.5.8"
 
 [build-dependencies]
 parol = { path = "../parol", version = "5.0.2" }
