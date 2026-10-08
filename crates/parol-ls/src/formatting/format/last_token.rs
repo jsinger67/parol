@@ -1,9 +1,9 @@
 use crate::{
     parol_ls_grammar::OwnedToken,
     parol_ls_grammar_trait::{
-        ScannerDirectivesPercentSkipIdentifierList,
-        ScannerDirectivesPercentOnIdentifierListScannerStateDirectives, ScannerStateDirectives,
-        TokenLiteral, UserTypeName,
+        ScannerDirectivesPercentOnIdentifierListScannerStateDirectives,
+        ScannerDirectivesPercentSkipIdentifierList, ScannerStateDirectives, TokenLiteral,
+        UserTypeName,
     },
 };
 

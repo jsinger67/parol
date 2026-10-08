@@ -173,30 +173,29 @@ pub fn follow_k(
         let _ = follow_cache.get(k - 1, grammar_config, first_cache);
     }
 
-    let mut non_terminal_results = FollowSet::new(
-        cfg.get_non_terminal_set()
-            .iter()
-            .fold(Vec::new(), |mut acc, nt| {
-                if nt == start_symbol {
-                    acc.push(
-                        DomainTypeBuilder::new()
-                            .k(k)
-                            .max_terminal_index(max_terminal_index)
-                            .end()
-                            .unwrap(),
-                    );
-                } else {
-                    acc.push(
-                        DomainTypeBuilder::new()
-                            .k(k)
-                            .max_terminal_index(max_terminal_index)
-                            .build()
-                            .unwrap(),
-                    );
-                }
-                acc
-            }),
-    );
+    let mut non_terminal_results = FollowSet::new(cfg.get_non_terminal_set().iter().fold(
+        Vec::new(),
+        |mut acc, nt| {
+            if nt == start_symbol {
+                acc.push(
+                    DomainTypeBuilder::new()
+                        .k(k)
+                        .max_terminal_index(max_terminal_index)
+                        .end()
+                        .unwrap(),
+                );
+            } else {
+                acc.push(
+                    DomainTypeBuilder::new()
+                        .k(k)
+                        .max_terminal_index(max_terminal_index)
+                        .build()
+                        .unwrap(),
+                );
+            }
+            acc
+        },
+    ));
 
     let mut iterations = 0usize;
     loop {
@@ -207,8 +206,11 @@ pub fn follow_k(
         for equation in equation_system.iter() {
             match &equation.suffix {
                 SuffixKind::Complete(first) => {
-                    debug_assert!(equation.target_nt_index < non_terminal_results.non_terminals.len());
-                    let target_set = &mut non_terminal_results.non_terminals[equation.target_nt_index];
+                    debug_assert!(
+                        equation.target_nt_index < non_terminal_results.non_terminals.len()
+                    );
+                    let target_set =
+                        &mut non_terminal_results.non_terminals[equation.target_nt_index];
                     if target_set.union_in_place(first) {
                         changed = true;
                     }
@@ -238,8 +240,11 @@ pub fn follow_k(
                     let nt_follow_set =
                         &non_terminal_results.non_terminals[equation.source_nt_index];
                     let pos_result = first.clone().k_concat(nt_follow_set, k);
-                    debug_assert!(equation.target_nt_index < non_terminal_results.non_terminals.len());
-                    let target_set = &mut non_terminal_results.non_terminals[equation.target_nt_index];
+                    debug_assert!(
+                        equation.target_nt_index < non_terminal_results.non_terminals.len()
+                    );
+                    let target_set =
+                        &mut non_terminal_results.non_terminals[equation.target_nt_index];
                     if target_set.union_in_place(&pos_result) {
                         changed = true;
                     }

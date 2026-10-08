@@ -38,8 +38,8 @@ use lsp_types::{
     TextDocumentSyncCapability, TextDocumentSyncKind, TextDocumentSyncOptions,
     WorkDoneProgressOptions,
     notification::{
-        Cancel, DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Exit,
-        LogMessage, Notification,
+        Cancel, DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Exit, LogMessage,
+        Notification,
     },
     request::{
         CodeActionRequest, DocumentSymbolRequest, Formatting, GotoDefinition, HoverRequest,
@@ -92,7 +92,10 @@ fn send_log_message(connection: &Connection, message: impl Into<String>) {
     let method = LogMessage::METHOD.to_string();
     let _ = connection
         .sender
-        .send(Message::Notification(lsp_server::Notification { method, params }));
+        .send(Message::Notification(lsp_server::Notification {
+            method,
+            params,
+        }));
 }
 
 fn main() -> Result<(), Box<dyn Error>> {

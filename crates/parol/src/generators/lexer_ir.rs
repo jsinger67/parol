@@ -1,6 +1,6 @@
-use crate::parser::parol_grammar::ScannerStateSwitch;
 use crate::config::CommonGeneratorConfig;
 use crate::generators::{GrammarConfig, generate_terminal_names};
+use crate::parser::parol_grammar::ScannerStateSwitch;
 use anyhow::Result;
 use parol_runtime::TerminalIndex;
 
@@ -63,5 +63,5 @@ pub(crate) fn build_scanner_mode_data(
                     transitions,
                 })
         })
-                .collect::<std::result::Result<Vec<_>, anyhow::Error>>()
+        .collect::<std::result::Result<Vec<_>, anyhow::Error>>()
 }
