@@ -1,4 +1,3 @@
-use derive_new::new;
 use lsp_types::{
     DocumentFormattingParams, DocumentSymbolParams, DocumentSymbolResponse, Hover, HoverParams,
     Position, PrepareRenameResponse, RenameParams, TextDocumentPositionParams, Uri, WorkspaceEdit,
@@ -6,7 +5,7 @@ use lsp_types::{
 
 use crate::parol_ls_grammar::ParolLsGrammar;
 
-#[derive(Debug, Clone, Default, new)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct DocumentState {
     pub(crate) input: String,
     pub(crate) parsed_data: ParolLsGrammar,
@@ -25,8 +24,16 @@ impl DocumentState {
         self.parsed_data.hover(params, &self.input)
     }
 
-    pub(crate) fn document_symbols(&self, params: DocumentSymbolParams) -> DocumentSymbolResponse {
-        self.parsed_data.document_symbols(params, &self.input)
+    pub(crate) fn document_symbols(
+        &self,
+        params: DocumentSymbolParams,
+        supports_hierarchical_document_symbols: bool,
+    ) -> DocumentSymbolResponse {
+        self.parsed_data.document_symbols(
+            params,
+            &self.input,
+            supports_hierarchical_document_symbols,
+        )
     }
 
     pub(crate) fn prepare_rename(
@@ -48,8 +55,17 @@ impl DocumentState {
     }
 }
 
-#[derive(Debug, new)]
+#[derive(Debug)]
 pub(crate) struct LocatedDocumentState<'a> {
     pub(crate) uri: &'a Uri,
     pub(crate) document_state: &'a DocumentState,
+}
+
+impl<'a> LocatedDocumentState<'a> {
+    pub fn new(uri: &'a Uri, document_state: &'a DocumentState) -> Self {
+        Self {
+            uri,
+            document_state,
+        }
+    }
 }

@@ -561,7 +561,11 @@ mod tests {
 
     static TERMINAL_NAMES: [&str; 1] = ["EndOfInput"];
     static NON_TERMINAL_NAMES: [&str; 1] = ["Start"];
-    static PRODUCTIONS: [LRProduction; 1] = [LRProduction { lhs: 0, len: 0, is_push_production: false }];
+    static PRODUCTIONS: [LRProduction; 1] = [LRProduction {
+        lhs: 0,
+        len: 0,
+        is_push_production: false,
+    }];
     static ACTIONS: [LRAction; 1] = [LRAction::Accept];
     static STATES: [LR1State; 1] = [LR1State {
         actions: &[(0, 0)],
@@ -571,7 +575,6 @@ mod tests {
         actions: &ACTIONS,
         states: &STATES,
     };
-
 
     #[test]
     fn lr_parser_returns_max_depth_error_when_limit_is_exceeded() {
@@ -608,8 +611,16 @@ mod tests {
     #[test]
     fn lr_production_has_push_flag() {
         // Verify that the is_push_production flag is accessible and correctly set
-        let prod_normal = LRProduction { lhs: 0, len: 1, is_push_production: false };
-        let prod_push = LRProduction { lhs: 0, len: 1, is_push_production: true };
+        let prod_normal = LRProduction {
+            lhs: 0,
+            len: 1,
+            is_push_production: false,
+        };
+        let prod_push = LRProduction {
+            lhs: 0,
+            len: 1,
+            is_push_production: true,
+        };
         assert!(!prod_normal.is_push_production);
         assert!(prod_push.is_push_production);
     }

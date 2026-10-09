@@ -166,7 +166,10 @@ impl Terminals {
     /// Increments the index of the next insertion
     #[inline]
     pub fn inc_index(&mut self) {
-        let i = self.next_index().checked_add(1).expect("next_index overflow");
+        let i = self
+            .next_index()
+            .checked_add(1)
+            .expect("next_index overflow");
         debug_assert!(i <= MAX_K as u8, "next_index exceeds MAX_K");
         self.t &= 0xF0FF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF;
         self.t |= (i as u128) << 120;

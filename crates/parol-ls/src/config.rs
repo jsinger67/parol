@@ -60,4 +60,14 @@ impl Config {
             false
         }
     }
+
+    pub(crate) fn supports_hierarchical_document_symbols(&self) -> bool {
+        self.initialization_params
+            .capabilities
+            .text_document
+            .as_ref()
+            .and_then(|text_document| text_document.document_symbol.as_ref())
+            .and_then(|document_symbol| document_symbol.hierarchical_document_symbol_support)
+            .unwrap_or(false)
+    }
 }

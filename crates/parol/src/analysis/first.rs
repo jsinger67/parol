@@ -194,7 +194,12 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     // Single final pass to construct productions
     let mut productions = Vec::with_capacity(pr_count);
     for equation in equation_system.iter() {
-        productions.push(evaluate_equation(equation, &next_non_terminals, &epsilon_set, k));
+        productions.push(evaluate_equation(
+            equation,
+            &next_non_terminals,
+            &epsilon_set,
+            k,
+        ));
     }
 
     FirstSet {

@@ -448,7 +448,7 @@ impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRCo
         conflict: LR1ResolvedConflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>,
     ) {
         let conflict: LRResolvedConflict = conflict.into();
-        println!("{conflict}");
+        // eprintln!("{conflict}");
         self.calls.borrow_mut().push(conflict);
     }
 

@@ -1,7 +1,6 @@
 use std::ops::Add;
 
 use crate::parol_ls_grammar::OwnedToken;
-use derive_new::new;
 use lsp_types::{Position, Range};
 
 use crate::utils::location_to_range;
@@ -14,11 +13,16 @@ use crate::utils::location_to_range;
 /// Empty + Empty = Empty
 ///
 /// Rng and lsp_types::Range are convertible into each other.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, new)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub(crate) struct Rng(pub(crate) Range);
 
 #[allow(unused)]
 impl Rng {
+    /// Creates a new Rng from a given Range.
+    pub(crate) fn new(range: Range) -> Self {
+        Self(range)
+    }
+
     /// Specially handled empty range.
     /// Can be found on optional elements or empty lists.
     pub(crate) fn is_empty(&self) -> bool {

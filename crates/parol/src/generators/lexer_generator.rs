@@ -1,5 +1,5 @@
+use crate::generators::lexer_ir::{ScannerModeBuildData, build_scanner_mode_data};
 use crate::generators::{GrammarConfig, NamingHelper, generate_terminal_name};
-use crate::generators::lexer_ir::{build_scanner_mode_data, ScannerModeBuildData};
 use crate::{CommonGeneratorConfig, generate_name};
 use anyhow::Result;
 use parol_runtime::TerminalIndex;

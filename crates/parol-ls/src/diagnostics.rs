@@ -86,16 +86,27 @@ impl Diagnostics {
     ) -> Diagnostic {
         let range = Range::default();
         let source = Some("parol-ls".to_string());
-        let message = format!("{} automatically resolved conflicts", warnings.len());
+        let number_of_warnings = warnings.len();
+        let message = format!("{} automatically resolved conflicts", number_of_warnings);
 
-        let related_information: Option<Vec<DiagnosticRelatedInformation>> =
-            Some(warnings.into_iter().fold(vec![], |mut acc, w| {
+        let mut related_information: Option<Vec<DiagnosticRelatedInformation>> =
+            Some(warnings.into_iter().take(10).fold(vec![], |mut acc, w| {
                 acc.push(DiagnosticRelatedInformation {
                     location: Location::new(uri.clone(), Range::default()),
                     message: w.to_string(),
                 });
                 acc
             }));
+
+        if number_of_warnings > 10 {
+            // Add a note indicating that there are more than 10 resolved conflicts.
+            related_information
+                .get_or_insert_with(Vec::new)
+                .push(DiagnosticRelatedInformation {
+                    location: Location::new(uri.clone(), Range::default()),
+                    message: format!("...and {} more resolved conflicts", number_of_warnings - 10),
+                });
+        }
 
         Diagnostic {
             source,

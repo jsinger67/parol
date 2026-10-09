@@ -278,7 +278,6 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-
     fn push_production<T: TreeConstruct<'t>>(
         &mut self,
         tree_builder: &mut T,

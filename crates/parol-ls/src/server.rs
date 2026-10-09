@@ -10,13 +10,13 @@ use lsp_server::Message;
 use lsp_types::{
     CodeAction, CodeActionKind, CodeActionOrCommand, CodeActionParams, CodeActionResponse,
     DidChangeConfigurationParams, DidChangeTextDocumentParams, DidCloseTextDocumentParams,
-    DidOpenTextDocumentParams, DocumentFormattingParams, DocumentSymbolParams,
-    DocumentSymbolResponse, GotoDefinitionParams, GotoDefinitionResponse, Hover, HoverParams,
-    Location, Position, PrepareRenameResponse, PublishDiagnosticsParams, Range, RenameParams,
+    DocumentFormattingParams, DocumentSymbolParams, DocumentSymbolResponse, GotoDefinitionParams,
+    GotoDefinitionResponse, Hover, HoverContents, HoverParams, Location, MarkupContent, MarkupKind,
+    Position, PrepareRenameResponse, PublishDiagnosticsParams, Range, RenameParams,
     TextDocumentContentChangeEvent, TextDocumentPositionParams, TextEdit, Uri, WorkspaceEdit,
     notification::{
-        DidChangeConfiguration, DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument,
-        Notification, PublishDiagnostics,
+        DidChangeConfiguration, DidChangeTextDocument, DidCloseTextDocument, Notification,
+        PublishDiagnostics,
     },
 };
 use parol::generators::grammar_trans::check_and_transform_grammar_with_ignored;
@@ -63,16 +63,51 @@ pub(crate) struct Server {
 
     /// Aggregated formatting settings
     formatting_settings: FormattingSettings,
+
+    /// Client capability negotiation result for document symbols.
+    supports_hierarchical_document_symbols: bool,
 }
 
 impl Server {
-    pub(crate) fn new(max_k: usize) -> Self {
+    pub(crate) fn new(max_k: usize, supports_hierarchical_document_symbols: bool) -> Self {
         Self {
             max_k,
             formatting_settings: FormattingSettings::default(),
+            supports_hierarchical_document_symbols,
             ..Default::default()
         }
     }
+
+    fn document_state(&self, uri: &Uri, context: &str) -> Option<&DocumentState> {
+        let document_state = self.documents.get(uri);
+        if document_state.is_none() {
+            eprintln!(
+                "{context}: missing document state for uri={uri:?}, known_documents={}",
+                self.documents.len()
+            );
+        }
+        document_state
+    }
+
+    fn ensure_document(&mut self, uri: &Uri, connection: Arc<lsp_server::Connection>) -> bool {
+        if self.documents.contains_key(uri) {
+            return true;
+        }
+        self.handle_open_document(connection, uri.to_owned(), 0, String::new())
+            .map(|_| true)
+            .unwrap_or(false)
+    }
+
+    fn empty_hover() -> Hover {
+        Hover {
+            contents: HoverContents::Markup(MarkupContent {
+                kind: MarkupKind::Markdown,
+                value: String::new(),
+            }),
+            range: None,
+        }
+    }
+
     pub(crate) fn update_configuration(
         &mut self,
         props: &ConfigProperties,
@@ -90,7 +125,11 @@ impl Server {
         connection: Arc<lsp_server::Connection>,
     ) -> anyhow::Result<()> {
         let file_path: PathBuf = PathBuf::from(uri.path().to_string());
-        let document_state = self.documents.get_mut(&uri).unwrap();
+        let Some(document_state) = self.documents.get_mut(&uri) else {
+            return Err(anyhow::anyhow!(
+                "missing document state for uri {uri:?} during analyze"
+            ));
+        };
         eprintln!("analyze: step 1 - parse");
         document_state.clear();
         parse(
@@ -99,7 +138,11 @@ impl Server {
             &mut document_state.parsed_data,
         )?;
         eprintln!("analyze: step 2 - check_grammar");
-        let document_state = self.documents.get(&uri).unwrap();
+        let Some(document_state) = self.documents.get(&uri) else {
+            return Err(anyhow::anyhow!(
+                "missing document state for uri {uri:?} after parse"
+            ));
+        };
         Self::check_grammar(
             &document_state.input,
             &file_path,
@@ -182,43 +225,66 @@ impl Server {
     pub(crate) fn handle_open_document(
         &mut self,
         connection: Arc<lsp_server::Connection>,
-        n: lsp_server::Notification,
+        uri: Uri,
+        version: i32,
+        text: String,
     ) -> Result<(), Box<dyn Error>> {
-        let params: DidOpenTextDocumentParams = n.extract(DidOpenTextDocument::METHOD)?;
+        let mut text = text;
+        let lazy_load = text.is_empty();
+        if lazy_load {
+            // Load the text from the file system or another source if necessary
+            let url = match url::Url::parse(uri.as_str()) {
+                Ok(url) => url,
+                Err(err) => {
+                    eprintln!(
+                        "handle_open_document: failed to parse URL from uri: {}, error: {}",
+                        uri.as_str(),
+                        err
+                    );
+                    return Err(Box::new(err));
+                }
+            };
+            let file_url =
+                file_url::url_to_path(&url).ok_or("Failed to convert URL to file path")?;
+            eprintln!(
+                "handle_open_document: loading text from file system, uri: {}",
+                uri.as_str()
+            );
+            text = match std::fs::read_to_string(file_url) {
+                Ok(content) => content,
+                Err(err) => {
+                    eprintln!(
+                        "handle_open_document: failed to read file from file system, uri: {}, error: {}",
+                        uri.as_str(),
+                        err
+                    );
+                    return Err(Box::new(err));
+                }
+            };
+        }
         self.documents.insert(
-            params.text_document.uri.clone(),
+            uri.clone(),
             DocumentState {
-                input: params.text_document.text.clone(),
+                input: text,
                 ..Default::default()
             },
         );
-        match self.analyze(
-            params.text_document.uri.clone(),
-            params.text_document.version,
-            connection.clone(),
-        ) {
+        match self.analyze(uri.clone(), version, connection.clone()) {
             Ok(()) => {
                 eprintln!("handle_open_document: ok");
-                Self::notify_analysis_ok(
-                    connection,
-                    params.text_document.uri,
-                    params.text_document.version,
-                )?;
+                Self::notify_analysis_ok(connection, uri.clone(), version)?;
             }
             Err(err) => {
                 eprintln!("handle_open_document: error");
-                let document_state = self
-                    .documents
-                    .get(&params.text_document.uri)
-                    .unwrap()
-                    .clone();
-                Self::notify_analysis_error(
-                    err,
-                    connection,
-                    &params.text_document.uri,
-                    params.text_document.version,
-                    document_state,
-                )?;
+                if let Some(document_state) = self.document_state(&uri, "handle_open_document") {
+                    Self::notify_analysis_error(
+                        err,
+                        connection,
+                        &uri,
+                        version,
+                        document_state.clone(),
+                    )?;
+                }
             }
         }
         Ok(())
@@ -246,18 +312,17 @@ impl Server {
             }
             Err(err) => {
                 eprintln!("handle_change_document: error");
-                let document_state = self
-                    .documents
-                    .get(&params.text_document.uri)
-                    .unwrap()
-                    .clone();
-                Self::notify_analysis_error(
-                    err,
-                    connection,
-                    &params.text_document.uri,
-                    params.text_document.version,
-                    document_state,
-                )?;
+                if let Some(document_state) =
+                    self.document_state(&params.text_document.uri, "handle_change_document")
+                {
+                    Self::notify_analysis_error(
+                        err,
+                        connection,
+                        &params.text_document.uri,
+                        params.text_document.version,
+                        document_state.clone(),
+                    )?;
+                }
             }
         }
         Ok(())
@@ -275,11 +340,15 @@ impl Server {
     pub(crate) fn handle_goto_definition(
         &mut self,
         params: GotoDefinitionParams,
+        connection: Arc<lsp_server::Connection>,
     ) -> GotoDefinitionResponse {
-        let document_state = self
-            .documents
-            .get(&params.text_document_position_params.text_document.uri)
-            .unwrap();
+        let uri = &params.text_document_position_params.text_document.uri;
+        if !self.ensure_document(uri, connection.clone()) {
+            return GotoDefinitionResponse::Array(Vec::new());
+        }
+        let Some(document_state) = self.documents.get(uri) else {
+            return GotoDefinitionResponse::Array(Vec::new());
+        };
         let mut locations = Vec::new();
         if let Some(text_at_position) =
             document_state.ident_at_position(params.text_document_position_params.position)
@@ -313,61 +382,87 @@ impl Server {
         GotoDefinitionResponse::Array(locations)
     }
 
-    pub(crate) fn handle_hover(&mut self, params: HoverParams) -> Hover {
-        let document_state = self
-            .documents
-            .get(&params.text_document_position_params.text_document.uri)
-            .unwrap();
-        document_state.hover(params)
+    pub(crate) fn handle_hover(
+        &mut self,
+        params: HoverParams,
+        connection: Arc<lsp_server::Connection>,
+    ) -> Hover {
+        let uri = &params.text_document_position_params.text_document.uri;
+        if self.ensure_document(uri, connection)
+            && let Some(document_state) = self.documents.get(uri)
+        {
+            return document_state.hover(params);
+        }
+        Self::empty_hover()
     }
 
     pub(crate) fn handle_document_symbols(
-        &self,
+        &mut self,
         params: DocumentSymbolParams,
+        connection: Arc<lsp_server::Connection>,
     ) -> DocumentSymbolResponse {
-        let document_state = self.documents.get(&params.text_document.uri).unwrap();
-        document_state.document_symbols(params)
+        let uri = &params.text_document.uri;
+        if self.ensure_document(uri, connection.clone())
+            && let Some(document_state) = self.documents.get(uri)
+        {
+            return document_state
+                .document_symbols(params, self.supports_hierarchical_document_symbols);
+        }
+        DocumentSymbolResponse::Nested(Vec::new())
     }
 
     pub(crate) fn handle_prepare_rename(
-        &self,
+        &mut self,
         params: TextDocumentPositionParams,
+        connection: Arc<lsp_server::Connection>,
     ) -> Option<PrepareRenameResponse> {
-        if let Some(document_state) = self.documents.get(&params.text_document.uri) {
-            document_state.prepare_rename(params)
-        } else {
-            None
+        let uri = &params.text_document.uri;
+        if self.ensure_document(uri, connection)
+            && let Some(document_state) = self.documents.get(uri)
+        {
+            return document_state.prepare_rename(params);
         }
+        None
     }
 
-    pub(crate) fn handle_rename(&self, params: RenameParams) -> Option<WorkspaceEdit> {
-        if let Some(document_state) = self
-            .documents
-            .get(&params.text_document_position.text_document.uri)
+    pub(crate) fn handle_rename(
+        &mut self,
+        params: RenameParams,
+        connection: Arc<lsp_server::Connection>,
+    ) -> Option<WorkspaceEdit> {
+        let uri = &params.text_document_position.text_document.uri;
+        if self.ensure_document(uri, connection)
+            && let Some(document_state) = self.documents.get(uri)
         {
-            document_state.rename(params)
-        } else {
-            None
+            return document_state.rename(params);
         }
+        None
     }
 
     pub(crate) fn handle_formatting(
-        &self,
+        &mut self,
         mut params: DocumentFormattingParams,
+        connection: Arc<lsp_server::Connection>,
     ) -> Option<Vec<TextEdit>> {
-        if let Some(document_state) = self.documents.get(&params.text_document.uri) {
+        let uri = &params.text_document.uri;
+        if self.ensure_document(uri, connection)
+            && let Some(document_state) = self.documents.get(uri)
+        {
             self.formatting_settings.add_to_options(&mut params.options);
-            document_state.format(params)
-        } else {
-            None
+            return document_state.format(params);
         }
+        None
     }
 
     pub(crate) fn handle_code_action(
-        &self,
+        &mut self,
         params: CodeActionParams,
+        connection: Arc<lsp_server::Connection>,
     ) -> Option<CodeActionResponse> {
         let uri = &params.text_document.uri;
+        if !self.ensure_document(uri, connection.clone()) {
+            return None;
+        }
         let document_state = self.documents.get(uri)?;
         let mut actions: Vec<CodeActionOrCommand> = Vec::new();
         let non_terminals: HashSet<String> = document_state
@@ -456,11 +551,11 @@ impl Server {
     }
 
     fn apply_change(&mut self, uri: &Uri, change: &TextDocumentContentChangeEvent) {
-        self.documents
-            .get_mut(uri)
-            .unwrap()
-            .input
-            .clone_from(&change.text);
+        if let Some(document_state) = self.documents.get_mut(uri) {
+            document_state.input.clone_from(&change.text);
+        } else {
+            eprintln!("apply_change: missing document state for uri={uri:?}");
+        }
     }
 
     fn find_user_type_definitions(
