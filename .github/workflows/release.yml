@@ -1,0 +1,202 @@
+name: Release Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - 'parol-v*'
+      - 'parol-ls-v*'
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux x86_64
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            binary_name_parol: parol
+            binary_name_ls: parol-ls
+            use_cross: false
+
+          # Linux ARM64
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            binary_name_parol: parol
+            binary_name_ls: parol-ls
+            use_cross: true
+
+          # macOS x86_64
+          - os: macos-13
+            target: x86_64-apple-darwin
+            binary_name_parol: parol
+            binary_name_ls: parol-ls
+            use_cross: false
+
+          # macOS ARM64 (Apple Silicon)
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            binary_name_parol: parol
+            binary_name_ls: parol-ls
+            use_cross: false
+
+          # Windows x86_64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            binary_name_parol: parol.exe
+            binary_name_ls: parol-ls.exe
+            use_cross: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install cross
+        if: matrix.use_cross
+        run: cargo install cross --locked
+
+      - name: Build parol
+        run: |
+          if [ "${{ matrix.use_cross }}" = "true" ]; then
+            cross build --release -p parol --target ${{ matrix.target }}
+          else
+            cargo build --release -p parol --target ${{ matrix.target }}
+          fi
+        shell: bash
+
+      - name: Build parol-ls
+        run: |
+          if [ "${{ matrix.use_cross }}" = "true" ]; then
+            cross build --release -p parol-ls --target ${{ matrix.target }}
+          else
+            cargo build --release -p parol-ls --target ${{ matrix.target }}
+          fi
+        shell: bash
+
+      - name: Prepare release artifacts (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p release
+          cp target/${{ matrix.target }}/release/${{ matrix.binary_name_parol }} release/
+          cp target/${{ matrix.target }}/release/${{ matrix.binary_name_ls }} release/
+          strip release/${{ matrix.binary_name_parol }} || true
+          strip release/${{ matrix.binary_name_ls }} || true
+        shell: bash
+
+      - name: Prepare release artifacts (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          mkdir -p release
+          copy target\${{ matrix.target }}\release\${{ matrix.binary_name_parol }} release\
+          copy target\${{ matrix.target }}\release\${{ matrix.binary_name_ls }} release\
+        shell: pwsh
+
+      - name: Create checksums
+        run: |
+          cd release
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            certUtil -hashfile ${{ matrix.binary_name_parol }} SHA256 > checksums.txt
+            certUtil -hashfile ${{ matrix.binary_name_ls }} SHA256 >> checksums.txt
+          else
+            sha256sum ${{ matrix.binary_name_parol }} > checksums.txt
+            sha256sum ${{ matrix.binary_name_ls }} >> checksums.txt
+          fi
+        shell: bash
+
+      - name: Create tarball (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          cd release
+          tar czf parol-${{ matrix.target }}.tar.gz ${{ matrix.binary_name_parol }} ${{ matrix.binary_name_ls }} checksums.txt
+        shell: bash
+
+      - name: Create zip (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd release
+          powershell -Command "Compress-Archive -Path '${{ matrix.binary_name_parol }}', '${{ matrix.binary_name_ls }}', 'checksums.txt' -DestinationPath parol-${{ matrix.target }}.zip"
+        shell: pwsh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ matrix.target }}
+          path: |
+            release/${{ matrix.binary_name_parol }}
+            release/${{ matrix.binary_name_ls }}
+            release/checksums.txt
+
+  create-release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare release files
+        run: |
+          mkdir -p release
+          
+          # Copy all artifacts from matrix builds
+          for dir in artifacts/binaries-*; do
+            if [ -d "$dir" ]; then
+              cp "$dir"/* release/ 2>/dev/null || true
+            fi
+          done
+          
+          # Create archives for each platform
+          if [ -f "release/parol" ] && [ -f "release/parol-ls" ]; then
+            cd release
+            tar czf parol-x86_64-unknown-linux-gnu.tar.gz parol parol-ls checksums.txt 2>/dev/null || true
+          fi
+        shell: bash
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          TAG="${{ github.ref_name }}"
+          echo "release_tag=$TAG" >> $GITHUB_OUTPUT
+          
+          # Create release notes from git log
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null | head -1)
+          if [ -z "$PREV_TAG" ]; then
+            git log --oneline > release_notes.txt
+          else
+            git log --oneline $PREV_TAG..$TAG > release_notes.txt || git log --oneline > release_notes.txt
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.release_notes.outputs.release_tag }}
+          files: |
+            release/**
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
