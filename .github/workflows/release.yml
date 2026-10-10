@@ -146,7 +146,7 @@ jobs:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    if: always() && startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Checkout repository
@@ -162,16 +162,26 @@ jobs:
           mkdir -p release
           
           # Copy all artifacts from matrix builds
-          for dir in artifacts/binaries-*; do
-            if [ -d "$dir" ]; then
-              cp "$dir"/* release/ 2>/dev/null || true
-            fi
-          done
+          if [ -d "artifacts" ]; then
+            for dir in artifacts/binaries-*; do
+              if [ -d "$dir" ]; then
+                echo "Copying artifacts from $dir"
+                cp "$dir"/* release/ 2>/dev/null || true
+              fi
+            done
+          fi
           
-          # Create archives for each platform
-          if [ -f "release/parol" ] && [ -f "release/parol-ls" ]; then
-            cd release
-            tar czf parol-x86_64-unknown-linux-gnu.tar.gz parol parol-ls checksums.txt 2>/dev/null || true
+          # List what we have
+          echo "Release files:"
+          ls -la release/ || echo "No release directory"
+          
+          # Count binaries
+          BINARY_COUNT=$(find release -type f \( -name "parol" -o -name "parol.exe" -o -name "parol-ls" -o -name "parol-ls.exe" \) | wc -l)
+          echo "Found $BINARY_COUNT binaries"
+          
+          if [ "$BINARY_COUNT" -eq 0 ]; then
+            echo "ERROR: No binaries found in any builds!"
+            exit 1
           fi
         shell: bash
 
