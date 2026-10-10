@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.3 - 2026-10-10
+
+* Language server enhancements (parol-ls):
+  * Enhanced document symbol support with hierarchical symbol reporting when client supports it.
+  * Improved request handling for active and cancelled requests.
+  * Added logging for server startup and shutdown events.
+  * Refactored request handling to reduce code duplication.
+  * Improved robustness of hover, rename, and document symbol functionalities.
+
+* Grammar analysis optimizations:
+  * Optimize FIRST(k) calculations: direct part-0 initialization in equations, double-buffered loops, early complete breaks, and zero-allocation clears.
+  * Optimize FOLLOW(k) calculations: eliminate per-iteration ResultMap allocations, precompute suffix FIRST sets, use zero-clone unions for Complete and Epsilon equations.
+  * Optimize KTuples::k_concat with early exits for empty and epsilon cases.
+
+* Bug fixes:
+  * Fixed stale C# snapshot for `parol new --language c-sharp` scaffold.
+  * Fixed oberon_0 example and improved its tests.
+
+* Code quality:
+  * Removed debug print statements in `lalr1_parse_table.rs`.
+
 ## 5.0.2 - 2026-08-16
 
 * C# scaffolding/runtime compatibility:

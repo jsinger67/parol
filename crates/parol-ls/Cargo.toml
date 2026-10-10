@@ -23,7 +23,7 @@ log = { workspace = true }
 lsp-server = "0.10.0"
 lsp-types = "0.97.0"
 once_cell = { workspace = true }
-parol = { path = "../parol", version = "5.0.2" }
+parol = { path = "../parol", version = "5.0.3" }
 parol_runtime = { path = "../parol_runtime", version = "5.0.2" }
 parol-macros = { path = "../parol-macros", version = "1.0.0" }
 regex = { workspace = true }
@@ -35,4 +35,4 @@ file_url = "0.3.2"
 url = "2.5.8"
 
 [build-dependencies]
-parol = { path = "../parol", version = "5.0.2" }
+parol = { path = "../parol", version = "5.0.3" }

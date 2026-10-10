@@ -5,6 +5,15 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v0.6.1 - Not yet released
+
+* Dependency maintenance and security updates:
+  * Update `vscode-languageclient` from 9.0.1 to 10.1.2.
+  * Update `@types/vscode` to 1.140.0 for latest VS Code API support.
+  * Update `@types/node` and other development dependencies.
+  * Update TypeScript-ESLint packages to latest versions.
+  * Update `eslint` and other development tools.
+
 ## v0.6.0 - 2026-05-11
 
 - Add keyword `%skip` for syntax highlighting to match newer `parol` grammar features.

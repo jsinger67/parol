@@ -5,6 +5,23 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 5.0.2 - 2026-10-10
+
+* Language server enhancements:
+  * Enhanced `Server` to support hierarchical document symbols.
+  * Modified `document_symbols` method to return flat symbols if hierarchical support is not available.
+  * Improved request handling in `main.rs` to manage active and cancelled requests.
+  * Added logging for server startup and shutdown events.
+  * Refactored request handling to reduce code duplication.
+  * Updated `handle_*` methods in `Server` to ensure document existence before processing.
+  * Adjusted hover and rename functionalities to handle document state more robustly.
+
+* Dependencies:
+  * Removed `derive_new` dependency and implemented custom constructors for `DocumentState` and `Rng`.
+
+* Code quality:
+  * Cleaned up debug print statements in `lalr1_parse_table.rs`.
+
 ## 5.0.1 - 2026-08-16
 
 * Update to parol v5.0.1 and parol_runtime v5.0.1

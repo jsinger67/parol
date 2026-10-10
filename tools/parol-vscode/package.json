@@ -9,7 +9,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "publisher": "jsinger67",
   "description": "Language extension for `parol`",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "repository": {
     "url": "https://github.com/jsinger67/parol.git",
     "type": "git",
@@ -17,7 +17,7 @@
   },
   "icon": "icons/parol-vscode.png",
   "engines": {
-    "vscode": "^1.110.0"
+    "vscode": "^1.140.0"
   },
   "keywords": [
     "Parol",
