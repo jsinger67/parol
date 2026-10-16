@@ -340,17 +340,19 @@ impl KTuples {
         let _profile = profiling::ProfileScope::new("ktuples_k_concat");
 
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
-        if !self.k_complete {
-            let (complete, incomplete): (TuplesSet, TuplesSet) =
-                self.set.iter().partition(|t| t.is_k_complete());
-            self.set = complete;
+        // Always keep complete tuples, but process incomplete ones even if the set is marked complete.
+        // This ensures ε-tuples are concatenated correctly.
+        let (complete, incomplete): (TuplesSet, TuplesSet) =
+            self.set.iter().partition(|t| t.is_k_complete());
+        self.set = complete;
+        if !incomplete.is_empty() {
             self.set.extend(
                 incomplete
                     .iter()
                     .flat_map(|t| other.set.iter().map(move |o| t.k_concat(o, k))),
             );
-            self.update_completeness();
         }
+        self.update_completeness();
         // trace!("KTuples::k_concat => {}", result);
         self
     }
@@ -614,6 +616,63 @@ mod tests {
         //     | \   |
         //     3  4  7
         assert_ne!(tuples1, tuples2);
+    }
+
+    #[test]
+    fn test_k_concat_preserves_k_complete() {
+        // a k-complete set, e.g. END
+        let complete = KTuplesBuilder::new()
+            .k(2)
+            .max_terminal_index(10)
+            .end()
+            .unwrap(); // k_complete = true
+
+        // any other set
+        let other = KTuplesBuilder::new()
+            .k(2)
+            .max_terminal_index(10)
+            .terminal_indices(&[&[1, 2]])
+            .build()
+            .unwrap();
+
+        let complete_clone = complete.clone();
+        let res = complete.k_concat(&other, 2);
+        // k-complete concatenation must be a no-op
+        assert_eq!(res, complete_clone);
+        assert!(res.is_k_complete(), "k_complete must be preserved");
+    }
+
+    #[test]
+    fn test_k_concat_epsilon_does_not_lose_completeness() {
+        // Use k=2 so [1] is not k-complete and ε-concatenation is observable
+        let left = KTuplesBuilder::new()
+            .k(2)
+            .max_terminal_index(1)
+            .terminal_indices(&[&[EPS], &[1]])
+            .build()
+            .unwrap();
+
+        let right = KTuplesBuilder::new()
+            .k(2)
+            .max_terminal_index(1)
+            .terminal_indices(&[&[1]])
+            .build()
+            .unwrap();
+
+        let res = left.k_concat(&right, 2);
+
+        // ε + [1] = [1]
+        // [1] + [1] = [1,1]
+        // Result must contain [1,1] which is not in right
+        let expected_tuple = KTupleBuilder::new()
+            .k(2)
+            .max_terminal_index(1)
+            .terminal_string(&[1, 1])
+            .build()
+            .unwrap();
+
+        let sorted = res.sorted();
+        assert!(sorted.contains(&expected_tuple), "ε-concatenation lost: [1,1] not in result");
     }
 
     // KTuples::insert is commutative regarding Eq
