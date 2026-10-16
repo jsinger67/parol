@@ -147,9 +147,17 @@ mod adjacency_list {
                 self.productions.get(&state_to_merge),
             ) {
                 debug_assert_eq!(prod_num_of_keep_state, prod_num_of_merge_state);
+                // Rewrite neighbour references from state_to_merge to state_to_keep in the merge state's adjacency list
+                // to avoid creating self-loops after merging
+                let mut rewritten_neighbors = adj_list_of_merge_state.neighbors.clone();
+                for (state_id, _) in rewritten_neighbors.iter_mut() {
+                    if *state_id == state_to_merge {
+                        *state_id = state_to_keep;
+                    }
+                }
                 // Combine the adjacency list of two states in the state to keep
                 if let Some(l) = self.list.get_mut(&state_to_keep) {
-                    l.append(&adj_list_of_merge_state.neighbors)
+                    l.append(&rewritten_neighbors)
                 }
                 // Remove the state to merge
                 self.remove_state(state_to_merge);
