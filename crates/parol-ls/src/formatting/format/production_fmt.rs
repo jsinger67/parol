@@ -1,9 +1,9 @@
 use super::super::{
     comments::Comments,
     context::{FormatterContext, semicolon_starts_on_new_line},
+    fmt_options::IndentStyle,
     indent::Indent,
     line::Line,
-    fmt_options::IndentStyle,
 };
 use super::helpers::{
     comment_opts_force_single_newline, comment_opts_left, format_comments_before_token,
@@ -31,12 +31,15 @@ pub(super) fn format_production_with_context(
         &comments_before_semicolon,
     ));
 
-    let mut semi_nl_opt = "";
+    let mut semi_nl_opt = "".to_owned();
     if context.semicolon_starts_on_new_line() {
         if Line::ends_with_nl(&comments_before_semicolon) {
             comments_before_semicolon.clone_from(&comments_before_semicolon.trim_end().to_owned());
         }
-        semi_nl_opt = "\n    ";
+        semi_nl_opt = format!(
+            "\n{}",
+            Indent::make_indent(1, &context.policy().indent_style)
+        );
     }
 
     let prod_nl_opt = if context.empty_line_after_prod() {
@@ -46,13 +49,12 @@ pub(super) fn format_production_with_context(
     };
 
     // Apply spacing before semicolon only when semicolon is on new line
-    let semicolon_spacing = if context.semicolon_starts_on_new_line()
-        && context.policy().space_before_semicolon
-    {
-        " "
-    } else {
-        ""
-    };
+    let semicolon_spacing =
+        if context.semicolon_starts_on_new_line() && context.policy().space_before_semicolon {
+            " "
+        } else {
+            ""
+        };
 
     (
         format!(
@@ -91,7 +93,9 @@ pub(super) fn format_production_lhs_with_context(
         IndentStyle::Tabs => 4,
     };
 
-    if production_lhs.identifier.identifier.text().len() + comments_before_colon.len() <= indent_size {
+    if production_lhs.identifier.identifier.text().len() + comments_before_colon.len()
+        <= indent_size
+    {
         let padding = " ".repeat(indent_size - production_lhs.identifier.identifier.text().len());
         (
             format!(
