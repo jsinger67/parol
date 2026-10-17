@@ -23,7 +23,7 @@ jobs:
       - name: Update Dependabot security dashboard issue
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.DEPENDABOT_ALERTS_TOKEN }}
           retries: 3
           retry-exempt-status-codes: 400,401,403,404,422
           script: |
