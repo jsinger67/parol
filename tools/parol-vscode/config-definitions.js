@@ -52,6 +52,11 @@ const CONFIG_DEFINITIONS = Object.freeze([
     defaultValue: false,
     valueType: "boolean",
   },
+  {
+    name: "formatting.place_top_level_alternatives_on_new_line_each",
+    defaultValue: false,
+    valueType: "boolean",
+  },
 ]);
 
 module.exports = {

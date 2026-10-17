@@ -67,11 +67,14 @@ impl Fmt for Alternation {
                     if lines.len() > 1 && lines.last().unwrap().is_empty() {
                         acc.push_str(&indent);
                     } else if lines.len() > 1 {
-                        if lines.last().unwrap().len() + next_part.len() > options.max_line_length {
+                        let should_split = options.place_top_level_alternatives_on_new_line_each
+                            || lines.last().unwrap().len() + next_part.len() > options.max_line_length;
+                        if should_split {
                             acc.push_str(&format!("\n{}", indent));
                         }
                     } else if START_LINE_OFFSET + acc.len() + next_part.len()
                         > options.max_line_length
+                        || options.place_top_level_alternatives_on_new_line_each
                     {
                         acc.push_str(&format!("\n{}", indent));
                     }
@@ -118,6 +121,7 @@ impl Fmt for Alternations {
             },
         );
         if options.nesting_depth <= 1
+            && !options.place_top_level_alternatives_on_new_line_each
             && !all_alternations_str.contains("//")
             && !all_alternations_str.contains("/*")
         {

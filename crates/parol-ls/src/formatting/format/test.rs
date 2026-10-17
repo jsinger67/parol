@@ -42,6 +42,7 @@ const TEST_DATA: &[(FmtOptions, &str)] = &[
             space_around_equals: true,
             scanner_brace_newline: false,
             semicolon_end_of_line: false,
+            place_top_level_alternatives_on_new_line_each: false,
         },
         concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/options_default"),
     ),
@@ -61,6 +62,7 @@ const TEST_DATA: &[(FmtOptions, &str)] = &[
             space_around_equals: true,
             scanner_brace_newline: false,
             semicolon_end_of_line: false,
+            place_top_level_alternatives_on_new_line_each: false,
         },
         concat!(
             env!("CARGO_MANIFEST_DIR"),
@@ -83,6 +85,7 @@ const TEST_DATA: &[(FmtOptions, &str)] = &[
             space_around_equals: true,
             scanner_brace_newline: false,
             semicolon_end_of_line: false,
+            place_top_level_alternatives_on_new_line_each: false,
         },
         concat!(
             env!("CARGO_MANIFEST_DIR"),

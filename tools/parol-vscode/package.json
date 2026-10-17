@@ -88,6 +88,11 @@
           "type": "boolean",
           "markdownDescription": "#### Place semicolons at end of line when possible\n\nUsed for code formatting",
           "default": false
+        },
+        "parol-vscode.formatting.place_top_level_alternatives_on_new_line_each": {
+          "type": "boolean",
+          "markdownDescription": "#### Place top-level alternatives on new line each\n\nUsed for code formatting",
+          "default": false
         }
       }
     },
