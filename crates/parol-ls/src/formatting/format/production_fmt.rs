@@ -1,7 +1,9 @@
 use super::super::{
     comments::Comments,
     context::{FormatterContext, semicolon_starts_on_new_line},
+    indent::Indent,
     line::Line,
+    fmt_options::IndentStyle,
 };
 use super::helpers::{
     comment_opts_force_single_newline, comment_opts_left, format_comments_before_token,
@@ -43,8 +45,10 @@ pub(super) fn format_production_with_context(
         ""
     };
 
-    // Apply spacing before semicolon
-    let semicolon_spacing = if context.policy().space_before_semicolon {
+    // Apply spacing before semicolon only when semicolon is on new line
+    let semicolon_spacing = if context.semicolon_starts_on_new_line()
+        && context.policy().space_before_semicolon
+    {
         " "
     } else {
         ""
@@ -81,8 +85,14 @@ pub(super) fn format_production_lhs_with_context(
         &comment_opts_left(context.policy()),
     );
 
-    if production_lhs.identifier.identifier.text().len() + comments_before_colon.len() < 5 {
-        let padding = " ".repeat(4 - production_lhs.identifier.identifier.text().len());
+    let indent_style = &context.policy().indent_style;
+    let indent_size = match indent_style {
+        IndentStyle::Spaces(n) => *n as usize,
+        IndentStyle::Tabs => 4,
+    };
+
+    if production_lhs.identifier.identifier.text().len() + comments_before_colon.len() <= indent_size {
+        let padding = " ".repeat(indent_size - production_lhs.identifier.identifier.text().len());
         (
             format!(
                 "\n{}{}{}{}{}",
@@ -95,12 +105,14 @@ pub(super) fn format_production_lhs_with_context(
             comments,
         )
     } else {
+        let indent = Indent::make_indent(1, indent_style);
         (
             format!(
-                "\n{}{}{}\n    {}",
+                "\n{}{}{}\n{}{}",
                 comments_before_non_terminal,
                 production_lhs.identifier.identifier,
                 comments_before_colon,
+                indent,
                 production_lhs.colon
             ),
             comments,

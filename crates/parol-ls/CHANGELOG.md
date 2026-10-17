@@ -5,154 +5,156 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 5.1.0 - Not yet release
+
 ## 5.0.2 - 2026-10-10
 
-* Language server enhancements:
-  * Enhanced `Server` to support hierarchical document symbols.
-  * Modified `document_symbols` method to return flat symbols if hierarchical support is not available.
-  * Improved request handling in `main.rs` to manage active and cancelled requests.
-  * Added logging for server startup and shutdown events.
-  * Refactored request handling to reduce code duplication.
-  * Updated `handle_*` methods in `Server` to ensure document existence before processing.
-  * Adjusted hover and rename functionalities to handle document state more robustly.
+- Language server enhancements:
+  - Enhanced `Server` to support hierarchical document symbols.
+  - Modified `document_symbols` method to return flat symbols if hierarchical support is not available.
+  - Improved request handling in `main.rs` to manage active and cancelled requests.
+  - Added logging for server startup and shutdown events.
+  - Refactored request handling to reduce code duplication.
+  - Updated `handle_*` methods in `Server` to ensure document existence before processing.
+  - Adjusted hover and rename functionalities to handle document state more robustly.
 
-* Dependencies:
-  * Removed `derive_new` dependency and implemented custom constructors for `DocumentState` and `Rng`.
+- Dependencies:
+  - Removed `derive_new` dependency and implemented custom constructors for `DocumentState` and `Rng`.
 
-* Code quality:
-  * Cleaned up debug print statements in `lalr1_parse_table.rs`.
+- Code quality:
+  - Cleaned up debug print statements in `lalr1_parse_table.rs`.
 
 ## 5.0.1 - 2026-08-16
 
-* Update to parol v5.0.1 and parol_runtime v5.0.1
+- Update to parol v5.0.1 and parol_runtime v5.0.1
 
 ## 5.0.0 - 2026-07-01
 
-* Update to parol v5.0.0 and parol_runtime v5.0.0
+- Update to parol v5.0.0 and parol_runtime v5.0.0
 
 ## 4.4.0 - 2026-05-11
 
-* Add support for scanner directive `%skip` in `parol-ls`:
-  * Grammar support in `parol_ls.par` and regenerated parser/trait artifacts.
-  * Formatting support for `%skip` directives, including comment-aware rendering.
-  * Document symbol and range support for `%skip` entries.
-  * Add dedicated formatting fixtures for `%skip` in all formatter option profiles.
-* Improve diagnostics for scanner transition issues:
-  * Clearer messages and dedicated diagnostic codes for invalid transition tokens and
+- Add support for scanner directive `%skip` in `parol-ls`:
+  - Grammar support in `parol_ls.par` and regenerated parser/trait artifacts.
+  - Formatting support for `%skip` directives, including comment-aware rendering.
+  - Document symbol and range support for `%skip` entries.
+  - Add dedicated formatting fixtures for `%skip` in all formatter option profiles.
+- Improve diagnostics for scanner transition issues:
+  - Clearer messages and dedicated diagnostic codes for invalid transition tokens and
     token-not-in-scanner errors.
-  * Actionable quick-fix hints embedded in diagnostics.
-* Add LSP `CodeAction` support:
-  * Advertise `codeActionProvider` capability.
-  * Provide quick fixes for scanner token diagnostics, including token replacement candidates,
+  - Actionable quick-fix hints embedded in diagnostics.
+- Add LSP `CodeAction` support:
+  - Advertise `codeActionProvider` capability.
+  - Provide quick fixes for scanner token diagnostics, including token replacement candidates,
     remove-from-`%skip`, and directive-line removal.
-  * Scanner-aware candidate selection with filtering to avoid suggesting known non-terminals.
-* Add unit tests for code-action helper behavior and edge cases.
+  - Scanner-aware candidate selection with filtering to avoid suggesting known non-terminals.
+- Add unit tests for code-action helper behavior and edge cases.
 
 ## 4.3.0 - 2026-02-22
 
-* Completed formatter refactoring:
-  * Split formatter implementation into focused modules (logic, traits, tests)
-  * Replaced implicit parent-scope dependencies with explicit internal imports
-  * Kept `Format` as the only outward formatter API
-* Added centralized formatting settings alignment with `parol-vscode` plus sync checks.
-* No intended user-visible formatting behavior changes, except the following ones:
-  * Keep top-level (possibly wrapped inside [], (), and {}) alternatives aligned after ':'
-  * Split top-level (possibly wrapped) alternatives with '|' on aligned new lines when max. line lenght is exeeded.
-  * For wrapped top-level alternatives keep wrapper token and first alternative on same line as production colon.
+- Completed formatter refactoring:
+  - Split formatter implementation into focused modules (logic, traits, tests)
+  - Replaced implicit parent-scope dependencies with explicit internal imports
+  - Kept `Format` as the only outward formatter API
+- Added centralized formatting settings alignment with `parol-vscode` plus sync checks.
+- No intended user-visible formatting behavior changes, except the following ones:
+  - Keep top-level (possibly wrapped inside [], (), and {}) alternatives aligned after ':'
+  - Split top-level (possibly wrapped) alternatives with '|' on aligned new lines when max. line lenght is exeeded.
+  - For wrapped top-level alternatives keep wrapper token and first alternative on same line as production colon.
 
 ## 4.2.0 - 2026-01-04
 
-* Update dependencies
+- Update dependencies
 
 ## 4.1.0 - 2025-12-06
 
-* Removed support for parser based scanner state switching in productions. This language feature is
-not supported anymore since parol v4.
+- Removed support for parser based scanner state switching in productions. This language feature is
+  not supported anymore since parol v4.
 
 ## 4.0.2 - 2025-09-19
 
-* New regex for block comment. See [#828](https://github.com/jsinger67/parol/issues/828)
+- New regex for block comment. See [#828](https://github.com/jsinger67/parol/issues/828)
 
 ## 4.0.1 - 2025-08-30
 
-* Support new scanner directive: `%allow_unmatched`
+- Support new scanner directive: `%allow_unmatched`
 
 ## 4.0.0 - 2025-07-27
 
-* Official start of version 4 development.
-* Switch to scnr2 scanner crate
+- Official start of version 4 development.
+- Switch to scnr2 scanner crate
 
 ## 3.1.0 - 2025-07-11
 
-* Using `parol` v3.1.0 now to provide the following fixes
-  * Change handling of token aliases when lookahead expressions are used
-  * Fix generation of lookahead regex in parser source
+- Using `parol` v3.1.0 now to provide the following fixes
+  - Change handling of token aliases when lookahead expressions are used
+  - Fix generation of lookahead regex in parser source
 
 ## 3.0.1 - 2025-03-08
 
-* Switched to version `parol_runtime@3.0.0` and `parol@3.0.1`
+- Switched to version `parol_runtime@3.0.0` and `parol@3.0.1`
   to benefit from the new bug fixes and enhancements
 
 ## 3.0.0 - 2025-03-02
 
-* Switched to edition 2024
-* New feature "User defined member names / Grammar labeling"
-* New feature "Non-terminal types"
-* New feature "Terminal type"
-* Switched to version `parol@3.0.0`
+- Switched to edition 2024
+- New feature "User defined member names / Grammar labeling"
+- New feature "Non-terminal types"
+- New feature "Terminal type"
+- Switched to version `parol@3.0.0`
 
 ## 2.2.0 - 2025-01-17
 
-* Switched to versions `parol_runtime@2.2.0` and `parol@2.2.0`
-* No functional changes.
+- Switched to versions `parol_runtime@2.2.0` and `parol@2.2.0`
+- No functional changes.
 
 ## 2.1.0 - 2025-01-17
 
-* Switched to versions `parol_runtime@2.1.0` and `parol@2.1.0`
-* No functional changes.
+- Switched to versions `parol_runtime@2.1.0` and `parol@2.1.0`
+- No functional changes.
 
 ## 2.0.0 - 2024-12-25
 
-* Switched to versions `parol_runtime@2.0.0` and `parol@2.0.0`
-* No functional changes.
+- Switched to versions `parol_runtime@2.0.0` and `parol@2.0.0`
+- No functional changes.
 
 ## 1.0.0 - 2024-09-02
 
-* No changes, just a re-release with new version
+- No changes, just a re-release with new version
 
 ## 0.21.0 - 2024-06-21
 
-* Fixed formatting problem with comments before the `%start` directive.
-* Using new `parol_runtime@0.24` and `parol@0.31` which are providing fixes for recovery of LL
-parsers
+- Fixed formatting problem with comments before the `%start` directive.
+- Using new `parol_runtime@0.24` and `parol@0.31` which are providing fixes for recovery of LL
+  parsers
 
 ## 0.20.0 - 2024-06-08
 
-* Diagnostic warnings on automatically resolved conflicts
+- Diagnostic warnings on automatically resolved conflicts
 
 ## 0.19.1 - 2024-05-19
 
-* Better presentation of multiple errors
-* Enhanced support for scanner states and especially the %on/%enter directives in document outline.
-  * Goto primary non-terminals
-  * Rename primary non-terminals
-  * Hover of primary non-terminals
-  * Goto scanner states
-  * Rename scanner states (except INITIAL)
-* Goto scanner states from token with state
-* Renaming of Scanner states from token with state and scanner definitions itself
-* Hover of Scanner states from token with state
-* Some inner refactoring
-* Bump to `lsp-types@0.96.0`
+- Better presentation of multiple errors
+- Enhanced support for scanner states and especially the %on/%enter directives in document outline.
+  - Goto primary non-terminals
+  - Rename primary non-terminals
+  - Hover of primary non-terminals
+  - Goto scanner states
+  - Rename scanner states (except INITIAL)
+- Goto scanner states from token with state
+- Renaming of Scanner states from token with state and scanner definitions itself
+- Hover of Scanner states from token with state
+- Some inner refactoring
+- Bump to `lsp-types@0.96.0`
 
 ## 0.19.0 - 2024-05-16
 
-* Support of new scanner switching of `parol_runtime@0.22` and `parol@0.29`
+- Support of new scanner switching of `parol_runtime@0.22` and `parol@0.29`
 
 ## 0.18.0 - 2024-04-29
 
-* Support grammar type specification in par files with the `%grammar_type` directive
-* Support of new `parol` errors
+- Support grammar type specification in par files with the `%grammar_type` directive
+- Support of new `parol` errors
 
 ## 0.17.1 - 2024-01-10
 
@@ -194,7 +196,6 @@ handling provided by `parol_runtime@0.17`.
     This grammar captures as much comments as possible from the input grammar.
     Feedback is appreciated.
 - Support of several new formatting options
-
   - formatting.empty_line_after_prod
     - Add an empty line after each production
   - formatting.prod_semicolon_on_nl
