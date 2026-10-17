@@ -53,6 +53,41 @@
           "type": "integer",
           "markdownDescription": "#### Maximum number of characters per line\n\nused for code formatting",
           "default": 100
+        },
+        "parol-vscode.formatting.indent_style": {
+          "type": "string",
+          "markdownDescription": "#### Indentation style\n\nUsed for code formatting. Set to a number for spaces (e.g., \"4\" for 4 spaces) or \"tabs\" for tab indentation.",
+          "default": "4"
+        },
+        "parol-vscode.formatting.space_after_colon": {
+          "type": "boolean",
+          "markdownDescription": "#### Add space after colon in productions\n\nUsed for code formatting",
+          "default": true
+        },
+        "parol-vscode.formatting.space_before_semicolon": {
+          "type": "boolean",
+          "markdownDescription": "#### Add space before semicolon in productions\n\nUsed for code formatting",
+          "default": false
+        },
+        "parol-vscode.formatting.space_around_pipe": {
+          "type": "boolean",
+          "markdownDescription": "#### Add space around pipe in alternations\n\nUsed for code formatting",
+          "default": true
+        },
+        "parol-vscode.formatting.space_around_equals": {
+          "type": "boolean",
+          "markdownDescription": "#### Add space around equals in declarations\n\nUsed for code formatting",
+          "default": true
+        },
+        "parol-vscode.formatting.scanner_brace_newline": {
+          "type": "boolean",
+          "markdownDescription": "#### Place opening brace on new line for scanner directives\n\nUsed for code formatting",
+          "default": false
+        },
+        "parol-vscode.formatting.semicolon_end_of_line": {
+          "type": "boolean",
+          "markdownDescription": "#### Place semicolons at end of line when possible\n\nUsed for code formatting",
+          "default": false
         }
       }
     },

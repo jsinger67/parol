@@ -17,6 +17,41 @@ const CONFIG_DEFINITIONS = Object.freeze([
     defaultValue: 100,
     valueType: "integer",
   },
+  {
+    name: "formatting.indent_style",
+    defaultValue: "4",
+    valueType: "string",
+  },
+  {
+    name: "formatting.space_after_colon",
+    defaultValue: true,
+    valueType: "boolean",
+  },
+  {
+    name: "formatting.space_before_semicolon",
+    defaultValue: false,
+    valueType: "boolean",
+  },
+  {
+    name: "formatting.space_around_pipe",
+    defaultValue: true,
+    valueType: "boolean",
+  },
+  {
+    name: "formatting.space_around_equals",
+    defaultValue: true,
+    valueType: "boolean",
+  },
+  {
+    name: "formatting.scanner_brace_newline",
+    defaultValue: false,
+    valueType: "boolean",
+  },
+  {
+    name: "formatting.semicolon_end_of_line",
+    defaultValue: false,
+    valueType: "boolean",
+  },
 ]);
 
 module.exports = {
