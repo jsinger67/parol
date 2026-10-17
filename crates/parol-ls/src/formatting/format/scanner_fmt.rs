@@ -16,7 +16,7 @@ pub(super) fn format_scanner_directives_with_context(
     context: &FormatterContext<'_>,
     comments: Comments,
 ) -> (String, Comments) {
-    let base_indent = Indent::make_indent(context.policy().nesting_depth);
+    let base_indent = Indent::make_indent(context.policy().nesting_depth, &context.policy().indent_style);
     match scanner_directives {
         ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(l) => {
             let (comments_before_token, comments) = format_comments_before_token(

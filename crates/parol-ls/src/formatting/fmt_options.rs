@@ -31,6 +31,21 @@ pub(crate) enum Trimming {
     Trim,
 }
 
+/// Indentation style for formatting
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum IndentStyle {
+    /// Use spaces (default)
+    Spaces(u8),
+    /// Use tabs
+    Tabs,
+}
+
+impl Default for IndentStyle {
+    fn default() -> Self {
+        IndentStyle::Spaces(4)
+    }
+}
+
 #[allow(unused)]
 #[derive(Debug, Clone, Default)]
 pub(crate) struct FmtOptions {
@@ -47,6 +62,27 @@ pub(crate) struct FmtOptions {
 
     /// Maximum number of characters per line
     pub(crate) max_line_length: usize,
+
+    /// Indentation style (spaces count or tabs)
+    pub(crate) indent_style: IndentStyle,
+
+    /// Add a space after ':' in productions
+    pub(crate) space_after_colon: bool,
+
+    /// Add a space before ';' in productions
+    pub(crate) space_before_semicolon: bool,
+
+    /// Add a space around '|' in alternations
+    pub(crate) space_around_pipe: bool,
+
+    /// Add a space around '=' in declarations
+    pub(crate) space_around_equals: bool,
+
+    /// Place opening brace on new line for scanner directives
+    pub(crate) scanner_brace_newline: bool,
+
+    /// Place semicolons at end of line when possible
+    pub(crate) semicolon_end_of_line: bool,
 }
 
 #[allow(unused)]
@@ -57,6 +93,13 @@ impl FmtOptions {
             empty_line_after_prod: defaults.empty_line_after_prod,
             prod_semicolon_on_nl: defaults.prod_semicolon_on_nl,
             max_line_length: defaults.max_line_length,
+            indent_style: defaults.indent_style,
+            space_after_colon: defaults.space_after_colon,
+            space_before_semicolon: defaults.space_before_semicolon,
+            space_around_pipe: defaults.space_around_pipe,
+            space_around_equals: defaults.space_around_equals,
+            scanner_brace_newline: defaults.scanner_brace_newline,
+            semicolon_end_of_line: defaults.semicolon_end_of_line,
             ..Default::default()
         }
     }
@@ -128,6 +171,13 @@ impl From<&FormattingOptions> for FmtOptions {
             empty_line_after_prod: settings.empty_line_after_prod,
             prod_semicolon_on_nl: settings.prod_semicolon_on_nl,
             max_line_length: settings.max_line_length,
+            indent_style: settings.indent_style,
+            space_after_colon: settings.space_after_colon,
+            space_before_semicolon: settings.space_before_semicolon,
+            space_around_pipe: settings.space_around_pipe,
+            space_around_equals: settings.space_around_equals,
+            scanner_brace_newline: settings.scanner_brace_newline,
+            semicolon_end_of_line: settings.semicolon_end_of_line,
             ..Self::default()
         }
     }

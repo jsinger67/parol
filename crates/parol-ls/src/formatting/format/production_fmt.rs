@@ -43,13 +43,21 @@ pub(super) fn format_production_with_context(
         ""
     };
 
+    // Apply spacing before semicolon
+    let semicolon_spacing = if context.policy().space_before_semicolon {
+        " "
+    } else {
+        ""
+    };
+
     (
         format!(
-            "{} {}{}{}{}{}",
+            "{} {}{}{}{}{}{}",
             production_l_h_s,
             alternations_str,
             comments_before_semicolon,
             semi_nl_opt,
+            semicolon_spacing,
             production.semicolon,
             prod_nl_opt,
         ),
