@@ -67,14 +67,11 @@ impl Fmt for Alternation {
                     if lines.len() > 1 && lines.last().unwrap().is_empty() {
                         acc.push_str(&indent);
                     } else if lines.len() > 1 {
-                        let should_split = options.place_top_level_alternatives_on_new_line_each
-                            || lines.last().unwrap().len() + next_part.len() > options.max_line_length;
-                        if should_split {
+                        if lines.last().unwrap().len() + next_part.len() > options.max_line_length {
                             acc.push_str(&format!("\n{}", indent));
                         }
                     } else if START_LINE_OFFSET + acc.len() + next_part.len()
                         > options.max_line_length
-                        || options.place_top_level_alternatives_on_new_line_each
                     {
                         acc.push_str(&format!("\n{}", indent));
                     }
@@ -150,9 +147,21 @@ impl Fmt for AlternationsList {
             format!("{}{}", self.or, alternation_str)
         };
 
+        // When option enabled, place pipe on new line
+        let prefix = if options.nesting_depth <= 1 && options.place_top_level_alternatives_on_new_line_each {
+            if Line::ends_with_nl(&alternation_str) {
+                ""
+            } else {
+                "\n"
+            }
+        } else {
+            ""
+        };
+
         (
             format!(
-                "{}{}",
+                "{}{}{}",
+                prefix,
                 left_padding, pipe_token,
             ),
             comments,
