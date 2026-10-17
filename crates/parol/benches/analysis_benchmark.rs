@@ -43,7 +43,7 @@ fn benchmark_first_follow_full_scenario(c: &mut Criterion) {
 }
 
 fn create_complex_grammar() -> parol::GrammarConfig {
-    // Download the reference grammar file from here
+    // Load the reference grammar file from local data directory
     // https://raw.githubusercontent.com/CogniPilot/rumoca/e83e5d3/modelica.par
     // The transformed grammar has following properties:
     // * LL(3)
@@ -54,13 +54,12 @@ fn create_complex_grammar() -> parol::GrammarConfig {
     // * 542 equations in equation system for FOLLOW(k)
     // The calculation of FIRST(k) and FOLLOW(k) sets takes usually about 5 seconds.
 
-    let grammar_content = {
-        let url = "https://raw.githubusercontent.com/CogniPilot/rumoca/e83e5d3/modelica.par";
-        let response = reqwest::blocking::get(url).expect("Failed to download grammar file");
-        response
-            .text()
-            .expect("Failed to read grammar file content")
-    };
+    let grammar_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("benches")
+        .join("data")
+        .join("modelica.par");
+    let grammar_content = std::fs::read_to_string(&grammar_path)
+        .expect("Failed to read grammar file");
     parol::obtain_grammar_config_from_string(&grammar_content, false)
         .expect("Failed to parse grammar")
 }

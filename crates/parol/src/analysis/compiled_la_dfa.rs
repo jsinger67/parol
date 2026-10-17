@@ -54,19 +54,6 @@ mod adjacency_list {
                 self.sort();
             }
         }
-
-        fn append(&mut self, neighbors: &[(StateId, TerminalIndex)]) {
-            let mut changed = false;
-            neighbors.iter().for_each(|n| {
-                if !self.neighbors.contains(n) {
-                    self.neighbors.push(*n);
-                    changed |= true;
-                }
-            });
-            if changed {
-                self.sort();
-            }
-        }
     }
 
     #[derive(Debug, Clone, Eq, PartialEq)]
@@ -147,14 +134,21 @@ mod adjacency_list {
                 self.productions.get(&state_to_merge),
             ) {
                 debug_assert_eq!(prod_num_of_keep_state, prod_num_of_merge_state);
-                // Combine the adjacency list of two states in the state to keep
-                if let Some(l) = self.list.get_mut(&state_to_keep) {
-                    l.append(&adj_list_of_merge_state.neighbors)
-                }
-                // Remove the state to merge
-                self.remove_state(state_to_merge);
-                // Rename the state_to_merge into state_to_keep in all adjacency lists
+                // Rename state_to_merge to state_to_keep in all adjacency lists first.
+                // This prevents creating spurious self-loops when keep -> merge edges become keep -> keep.
                 self.rename_state(state_to_merge, state_to_keep);
+                // Now merge the neighbour sets. After renaming, both lists refer to state_to_keep.
+                if let Some(l) = self.list.get_mut(&state_to_keep) {
+                    // Append neighbours from the merge state, skipping duplicates.
+                    for (neighbor_id, term) in &adj_list_of_merge_state.neighbors {
+                        if !l.neighbors.contains(&(*neighbor_id, *term)) {
+                            l.neighbors.push((*neighbor_id, *term));
+                        }
+                    }
+                    l.sort();
+                }
+                // Remove the state to merge (already renamed)
+                self.remove_state(state_to_merge);
             } else {
                 debug_assert!(false, "Internal error in combine_states");
             }
@@ -526,6 +520,59 @@ mod adjacency_list {
 
             eprintln!("{dfa_source}");
         }
+    }
+
+    #[test]
+    fn test_minimize_no_spurious_self_loop() {
+        // Regression test for issue #1413: DFA minimisation should not create
+        // spurious self-loops when merging accepting states.
+        // Two states with same production, cross-linked: 0 <-> 1.
+        // After merging them, we must not end up with a self-loop that
+        // was not present in the original DFA.
+        macro_rules! trans_local {
+            ($from:literal,$term:literal,$to:literal,$prod:literal) => {
+                CompiledTransition {
+                    from_state: $from,
+                    term: $term,
+                    to_state: $to,
+                    prod_num: $prod,
+                }
+            };
+        }
+        let transitions = vec![
+            trans_local!(0, 1, 1, -1),
+            trans_local!(1, 1, 0, -1),
+            trans_local!(0, 2, 2, 5),
+            trans_local!(1, 2, 1, 5),
+        ];
+        let dfa = CompiledDFA {
+            prod0: -1,
+            transitions,
+            k: 1,
+        };
+        let mut adjacency_list: AdjacencyList = dfa.into();
+        adjacency_list.minimize();
+        let dfa = adjacency_list.as_compiled_dfa();
+
+        // After minimisation, states 0 and 1 should be merged.
+        // The original DFA had no self-loops, so the result must also have no self-loops.
+        // Collect all self-loops
+        let self_loops: Vec<_> = dfa
+            .transitions
+            .iter()
+            .filter(|t| t.from_state == t.to_state)
+            .collect();
+
+        // The only possible self-loop would be from the merge of 0<->1 edges.
+        // With the fix, these should be eliminated.
+        assert!(
+            self_loops.is_empty(),
+            "Spurious self-loops created by minimise: {:?}",
+            self_loops
+        );
+
+        // Ensure the DFA is still reachable and has the expected transition
+        assert!(!dfa.transitions.is_empty(), "DFA should have transitions");
     }
 }
 

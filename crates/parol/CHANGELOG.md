@@ -5,231 +5,240 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.4 - Not yet released
+
+- Fix issue [#1413](https://github.com/jsinger67/parol/issues/1413)
+  - Many thanks to [Taichi Ishitani](https://github.com/taichi-ishitani) for reporting this issue
+    and for the outstandig preparation that helped a lot in repoducing the problematic scenario
+  - This included two interacting bugs that now have been addressed:
+    1. KTuples k_concat no longer discards k-complete information via the early ε/empty exits, which was inflating the k-tuple sets and feeding extra transitions to the DFA builder.
+    2. DFA minimisation no longer creates spurious self-loops when merging states because neighbour references are normalised before the union.
+
 ## 5.0.3 - 2026-10-10
 
-* Language server enhancements (parol-ls):
-  * Enhanced document symbol support with hierarchical symbol reporting when client supports it.
-  * Improved request handling for active and cancelled requests.
-  * Added logging for server startup and shutdown events.
-  * Refactored request handling to reduce code duplication.
-  * Improved robustness of hover, rename, and document symbol functionalities.
+- Language server enhancements (parol-ls):
+  - Enhanced document symbol support with hierarchical symbol reporting when client supports it.
+  - Improved request handling for active and cancelled requests.
+  - Added logging for server startup and shutdown events.
+  - Refactored request handling to reduce code duplication.
+  - Improved robustness of hover, rename, and document symbol functionalities.
 
-* Grammar analysis optimizations:
-  * Optimize FIRST(k) calculations: direct part-0 initialization in equations, double-buffered loops, early complete breaks, and zero-allocation clears.
-  * Optimize FOLLOW(k) calculations: eliminate per-iteration ResultMap allocations, precompute suffix FIRST sets, use zero-clone unions for Complete and Epsilon equations.
-  * Optimize KTuples::k_concat with early exits for empty and epsilon cases.
+- Grammar analysis optimizations:
+  - Optimize FIRST(k) calculations: direct part-0 initialization in equations, double-buffered loops, early complete breaks, and zero-allocation clears.
+  - Optimize FOLLOW(k) calculations: eliminate per-iteration ResultMap allocations, precompute suffix FIRST sets, use zero-clone unions for Complete and Epsilon equations.
+  - Optimize KTuples::k_concat with early exits for empty and epsilon cases.
 
-* Bug fixes:
-  * Fixed stale C# snapshot for `parol new --language c-sharp` scaffold.
-  * Fixed oberon_0 example and improved its tests.
+- Bug fixes:
+  - Fixed stale C# snapshot for `parol new --language c-sharp` scaffold.
+  - Fixed oberon_0 example and improved its tests.
 
-* Code quality:
-  * Removed debug print statements in `lalr1_parse_table.rs`.
+- Code quality:
+  - Removed debug print statements in `lalr1_parse_table.rs`.
 
 ## 5.0.2 - 2026-08-16
 
-* C# scaffolding/runtime compatibility:
-  * Update `parol new --lang c-sharp` project template to reference `Parol.Runtime` `0.3.1`.
-  * Align generated C# project defaults with the runtime fix that consistently skips built-in
+- C# scaffolding/runtime compatibility:
+  - Update `parol new --lang c-sharp` project template to reference `Parol.Runtime` `0.3.1`.
+  - Align generated C# project defaults with the runtime fix that consistently skips built-in
     scanner skip token types when mode-specific `%skip` sets are in use.
 
 ## 5.0.1 - 2026-08-16
 
-* Performance optimizations for grammar analysis, focused on FIRST(k) and FOLLOW(k) calculations.
-  * Refactor FIRST(k) and FOLLOW(k) equation handling to compiled, data-oriented equation parts,
+- Performance optimizations for grammar analysis, focused on FIRST(k) and FOLLOW(k) calculations.
+  - Refactor FIRST(k) and FOLLOW(k) equation handling to compiled, data-oriented equation parts,
     reducing dynamic dispatch and redundant per-iteration work.
-  * Improve iterative evaluation loops (pre-sized collections, tighter accumulation paths, and
+  - Improve iterative evaluation loops (pre-sized collections, tighter accumulation paths, and
     streamlined symbol-part processing).
-  * Introduce in-place set union for FOLLOW(k) accumulation (`KTuples::union_in_place`) to reduce
+  - Introduce in-place set union for FOLLOW(k) accumulation (`KTuples::union_in_place`) to reduce
     allocation churn in hot paths.
-  * Add profiling support for FOLLOW(k) and KTuples hotspots, including per-operation timing output
+  - Add profiling support for FOLLOW(k) and KTuples hotspots, including per-operation timing output
     for `k_concat`/`union`-related operations.
-  * Add realistic large-grammar analysis benchmarks with separate FIRST(k), FOLLOW(k), and full
+  - Add realistic large-grammar analysis benchmarks with separate FIRST(k), FOLLOW(k), and full
     scenario measurements to track end-to-end impact.
-  * Restore the proven `KTuples::k_concat` behavior after evaluating alternatives, preserving the
+  - Restore the proven `KTuples::k_concat` behavior after evaluating alternatives, preserving the
     best full-scenario runtime while keeping the FOLLOW(k) improvements.
 
-* k_tuple u8 bounds checking - Added overflow protection:
-  * inc_index() now uses checked_add with panic on overflow
-  * last() guards against underflow when next_index() == 0
-  * k_concat validates new index doesn't exceed MAX_K
-  * with_terminal_indices checks next_index < MAX_K before incrementing
+- k_tuple u8 bounds checking - Added overflow protection:
+  - inc_index() now uses checked_add with panic on overflow
+  - last() guards against underflow when next_index() == 0
+  - k_concat validates new index doesn't exceed MAX_K
+  - with_terminal_indices checks next_index < MAX_K before incrementing
 
-* Dependency updates:
-  * Bump `syn` from 2.0.119 to 3.0.2 in `crates/parol/Cargo.toml`.
+- Dependency updates:
+  - Bump `syn` from 2.0.119 to 3.0.2 in `crates/parol/Cargo.toml`.
 
-* Documentation / project state:
-  * Update `README.md` and `CommonReadMe.md` project state section: Versions 1 through 4 are no
+- Documentation / project state:
+  - Update `README.md` and `CommonReadMe.md` project state section: Versions 1 through 4 are no
     longer developed; Version 5 is the current stable version.
 
-* Code quality / minor refactors:
-  * Minor refactor in `generators/grammar_type_generator.rs`: iterate over
+- Code quality / minor refactors:
+  - Minor refactor in `generators/grammar_type_generator.rs`: iterate over
     `self.non_terminal_types.keys()` directly instead of `iter()`.
-  * Clippy clean-ups across the crate.  
+  - Clippy clean-ups across the crate.
 
 ## 5.0.0 - 2026-07-01
 
-* **Breaking Changes**:
-  * Generated LL(k) and LALR(1) parsers now require `parol_runtime` version 5.0.0 due to the addition of the `is_push_production` field in `Production` and `LRProduction`.
-* **Features**:
-  * Generated LL(k) and LALR(1) parsers now include the `is_push_production` flag on each production, allowing the runtime to bypass recursion depth limits for push-semantics (repetition-based list flattening) productions.
-  * Properly closes issue [#1308](https://github.com/jsinger67/parol/issues/1308) for flat lists.
+- **Breaking Changes**:
+  - Generated LL(k) and LALR(1) parsers now require `parol_runtime` version 5.0.0 due to the addition of the `is_push_production` field in `Production` and `LRProduction`.
+- **Features**:
+  - Generated LL(k) and LALR(1) parsers now include the `is_push_production` flag on each production, allowing the runtime to bypass recursion depth limits for push-semantics (repetition-based list flattening) productions.
+  - Properly closes issue [#1308](https://github.com/jsinger67/parol/issues/1308) for flat lists.
 
 ## 4.7.0 - 2026-06-29
 
-* Add configurable parsing depth limit to prevent stack overflows on deeply nested ASTs.
-  * Add `Builder::max_parsing_depth` and CLI option `--max-parsing-depth` to set a limit on
+- Add configurable parsing depth limit to prevent stack overflows on deeply nested ASTs.
+  - Add `Builder::max_parsing_depth` and CLI option `--max-parsing-depth` to set a limit on
     parsing depth for both LL(k) and LALR(1) parsers.
-  * The runtime now returns a `ParserError::MaxParsingDepthExceeded` error if the limit is reached,
+  - The runtime now returns a `ParserError::MaxParsingDepthExceeded` error if the limit is reached,
     avoiding a process crash.
-  * This closes issue [#1308](httpshttps://github.com/jsinger67/parol/issues/1308).
+  - This closes issue [#1308](httpshttps://github.com/jsinger67/parol/issues/1308).
 
 ## 4.6.0 - 2026-06-17
 
-* Fix expanded grammar (`*-exp.par`) serialization to preserve `%skip` directives.
-* Add configurable extra derives for generated Rust grammar trait data types via
+- Fix expanded grammar (`*-exp.par`) serialization to preserve `%skip` directives.
+- Add configurable extra derives for generated Rust grammar trait data types via
   `Builder::add_derives` and CLI option `--add-derives`.
   This closes issue [1268](https://github.com/jsinger67/parol/issues/1268).
 
 ## 4.5.1 - 2026-05-11
 
-* Fix dependency generation in `parol new --lang c-sharp`
+- Fix dependency generation in `parol new --lang c-sharp`
 
 ## 4.5.0 - 2026-05-11
 
-* Add scanner-state-aware `%skip` support and synchronize parser generation with runtime handling.
-  * Extend grammar processing and code generation so `%skip` tokens are validated and applied per
+- Add scanner-state-aware `%skip` support and synchronize parser generation with runtime handling.
+  - Extend grammar processing and code generation so `%skip` tokens are validated and applied per
     scanner state.
-  * Update C# parser generation to pass scanner-mode skip token arrays to `Parol.Runtime.Scanner.Scan`.
-  * Add `%skip` validation tests for primary non-terminal and scanner-membership constraints.
-  * Regenerate built-in parser artifacts and affected examples.
-* Bump parser export model schema version to `2` and keep `v1` schema as a compatibility contract.
-  * Add scanner state `skip_tokens` to parser export model `scanner.scanner_states[*]`.
+  - Update C# parser generation to pass scanner-mode skip token arrays to `Parol.Runtime.Scanner.Scan`.
+  - Add `%skip` validation tests for primary non-terminal and scanner-membership constraints.
+  - Regenerate built-in parser artifacts and affected examples.
+- Bump parser export model schema version to `2` and keep `v1` schema as a compatibility contract.
+  - Add scanner state `skip_tokens` to parser export model `scanner.scanner_states[*]`.
 
 ## 4.4.1 - 2026-05-03
 
-* Fix C# code generation for left-recursive list productions (LR grammars): the accumulated list
+- Fix C# code generation for left-recursive list productions (LR grammars): the accumulated list
   was looked up at the wrong `children` index and item members were constructed with the wrong
   offset, causing an `InvalidOperationException` at parse time.
-* Fix mixed block comment delimiter handling to avoid over-consuming adjacent comments
+- Fix mixed block comment delimiter handling to avoid over-consuming adjacent comments
   (e.g. `(** ... **)` followed by `(* ... *)`)
-* Fix `generate_terminal_name`: prepend underscore to numeric terminal names in
+- Fix `generate_terminal_name`: prepend underscore to numeric terminal names in
   generate_terminal_name
-* Fix scanner source generation for Unicode escapes in raw terminals (e.g. keep `\u{0027}` intact
+- Fix scanner source generation for Unicode escapes in raw terminals (e.g. keep `\u{0027}` intact
   instead of generating escaped variants like `\\u\{0027\}`)
-* Fix comment generation: Generated comments in sources could have created invalid Rust code if
+- Fix comment generation: Generated comments in sources could have created invalid Rust code if
   terminals contained `*/`
-* Fix Dependabot security alerts [#56](https://github.com/jsinger67/parol/security/dependabot/56) and
+- Fix Dependabot security alerts [#56](https://github.com/jsinger67/parol/security/dependabot/56) and
   [#57](https://github.com/jsinger67/parol/security/dependabot/57) by updating `rustls-webpki`
   0.103.10 -> 0.103.12 in `Cargo.lock`
-* Fix dependabot security alerts [#54](https://github.com/jsinger67/parol/security/dependabot/54) and
+- Fix dependabot security alerts [#54](https://github.com/jsinger67/parol/security/dependabot/54) and
   [#55](https://github.com/jsinger67/parol/security/dependabot/55) by updating following dependencies
-  * rand 0.10.0 -> 0.10.1
-  * rand 0.9.2 -> 0.9.3
-* Fix dependabot security alerts [#58](https://github.com/jsinger67/parol/security/dependabot/58) and
+  - rand 0.10.0 -> 0.10.1
+  - rand 0.9.2 -> 0.9.3
+- Fix dependabot security alerts [#58](https://github.com/jsinger67/parol/security/dependabot/58) and
   associated issue [#1191](https://github.com/jsinger67/parol/issues/1191) regarding `parol-vscode`
   (GHSA-w5hq-g745-h8pq)
-  * uuid 8.3.2 -> 14.0.0
+  - uuid 8.3.2 -> 14.0.0
 
 ## 4.4.0 - 2026-03-31
 
-* Add new `parol export` subcommand to emit language-agnostic parser export models as JSON
+- Add new `parol export` subcommand to emit language-agnostic parser export models as JSON
   for both LL(k) and LALR(1) grammars.
-* Add unified public API `generate_parser_export_model_from_grammar` that selects the parser
+- Add unified public API `generate_parser_export_model_from_grammar` that selects the parser
   algorithm automatically and builds a `ParserExportModel` directly from `GrammarConfig`.
-* Extend `ParserExportModel` with scanner metadata (scanner terminals, scanner states,
+- Extend `ParserExportModel` with scanner metadata (scanner terminals, scanner states,
   scanner directives, and scanner transitions).
-* Extend `ParserExportModel` with production datatype metadata derived from
+- Extend `ParserExportModel` with production datatype metadata derived from
   `GrammarTypeInfo`'s symbol table (production output type kind, type name, members, and
   semantic attributes).
-* Add deterministic export snapshot tests for the CLI (`generate.par` and `generate_lr.par`) and
+- Add deterministic export snapshot tests for the CLI (`generate.par` and `generate_lr.par`) and
   direct API integration tests for unified vs precomputed export generation paths.
-* Set export schema version to `1`
+- Set export schema version to `1`
 
 ## 4.3.5 - 2026-03-21
 
-* Update Parol.Runtime to 0.2.0 which supports multiple dotnet target frameworks now.
-* Fix security alert [#42](https://github.com/jsinger67/parol/security/dependabot/42): `GHSA-394x-vwmw-crm3`
-and Fix security alert [#43](https://github.com/jsinger67/parol/security/dependabot/43): `GHSA-9f94-5g5w-gf6r` 
-  * aws-lc-rs 1.16.1 -> 1.16.2
-  * aws-lc-sys 0.38.0 -> 0.39.0
+- Update Parol.Runtime to 0.2.0 which supports multiple dotnet target frameworks now.
+- Fix security alert [#42](https://github.com/jsinger67/parol/security/dependabot/42): `GHSA-394x-vwmw-crm3`
+  and Fix security alert [#43](https://github.com/jsinger67/parol/security/dependabot/43): `GHSA-9f94-5g5w-gf6r`
+  - aws-lc-rs 1.16.1 -> 1.16.2
+  - aws-lc-sys 0.38.0 -> 0.39.0
 
 ## 4.3.4 - 2026-03-14
 
-* Update Parol.Runtime package version to 0.1.3 in project files
-* Add LALR(1) C# parser generation support and corresponding LR parser runtime support in
-Parol.Runtime
+- Update Parol.Runtime package version to 0.1.3 in project files
+- Add LALR(1) C# parser generation support and corresponding LR parser runtime support in
+  Parol.Runtime
 
 ## 4.3.3 - 2026-03-14
 
-* Update Parol.Runtime package version to 0.1.2 in project files and adjust parser method
-signature
-* Handle empty productions for struct-mapped non-terminals in generated action mappers
-(e.g. `ExprOpt: ;`) to avoid runtime "Unsupported C# mapping" errors
-* Handle empty struct-production mappings without duplicate guards in generated action mappers
+- Update Parol.Runtime package version to 0.1.2 in project files and adjust parser method
+  signature
+- Handle empty productions for struct-mapped non-terminals in generated action mappers
+  (e.g. `ExprOpt: ;`) to avoid runtime "Unsupported C# mapping" errors
+- Handle empty struct-production mappings without duplicate guards in generated action mappers
 
 ## 4.3.2 - 2026-03-07
 
-* Add warning header to generated C# files and corresponding test
-* Update generated file comments to clarify manual editing restrictions
-* Update file naming conventions for C# scaffolding and add integration tests
-* Update Rust snapshot in parol_new tests
-* Enhance project name handling and add csproj snapshot
-* Enhance user action handling and update generated file comments
-* Adjust C# examples to new scaffolding scheme
-* Improve action type in generated C# program files
-* Update array syntax from braces to brackets in C# generator files
+- Add warning header to generated C# files and corresponding test
+- Update generated file comments to clarify manual editing restrictions
+- Update file naming conventions for C# scaffolding and add integration tests
+- Update Rust snapshot in parol_new tests
+- Enhance project name handling and add csproj snapshot
+- Enhance user action handling and update generated file comments
+- Adjust C# examples to new scaffolding scheme
+- Improve action type in generated C# program files
+- Update array syntax from braces to brackets in C# generator files
 
 ## 4.3.1 - 2026-03-04
 
-* Fixed C# user action mapping generation for clipped-symbol productions to avoid emitting
-unreachable code (e.g. CS0162 warnings).
-* Fixed C# code generation when non-terminals are clipped.
-* Fixed `parol new` snapshot tests to exclude generated folder from snapshot comparison.
-* Fixed Dependabot security alerts by updating aws-lc-rs/aws-lc-sys versions.
+- Fixed C# user action mapping generation for clipped-symbol productions to avoid emitting
+  unreachable code (e.g. CS0162 warnings).
+- Fixed C# code generation when non-terminals are clipped.
+- Fixed `parol new` snapshot tests to exclude generated folder from snapshot comparison.
+- Fixed Dependabot security alerts by updating aws-lc-rs/aws-lc-sys versions.
 
 ## 4.3.0 - 2026-02-22
 
-* Added multi-language support to `parol new` via the `--language` (`-L`) flag.
-* Added scaffolding for C# projects, including `.csproj`, `Program.cs`, and `Actions.cs` templates.
-* Added C# target support in code generators (lexer, parser, and user traits).
-* Fixed robust character literal escaping in C# for Unicode characters.
-* Improved CLI argument consistency for the `new` subcommand.
+- Added multi-language support to `parol new` via the `--language` (`-L`) flag.
+- Added scaffolding for C# projects, including `.csproj`, `Program.cs`, and `Actions.cs` templates.
+- Added C# target support in code generators (lexer, parser, and user traits).
+- Fixed robust character literal escaping in C# for Unicode characters.
+- Improved CLI argument consistency for the `new` subcommand.
 
 ## 4.2.2 - 2026-01-04
 
-* Enhance default grammar in `parol new` to avoid initial build warning due to a too simple grammar.
-* Removed code that handles unsupported scanner switch directives. Public interface is untouched
-but you may see new deprecation warnings if you used now unsupported interface parts.
+- Enhance default grammar in `parol new` to avoid initial build warning due to a too simple grammar.
+- Removed code that handles unsupported scanner switch directives. Public interface is untouched
+  but you may see new deprecation warnings if you used now unsupported interface parts.
 
 ## 4.2.1 - 2025-12-06
 
-* Fixed a problem with token aliases (primary non-terminals) when only the lookahead expressions
-differ
+- Fixed a problem with token aliases (primary non-terminals) when only the lookahead expressions
+  differ
 
 ## 4.2.0 - 2025-11-29
 
-* Merged PR [#951](https://github.com/jsinger67/parol/pull/951) from @ryo33 that fixes an issue
-with the generation of node type information for a grammar.
-* Merged PR [#952](https://github.com/jsinger67/parol/pull/952) from @ryo33 that adds comprehensive
-tests for node export feature
-* `cargo update`
+- Merged PR [#951](https://github.com/jsinger67/parol/pull/951) from @ryo33 that fixes an issue
+  with the generation of node type information for a grammar.
+- Merged PR [#952](https://github.com/jsinger67/parol/pull/952) from @ryo33 that adds comprehensive
+  tests for node export feature
+- `cargo update`
 
 ## 4.1.1 - 2025-09-19
 
-* Fix: Update block comment regex in
-[`ScannerConfig::format_block_comment()`](crates/parol/src/generators/scanner_config.rs:210) to
-correctly match cases like `/***/`, resolving [#828](https://github.com/jsinger67/parol/issues/828).
-Extended tests to verify correct behavior.
-  * Update all generated sources of affected examples
+- Fix: Update block comment regex in
+  [`ScannerConfig::format_block_comment()`](crates/parol/src/generators/scanner_config.rs:210) to
+  correctly match cases like `/***/`, resolving [#828](https://github.com/jsinger67/parol/issues/828).
+  Extended tests to verify correct behavior.
+  - Update all generated sources of affected examples
 
 ## 4.1.0 - 2025-08-30
 
-* Reintroduce the generation of an explicit error token, as was done in version 3. This change
-should not affect existing parsers, except that unknown tokens will now reliably trigger an error
-instead of being silently ignored.
+- Reintroduce the generation of an explicit error token, as was done in version 3. This change
+  should not affect existing parsers, except that unknown tokens will now reliably trigger an error
+  instead of being silently ignored.
 
-* New scanner directive: `%allow_unmatched`  
+- New scanner directive: `%allow_unmatched`  
   Scanner modes can now be configured to tolerate unmatched tokens by specifying `%allow_unmatched`
   in the scanner section of the grammar. This allows unmatched input to be ignored instead of
   triggering an error, which can be useful in certain scenarios.
@@ -239,7 +248,7 @@ instead of being silently ignored.
   ```parol
   // For scanner mode INITIAL
   %allow_unmatched
-  
+
   // For any scanner mode defined
   %scanner MyScanner {
       ...
@@ -252,14 +261,14 @@ instead of being silently ignored.
 
   See also the new example `allow_unmatched`.
 
-* New subcommand: `acceptor_test`
+- New subcommand: `acceptor_test`
 
   The CLI now includes the `acceptor_test` subcommand, which allows users to run and verify acceptor
   functionality directly from the command line.
 
   It first generates a new acceptor binary crate with the given grammar description facilitating the
   `parol new` subcommand.
-  
+
   Then it automatically generates random input which adheres to the given grammar description and
   applies it frequently to the freshly generated acceptor of this grammar. This is useful for
   testing grammar acceptors in isolation, facilitating rapid development.
@@ -280,48 +289,50 @@ instead of being silently ignored.
   providing detailed feedback for grammar development.
 
   Call
+
   ```
   parol acceptor-test --help
   ```
+
   for details on execution.
 
   > Please note, that the command will fail if the grammar description contains references to the
-  implementation, e.g. `%nt_type`. You might consider to temporarily comment them out.
+  > implementation, e.g. `%nt_type`. You might consider to temporarily comment them out.
 
-* Fix: Update generated dependencies for subcommand `parol new`
+- Fix: Update generated dependencies for subcommand `parol new`
 
-* Fix: Correct lookahead terminal pattern expansion in ScannerConfig
+- Fix: Correct lookahead terminal pattern expansion in ScannerConfig
 
-* Update the [book](https://jsinger67.github.io/) to reflect the current version. Remove
-explanations of deprecated features for clarity and move version-specific changes from their own
-chapters directly to where the changed features are covered.
-I hope this makes it easier to get started with `parol`.
+- Update the [book](https://jsinger67.github.io/) to reflect the current version. Remove
+  explanations of deprecated features for clarity and move version-specific changes from their own
+  chapters directly to where the changed features are covered.
+  I hope this makes it easier to get started with `parol`.
 
 ## 4.0.1 - 2025-08-05
 
-* Fix for issue [#734](https://github.com/jsinger67/parol/issues/734)
+- Fix for issue [#734](https://github.com/jsinger67/parol/issues/734)
 
   This fix adds the option `--edition 2024` to the call to rustfmt during writing the generated
   parser sources.
-  
+
   A user should be able to (re-)configure the process of code formatting by
   leveraging a `rustfmt.toml` or `.rustfmt.toml` configuration file in her crate anyway.
 
 ## 4.0.0 - 2025-07-27
 
-* Official start of version 4 development.
-* Switch to scnr2 scanner crate
-* Stop support of parser based scanner switching in favor of scanner based scanner switching
+- Official start of version 4 development.
+- Switch to scnr2 scanner crate
+- Stop support of parser based scanner switching in favor of scanner based scanner switching
 
 ## 3.1.0 - 2025-07-11
 
-* Generate untransformed grammar with production index comments
+- Generate untransformed grammar with production index comments
   (i.e. when calling `parol -u  <WRITE_UNTRANSFORMED>` resp.
   `parol --write-untransformed <WRITE_UNTRANSFORMED>`)
-* Change handling of token aliases when lookahead expressions are used
-* Fix generation of lookahead regex in parser source
-* Fixed clippy warnings in tests, benches and production code
-* Merged PR [#652](https://github.com/jsinger67/parol/pull/652) from [ryo33](https://github.com/ryo33)
+- Change handling of token aliases when lookahead expressions are used
+- Fix generation of lookahead regex in parser source
+- Fixed clippy warnings in tests, benches and production code
+- Merged PR [#652](https://github.com/jsinger67/parol/pull/652) from [ryo33](https://github.com/ryo33)
 
   The new feature allows to additionally generate enum node types for terminals and non-terminals.
   Here is a quote from the PR:
@@ -336,16 +347,15 @@ I hope this makes it easier to get started with `parol`.
   [eure-tree](https://github.com/Hihaheho/eure/tree/main) to find out more about his approach of
   constructing customized trees from parol's parse trees.
 
-  *Thanks a lot, ryo!*
-
+  _Thanks a lot, ryo!_
 
 ## 3.0.1 - 2025-03-08
 
-* Fix [#595](https://github.com/jsinger67/parol/issues/595)
-* Fix [#596](https://github.com/jsinger67/parol/issues/596)
-* Fix parol (par) file generation when `%t_type` is used.
-* Fix parol (par) file generation when `%nt_type` is used.
-* Fix Token alias handling in ParolGrammar
+- Fix [#595](https://github.com/jsinger67/parol/issues/595)
+- Fix [#596](https://github.com/jsinger67/parol/issues/596)
+- Fix parol (par) file generation when `%t_type` is used.
+- Fix parol (par) file generation when `%nt_type` is used.
+- Fix Token alias handling in ParolGrammar
 
 ## 3.0.0 - 2025-03-02
 
@@ -354,117 +364,125 @@ The [book](https://jsinger67.github.io) has been updated and received a new chap
 
 ### New feature "User defined member names / Grammar labeling"
 
-  You can now specify for each symbol on the right-hand side of a production how its corresponding
-  member in the generated struct should be named.
+You can now specify for each symbol on the right-hand side of a production how its corresponding
+member in the generated struct should be named.
 
-  To achieve this you can use the newly introduced `@` operator.
+To achieve this you can use the newly introduced `@` operator.
 
-  ```parol
-  Declaration :
-      ...
-      | "%nt_type" Identifier@nt_name "="^ UserTypeName@nt_type
-      ...
-  ```
+```parol
+Declaration :
+    ...
+    | "%nt_type" Identifier@nt_name "="^ UserTypeName@nt_type
+    ...
+```
 
-  In this example the Identifier in the production will be named `nt_name` and the UserTypeName will
-  receive the name `nt_type` in the generated struct data type for this production.
+In this example the Identifier in the production will be named `nt_name` and the UserTypeName will
+receive the name `nt_type` in the generated struct data type for this production.
 
+This feature introduces **breaking changes** in the public API. Therefore we need to bump the
+major version to 3.
 
-  This feature introduces **breaking changes** in the public API. Therefore we need to bump the
-  major version to 3.
+#### Detailed list of changes in the public API
 
-####  Detailed list of changes in the public API
-  * The number of elements of the tuple struct used in the enum arm `Trm` of the enum
+- The number of elements of the tuple struct used in the enum arm `Trm` of the enum
   `parol::grammar::symbol::Terminal` has changed.
-  * The number of elements of the tuple struct used in the enum arm `N` of the enum
+- The number of elements of the tuple struct used in the enum arm `N` of the enum
   `parol::grammar::symbol::Symbol` has changed.
-  * In the module `parol::parser::parol_grammar` some public enums have similar changes in some arms.
+- In the module `parol::parser::parol_grammar` some public enums have similar changes in some arms.
 
-  I expect that most applications that use `parol` v2 can upgrade to v3 without problems. The
-  changes listed above only affect applications that use the `parol` library for very specific tasks.
+I expect that most applications that use `parol` v2 can upgrade to v3 without problems. The
+changes listed above only affect applications that use the `parol` library for very specific tasks.
 
 ### New feature "Non-terminal types"
 
-  You can now easily define a user type to which each occurrence of a certain non-terminal should
-  be automatically converted to.
-  This is done like in the following example:
+You can now easily define a user type to which each occurrence of a certain non-terminal should
+be automatically converted to.
+This is done like in the following example:
 
-  ```ebnf
-  %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
-  ```
+```ebnf
+%nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+```
 
-  It is similar to the already available `%user_type` with what you could define an alias for a
-  user defined type which in turn you could apply to single symbols on the right-hand side of
-  grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
-  non-terminals much easier.
-  Here is the old version used in `parol` itself before (only partial)
-  ```ebnf
-  %user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
-  // ...
-  %%
-  // ...
-  Prolog
-    : StartDeclaration { Declaration } { ScannerState: ScannerConfig }
-    ;
-  ```
-  And here is the new variant in which `%nt_type` is used.
-  ```ebnf
-  %nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
-  // ...
-  %%
-  // ...
-  Prolog
-    : StartDeclaration { Declaration } { ScannerState }
-    ;
-  ```
-  The non-terminal `ScannerState` was automatically defined the be converted to `ScannerConfig`.
-  
-  It is semantically completely identical to use `%user_type` and the application of it to each
-  occurrence of the non-terminal in the grammar explicitly.
+It is similar to the already available `%user_type` with what you could define an alias for a
+user defined type which in turn you could apply to single symbols on the right-hand side of
+grammar productions. The `%nt_type` can't be used on terminals but it makes the application to
+non-terminals much easier.
+Here is the old version used in `parol` itself before (only partial)
+
+```ebnf
+%user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
+// ...
+%%
+// ...
+Prolog
+  : StartDeclaration { Declaration } { ScannerState: ScannerConfig }
+  ;
+```
+
+And here is the new variant in which `%nt_type` is used.
+
+```ebnf
+%nt_type ScannerState = crate::parser::parol_grammar::ScannerConfig
+// ...
+%%
+// ...
+Prolog
+  : StartDeclaration { Declaration } { ScannerState }
+  ;
+```
+
+The non-terminal `ScannerState` was automatically defined the be converted to `ScannerConfig`.
+
+It is semantically completely identical to use `%user_type` and the application of it to each
+occurrence of the non-terminal in the grammar explicitly.
 
 ### New feature "Terminal type"
 
-  You can now easily define a user type to which each occurrence of a terminal should be
-  automatically converted to.
-  This is done like in the following example:
+You can now easily define a user type to which each occurrence of a terminal should be
+automatically converted to.
+This is done like in the following example:
 
-  ```ebnf
-  %t_type crate::parol_ls_grammar::OwnedToken
-  ```
+```ebnf
+%t_type crate::parol_ls_grammar::OwnedToken
+```
 
-  There can be only one type defined to which all terminals are converted to.
+There can be only one type defined to which all terminals are converted to.
 
-  More precisely, if there are more such directives given the last one will win.
+More precisely, if there are more such directives given the last one will win.
 
-  Here is the old version used in `parol-ls` itself before (only partial)
-  ```ebnf
-  %user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
-  // ...
-  %%
-  // ...
-  ScannerSwitch
-      : "%sc": OwnedToken '(': OwnedToken [ Identifier ] ')': OwnedToken
-      | "%push": OwnedToken '(': OwnedToken Identifier ')': OwnedToken
-      | "%pop": OwnedToken '(': OwnedToken ')': OwnedToken
-      ;
-  ```
-  And here is the new variant in which `%t_type` is used.
-  ```ebnf
-  %t_type crate::parol_ls_grammar::OwnedToken
-  // ...
-  %%
-  // ...
-  ScannerSwitch
-      : "%sc" '(' [ Identifier ] ')'
-      | "%push" '(' Identifier ')'
-      | "%pop" '(' ')'
-      ;
-  ```
-  All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
+Here is the old version used in `parol-ls` itself before (only partial)
+
+```ebnf
+%user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
+// ...
+%%
+// ...
+ScannerSwitch
+    : "%sc": OwnedToken '(': OwnedToken [ Identifier ] ')': OwnedToken
+    | "%push": OwnedToken '(': OwnedToken Identifier ')': OwnedToken
+    | "%pop": OwnedToken '(': OwnedToken ')': OwnedToken
+    ;
+```
+
+And here is the new variant in which `%t_type` is used.
+
+```ebnf
+%t_type crate::parol_ls_grammar::OwnedToken
+// ...
+%%
+// ...
+ScannerSwitch
+    : "%sc" '(' [ Identifier ] ')'
+    | "%push" '(' Identifier ')'
+    | "%pop" '(' ')'
+    ;
+```
+
+All terminals are automatically defined the be converted to `crate::parol_ls_grammar::OwnedToken`.
 
 ### Fix issue "Find a way to elide lifetimes if possible in generated ToSpan implementations #581"
 
-  We can simply always generate elided lifetimes.
+We can simply always generate elided lifetimes.
 
 ## 2.2.0 - 2025-02-13
 
@@ -482,54 +500,53 @@ Use version 2.2.0 of `parol_runtime` which provides a new crate feature.
 ## 2.1.0 - 2025-01-17
 
 - Performance optimization for grammar analysis, especially the calculation of FIRST(k) and
-FOLLOW(k) sets, using FxHashSet in `KTuples` type
-  * Changed some tuple structs to structs with named fields for clarity
+  FOLLOW(k) sets, using FxHashSet in `KTuples` type
+  - Changed some tuple structs to structs with named fields for clarity
 - Fixed `parol::conversions::par::grammar_to_par::render_scanner_config_string` to always output the
-transitions of a scanner state in a deterministic alphabetic order
+  transitions of a scanner state in a deterministic alphabetic order
 - Merged PR [#537](https://github.com/jsinger67/parol/pull/537) from [ryo33](https://github.com/ryo33)
 
 ## 2.0.0 - 2024-12-25
 
->Please note, that changes made in version 2 are also detailed in an extra
-[chapter of the book](https://jsinger67.github.io/ParolVersion2.html)
+> Please note, that changes made in version 2 are also detailed in an extra
+> [chapter of the book](https://jsinger67.github.io/ParolVersion2.html)
 
 - Integration of scanner crate `scnr`. `parol_runtime` now uses this crate as scanner crate instead
-of regexes created with the help of the `regex-automata` crate. Please have a look at
-[parol_runtime's CHANGELOG](../parol_runtime/CHANGELOG.md).
+  of regexes created with the help of the `regex-automata` crate. Please have a look at
+  [parol_runtime's CHANGELOG](../parol_runtime/CHANGELOG.md).
 
 - Refactor some grammar tools to enforce LL grammar type.
 
 - Error recovery on generated LL(k) parsers can now be disabled, via Builder API (`disable_recovery`)
-and via command line argument (`--disable-recovery`).
+  and via command line argument (`--disable-recovery`).
 
 - `parol` creates lossless parse trees in both LL and LR parsers.
 
 - Fix bug Missing negation in LL(k) check for decidable subcommand #489
-  * Also fixed similar bug in subcommand `calculate-k` and `calculate-k-tuples`
+  - Also fixed similar bug in subcommand `calculate-k` and `calculate-k-tuples`
 
 ## 1.0.0 - 2024-09-02
 
 - Merged PR [#393](https://github.com/jsinger67/parol/pull/393) from [ryo33](https://github.com/ryo33)
- This fixes a bug in range generation of enums.
+  This fixes a bug in range generation of enums.
 
->**The version 1 is maintained on branch `release1.0`. All changes for this version therefore are
- only visible on this branch. This includes this change log too.**
+> **The version 1 is maintained on branch `release1.0`. All changes for this version therefore are
+> only visible on this branch. This includes this change log too.**
 
 ## 0.31.0 - 2024-06-21
 
 - Referencing `parol_runtime` 0.24.0 which introduced braking changes, due to new parser error types.
-Please, see [CHANGELOG parol_runtime](../parol_runtime/CHANGELOG.md) for details.
+  Please, see [CHANGELOG parol_runtime](../parol_runtime/CHANGELOG.md) for details.
 
 ## 0.30.0 - 2024-06-08
 
 - Provide a general strategy to solve conflicts during parse table generation.
+  - **Shift-reduce conflicts**
 
-  * **Shift-reduce conflicts**
-  
     Parol behaves like Bison/YACC now, namely that in general all shift-reduce conflicts are
     resolved by favoring shift.
 
-  * **Reduce-reduce conflicts**
+  - **Reduce-reduce conflicts**
 
     Parol prefers productions with lower number, i.e. the first seen ones in the grammar
     description.
@@ -541,7 +558,6 @@ Please, see [CHANGELOG parol_runtime](../parol_runtime/CHANGELOG.md) for details
 
 - Referencing `lalry` instead of `lalr`now
 
-
 ## 0.29.0 - 2024-05-16
 
 - Fixed dependencies generated by the `parol new` command
@@ -549,26 +565,27 @@ Please, see [CHANGELOG parol_runtime](../parol_runtime/CHANGELOG.md) for details
 - New example `calc_lr` to showcase LALR(1) parsing with `parol`
 - Parse tree generation for LR grammars is now available
 - Add the missing command line option `trim_parse_tree` to `parol`'s arguments, see `parol help` for
-more details
-    
-    This configuration was not available until now. If you didn't use a build script and call the
-    `parol` binary to generate your source you weren't able to activate this configuration.
-    The `trim_parse_tree` option is useful if you don't need a parse tree after finishing the parse
-    process. It mostly saves runtime effort, speeds up the parsing performance and also decreases
-    the memory consumption.
+  more details
+  This configuration was not available until now. If you didn't use a build script and call the
+  `parol` binary to generate your source you weren't able to activate this configuration.
+  The `trim_parse_tree` option is useful if you don't need a parse tree after finishing the parse
+  process. It mostly saves runtime effort, speeds up the parsing performance and also decreases
+  the memory consumption.
 - Removed clippy warnings new in Rust 1.78.0
 - Implement scanner-based scanner switching which can be used in both LL(k) and LALR(1) grammars
-
-    * A new example `scanner_states_lr` is introduced to show the basic functionality. Additionally 
+  - A new example `scanner_states_lr` is introduced to show the basic functionality. Additionally
     the example `basic` was migrated to use the scanner-based scanner switching.
-- __Public API has changed__
+
+- **Public API has changed**
 
 ## 0.28.0 - 2024-04-29
 
 - Complete new **LALR(1) grammar support**. Use the new `%grammar_type` directive to switch to LALR(1)
+
   ```
   %grammar_type 'LALR(1)'
   ```
+
   The interfacing to the user's grammar trait works just the same as before.
   You can find an example in the examples folder: [list_lr](../../examples/list_lr/list.par).
 
@@ -576,32 +593,31 @@ more details
   LALR(1) grammars can help users in general.
 
   A view things are not yet available for LR grammars:
-    * No parse tree generation
+  - No parse tree generation
 
-      This has to be revised since the mechanisms of constructing the parse tree during the parse
-      process are different than the ones used in the LL parser.
+    This has to be revised since the mechanisms of constructing the parse tree during the parse
+    process are different than the ones used in the LL parser.
 
-    * Scanner state switching is not implemented yet
+  - Scanner state switching is not implemented yet
 
-      In fact there is not even a concept to accomplish this in the LR parser. I have to reason
-      about this a bit, I think.
+    In fact there is not even a concept to accomplish this in the LR parser. I have to reason
+    about this a bit, I think.
 
-    * No general solution of handling conflicts during parse table generation.
+  - No general solution of handling conflicts during parse table generation.
 
-      This is a mix of different obstacles that comes from the tooling on the one hand and from the
-      philosophy of `parol` on the other hand. Doing it `parol`'s way I would do it in the par file
-      (as for the scanner switching).
+    This is a mix of different obstacles that comes from the tooling on the one hand and from the
+    philosophy of `parol` on the other hand. Doing it `parol`'s way I would do it in the par file
+    (as for the scanner switching).
 
-      Currently any conflict results in an error. I know this might prevent its use for more complex
-      grammars but it is the save way for now.
+    Currently any conflict results in an error. I know this might prevent its use for more complex
+    grammars but it is the save way for now.
 
   Please, give feedback of any kind to this new grammar type support.
-
 
 ## 0.27.0 - 2024-04-01
 
 - Heavy performance optimization of the calculation of FIRST and FOLLOW sets and there especially
-the k-concatenation.
+  the k-concatenation.
 
   Here are the results of the benchmarks produced on my machine:
 
@@ -642,7 +658,7 @@ the k-concatenation.
   information, such as `k` and `max_terminal_index` have been provided before creating the object.
 
   `parol::analysis::k_tuple::KTuple` now implements `Copy`.
-  
+
   Its method `from_slice_with` was removed. You can use the `std::iter::Extend` trait that is now
   also implemented for `KTuple` and supports types that implement
   `std::iter::IntoIterator<Item = CompiledTerminal>>` or
@@ -662,8 +678,6 @@ the k-concatenation.
 
   The types in this module have been removed from the crate although the file is still under source
   control. The Trie was replaced by a `HashSet` in `KTuples` and has therefore become superfluous.
-
-
 
 ## 0.26.1 - 2024-02-13
 
@@ -764,7 +778,6 @@ the k-concatenation.
   states could be numbered differently after each generation. Although this imposed no problems on the
   functionality of generated parsers nondeterministic output isn't desirable.
 - Fixed problem in terminal name generation when
-
   - regex string representation (/.../) is used
   - the terminal included characters that are automatically escaped (by `regex::escape`) and
   - the production was meant as a "primary non-terminal for a terminal".
@@ -924,9 +937,7 @@ the k-concatenation.
 - Fixed [#39](https://github.com/jsinger67/parol/issues/39)
   - Empty scanner states are detected at the end of the parse process
 - Fixed issue [#44](https://github.com/jsinger67/parol/issues/44)
-
   - Add a field for span data in generated types
-
     - `parol` can now optionally generate the `ToSpan` trait automatically for all generated AST
       types
     - Can be enabled by -r or builder configuration `range()`
@@ -944,7 +955,6 @@ the k-concatenation.
     appropriate advices
 - Working on issue
   [#33 - Automate tasks like generation of derived sources i.e. in examples and run example related tests scripts](https://github.com/jsinger67/parol/issues/33)
-
   1. Using cargo-make for example generation
 
      ```shell
@@ -953,7 +963,6 @@ the k-concatenation.
      ```
 
 - Using [ume](https://github.com/ryo33/ume) as substitute for `bart` and `bart_derive`
-
   - This fixes issues [#46](https://github.com/jsinger67/parol/issues/46) and
     [#50](https://github.com/jsinger67/parol/issues/50)
 
@@ -1159,7 +1168,6 @@ A lot of breaking changes.
 
 - Worked on tutorial
 - Changes in `parol new`:
-
   - The referenced version of `parol` is taken from CARGO_PKG_VERSION environment variable. If the
     current version is not released yet on [crates.io](https://crates.io/crates/parol) you can fallback to github:
 
