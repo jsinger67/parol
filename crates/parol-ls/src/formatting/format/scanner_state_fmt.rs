@@ -38,19 +38,21 @@ impl Fmt for ScannerState {
             &self.percent_scanner,
             &comment_opts_force_single_newline(options),
         );
-        (
-            format!(
-                "{}\n{} {} {}{}{}{}",
-                comments_before_scanner,
-                self.percent_scanner,
-                identifier,
-                self.l_brace,
-                scanner_state_list,
-                nl_before_closing_brace,
-                self.r_brace,
-            ),
-            comments,
-        )
+
+        let brace_sep = if options.scanner_brace_newline {
+            "\n"
+        } else {
+            " "
+        };
+
+        let mut result = format!("{}\n{} {}{}", comments_before_scanner, self.percent_scanner, identifier, brace_sep);
+        result = format!("{}{}", result, self.l_brace);
+        result = format!("{}{}", result, scanner_state_list);
+        result = format!("{}{}", result, nl_before_closing_brace);
+
+        result = format!("{}{}", result, self.r_brace);
+
+        (result, comments)
     }
 }
 
