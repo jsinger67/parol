@@ -148,7 +148,9 @@ impl Fmt for AlternationsList {
         };
 
         // When option enabled, place pipe on new line
-        let prefix = if options.nesting_depth <= 1 && options.place_top_level_alternatives_on_new_line_each {
+        let prefix = if options.nesting_depth <= 1
+            && options.place_top_level_alternatives_on_new_line_each
+        {
             if Line::ends_with_nl(&alternation_str) {
                 ""
             } else {
@@ -159,11 +161,7 @@ impl Fmt for AlternationsList {
         };
 
         (
-            format!(
-                "{}{}{}",
-                prefix,
-                left_padding, pipe_token,
-            ),
+            format!("{}{}{}", prefix, left_padding, pipe_token,),
             comments,
         )
     }
@@ -224,7 +222,10 @@ impl Fmt for Group {
             && !self.alternations.alternations_list.is_empty()
             && !alternations_str.contains('\n')
             && rhs_exceeds_max_line_length(options, &group_rhs);
-        let indent = crate::formatting::indent::Indent::make_indent(options.nesting_depth as u16, &options.indent_style);
+        let indent = crate::formatting::indent::Indent::make_indent(
+            options.nesting_depth,
+            &options.indent_style,
+        );
         let alternations_str = if split_group_alternatives {
             alternations_str.replace(" | ", &format!("\n{}| ", indent))
         } else {
@@ -299,7 +300,10 @@ impl Fmt for Optional {
             && !self.alternations.alternations_list.is_empty()
             && !alternations_str.contains('\n')
             && rhs_exceeds_max_line_length(options, &optional_rhs);
-        let indent = crate::formatting::indent::Indent::make_indent(options.nesting_depth as u16, &options.indent_style);
+        let indent = crate::formatting::indent::Indent::make_indent(
+            options.nesting_depth,
+            &options.indent_style,
+        );
         let alternations_str = if split_optional_alternatives {
             alternations_str.replace(" | ", &format!("\n{}| ", indent))
         } else {
@@ -356,7 +360,10 @@ impl Fmt for Repeat {
             && !self.alternations.alternations_list.is_empty()
             && !alternations_str.contains('\n')
             && rhs_exceeds_max_line_length(options, &repeat_rhs);
-        let indent = crate::formatting::indent::Indent::make_indent(options.nesting_depth as u16, &options.indent_style);
+        let indent = crate::formatting::indent::Indent::make_indent(
+            options.nesting_depth,
+            &options.indent_style,
+        );
         let alternations_str = if split_repeat_alternatives {
             alternations_str.replace(" | ", &format!("\n{}| ", indent))
         } else {
