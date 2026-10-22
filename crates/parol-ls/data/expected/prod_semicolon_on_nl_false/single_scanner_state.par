@@ -5,6 +5,7 @@
 %block_comment '/*' '*/'
 %user_type UserType1 = UserDefinedTypeName1
 %user_type UserType2 = UserDefinedTypeName2
+
 // This is a single scanner state example
 %scanner Esc {
     %auto_newline_off

@@ -47,7 +47,7 @@ impl Fmt for ScannerState {
         };
 
         let mut result = format!(
-            "{}{} {}{}",
+            "\n{}{} {}{}",
             comments_before_scanner, self.percent_scanner, identifier, brace_sep
         );
         result = format!("{}{}", result, self.l_brace);
