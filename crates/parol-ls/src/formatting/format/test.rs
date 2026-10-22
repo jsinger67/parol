@@ -23,7 +23,7 @@ const ACTUAL_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/actual");
 const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
 
 // Use this if you only want to debug a view tests
-const SELECTED_TESTS: &[&str] = &[]; //&["single_group.par"];
+const SELECTED_TESTS: &[&str] = &["single_scanner_state.par"]; //&["single_group.par"];
 
 const TEST_DATA: &[(FmtOptions, &str)] = &[
     (
@@ -43,6 +43,7 @@ const TEST_DATA: &[(FmtOptions, &str)] = &[
             scanner_brace_newline: false,
             semicolon_end_of_line: false,
             place_top_level_alternatives_on_new_line_each: false,
+            leading_line_comments_on_own_line: false,
         },
         concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/options_default"),
     ),
@@ -63,8 +64,12 @@ const TEST_DATA: &[(FmtOptions, &str)] = &[
             scanner_brace_newline: true,
             semicolon_end_of_line: false,
             place_top_level_alternatives_on_new_line_each: false,
+            leading_line_comments_on_own_line: false,
         },
-        concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/scanner_brace_newline_true"),
+        concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/data/expected/scanner_brace_newline_true"
+        ),
     ),
     (
         FmtOptions {
@@ -83,6 +88,7 @@ const TEST_DATA: &[(FmtOptions, &str)] = &[
             scanner_brace_newline: false,
             semicolon_end_of_line: false,
             place_top_level_alternatives_on_new_line_each: false,
+            leading_line_comments_on_own_line: false,
         },
         concat!(
             env!("CARGO_MANIFEST_DIR"),
@@ -106,6 +112,7 @@ const TEST_DATA: &[(FmtOptions, &str)] = &[
             scanner_brace_newline: false,
             semicolon_end_of_line: false,
             place_top_level_alternatives_on_new_line_each: false,
+            leading_line_comments_on_own_line: false,
         },
         concat!(
             env!("CARGO_MANIFEST_DIR"),

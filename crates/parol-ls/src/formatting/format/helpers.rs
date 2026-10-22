@@ -31,6 +31,14 @@ pub(super) fn comment_opts_force_single_newline(options: &FmtOptions) -> FmtOpti
     options.clone().with_line_end(LineEnd::ForceSingleNewline)
 }
 
+pub(super) fn comment_opts_leading_own_line(options: &FmtOptions) -> FmtOptions {
+    if options.leading_line_comments_on_own_line {
+        options.clone().with_line_end(LineEnd::ForceSingleNewline)
+    } else {
+        options.clone()
+    }
+}
+
 pub(super) fn comment_opts_left_force_remove(options: &FmtOptions) -> FmtOptions {
     comment_opts_left(options).with_line_end(LineEnd::ForceRemove)
 }

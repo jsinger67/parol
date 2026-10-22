@@ -4,7 +4,7 @@ use super::super::comments::Comments;
 use super::super::context::FormatterContext;
 use super::super::fmt_options::FmtOptions;
 use super::dispatch::handle_scanner_directives;
-use super::helpers::{comment_opts_force_single_newline, format_comments_before_token};
+use super::helpers::{comment_opts_leading_own_line, format_comments_before_token};
 use super::scanner_fmt::format_scanner_directives_with_context;
 use super::traits::Fmt;
 
@@ -22,6 +22,13 @@ impl Fmt for ScannerState {
         } else {
             "\n"
         };
+
+        let (comments_before_scanner, comments) = format_comments_before_token(
+            comments,
+            &self.percent_scanner,
+            &comment_opts_leading_own_line(options),
+        );
+
         let (identifier, comments) = self.identifier.txt(options, comments);
         let inner_options = options.clone().next_depth();
         let (scanner_state_list, comments) = self.scanner_state_list.iter().fold(
@@ -33,19 +40,16 @@ impl Fmt for ScannerState {
             },
         );
 
-        let (comments_before_scanner, comments) = format_comments_before_token(
-            comments,
-            &self.percent_scanner,
-            &comment_opts_force_single_newline(options),
-        );
-
         let brace_sep = if options.scanner_brace_newline {
             "\n"
         } else {
             " "
         };
 
-        let mut result = format!("{}\n{} {}{}", comments_before_scanner, self.percent_scanner, identifier, brace_sep);
+        let mut result = format!(
+            "{}{} {}{}",
+            comments_before_scanner, self.percent_scanner, identifier, brace_sep
+        );
         result = format!("{}{}", result, self.l_brace);
         result = format!("{}{}", result, scanner_state_list);
         result = format!("{}{}", result, nl_before_closing_brace);

@@ -86,6 +86,8 @@ pub(crate) struct FmtOptions {
 
     /// Place top-level alternatives on new line each
     pub(crate) place_top_level_alternatives_on_new_line_each: bool,
+    /// Keep leading line comments on their own line
+    pub(crate) leading_line_comments_on_own_line: bool,
 }
 
 #[allow(unused)]
@@ -104,6 +106,7 @@ impl FmtOptions {
             scanner_brace_newline: defaults.scanner_brace_newline,
             semicolon_end_of_line: defaults.semicolon_end_of_line,
             place_top_level_alternatives_on_new_line_each: defaults.place_top_level_alternatives_on_new_line_each,
+            leading_line_comments_on_own_line: false,
             ..Default::default()
         }
     }
@@ -183,6 +186,7 @@ impl From<&FormattingOptions> for FmtOptions {
             scanner_brace_newline: settings.scanner_brace_newline,
             semicolon_end_of_line: settings.semicolon_end_of_line,
             place_top_level_alternatives_on_new_line_each: settings.place_top_level_alternatives_on_new_line_each,
+            leading_line_comments_on_own_line: settings.leading_line_comments_on_own_line,
             ..Self::default()
         }
     }

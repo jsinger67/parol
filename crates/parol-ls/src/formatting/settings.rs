@@ -1,7 +1,7 @@
 use lsp_types::{FormattingOptions, FormattingProperty};
 
-use crate::config::ConfigProperties;
 use super::fmt_options::IndentStyle;
+use crate::config::ConfigProperties;
 
 pub(crate) const EMPTY_LINE_AFTER_PROD_KEY: &str = "formatting.empty_line_after_prod";
 pub(crate) const PROD_SEMICOLON_ON_NL_KEY: &str = "formatting.prod_semicolon_on_nl";
@@ -13,7 +13,10 @@ pub(crate) const SPACE_AROUND_PIPE_KEY: &str = "formatting.space_around_pipe";
 pub(crate) const SPACE_AROUND_EQUALS_KEY: &str = "formatting.space_around_equals";
 pub(crate) const SCANNER_BRACE_NEWLINE_KEY: &str = "formatting.scanner_brace_newline";
 pub(crate) const SEMICOLON_END_OF_LINE_KEY: &str = "formatting.semicolon_end_of_line";
-pub(crate) const PLACE_TOP_LEVEL_ALTERNATIVES_ON_NEW_LINE_EACH_KEY: &str = "formatting.place_top_level_alternatives_on_new_line_each";
+pub(crate) const PLACE_TOP_LEVEL_ALTERNATIVES_ON_NEW_LINE_EACH_KEY: &str =
+    "formatting.place_top_level_alternatives_on_new_line_each";
+pub(crate) const LEADING_LINE_COMMENTS_ON_OWN_LINE_KEY: &str =
+    "formatting.leading_line_comments_on_own_line";
 
 #[derive(Debug, Clone)]
 pub(crate) struct FormattingSettings {
@@ -28,6 +31,7 @@ pub(crate) struct FormattingSettings {
     pub(crate) scanner_brace_newline: bool,
     pub(crate) semicolon_end_of_line: bool,
     pub(crate) place_top_level_alternatives_on_new_line_each: bool,
+    pub(crate) leading_line_comments_on_own_line: bool,
 }
 
 impl Default for FormattingSettings {
@@ -44,6 +48,7 @@ impl Default for FormattingSettings {
             scanner_brace_newline: false,
             semicolon_end_of_line: false,
             place_top_level_alternatives_on_new_line_each: false,
+            leading_line_comments_on_own_line: false,
         }
     }
 }
@@ -60,8 +65,11 @@ impl FormattingSettings {
         self.max_line_length = read_config_usize(props, MAX_LINE_LENGTH_KEY, self.max_line_length)?;
         self.space_after_colon =
             read_config_bool(props, SPACE_AFTER_COLON_KEY, self.space_after_colon)?;
-        self.space_before_semicolon =
-            read_config_bool(props, SPACE_BEFORE_SEMICOLON_KEY, self.space_before_semicolon)?;
+        self.space_before_semicolon = read_config_bool(
+            props,
+            SPACE_BEFORE_SEMICOLON_KEY,
+            self.space_before_semicolon,
+        )?;
         self.space_around_pipe =
             read_config_bool(props, SPACE_AROUND_PIPE_KEY, self.space_around_pipe)?;
         self.space_around_equals =
@@ -70,8 +78,16 @@ impl FormattingSettings {
             read_config_bool(props, SCANNER_BRACE_NEWLINE_KEY, self.scanner_brace_newline)?;
         self.semicolon_end_of_line =
             read_config_bool(props, SEMICOLON_END_OF_LINE_KEY, self.semicolon_end_of_line)?;
-        self.place_top_level_alternatives_on_new_line_each =
-            read_config_bool(props, PLACE_TOP_LEVEL_ALTERNATIVES_ON_NEW_LINE_EACH_KEY, self.place_top_level_alternatives_on_new_line_each)?;
+        self.place_top_level_alternatives_on_new_line_each = read_config_bool(
+            props,
+            PLACE_TOP_LEVEL_ALTERNATIVES_ON_NEW_LINE_EACH_KEY,
+            self.place_top_level_alternatives_on_new_line_each,
+        )?;
+        self.leading_line_comments_on_own_line = read_config_bool(
+            props,
+            LEADING_LINE_COMMENTS_ON_OWN_LINE_KEY,
+            self.leading_line_comments_on_own_line,
+        )?;
 
         // Handle indent_style specially since it's an enum
         if let Some(value) = props.0.get(INDENT_STYLE_KEY) {
@@ -89,7 +105,10 @@ impl FormattingSettings {
             };
         }
 
-        eprintln!("{EMPTY_LINE_AFTER_PROD_KEY}: {}", self.empty_line_after_prod);
+        eprintln!(
+            "{EMPTY_LINE_AFTER_PROD_KEY}: {}",
+            self.empty_line_after_prod
+        );
         eprintln!("{PROD_SEMICOLON_ON_NL_KEY}: {}", self.prod_semicolon_on_nl);
         eprintln!("{MAX_LINE_LENGTH_KEY}: {}", self.max_line_length);
         eprintln!("{SPACE_AFTER_COLON_KEY}: {}", self.space_after_colon);
@@ -139,6 +158,10 @@ impl FormattingSettings {
             PLACE_TOP_LEVEL_ALTERNATIVES_ON_NEW_LINE_EACH_KEY.to_owned(),
             FormattingProperty::Bool(self.place_top_level_alternatives_on_new_line_each),
         );
+        options.properties.insert(
+            LEADING_LINE_COMMENTS_ON_OWN_LINE_KEY.to_owned(),
+            FormattingProperty::Bool(self.leading_line_comments_on_own_line),
+        );
 
         // Add indent_style as a string
         let indent_style_str = match &self.indent_style {
@@ -169,7 +192,11 @@ impl FormattingSettings {
                 MAX_LINE_LENGTH_KEY,
                 defaults.max_line_length,
             ),
-            indent_style: read_option_indent_style(options, INDENT_STYLE_KEY, &defaults.indent_style),
+            indent_style: read_option_indent_style(
+                options,
+                INDENT_STYLE_KEY,
+                &defaults.indent_style,
+            ),
             space_after_colon: read_option_bool(
                 options,
                 SPACE_AFTER_COLON_KEY,
@@ -204,6 +231,11 @@ impl FormattingSettings {
                 options,
                 PLACE_TOP_LEVEL_ALTERNATIVES_ON_NEW_LINE_EACH_KEY,
                 defaults.place_top_level_alternatives_on_new_line_each,
+            ),
+            leading_line_comments_on_own_line: read_option_bool(
+                options,
+                LEADING_LINE_COMMENTS_ON_OWN_LINE_KEY,
+                defaults.leading_line_comments_on_own_line,
             ),
         }
     }

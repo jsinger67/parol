@@ -57,7 +57,7 @@ impl Comments {
             comments_str
         } else {
             let options = if let Some(cmt) = self.comments.iter().last() {
-                if cmt.is_line_comment() && options.line_end != LineEnd::ForceRemove {
+                if cmt.is_line_comment() && options.line_end != LineEnd::ForceRemove && options.leading_line_comments_on_own_line {
                     options.clone().with_line_end(LineEnd::ForceSingleNewline)
                 } else {
                     options.clone()
