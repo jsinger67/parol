@@ -1,7 +1,7 @@
 use std::ops::Add;
 
 use crate::parol_ls_grammar::OwnedToken;
-use lsp_types::{Position, Range};
+use lsp_types::Range;
 
 use crate::utils::location_to_range;
 
@@ -36,21 +36,16 @@ impl Rng {
     /// It handles the special empty range.
     pub(crate) fn extend(mut self, right: Rng) -> Rng {
         if self.is_empty() {
-            right
-        } else if right.is_empty() {
-            self
-        } else {
-            debug_assert!(self.0.start <= right.0.end);
-            self.0.end = right.0.end;
-            self
+            return right;
         }
-    }
-
-    pub(crate) fn extend_to_end(mut self) -> Rng {
-        self.0.end = Position {
-            line: u32::MAX,
-            character: u32::MAX,
-        };
+        if right.is_empty() {
+            return self;
+        }
+        // Only extend when the right range is positioned behind the left range.
+        // Ranges that are not behind are safely ignored.
+        if right.0.end > self.0.end {
+            self.0.end = right.0.end;
+        }
         self
     }
 
@@ -139,6 +134,20 @@ mod tests {
         assert_eq!(empty_rng, empty_rng.extend(empty_rng));
         assert_eq!(rng1, empty_rng.extend(rng1));
         assert_eq!(rng1, rng1.extend(empty_rng));
+    }
+
+    #[test]
+    fn test_extend_does_not_move_end_backward() {
+        let rng1 = Rng::new(Range {
+            start: Position::new(0, 0),
+            end: Position::new(0, 5),
+        });
+        let rng2 = Rng::new(Range {
+            start: Position::new(0, 2),
+            end: Position::new(0, 4),
+        });
+        // Extending with a range that ends before the current end must not move the end.
+        assert_eq!(rng1, rng1.extend(rng2));
     }
 
     #[test]

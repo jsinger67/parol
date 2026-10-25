@@ -4,7 +4,7 @@ use super::super::comments::Comments;
 use super::super::context::FormatterContext;
 use super::super::fmt_options::FmtOptions;
 use super::dispatch::handle_scanner_directives;
-use super::helpers::{comment_opts_leading_own_line, format_comments_before_token};
+use super::helpers::format_comments_before_token;
 use super::scanner_fmt::format_scanner_directives_with_context;
 use super::traits::Fmt;
 
@@ -23,11 +23,8 @@ impl Fmt for ScannerState {
             "\n"
         };
 
-        let (comments_before_scanner, comments) = format_comments_before_token(
-            comments,
-            &self.percent_scanner,
-            &comment_opts_leading_own_line(options),
-        );
+        let (comments_before_scanner, comments) =
+            format_comments_before_token(comments, &self.percent_scanner, options);
 
         let (identifier, comments) = self.identifier.txt(options, comments);
         let inner_options = options.clone().next_depth();

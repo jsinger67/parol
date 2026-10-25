@@ -105,15 +105,6 @@ impl FormattingSettings {
             };
         }
 
-        eprintln!(
-            "{EMPTY_LINE_AFTER_PROD_KEY}: {}",
-            self.empty_line_after_prod
-        );
-        eprintln!("{PROD_SEMICOLON_ON_NL_KEY}: {}", self.prod_semicolon_on_nl);
-        eprintln!("{MAX_LINE_LENGTH_KEY}: {}", self.max_line_length);
-        eprintln!("{SPACE_AFTER_COLON_KEY}: {}", self.space_after_colon);
-        eprintln!("{SPACE_AROUND_PIPE_KEY}: {}", self.space_around_pipe);
-
         Ok(())
     }
 

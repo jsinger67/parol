@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 use crate::{parol_ls_grammar::OwnedToken, rng::Rng};
 
-use super::{FmtOptions, LineEnd};
+use super::{CommentLinePolicy, FmtOptions};
 
 #[derive(Debug, Clone, Default)]
 pub(crate) struct Comments {
@@ -56,16 +56,15 @@ impl Comments {
         if comments_str.is_empty() {
             comments_str
         } else {
-            let options = if let Some(cmt) = self.comments.iter().last() {
-                if cmt.is_line_comment() && options.line_end != LineEnd::ForceRemove && options.leading_line_comments_on_own_line {
-                    options.clone().with_line_end(LineEnd::ForceSingleNewline)
-                } else {
-                    options.clone()
-                }
-            } else {
-                options.clone()
-            };
-            options.apply_formatting(comments_str)
+            let policy = CommentLinePolicy::from_options(options);
+            let is_line_comment = self
+                .comments
+                .iter()
+                .last()
+                .map(|c| c.is_line_comment())
+                .unwrap_or(false);
+            let line_end = policy.resolve_line_end(options.line_end, is_line_comment);
+            options.apply_line_end_policy(comments_str, line_end)
         }
     }
 

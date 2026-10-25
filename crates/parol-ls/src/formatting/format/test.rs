@@ -4,10 +4,8 @@ use parol_runtime::Report;
 
 use super::traits::Fmt;
 use crate::{
-    formatting::{
-        FmtOptions, LineEnd,
-        fmt_options::{Padding, Trimming},
-    },
+    formatting::FmtOptions,
+    formatting::fmt_options::{LineEnd, Padding, Trimming},
     parol_ls_grammar::ParolLsGrammar,
     parol_ls_parser::parse,
     utils::RX_NEW_LINE,

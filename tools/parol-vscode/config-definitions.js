@@ -57,6 +57,11 @@ const CONFIG_DEFINITIONS = Object.freeze([
     defaultValue: false,
     valueType: "boolean",
   },
+  {
+    name: "formatting.leading_line_comments_on_own_line",
+    defaultValue: false,
+    valueType: "boolean",
+  },
 ]);
 
 module.exports = {

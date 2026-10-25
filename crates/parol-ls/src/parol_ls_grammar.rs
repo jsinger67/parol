@@ -1,7 +1,7 @@
 use crate::{
     formatting::Comments,
     parol_ls_grammar_trait::{
-        self, ASTControl, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production,
+        ASTControl, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production,
         ProductionLHS, Prolog, ScannerDirectives, ScannerState, ScannerStateDirectives,
         SimpleToken, StartDeclaration, TokenLiteral, TokenWithStates, UserTypeDeclaration,
         UserTypeName,
@@ -605,14 +605,12 @@ impl ParolLsGrammar {
     }
 
     pub(crate) fn format(&self, params: DocumentFormattingParams) -> Option<Vec<TextEdit>> {
-        if let Some(ref grammar) = self.grammar {
-            Some(
-                <&parol_ls_grammar_trait::ParolLs as crate::formatting::Format>::format(
-                    &grammar,
-                    &params.options,
-                    self.comments.clone(),
-                ),
-            )
+        if self.grammar.is_some() {
+            Some(<ParolLsGrammar as crate::formatting::Format>::format(
+                self,
+                &params.options,
+                self.comments.clone(),
+            ))
         } else {
             None
         }

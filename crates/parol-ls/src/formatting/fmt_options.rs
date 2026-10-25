@@ -11,7 +11,7 @@ pub(crate) enum Padding {
     Both,
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 #[allow(dead_code)]
 pub(crate) enum LineEnd {
     #[default]
@@ -128,13 +128,19 @@ impl FmtOptions {
     }
 
     pub(crate) fn apply_formatting(&self, line: String) -> String {
+        self.apply_line_end_policy(line, self.line_end)
+    }
+
+    /// Applies the trimming policy, the given line-end policy and the padding
+    /// policy to a line of text.
+    pub(crate) fn apply_line_end_policy(&self, line: String, line_end: LineEnd) -> String {
         let line = match self.trimming {
             Trimming::Unchanged => line,
             Trimming::TrimLeft => line.trim_start().to_string(),
             Trimming::TrimRight => line.trim_end().to_string(),
             Trimming::Trim => line.trim().to_string(),
         };
-        let line = match self.line_end {
+        let line = match line_end {
             LineEnd::Unchanged => line,
             LineEnd::ForceAdd => {
                 if line.is_empty() {
@@ -167,6 +173,32 @@ impl FmtOptions {
             }
         } else {
             line
+        }
+    }
+}
+
+/// Dedicated policy that controls how comments are placed onto lines
+/// during formatting.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub(crate) struct CommentLinePolicy {
+    /// Keep leading line comments on their own line.
+    pub(crate) own_line: bool,
+}
+
+impl CommentLinePolicy {
+    /// Creates the comment line policy from the formatting options.
+    pub(crate) fn from_options(options: &FmtOptions) -> Self {
+        Self {
+            own_line: options.leading_line_comments_on_own_line,
+        }
+    }
+
+    /// Resolves the line-end policy that applies to comment text.
+    pub(crate) fn resolve_line_end(&self, inherited: LineEnd, is_line_comment: bool) -> LineEnd {
+        if is_line_comment && self.own_line && inherited != LineEnd::ForceRemove {
+            LineEnd::ForceSingleNewline
+        } else {
+            inherited
         }
     }
 }

@@ -93,6 +93,11 @@
           "type": "boolean",
           "markdownDescription": "#### Place top-level alternatives on new line each\n\nUsed for code formatting",
           "default": false
+        },
+        "parol-vscode.formatting.leading_line_comments_on_own_line": {
+          "type": "boolean",
+          "markdownDescription": "#### Keep leading line comments on their own line\n\nUsed for code formatting",
+          "default": false
         }
       }
     },
