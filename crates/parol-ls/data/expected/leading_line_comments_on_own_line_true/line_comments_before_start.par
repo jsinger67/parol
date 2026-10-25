@@ -1,0 +1,9 @@
+// LC1
+// LC2
+%start OptionalAlternatives
+
+%%
+
+OptionalAlternatives
+    : [ "x" | "y" | "z" ]
+    ;

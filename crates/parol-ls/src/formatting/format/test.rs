@@ -117,6 +117,30 @@ const TEST_DATA: &[(FmtOptions, &str)] = &[
             "/data/expected/empty_line_after_prod_false"
         ),
     ),
+    (
+        FmtOptions {
+            empty_line_after_prod: true,
+            prod_semicolon_on_nl: true,
+            max_line_length: 100,
+            padding: Padding::None,
+            line_end: LineEnd::Unchanged,
+            trimming: Trimming::Unchanged,
+            nesting_depth: 0,
+            indent_style: crate::formatting::fmt_options::IndentStyle::Spaces(4),
+            space_after_colon: true,
+            space_before_semicolon: false,
+            space_around_pipe: true,
+            space_around_equals: true,
+            scanner_brace_newline: false,
+            semicolon_end_of_line: false,
+            place_top_level_alternatives_on_new_line_each: false,
+            leading_line_comments_on_own_line: true,
+        },
+        concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/data/expected/leading_line_comments_on_own_line_true"
+        ),
+    ),
 ];
 
 #[test]

@@ -7,6 +7,15 @@ file.
 
 ## 5.1.0 - Not yet release
 
+- Formatter refactoring:
+  - Derive the full-document formatting edit range from the grammar AST via `Rng` composition instead of a synthetic end position.
+  - Make `Rng::extend` forward-only and drop the redundant ordering assertion.
+  - Introduce a dedicated comment line policy (`CommentLinePolicy`) for the
+    `formatting.leading_line_comments_on_own_line` option.
+
+- Formatting:
+  - Added golden test profile for the `formatting.leading_line_comments_on_own_line` option.
+
 ## 5.0.2 - 2026-10-10
 
 - Language server enhancements:

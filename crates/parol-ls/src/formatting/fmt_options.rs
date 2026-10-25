@@ -105,7 +105,8 @@ impl FmtOptions {
             space_around_equals: defaults.space_around_equals,
             scanner_brace_newline: defaults.scanner_brace_newline,
             semicolon_end_of_line: defaults.semicolon_end_of_line,
-            place_top_level_alternatives_on_new_line_each: defaults.place_top_level_alternatives_on_new_line_each,
+            place_top_level_alternatives_on_new_line_each: defaults
+                .place_top_level_alternatives_on_new_line_each,
             leading_line_comments_on_own_line: false,
             ..Default::default()
         }
@@ -217,7 +218,8 @@ impl From<&FormattingOptions> for FmtOptions {
             space_around_equals: settings.space_around_equals,
             scanner_brace_newline: settings.scanner_brace_newline,
             semicolon_end_of_line: settings.semicolon_end_of_line,
-            place_top_level_alternatives_on_new_line_each: settings.place_top_level_alternatives_on_new_line_each,
+            place_top_level_alternatives_on_new_line_each: settings
+                .place_top_level_alternatives_on_new_line_each,
             leading_line_comments_on_own_line: settings.leading_line_comments_on_own_line,
             ..Self::default()
         }

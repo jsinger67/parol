@@ -17,13 +17,42 @@ use super::traits::Fmt;
 
 const START_LINE_OFFSET: usize = 6;
 
-fn normalize_to_single_line(text: &str) -> String {
-    text.replace("\n    | ", " | ")
-        .replace("\n      ", " ")
-        .replace('\n', " ")
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .join(" ")
+/// Flattens the formatted alternatives of a production into a single logical line.
+/// Wrapped alternatives are joined by treating lines that start with the
+/// alternative separator as the beginning of a new alternative.
+fn normalize_to_single_line(text: &str, space_around_pipe: bool) -> String {
+    let separator: &str = if space_around_pipe { " | " } else { "|" };
+    let mut alternatives: Vec<String> = Vec::new();
+    let mut current: Option<String> = None;
+
+    for line in text.split('\n') {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+
+        if line.starts_with('|') {
+            let alternative = line.strip_prefix('|').unwrap().trim_start().to_string();
+            if !alternative.is_empty() {
+                if let Some(previous) = current.take() {
+                    alternatives.push(previous);
+                }
+                current = Some(alternative);
+            }
+        } else {
+            let is_first = current.is_none();
+            let alternative = current.get_or_insert_with(|| line.to_string());
+            if !is_first {
+                *alternative = format!("{} {}", alternative, line);
+            }
+        }
+    }
+
+    if let Some(last) = current.take() {
+        alternatives.push(last);
+    }
+
+    alternatives.join(separator)
 }
 
 fn rhs_exceeds_max_line_length(options: &FmtOptions, rhs: &str) -> bool {
@@ -122,7 +151,8 @@ impl Fmt for Alternations {
             && !all_alternations_str.contains("//")
             && !all_alternations_str.contains("/*")
         {
-            let single_line_rhs = normalize_to_single_line(&all_alternations_str);
+            let single_line_rhs =
+                normalize_to_single_line(&all_alternations_str, options.space_around_pipe);
             if !rhs_exceeds_max_line_length(options, &single_line_rhs) {
                 return (single_line_rhs, comments);
             }
@@ -216,7 +246,8 @@ impl Fmt for GrammarDefinitionList {
 impl Fmt for Group {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (alternations_str, comments) = self.alternations.txt(options, comments);
-        let single_line_alternations = normalize_to_single_line(&alternations_str);
+        let single_line_alternations =
+            normalize_to_single_line(&alternations_str, options.space_around_pipe);
         let group_rhs = format!("( {single_line_alternations} )");
         let split_group_alternatives = options.nesting_depth == 2
             && !self.alternations.alternations_list.is_empty()
@@ -294,7 +325,8 @@ impl Fmt for NonTerminalOpt {
 impl Fmt for Optional {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (alternations_str, comments) = self.alternations.txt(options, comments);
-        let single_line_alternations = normalize_to_single_line(&alternations_str);
+        let single_line_alternations =
+            normalize_to_single_line(&alternations_str, options.space_around_pipe);
         let optional_rhs = format!("[ {single_line_alternations} ]");
         let split_optional_alternatives = options.nesting_depth == 2
             && !self.alternations.alternations_list.is_empty()
@@ -354,7 +386,8 @@ impl Fmt for ProductionLHS {
 impl Fmt for Repeat {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (alternations_str, comments) = self.alternations.txt(options, comments);
-        let single_line_alternations = normalize_to_single_line(&alternations_str);
+        let single_line_alternations =
+            normalize_to_single_line(&alternations_str, options.space_around_pipe);
         let repeat_rhs = format!("{{ {single_line_alternations} }}");
         let split_repeat_alternatives = options.nesting_depth == 2
             && !self.alternations.alternations_list.is_empty()
