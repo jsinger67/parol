@@ -955,7 +955,7 @@ dependencies = [
  "serde",
  "serde_json",
  "syn 3.0.9",
- "syntree",
+ "syntree 0.19.0",
  "syntree_layout",
  "tempfile",
  "thiserror",
@@ -983,7 +983,7 @@ dependencies = [
  "scnr2",
  "serde",
  "serde_json",
- "syntree",
+ "syntree 0.19.0",
  "thiserror",
  "url",
 ]
@@ -1009,7 +1009,7 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "scnr2",
- "syntree",
+ "syntree 0.19.0",
  "syntree_layout",
  "thiserror",
 ]
@@ -1447,13 +1447,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00c99c9cda412afe293a6b962af651b4594161ba88c1affe7ef66459ea040a06"
 
 [[package]]
+name = "syntree"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "41a357e911815897d5b73a55402c5252d51b0ae00d8a4f6100cf366fb76979bd"
+
+[[package]]
 name = "syntree_layout"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "24d027955f5f14d526450b6a11ef5aa962761e924dcd092298dd0d1466570565"
 dependencies = [
  "anyhow",
- "syntree",
+ "syntree 0.18.0",
  "thiserror",
  "xml_writer",
 ]
