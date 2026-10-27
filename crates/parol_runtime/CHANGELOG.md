@@ -5,86 +5,90 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.0.2 - Not yet released
+
+- Update syntree_layout from 0.4.0 to 0.5.0 and syntree from 0.18.0 to 0.19.0
+
 ## 5.0.1 - 2026-08-16
 
-* Fix new clippy warnings
-  * `lr_parser/parse_tree.rs`: simplified `LRParseTree::drop` using `if let` chain and removed
+- Fix new clippy warnings
+  - `lr_parser/parse_tree.rs`: simplified `LRParseTree::drop` using `if let` chain and removed
     unnecessary dereferences in `build_tree` (`*name` → `name`)
-  * `lexer/token_stream.rs`: removed unnecessary reference in `trace!` macro for `consume`
-* Unsafe unwraps in token_stream.rs - Replaced all unwrap() calls on non_skip_token_at() with proper error handling:
-  * lookahead() - returns LexerError::InternalError on Option None
-  * lookahead_token_type() - same pattern
-  * consume() - validates non-skip token exists before consumption
-  * all_input_consumed() - safe match on Option instead of unwrap
-  * replace_token_type_at() - validates both read and mutable access
-  * insert_token_at() - validates location lookup and handles build errors
-* TokenNumber::MAX sentinel audit:
-  * TokenBuffer::add() prevents overflow when last_token_number == TokenNumber::MAX
-  * FormatToken::format() guards against out-of-bounds terminal name access
-  * EOI filler tokens now handled safely with overflow protection
+  - `lexer/token_stream.rs`: removed unnecessary reference in `trace!` macro for `consume`
+- Unsafe unwraps in token_stream.rs - Replaced all unwrap() calls on non_skip_token_at() with proper error handling:
+  - lookahead() - returns LexerError::InternalError on Option None
+  - lookahead_token_type() - same pattern
+  - consume() - validates non-skip token exists before consumption
+  - all_input_consumed() - safe match on Option instead of unwrap
+  - replace_token_type_at() - validates both read and mutable access
+  - insert_token_at() - validates location lookup and handles build errors
+- TokenNumber::MAX sentinel audit:
+  - TokenBuffer::add() prevents overflow when last_token_number == TokenNumber::MAX
+  - FormatToken::format() guards against out-of-bounds terminal name access
+  - EOI filler tokens now handled safely with overflow protection
 
 ## 5.0.0 - 2026-07-01
 
-* **Breaking Changes**:
-  * Add `is_push_production: bool` to both `Production` (LL(k)) and `LRProduction` (LALR(1)) structs to support push-semantics-aware recursion depth limiting.
-  * Remove `#[non_exhaustive]` attribute from `ParserError` enum.
-* **Features / Bug Fixes**:
-  * Implement push-semantics-aware recursion depth limiting for LL(k) parsers. Flat lists generated with push semantics (repetition-based list flattening) no longer count toward the recursion depth limit.
-  * Revert LALR(1) depth limit check to use the parser stack size (`parser_stack.stack.len()`), which naturally does not grow for left-recursive flat lists.
-  * Fix stack overflow when dropping or building deeply nested parse trees in LALR(1) by making `build_tree` and `LRParseTree::drop` iterative using explicit work stacks.
+- **Breaking Changes**:
+  - Add `is_push_production: bool` to both `Production` (LL(k)) and `LRProduction` (LALR(1)) structs to support push-semantics-aware recursion depth limiting.
+  - Remove `#[non_exhaustive]` attribute from `ParserError` enum.
+- **Features / Bug Fixes**:
+  - Implement push-semantics-aware recursion depth limiting for LL(k) parsers. Flat lists generated with push semantics (repetition-based list flattening) no longer count toward the recursion depth limit.
+  - Revert LALR(1) depth limit check to use the parser stack size (`parser_stack.stack.len()`), which naturally does not grow for left-recursive flat lists.
+  - Fix stack overflow when dropping or building deeply nested parse trees in LALR(1) by making `build_tree` and `LRParseTree::drop` iterative using explicit work stacks.
 
 ## 4.5.0 - 2026-06-29
 
-* Add configurable parsing depth limit to prevent stack overflows on deeply nested ASTs.
-  * Add `set_max_parsing_depth` to `LLKParser` and `LRParser` to enable a runtime depth limit.
-  * Add new `ParserError::MaxParsingDepthExceeded` error variant, which is returned when the
+- Add configurable parsing depth limit to prevent stack overflows on deeply nested ASTs.
+  - Add `set_max_parsing_depth` to `LLKParser` and `LRParser` to enable a runtime depth limit.
+  - Add new `ParserError::MaxParsingDepthExceeded` error variant, which is returned when the
     configured limit is reached.
-  * This closes issue [#1308](https://github.com/jsinger67/parol/issues/1308).
+  - This closes issue [#1308](https://github.com/jsinger67/parol/issues/1308).
 
 ## 4.4.1 - 2026-05-27
 
-* Fix issue [[#1229](https://github.com/jsinger67/parol/issues/1229)]
-  * Suppress calling user actions while parser is in recovery mode
+- Fix issue [[#1229](https://github.com/jsinger67/parol/issues/1229)]
+  - Suppress calling user actions while parser is in recovery mode
 
 ## 4.4.0 - 2026-05-11
 
-* Add scanner-state-aware `%skip` support to the runtime token stream to stay in sync with
+- Add scanner-state-aware `%skip` support to the runtime token stream to stay in sync with
   `parol` grammar generation.
-  * Introduce `TokenStream::new_with_skip_tokens` for scanner-state-dependent skip token sets.
-  * Apply skip-token filtering per active scanner state during token consumption/lookahead.
-  * Add runtime tests for scanner-state-specific skipping behavior.
+  - Introduce `TokenStream::new_with_skip_tokens` for scanner-state-dependent skip token sets.
+  - Apply skip-token filtering per active scanner state during token consumption/lookahead.
+  - Add runtime tests for scanner-state-specific skipping behavior.
 
 ## 4.3.0 - 2026-02-22
 
-* Switch to scnr2 0.5.0 and other package version updates
+- Switch to scnr2 0.5.0 and other package version updates
 
 ## 4.2.0 - 2026-01-04
 
-* Fix: Improve error recovery strategy by applying a more sophisticated token stream synchronization
+- Fix: Improve error recovery strategy by applying a more sophisticated token stream synchronization
 
 ## 4.1.0 - 2025-11-22
 
-* Make dependency `codespan-reporting` optional
-  * Made the codespan-reporting dependency optional in parol_runtime by introducing a new reporting
-  feature flag. This allows users to opt out of the default error reporting implementation if they
-  wish to use a different reporting crate. Users who wish to opt out of codespan-reporting must now
-  set `default-features = false` for parol_runtime in their Cargo.toml. Then they can add the
-  reporting crate of their choice such as `miette` or `ariadne` as a dependency and implement the
-  `Report` trait accordingly.
+- Make dependency `codespan-reporting` optional
+  - Made the codespan-reporting dependency optional in parol_runtime by introducing a new reporting
+    feature flag. This allows users to opt out of the default error reporting implementation if they
+    wish to use a different reporting crate. Users who wish to opt out of codespan-reporting must now
+    set `default-features = false` for parol_runtime in their Cargo.toml. Then they can add the
+    reporting crate of their choice such as `miette` or `ariadne` as a dependency and implement the
+    `Report` trait accordingly.
 
 ## 4.0.1 - 2025-08-30
 
-* Fix: Enhance EOI token location information in TokenIter
+- Fix: Enhance EOI token location information in TokenIter
 
 ## 4.0.0 - 2025-07-27
 
-* Official start of version 4 development.
-* Switch to scnr2 scanner crate
-* As a result feature `regex-automata` is not supported anymore
+- Official start of version 4 development.
+- Switch to scnr2 scanner crate
+- As a result feature `regex-automata` is not supported anymore
 
 ## 3.1.0 - 2025-07-11
 
-* Merged PR [#652](https://github.com/jsinger67/parol/pull/652) from [ryo33](https://github.com/ryo33)
+- Merged PR [#652](https://github.com/jsinger67/parol/pull/652) from [ryo33](https://github.com/ryo33)
 
   The new feature allows to additionally generate enum node types for terminals and non-terminals.
   Here is a quote from the PR:
@@ -99,21 +103,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   [eure-tree](https://github.com/Hihaheho/eure/tree/main) to find out more about his approach of
   constructing customized trees from parol's parse trees.
 
-  *Thanks a lot, ryo!*
+  _Thanks a lot, ryo!_
 
-* Add more benchmarks to access throughput.
+- Add more benchmarks to access throughput.
 
 ## 3.0.0 - 2025-03-08
 
-* With this release the transition to version 3.0 is completed
-* Switched to edition 2024
-* Fixed [#595](https://github.com/jsinger67/parol/issues/595)
-  * This fix is the same as on version `2.2.1` on branch `release2.2` but is based on main
+- With this release the transition to version 3.0 is completed
+- Switched to edition 2024
+- Fixed [#595](https://github.com/jsinger67/parol/issues/595)
+  - This fix is the same as on version `2.2.1` on branch `release2.2` but is based on main
 
 ## 2.2.0 - 2025-02-13
 
 - Introduced new crate feature `regex_automata` to configure `scnr` crate to use an alternative
-regex engine.
+  regex engine.
 
   You can enable this feature this way:
 
@@ -125,7 +129,7 @@ regex engine.
   [CHANGELOG](https://github.com/jsinger67/scnr/blob/main/CHANGELOG.md#080---2025-02-12) and the
   regarding section in the
   [README](https://github.com/jsinger67/scnr/blob/main/README.md#the-feature-regex_automata) of the
-  `scnr` crate 
+  `scnr` crate
 
 ## 2.1.1 - 2025-01-21
 
@@ -136,34 +140,34 @@ regex engine.
 ## 2.1.0 - 2025-01-17
 
 - Fixed a subtle bug related to token buffer handling after scanner mode switching near the end of
-the input
+  the input
 - Using new `scnr` version 0.7.0 due to increased performance
 
 ## 2.0.0 - 2024-12-25
 
->Please note, that changes made in version 2 are also detailed in an extra
-[chapter of the book](https://jsinger67.github.io/ParolVersion2.html).
+> Please note, that changes made in version 2 are also detailed in an extra
+> [chapter of the book](https://jsinger67.github.io/ParolVersion2.html).
 
 - Integration of scanner crate `scnr`. `parol_runtime` now uses this crate as scanner crate instead
-of regexes created with the help of the `regex-automata` crate. I hope that this way we can better
-fulfill the specific needs in context of tokenization. On the other hand I'm aware that we will
-surely loose some comfort. I'm curious how things will work out here. Please give feedback on any
-problems you encounter.
+  of regexes created with the help of the `regex-automata` crate. I hope that this way we can better
+  fulfill the specific needs in context of tokenization. On the other hand I'm aware that we will
+  surely loose some comfort. I'm curious how things will work out here. Please give feedback on any
+  problems you encounter.
 
 - The changes coming with this switch to `scnr` lead to a lot of changes internally and in the public
-interface as well as in the behavior of generated parsers from the perspective of tokenization.
-Thus the bump in the major version. 
-Especially regarding these differences in behavior please have a look at the `scnr`'s 
-[README](https://github.com/jsinger67/scnr/blob/main/README.md).
+  interface as well as in the behavior of generated parsers from the perspective of tokenization.
+  Thus the bump in the major version.
+  Especially regarding these differences in behavior please have a look at the `scnr`'s
+  [README](https://github.com/jsinger67/scnr/blob/main/README.md).
 
 - `<UserType>GrammarTrait::on_comment_parsed` is renamed to `<UserType>GrammarTrait::on_comment` for
-clarity.
+  clarity.
 
 - Support for vanilla mode has been discontinued. The related feature `auto_generation` became
-pointless and has therefore been removed.
+  pointless and has therefore been removed.
 
 - The version 1 will be supported and updated regularly on branch `release1.0`, so you aren't forced
-to switch to version 2 any time soon.
+  to switch to version 2 any time soon.
 
 - Error recovery on generated LL(k) parsers can now be disabled.
 
@@ -171,8 +175,8 @@ to switch to version 2 any time soon.
 
 - Fixed clippy warnings new in Rust 1.80.0
 
->**The version 1 is maintained on branch `release1.0`. All changes for this version therefore are
- only visible on this branch. This includes this change log too.**
+> **The version 1 is maintained on branch `release1.0`. All changes for this version therefore are
+> only visible on this branch. This includes this change log too.**
 
 ## 0.24.1 - 2024-06-24
 
@@ -182,7 +186,7 @@ to switch to version 2 any time soon.
 
 - LR parser: Outputting current scanner in error message
 - Fixed problem with deterministic and termination of the recovery process in generated LL parsers
-  * Add new errors related to recovery, thus minor version bump
+  - Add new errors related to recovery, thus minor version bump
 
 ## 0.23.0 - 2024-06-06
 
@@ -205,6 +209,7 @@ to switch to version 2 any time soon.
 - Fixed issue [#310 Access internal data of TokenVec](https://github.com/jsinger67/parol/issues/310)
 
   I extended the implementation on `TokenVec`. It now provides a `get` method and an `iter` method.
+
 ```rust
 /// A vector of tokens in a string representation
 #[derive(Debug, Default)]
@@ -227,7 +232,6 @@ impl TokenVec {
     }
 }
 ```
-
 
 ## 0.20.1 - 2024-01-10
 

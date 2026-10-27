@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - This included two interacting bugs that now have been addressed:
     1. KTuples k_concat no longer discards k-complete information via the early ε/empty exits, which was inflating the k-tuple sets and feeding extra transitions to the DFA builder.
     2. DFA minimisation no longer creates spurious self-loops when merging states because neighbour references are normalised before the union.
+  - Update syntree_layout from 0.4.0 to 0.5.0 and syntree from 0.18.0 to 0.19.0
 
 ## 5.0.3 - 2026-10-10
 
