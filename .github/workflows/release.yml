@@ -214,12 +214,14 @@ jobs:
         run: |
           mkdir -p release
 
-          # Copy all artifacts from matrix builds
+          # Copy all artifacts from matrix builds, preserving the artifact
+          # directory names so binaries for different targets do not collide.
           if [ -d "artifacts" ]; then
             for dir in artifacts/binaries-*; do
               if [ -d "$dir" ]; then
                 echo "Copying artifacts from $dir"
-                cp "$dir"/* release/ 2>/dev/null || true
+                mkdir -p "release/$(basename "$dir")"
+                cp "$dir"/* "release/$(basename "$dir)/"
               fi
             done
           fi
