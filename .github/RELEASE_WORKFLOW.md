@@ -4,10 +4,14 @@ This guide explains the automated binary release workflow for `parol` and `parol
 
 ## How It Works
 
-The workflow is triggered automatically when you push a **git tag** matching the pattern:
-- `v*` (e.g., `v5.0.4`)
-- `parol-v*` (e.g., `parol-v5.0.4`)
-- `parol-ls-v*` (e.g., `parol-ls-v5.0.4`)
+The workflow is triggered automatically when you push a **git tag** matching one of the patterns:
+- `v*` (e.g., `v5.0.4`) - releases **both** binaries (`parol` and `parol-ls`)
+- `parol-v*` (e.g., `parol-v5.0.4`) - releases **only** the `parol` binary
+- `parol-ls-v*` (e.g., `parol-ls-v5.0.4`) - releases **only** the `parol-ls` binary
+
+The tag pattern determines which binary is built and uploaded to the release. A release created
+from a tag like `parol-v5.0.4` builds and publishes only the `parol` binary, while a release
+created from a tag like `parol-ls-v5.0.4` builds and publishes only the `parol-ls` binary.
 
 ## Supported Platforms
 
@@ -44,15 +48,28 @@ The workflow builds binaries for:
 
 3. **Create a git tag**:
    ```bash
+   # Release both binaries
    git tag v5.0.4
+   git push origin main --tags
+
+   # Release only the parol binary
+   git tag parol-v5.0.4
+   git push origin main --tags
+
+   # Release only the parol-ls binary
+   git tag parol-ls-v5.0.4
    git push origin main --tags
    ```
 
-4. The workflow will automatically:
+4. **The workflow will automatically**:
    - Build binaries for all platforms
    - Create checksums (SHA256)
    - Create a GitHub Release
    - Upload all binaries and checksums
+
+   Only the binary(s) covered by the tag are built and uploaded. For a tag like `parol-v5.0.4`
+   only the `parol` binary is released, for a tag like `parol-ls-v5.0.4` only the `parol-ls` binary
+   is released.
 
 ### Monitoring the Build
 
@@ -63,7 +80,7 @@ The workflow builds binaries for:
 
 ## Release Artifacts
 
-Each release includes:
+A release contains the binary(s) selected by the tag:
 
 - **Binaries** (platform-specific):
   - `parol` / `parol.exe` - Parser generator CLI

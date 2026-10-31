@@ -3,9 +3,9 @@ name: Release Binaries
 on:
   push:
     tags:
-      - 'v*'
-      - 'parol-v*'
-      - 'parol-ls-v*'
+      - "v*"
+      - "parol-v*"
+      - "parol-ls-v*"
 
 permissions:
   contents: write
@@ -38,11 +38,12 @@ jobs:
             use_cross: true
 
           # macOS x86_64
-          - os: macos-13
-            target: x86_64-apple-darwin
-            binary_name_parol: parol
-            binary_name_ls: parol-ls
-            use_cross: false
+          # Runner for macOS x86_64 is permanently timing out, so it is disabled.
+          # - os: macos-13
+          #   target: x86_64-apple-darwin
+          #   binary_name_parol: parol
+          #   binary_name_ls: parol-ls
+          #   use_cross: false
 
           # macOS ARM64 (Apple Silicon)
           - os: macos-latest
@@ -71,7 +72,26 @@ jobs:
         if: matrix.use_cross
         run: cargo install cross --locked
 
+      - name: Determine release binaries
+        id: release_binaries
+        run: |
+          case "$TAG" in
+            parol-ls-v*)
+              echo "binaries=parol-ls" >> "$GITHUB_OUTPUT"
+              ;;
+            parol-v*)
+              echo "binaries=parol" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "binaries=both" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+
       - name: Build parol
+        if: ${{ steps.release_binaries.outputs.binaries != 'parol-ls' }}
         run: |
           if [ "${{ matrix.use_cross }}" = "true" ]; then
             cross build --release -p parol --target ${{ matrix.target }}
@@ -81,6 +101,7 @@ jobs:
         shell: bash
 
       - name: Build parol-ls
+        if: ${{ steps.release_binaries.outputs.binaries != 'parol' }}
         run: |
           if [ "${{ matrix.use_cross }}" = "true" ]; then
             cross build --release -p parol-ls --target ${{ matrix.target }}
@@ -93,29 +114,49 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           mkdir -p release
-          cp target/${{ matrix.target }}/release/${{ matrix.binary_name_parol }} release/
-          cp target/${{ matrix.target }}/release/${{ matrix.binary_name_ls }} release/
-          strip release/${{ matrix.binary_name_parol }} || true
-          strip release/${{ matrix.binary_name_ls }} || true
+          if [ "${{ steps.release_binaries.outputs.binaries }}" != "parol-ls" ]; then
+            cp target/${{ matrix.target }}/release/${{ matrix.binary_name_parol }} release/
+            strip release/${{ matrix.binary_name_parol }} || true
+          fi
+          if [ "${{ steps.release_binaries.outputs.binaries }}" != "parol" ]; then
+            cp target/${{ matrix.target }}/release/${{ matrix.binary_name_ls }} release/
+            strip release/${{ matrix.binary_name_ls }} || true
+          fi
         shell: bash
 
       - name: Prepare release artifacts (Windows)
         if: runner.os == 'Windows'
         run: |
           mkdir -p release
-          copy target\${{ matrix.target }}\release\${{ matrix.binary_name_parol }} release\
-          copy target\${{ matrix.target }}\release\${{ matrix.binary_name_ls }} release\
+          if ("${{ steps.release_binaries.outputs.binaries }}" -ne "parol-ls") {
+            copy target\${{ matrix.target }}\release\${{ matrix.binary_name_parol }} release\
+          }
+          if ("${{ steps.release_binaries.outputs.binaries }}" -ne "parol") {
+            copy target\${{ matrix.target }}\release\${{ matrix.binary_name_ls }} release\
+          }
         shell: pwsh
 
       - name: Create checksums
         run: |
           cd release
           if [ "${{ runner.os }}" = "Windows" ]; then
-            certUtil -hashfile ${{ matrix.binary_name_parol }} SHA256 > checksums.txt
-            certUtil -hashfile ${{ matrix.binary_name_ls }} SHA256 >> checksums.txt
+            if [ "${{ steps.release_binaries.outputs.binaries }}" = "parol-ls" ]; then
+              certUtil -hashfile ${{ matrix.binary_name_ls }} SHA256 > checksums.txt
+            elif [ "${{ steps.release_binaries.outputs.binaries }}" = "parol" ]; then
+              certUtil -hashfile ${{ matrix.binary_name_parol }} SHA256 > checksums.txt
+            else
+              certUtil -hashfile ${{ matrix.binary_name_parol }} SHA256 > checksums.txt
+              certUtil -hashfile ${{ matrix.binary_name_ls }} SHA256 >> checksums.txt
+            fi
           else
-            sha256sum ${{ matrix.binary_name_parol }} > checksums.txt
-            sha256sum ${{ matrix.binary_name_ls }} >> checksums.txt
+            if [ "${{ steps.release_binaries.outputs.binaries }}" = "parol-ls" ]; then
+              sha256sum ${{ matrix.binary_name_ls }} > checksums.txt
+            elif [ "${{ steps.release_binaries.outputs.binaries }}" = "parol" ]; then
+              sha256sum ${{ matrix.binary_name_parol }} > checksums.txt
+            else
+              sha256sum ${{ matrix.binary_name_parol }} > checksums.txt
+              sha256sum ${{ matrix.binary_name_ls }} >> checksums.txt
+            fi
           fi
         shell: bash
 
@@ -123,14 +164,26 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           cd release
-          tar czf parol-${{ matrix.target }}.tar.gz ${{ matrix.binary_name_parol }} ${{ matrix.binary_name_ls }} checksums.txt
+          if [ "${{ steps.release_binaries.outputs.binaries }}" = "parol-ls" ]; then
+            tar czf parol-${{ matrix.target }}.tar.gz ${{ matrix.binary_name_ls }} checksums.txt
+          elif [ "${{ steps.release_binaries.outputs.binaries }}" = "parol" ]; then
+            tar czf parol-${{ matrix.target }}.tar.gz ${{ matrix.binary_name_parol }} checksums.txt
+          else
+            tar czf parol-${{ matrix.target }}.tar.gz ${{ matrix.binary_name_parol }} ${{ matrix.binary_name_ls }} checksums.txt
+          fi
         shell: bash
 
       - name: Create zip (Windows)
         if: runner.os == 'Windows'
         run: |
           cd release
-          powershell -Command "Compress-Archive -Path '${{ matrix.binary_name_parol }}', '${{ matrix.binary_name_ls }}', 'checksums.txt' -DestinationPath parol-${{ matrix.target }}.zip"
+          if [ "${{ steps.release_binaries.outputs.binaries }}" = "parol-ls" ]; then
+            powershell -Command "Compress-Archive -Path '${{ matrix.binary_name_ls }}', 'checksums.txt' -DestinationPath parol-${{ matrix.target }}.zip"
+          elif [ "${{ steps.release_binaries.outputs.binaries }}" = "parol" ]; then
+            powershell -Command "Compress-Archive -Path '${{ matrix.binary_name_parol }}', 'checksums.txt' -DestinationPath parol-${{ matrix.target }}.zip"
+          else
+            powershell -Command "Compress-Archive -Path '${{ matrix.binary_name_parol }}', '${{ matrix.binary_name_ls }}', 'checksums.txt' -DestinationPath parol-${{ matrix.target }}.zip"
+          fi
         shell: pwsh
 
       - name: Upload artifacts
@@ -160,7 +213,7 @@ jobs:
       - name: Prepare release files
         run: |
           mkdir -p release
-          
+
           # Copy all artifacts from matrix builds
           if [ -d "artifacts" ]; then
             for dir in artifacts/binaries-*; do
@@ -170,15 +223,15 @@ jobs:
               fi
             done
           fi
-          
+
           # List what we have
           echo "Release files:"
           ls -la release/ || echo "No release directory"
-          
+
           # Count binaries
           BINARY_COUNT=$(find release -type f \( -name "parol" -o -name "parol.exe" -o -name "parol-ls" -o -name "parol-ls.exe" \) | wc -l)
           echo "Found $BINARY_COUNT binaries"
-          
+
           if [ "$BINARY_COUNT" -eq 0 ]; then
             echo "ERROR: No binaries found in any builds!"
             exit 1
@@ -190,7 +243,7 @@ jobs:
         run: |
           TAG="${{ github.ref_name }}"
           echo "release_tag=$TAG" >> $GITHUB_OUTPUT
-          
+
           # Create release notes from git log
           PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null | head -1)
           if [ -z "$PREV_TAG" ]; then
