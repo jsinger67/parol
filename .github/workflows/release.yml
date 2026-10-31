@@ -194,6 +194,8 @@ jobs:
             release/${{ matrix.binary_name_parol }}
             release/${{ matrix.binary_name_ls }}
             release/checksums.txt
+            release/parol-${{ matrix.target }}.tar.gz
+            release/parol-${{ matrix.target }}.zip
 
   create-release:
     name: Create Release
@@ -214,14 +216,23 @@ jobs:
         run: |
           mkdir -p release
 
-          # Copy all artifacts from matrix builds, preserving the artifact
-          # directory names so binaries for different targets do not collide.
+          # Keep the original per-target layout by copying each artifact directory
+          # intact, then merge the checksums.txt files into a single root checksum
+          # file for the release.
           if [ -d "artifacts" ]; then
             for dir in artifacts/binaries-*; do
               if [ -d "$dir" ]; then
+                target_name=$(basename "$dir")
                 echo "Copying artifacts from $dir"
-                mkdir -p "release/$(basename "$dir")"
-                cp "$dir"/* "release/$(basename "$dir")/"
+                mkdir -p "release/${target_name}"
+                cp "$dir"/* "release/${target_name}/"
+
+                if [ -f "$dir/checksums.txt" ]; then
+                  {
+                    printf '%s\n' "# ${target_name}"
+                    cat "$dir/checksums.txt"
+                  } >> release/checksums.txt
+                fi
               fi
             done
           fi
@@ -230,7 +241,7 @@ jobs:
           echo "Release files:"
           ls -la release/ || echo "No release directory"
 
-          # Count binaries
+          # Count binaries in the target-specific folders.
           BINARY_COUNT=$(find release -type f \( -name "parol" -o -name "parol.exe" -o -name "parol-ls" -o -name "parol-ls.exe" \) | wc -l)
           echo "Found $BINARY_COUNT binaries"
 
@@ -260,6 +271,7 @@ jobs:
           tag_name: ${{ steps.release_notes.outputs.release_tag }}
           files: |
             release/**
+          overwrite_files: true
           draft: false
           prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
           generate_release_notes: true
