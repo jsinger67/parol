@@ -184,7 +184,7 @@ jobs:
           else
             powershell -Command "Compress-Archive -Path '${{ matrix.binary_name_parol }}', '${{ matrix.binary_name_ls }}', 'checksums.txt' -DestinationPath parol-${{ matrix.target }}.zip"
           fi
-        shell: pwsh
+        shell: bash
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
