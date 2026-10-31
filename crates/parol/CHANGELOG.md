@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 5.0.4 - Not yet released
+## 5.0.4 - 2026-10-31
 
 - Fix issue [#1413](https://github.com/jsinger67/parol/issues/1413)
   - Many thanks to [Taichi Ishitani](https://github.com/taichi-ishitani) for reporting this issue

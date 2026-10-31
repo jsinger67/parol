@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 5.0.2 - Not yet released
+## 5.0.3 - 2026-10-31
 
 - Update syntree_layout from 0.4.0 to 0.5.0 and syntree from 0.18.0 to 0.19.0
+
+## 5.0.2 - 2026-08-16
+
+- Maitenance release only to align version numbers - no changes since 5.0.1
 
 ## 5.0.1 - 2026-08-16
 
