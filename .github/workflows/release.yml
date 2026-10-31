@@ -216,16 +216,19 @@ jobs:
         run: |
           mkdir -p release
 
-          # Keep the original per-target layout by copying each artifact directory
-          # intact, then merge the checksums.txt files into a single root checksum
-          # file for the release.
+          # Copy the release archives (tar.gz / zip) from each downloaded
+          # artifact into the release directory root, then merge the checksums.txt
+          # files into a single root checksum file for the release.
           if [ -d "artifacts" ]; then
             for dir in artifacts/binaries-*; do
               if [ -d "$dir" ]; then
                 target_name=$(basename "$dir")
-                echo "Copying artifacts from $dir"
-                mkdir -p "release/${target_name}"
-                cp "$dir"/* "release/${target_name}/"
+                echo "Copying release archives from $dir"
+                for file in "$dir"/*.tar.gz "$dir"/*.zip; do
+                  if [ -e "$file" ]; then
+                    cp "$file" release/
+                  fi
+                done
 
                 if [ -f "$dir/checksums.txt" ]; then
                   {
@@ -241,8 +244,8 @@ jobs:
           echo "Release files:"
           ls -la release/ || echo "No release directory"
 
-          # Count binaries in the target-specific folders.
-          BINARY_COUNT=$(find release -type f \( -name "parol" -o -name "parol.exe" -o -name "parol-ls" -o -name "parol-ls.exe" \) | wc -l)
+          # Count binaries in the downloaded artifacts.
+          BINARY_COUNT=$(find artifacts -maxdepth 2 -type f \( -name "parol" -o -name "parol.exe" -o -name "parol-ls" -o -name "parol-ls.exe" \) | wc -l)
           echo "Found $BINARY_COUNT binaries"
 
           if [ "$BINARY_COUNT" -eq 0 ]; then
