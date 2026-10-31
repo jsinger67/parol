@@ -16,6 +16,10 @@ file.
 - Formatting:
   - Added golden test profile for the `formatting.leading_line_comments_on_own_line` option.
 
+- Line wrapping:
+  - Refactored line breaking decisions to be token-aware, i.e. based on token
+    sequences of the grammar instead of string heuristics.
+
 ## 5.0.2 - 2026-10-10
 
 - Language server enhancements:

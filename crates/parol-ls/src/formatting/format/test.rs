@@ -21,7 +21,7 @@ const ACTUAL_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/actual");
 const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
 
 // Use this if you only want to debug a view tests
-const SELECTED_TESTS: &[&str] = &[]; //&["single_group.par"];
+const SELECTED_TESTS: &[&str] = &[]; //&["wrapped_group_alternatives.par"];
 
 const TEST_DATA: &[(FmtOptions, &str)] = &[
     (

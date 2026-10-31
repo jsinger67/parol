@@ -13,6 +13,8 @@ mod scanner_state_fmt;
 mod token_expr_fmt;
 mod traits;
 
+mod wrapping;
+
 pub(crate) use traits::Format;
 #[cfg(test)]
 mod test;

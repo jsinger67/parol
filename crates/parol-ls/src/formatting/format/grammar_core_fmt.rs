@@ -14,50 +14,10 @@ use super::dispatch::handle_symbol;
 use super::helpers::{comment_opts_right, format_comments_before_token};
 use super::production_fmt::{format_production_lhs_with_context, format_production_with_context};
 use super::traits::Fmt;
-
-const START_LINE_OFFSET: usize = 6;
-
-/// Flattens the formatted alternatives of a production into a single logical line.
-/// Wrapped alternatives are joined by treating lines that start with the
-/// alternative separator as the beginning of a new alternative.
-fn normalize_to_single_line(text: &str, space_around_pipe: bool) -> String {
-    let separator: &str = if space_around_pipe { " | " } else { "|" };
-    let mut alternatives: Vec<String> = Vec::new();
-    let mut current: Option<String> = None;
-
-    for line in text.split('\n') {
-        let line = line.trim();
-        if line.is_empty() {
-            continue;
-        }
-
-        if line.starts_with('|') {
-            let alternative = line.strip_prefix('|').unwrap().trim_start().to_string();
-            if !alternative.is_empty() {
-                if let Some(previous) = current.take() {
-                    alternatives.push(previous);
-                }
-                current = Some(alternative);
-            }
-        } else {
-            let is_first = current.is_none();
-            let alternative = current.get_or_insert_with(|| line.to_string());
-            if !is_first {
-                *alternative = format!("{} {}", alternative, line);
-            }
-        }
-    }
-
-    if let Some(last) = current.take() {
-        alternatives.push(last);
-    }
-
-    alternatives.join(separator)
-}
-
-fn rhs_exceeds_max_line_length(options: &FmtOptions, rhs: &str) -> bool {
-    START_LINE_OFFSET + rhs.len() > options.max_line_length
-}
+use super::wrapping::{
+    START_LINE_OFFSET, normalize_to_single_line, rhs_exceeds_max_line_length,
+    split_alternatives_on_lines, token_alternatives,
+};
 
 impl Fmt for ASTControl {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
@@ -258,7 +218,11 @@ impl Fmt for Group {
             &options.indent_style,
         );
         let alternations_str = if split_group_alternatives {
-            alternations_str.replace(" | ", &format!("\n{}| ", indent))
+            split_alternatives_on_lines(
+                &token_alternatives(&alternations_str),
+                options.space_around_pipe,
+                &indent,
+            )
         } else {
             alternations_str
         };
@@ -337,7 +301,11 @@ impl Fmt for Optional {
             &options.indent_style,
         );
         let alternations_str = if split_optional_alternatives {
-            alternations_str.replace(" | ", &format!("\n{}| ", indent))
+            split_alternatives_on_lines(
+                &token_alternatives(&alternations_str),
+                options.space_around_pipe,
+                &indent,
+            )
         } else {
             alternations_str
         };
@@ -398,7 +366,11 @@ impl Fmt for Repeat {
             &options.indent_style,
         );
         let alternations_str = if split_repeat_alternatives {
-            alternations_str.replace(" | ", &format!("\n{}| ", indent))
+            split_alternatives_on_lines(
+                &token_alternatives(&alternations_str),
+                options.space_around_pipe,
+                &indent,
+            )
         } else {
             alternations_str
         };
