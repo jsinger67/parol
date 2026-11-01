@@ -38,7 +38,6 @@ impl Comments {
         let trailing_str = trailing_comments.handle_comments(options);
 
         // Format leading comments (should be on own line before the token)
-        // For comments on a different line, prepend a newline (but not if they're at file start)
         let leading_str =
             if !leading_comments.comments.is_empty() && options.leading_line_comments_on_own_line {
                 // Check if comments are at file start before consuming them
