@@ -46,7 +46,9 @@ impl Comments {
                     .comments
                     .iter()
                     .all(|c| c.location.start_line == 1);
-                let formatted = leading_comments.handle_comments(options);
+                // Format leading comments with no padding (they're on their own line)
+                let opts_for_leading = options.clone().with_padding(super::fmt_options::Padding::None);
+                let formatted = leading_comments.handle_comments(&opts_for_leading);
                 if formatted.is_empty() {
                     formatted
                 } else if !at_file_start {

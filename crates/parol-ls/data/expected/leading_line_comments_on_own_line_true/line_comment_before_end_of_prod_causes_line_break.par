@@ -3,7 +3,7 @@
 %%
 
 G   : A12345678 B12345678
- // Semicolon should be placed on new line after a line comment
+// Semicolon should be placed on new line after a line comment
     ;
 
 A12345678
