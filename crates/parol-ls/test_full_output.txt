@@ -1,0 +1,1248 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.36s
+     Running unittests src\main.rs (D:\Source\parol\target\debug\deps\parol_ls-2e82fcac21cdec72.exe)
+
+running 1 test
+test formatting::format::test::test_formatting ... FAILED
+
+failures:
+
+---- formatting::format::test::test_formatting stdout ----
+from folder D:\Source\parol\crates\parol-ls/data/input:
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\block_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\block_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\complex1.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\complex1.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\line_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\line_comments_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_before_end_of_prod_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\line_comment_before_end_of_prod_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_between_alternations_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\line_comment_between_alternations_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_in_production_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\line_comment_in_production_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\list-exp.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\list-exp.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_and_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\multiple_non_terminals_and_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\multiple_non_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\multiple_scanner_states.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\production_with_two_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_long_wrapped_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\production_with_two_long_wrapped_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\scanner_states.par'
+=====================================================
+expecting:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+// Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement }
+    ;
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/
+    ;
+
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/
+    ;
+
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/
+    ;
+
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"'
+    ;
+'
+-----------------------------------------------------
+received:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+ // Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement }
+    ;
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/
+    ;
+
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/
+    ;
+
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/
+    ;
+
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"'
+    ;
+'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_alternation.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\single_alternation.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_group.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\single_group.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_optional.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\single_optional.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_repeat.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\single_repeat.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_scanner_state.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\single_scanner_state.par'
+=====================================================
+expecting:
+'%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+
+// This is a single scanner state example
+%scanner Esc {
+    %auto_newline_off
+    %auto_ws_off
+    %line_comment '//'
+    %block_comment '/*' '*/'
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx"
+    ;
+'
+-----------------------------------------------------
+received:
+'%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+
+ // This is a single scanner state example
+%scanner Esc {
+    %auto_newline_off
+    %auto_ws_off
+    %line_comment '//'
+    %block_comment '/*' '*/'
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx"
+    ;
+'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\skip_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\skip_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\top_level_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_optional_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\top_level_optional_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_repeat_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\top_level_repeat_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\wrapped_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_long_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/options_default\wrapped_long_production.par'
+from folder D:\Source\parol\crates\parol-ls/data/input:
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\block_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\block_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\complex1.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\complex1.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\line_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\line_comments_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_before_end_of_prod_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\line_comment_before_end_of_prod_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_between_alternations_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\line_comment_between_alternations_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_in_production_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\line_comment_in_production_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\list-exp.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\list-exp.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_and_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\multiple_non_terminals_and_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\multiple_non_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\multiple_scanner_states.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\production_with_two_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_long_wrapped_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\production_with_two_long_wrapped_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\scanner_states.par'
+=====================================================
+expecting:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+// Here we introduce a new scanner state 'STRING'
+%scanner STRING
+{
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement }
+    ;
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/
+    ;
+
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/
+    ;
+
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/
+    ;
+
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"'
+    ;
+'
+-----------------------------------------------------
+received:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+ // Here we introduce a new scanner state 'STRING'
+%scanner STRING
+{
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement }
+    ;
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/
+    ;
+
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/
+    ;
+
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/
+    ;
+
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"'
+    ;
+'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_alternation.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\single_alternation.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_group.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\single_group.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_optional.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\single_optional.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_repeat.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\single_repeat.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_scanner_state.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\single_scanner_state.par'
+=====================================================
+expecting:
+'%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+
+// This is a single scanner state example
+%scanner Esc
+{
+    %auto_newline_off
+    %auto_ws_off
+    %line_comment '//'
+    %block_comment '/*' '*/'
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx"
+    ;
+'
+-----------------------------------------------------
+received:
+'%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+
+ // This is a single scanner state example
+%scanner Esc
+{
+    %auto_newline_off
+    %auto_ws_off
+    %line_comment '//'
+    %block_comment '/*' '*/'
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx"
+    ;
+'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\skip_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\skip_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\top_level_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_optional_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\top_level_optional_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_repeat_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\top_level_repeat_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\wrapped_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_long_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/scanner_brace_newline_true\wrapped_long_production.par'
+from folder D:\Source\parol\crates\parol-ls/data/input:
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\block_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\block_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\complex1.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\complex1.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\line_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\line_comments_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_before_end_of_prod_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\line_comment_before_end_of_prod_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_between_alternations_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\line_comment_between_alternations_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_in_production_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\line_comment_in_production_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\list-exp.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\list-exp.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_and_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\multiple_non_terminals_and_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\multiple_non_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\multiple_scanner_states.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\production_with_two_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_long_wrapped_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\production_with_two_long_wrapped_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\scanner_states.par'
+=====================================================
+expecting:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+// Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content };
+
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement };
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote;
+
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/;
+
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/;
+
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/;
+
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/;
+
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"';
+'
+-----------------------------------------------------
+received:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+ // Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content };
+
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement };
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote;
+
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/;
+
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/;
+
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/;
+
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/;
+
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"';
+'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_alternation.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\single_alternation.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_group.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\single_group.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_optional.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\single_optional.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_repeat.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\single_repeat.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_scanner_state.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\single_scanner_state.par'
+=====================================================
+expecting:
+'%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+
+// This is a single scanner state example
+%scanner Esc {
+    %auto_newline_off
+    %auto_ws_off
+    %line_comment '//'
+    %block_comment '/*' '*/'
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx";
+'
+-----------------------------------------------------
+received:
+'%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+
+ // This is a single scanner state example
+%scanner Esc {
+    %auto_newline_off
+    %auto_ws_off
+    %line_comment '//'
+    %block_comment '/*' '*/'
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx";
+'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\skip_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\skip_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\top_level_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_optional_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\top_level_optional_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_repeat_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\top_level_repeat_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\wrapped_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_long_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/prod_semicolon_on_nl_false\wrapped_long_production.par'
+from folder D:\Source\parol\crates\parol-ls/data/input:
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\block_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\block_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\complex1.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\complex1.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\line_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\line_comments_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_before_end_of_prod_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\line_comment_before_end_of_prod_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_between_alternations_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\line_comment_between_alternations_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_in_production_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\line_comment_in_production_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\list-exp.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\list-exp.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_and_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\multiple_non_terminals_and_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\multiple_non_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\multiple_scanner_states.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\production_with_two_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_long_wrapped_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\production_with_two_long_wrapped_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\scanner_states.par'
+=====================================================
+expecting:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+// Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+StringContent
+    : { StringElement }
+    ;
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/
+    ;
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/
+    ;
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/
+    ;
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"'
+    ;'
+-----------------------------------------------------
+received:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+ // Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+StringContent
+    : { StringElement }
+    ;
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/
+    ;
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/
+    ;
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/
+    ;
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"'
+    ;'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_alternation.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\single_alternation.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_group.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\single_group.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_optional.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\single_optional.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_repeat.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\single_repeat.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_scanner_state.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\single_scanner_state.par'
+=====================================================
+expecting:
+'%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+
+// This is a single scanner state example
+%scanner Esc {
+    %auto_newline_off
+    %auto_ws_off
+    %line_comment '//'
+    %block_comment '/*' '*/'
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx"
+    ;'
+-----------------------------------------------------
+received:
+'%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+
+ // This is a single scanner state example
+%scanner Esc {
+    %auto_newline_off
+    %auto_ws_off
+    %line_comment '//'
+    %block_comment '/*' '*/'
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx"
+    ;'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\skip_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\skip_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\top_level_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_optional_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\top_level_optional_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_repeat_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\top_level_repeat_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\wrapped_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_long_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/empty_line_after_prod_false\wrapped_long_production.par'
+from folder D:\Source\parol\crates\parol-ls/data/input:
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\block_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\block_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\complex1.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\complex1.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_before_start.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\line_comments_before_start.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comments_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\line_comments_in_scanner_directives.par'
+=====================================================
+expecting:
+'%start Scanners // LC1
+%comment "Formatting test" // LC2
+%line_comment "#" // LC3
+%line_comment '//' // LC4
+%block_comment '/*' '*/' // LC5
+%user_type UserType1 = UserDefinedTypeName1 // LC6
+%user_type UserType2 = UserDefinedTypeName2 // LC7
+
+%scanner Esc {
+    %auto_newline_off // LC8
+    %auto_ws_off // LC9
+    %line_comment '//' // LC10
+    %block_comment '/*' '*/' // LC11
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx"
+    ;
+'
+-----------------------------------------------------
+received:
+'%start Scanners // LC1
+%comment "Formatting test"// LC2
+%line_comment "#" // LC3
+%line_comment '//' // LC4
+%block_comment '/*' '*/' // LC5
+%user_type UserType1 = UserDefinedTypeName1 // LC6
+%user_type UserType2 = UserDefinedTypeName2 // LC7
+
+%scanner Esc {
+    %auto_newline_off // LC8
+    %auto_ws_off // LC9
+    %line_comment '//' // LC10
+    %block_comment '/*' '*/' // LC11
+}
+
+%%
+
+Scanners
+    : <INITIAL, Esc>"xxx"
+    ;
+'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_before_end_of_prod_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\line_comment_before_end_of_prod_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_between_alternations_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\line_comment_between_alternations_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\line_comment_in_production_causes_line_break.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\line_comment_in_production_causes_line_break.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\list-exp.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\list-exp.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_and_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\multiple_non_terminals_and_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_non_terminals_in_one_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\multiple_non_terminals_in_one_production.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\multiple_scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\multiple_scanner_states.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\production_with_two_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\production_with_two_long_wrapped_alternations.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\production_with_two_long_wrapped_alternations.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\scanner_states.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\scanner_states.par'
+=====================================================
+expecting:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states" // The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+// Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement }
+    ;
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/
+    ;
+
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/
+    ;
+
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/
+    ;
+
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"'
+    ;
+'
+-----------------------------------------------------
+received:
+'%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states"// The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/" // When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+// Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+
+Content
+    : Identifier
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement }
+    ;
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+
+Identifier // This terminal is only valid in scanner state INITIAL (implicitly)
+
+    : /[a-zA-Z_]\w*/
+    ;
+
+Escaped // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/\\["\\bfnt]/
+    ;
+
+EscapedLineEnd // This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+
+NoneQuote // This terminal is only valid in scanner state 'STRING'
+
+    : <STRING>/[^"\\]+/
+    ;
+
+StringDelimiter // This terminal is valid in both scanner states INITIAL and 'STRING'
+
+    : <STRING, INITIAL>'"'
+    ;
+'
+=====================================================
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_alternation.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\single_alternation.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_group.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\single_group.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_optional.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\single_optional.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_repeat.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\single_repeat.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\single_scanner_state.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\single_scanner_state.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\skip_in_scanner_directives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\skip_in_scanner_directives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\top_level_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_optional_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\top_level_optional_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\top_level_repeat_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\top_level_repeat_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_group_alternatives.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\wrapped_group_alternatives.par'
+
+Parsing D:\Source\parol\crates\parol-ls/data/input\wrapped_long_production.par...
+expected_file: 'D:\Source\parol\crates\parol-ls/data/expected/leading_line_comments_on_own_line_true\wrapped_long_production.par'
+Found 10 formatting error(s) in 125 tests.
+
+thread 'formatting::format::test::test_formatting' (8884) panicked at crates\parol-ls\src\formatting\format\test.rs:173:5:
+assertion `left == right` failed
+  left: 0
+ right: 10
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    formatting::format::test::test_formatting
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.10s
+
+error: test failed, to rerun pass `--bin parol-ls`

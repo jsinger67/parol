@@ -24,8 +24,50 @@ impl Comments {
         options: &FmtOptions,
     ) -> (String, Comments) {
         let (comments_before_token, comments) = self.split_comments(at.into());
-        let comments_before_scanner_str = comments_before_token.handle_comments(options);
-        (comments_before_scanner_str, comments)
+        
+        // When leading_line_comments_on_own_line is true, separate trailing comments
+        // (on the same line as the token) from leading comments (on a different line)
+        let (trailing_comments, leading_comments) = if options.leading_line_comments_on_own_line {
+            comments_before_token.separate_trailing_from_leading(at.location.end_line)
+        } else {
+            (comments_before_token, Comments::default())
+        };
+        
+        // Format trailing comments (keep on same line as the token)
+        // Use original padding (typically Padding::Left which adds a space before)
+        let trailing_str = trailing_comments.handle_comments(options);
+        
+        // Format leading comments (should be on own line before the token)
+        // For comments on a different line, prepend a newline (but not if they're at file start)
+        let leading_str = if leading_comments.comments.len() > 0 && options.leading_line_comments_on_own_line {
+            // Check if comments are at file start before consuming them
+            let at_file_start = leading_comments.comments.iter().all(|c| c.location.start_line == 1);
+            let formatted = leading_comments.handle_comments(options);
+            if formatted.is_empty() {
+                formatted
+            } else if !at_file_start {
+                // Prepend a newline to separate from previous content
+                format!("\n{}", formatted)
+            } else {
+                // At file start, just use the comment as-is
+                formatted
+            }
+        } else if leading_comments.comments.len() > 0 {
+            leading_comments.handle_comments(options)
+        } else {
+            String::new()
+        };
+        
+        // Combine: leading comments first, then trailing comments
+        let combined = if leading_str.is_empty() {
+            trailing_str
+        } else if trailing_str.is_empty() {
+            leading_str
+        } else {
+            format!("{}{}", leading_str, trailing_str)
+        };
+        
+        (combined, comments)
     }
 
     // Finds an immediately following comment on the same line
@@ -87,5 +129,23 @@ impl Comments {
             }
         }
         (Comments { comments: left }, self)
+    }
+
+    // Separate comments into trailing (on same line as token) and leading (on different line)
+    fn separate_trailing_from_leading(mut self, token_line: u32) -> (Comments, Comments) {
+        let mut trailing = VecDeque::new();
+        let mut leading = VecDeque::new();
+        
+        while let Some(comment) = self.comments.pop_front() {
+            if comment.location.start_line == token_line {
+                // Comment is on the same line as the token - it's a trailing comment
+                trailing.push_back(comment);
+            } else {
+                // Comment is on a different line - it's a leading comment
+                leading.push_back(comment);
+            }
+        }
+        
+        (Comments { comments: trailing }, Comments { comments: leading })
     }
 }

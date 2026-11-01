@@ -231,3 +231,54 @@ fn skip_test(file_name: &OsStr) -> bool {
     SKIP_LIST.contains(&file_name.to_str().unwrap())
         || (!SELECTED_TESTS.is_empty() && !SELECTED_TESTS.contains(&file_name.to_str().unwrap()))
 }
+
+#[test]
+fn test_leading_comments_option() {
+    use crate::parol_ls_grammar::ParolLsGrammar;
+    use crate::parol_ls_parser::parse;
+
+    // Use relative path from the crate directory
+    let input_file = "../../examples/scanner_states/scanner_states.par";
+    let input_content = fs::read_to_string(&input_file).expect("Failed to read input file");
+    
+    let mut grammar = ParolLsGrammar::new();
+    if let Err(e) = parse(&input_content, input_file.to_string(), &mut grammar) {
+        panic!("Parsing failed: {:?}", e);
+    }
+    
+    let options = FmtOptions {
+        empty_line_after_prod: true,
+        prod_semicolon_on_nl: true,
+        max_line_length: 100,
+        padding: Padding::None,
+        line_end: LineEnd::Unchanged,
+        trimming: Trimming::Unchanged,
+        nesting_depth: 0,
+        indent_style: crate::formatting::fmt_options::IndentStyle::Spaces(4),
+        space_after_colon: true,
+        space_before_semicolon: false,
+        space_around_pipe: true,
+        space_around_equals: true,
+        scanner_brace_newline: false,
+        semicolon_end_of_line: false,
+        place_top_level_alternatives_on_new_line_each: false,
+        leading_line_comments_on_own_line: true,  // ENABLE THE OPTION
+    };
+    
+    let (formatted, _) = grammar.grammar.unwrap().txt(&options, grammar.comments.clone());
+    
+    println!("Formatted output:\n{}", formatted);
+    
+    // Check if comments are on their own lines (not on the same line as previous code)
+    // The pattern should be: newline, then comment, then newline, then %
+    // NOT: quote, space, comment, newline, %
+    
+    assert!(!formatted.contains("\" // The following"), 
+            "Comment should NOT be on the same line as the closing quote");
+    
+    assert!(!formatted.contains("} // When in scanner state"), 
+            "Comment should NOT be on the same line as the closing brace");
+    
+    assert!(formatted.contains("// Here we introduce a new scanner state 'STRING'\n%scanner"), 
+            "Comment should be on its own line before %scanner");
+}

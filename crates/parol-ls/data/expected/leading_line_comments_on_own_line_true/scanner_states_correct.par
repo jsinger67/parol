@@ -1,0 +1,67 @@
+%start Start
+%title "Test grammar"
+%comment "Tests correct handling of scanner states"
+
+// The following declarations only apply to scanner INITIAL
+%line_comment "//"
+%block_comment "/\*" "\*/"
+
+// When in scanner state INITIAL, on encountering a double quote, enter scanner state STRING
+%on StringDelimiter %enter STRING
+
+// Here we introduce a new scanner state 'STRING'
+%scanner STRING {
+    %auto_newline_off
+    %auto_ws_off
+    // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    %on StringDelimiter %enter INITIAL
+}
+
+%%
+
+Start
+    : { Content }
+    ;
+
+Content
+    : Identifier
+    | StringDelimiter
+      // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter
+      // Here the scanner switches back to the scanner INITIAL
+    ;
+
+StringContent
+    : { StringElement }
+    ;
+
+StringElement
+    : Escaped | EscapedLineEnd | NoneQuote
+    ;
+
+Identifier
+    // This terminal is only valid in scanner state INITIAL (implicitly)
+    : /[a-zA-Z_]\w*/
+    ;
+
+Escaped
+    // This terminal is only valid in scanner state 'STRING'
+    : <STRING>/\\["\\bfnt]/
+    ;
+
+EscapedLineEnd
+    // This terminal is only valid in scanner state 'STRING'
+    // NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+    // Otherwise, the regex will greedily pickup newlines See issue #5
+    : <STRING>/\\[\s--\n\r]*\r?\n/
+    ;
+
+NoneQuote
+    // This terminal is only valid in scanner state 'STRING'
+    : <STRING>/[^"\\]+/
+    ;
+
+StringDelimiter
+    // This terminal is valid in both scanner states INITIAL and 'STRING'
+    : <STRING, INITIAL>'"'
+    ;
