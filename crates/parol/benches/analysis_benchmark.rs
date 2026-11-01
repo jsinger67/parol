@@ -58,8 +58,8 @@ fn create_complex_grammar() -> parol::GrammarConfig {
         .join("benches")
         .join("data")
         .join("modelica.par");
-    let grammar_content = std::fs::read_to_string(&grammar_path)
-        .expect("Failed to read grammar file");
+    let grammar_content =
+        std::fs::read_to_string(&grammar_path).expect("Failed to read grammar file");
     parol::obtain_grammar_config_from_string(&grammar_content, false)
         .expect("Failed to parse grammar")
 }

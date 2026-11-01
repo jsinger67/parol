@@ -26,9 +26,15 @@ mod test {
 
     #[test]
     fn test_make_indent() {
-        assert_eq!(String::from(""), Indent::make_indent(0, &FmtOptions::default().indent_style));
+        assert_eq!(
+            String::from(""),
+            Indent::make_indent(0, &FmtOptions::default().indent_style)
+        );
         let options = FmtOptions::new();
-        assert_eq!(String::from(""), Indent::make_indent(options.nesting_depth, &options.indent_style));
+        assert_eq!(
+            String::from(""),
+            Indent::make_indent(options.nesting_depth, &options.indent_style)
+        );
         let next_options = options.clone();
         let next_depth = next_options.next_depth().nesting_depth;
         assert_eq!(

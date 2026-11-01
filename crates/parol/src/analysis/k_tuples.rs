@@ -672,7 +672,10 @@ mod tests {
             .unwrap();
 
         let sorted = res.sorted();
-        assert!(sorted.contains(&expected_tuple), "ε-concatenation lost: [1,1] not in result");
+        assert!(
+            sorted.contains(&expected_tuple),
+            "ε-concatenation lost: [1,1] not in result"
+        );
     }
 
     // KTuples::insert is commutative regarding Eq
