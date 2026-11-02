@@ -1,7 +1,6 @@
 [book]
 authors = ["Jörg Singer"]
 language = "en"
-multilingual = false
 src = "src"
 title = "The Parol Parser Generator"
 
@@ -10,5 +9,5 @@ mathjax-support = true
 preferred-dark-theme = "navy"
 
 [output.html.print]
-enable = true    # include support for printable output
+enable = true     # include support for printable output
 page-break = true # insert page-break after each chapter
