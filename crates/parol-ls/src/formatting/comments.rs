@@ -36,14 +36,8 @@ impl Comments {
             (comments_before_token, Comments::default())
         };
 
-        // Format trailing comments (keep on same line as the token)
-        let trailing_str = if options.leading_line_comments_on_own_line {
-            // For trailing comments, no padding - keep them directly inline
-            let opts_for_trailing = options.clone().with_padding(super::fmt_options::Padding::None);
-            trailing_comments.handle_comments_no_line_policy(&opts_for_trailing)
-        } else {
-            trailing_comments.handle_comments(options)
-        };
+        // Format trailing comments (keep on same line as the token, with space before)
+        let trailing_str = trailing_comments.handle_comments(options);
 
         // Format leading comments (should be on own line before the token)
         let leading_str = if !leading_comments.comments.is_empty() && options.leading_line_comments_on_own_line {
@@ -51,12 +45,53 @@ impl Comments {
                 .map(|c| c.is_line_comment())
                 .unwrap_or(false);
             
+            // Check if this comment is a moved trailing comment (from a previous token)
+            // vs a true leading comment (alone on its own line in the input)
+            let first_comment = leading_comments.comments.front().unwrap();
+            let first_comment_line = first_comment.location.start_line;
+            let first_comment_token_number = first_comment.token_number;
+            
+            let line_gap = at.location.start_line as i32 - first_comment_line as i32;
+            let comment_start_col = first_comment.location.start_column;
+            
+            // A comment is considered true leading if:
+            // 1. It's on a line 2+ lines before the current token (line_gap >= 2), OR
+            // 2. It's on the immediately preceding line (line_gap == 1) AND
+            //    it starts at the beginning of the line (small start_column, typically <= 5)
+            //
+            // If the comment starts at a large column on its line, it's likely trailing from a token
+            // on the same line (before the comment).
+            let is_true_leading = if line_gap >= 2 {
+                true
+            } else if line_gap == 1 && comment_start_col <= 5 {
+                true
+            } else {
+                false
+            };
+            
+            let is_moved_trailing = !is_true_leading;
+            
             let opts_for_leading = options.clone().with_padding(super::fmt_options::Padding::None);
-            let formatted = leading_comments.handle_comments(&opts_for_leading);
+            
+            let formatted = if is_moved_trailing {
+                // For moved trailing comments, just extract the raw text without formatting
+                let raw_text = leading_comments.comments.iter()
+                    .map(|c| c.text())
+                    .collect::<String>();
+                // Trim leading whitespace from the combined text but preserve internal structure
+                raw_text.trim_start().to_string()
+            } else {
+                // For true leading comments, apply formatting
+                leading_comments.handle_comments(&opts_for_leading)
+            };
             
             if formatted.is_empty() {
                 formatted
+            } else if is_moved_trailing {
+                // Moved trailing comments should be on their own line with NO indentation
+                format!("\n{}", formatted)
             } else {
+                // Indent true leading comments
                 let indent = Indent::make_indent(options.nesting_depth, &options.indent_style);
                 if is_line_comment {
                     format!("\n{}{}", indent, formatted.trim_start())
@@ -95,21 +130,16 @@ impl Comments {
         let comment_token_number = at.token_number + 1;
         let at_line = at.location.end_line;
         
-        // When leading_line_comments_on_own_line is enabled, also extract comments on the same line
-        // even if token_number doesn't match, to ensure trailing comments stay inline
-        let search_pos = if options.leading_line_comments_on_own_line {
-            self.comments.iter().position(|t| {
-                (t.token_number == comment_token_number && t.location.start_line == at_line) ||
-                (t.location.start_line == at_line)
-            })
-        } else {
-            self.comments.iter().position(|t| {
-                t.token_number == comment_token_number && t.location.start_line == at_line
-            })
-        };
+        // Only extract comments that immediately follow this token in the token stream
+        // AND are on the same line. This ensures we only get trailing comments that belong
+        // to this specific token, not comments from later tokens.
+        let search_pos = self.comments.iter().position(|t| {
+            t.token_number == comment_token_number && t.location.start_line == at_line
+        });
         
         if let Some(pos) = search_pos {
             let comment_token = self.comments.remove(pos).unwrap();
+            
             let following_comment_token: Comments = comment_token.into();
             
             // When leading_line_comments_on_own_line is enabled, don't apply line policies to trailing comments

@@ -37,28 +37,33 @@ StringElement
     ;
 
 Identifier
-    // This terminal is only valid in scanner state INITIAL (implicitly)
+// This terminal is only valid in scanner state INITIAL (implicitly)
+
     : /[a-zA-Z_]\w*/
     ;
 
 Escaped
-    // This terminal is only valid in scanner state 'STRING'
+// This terminal is only valid in scanner state 'STRING'
+
     : <STRING>/\\["\\bfnt]/
     ;
 
 EscapedLineEnd
-    // This terminal is only valid in scanner state 'STRING'
-    // NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
-    // Otherwise, the regex will greedily pickup newlines See issue #5
+// This terminal is only valid in scanner state 'STRING'
+// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+// Otherwise, the regex will greedily pickup newlines See issue #5
+
     : <STRING>/\\[\s--\n\r]*\r?\n/
     ;
 
 NoneQuote
-    // This terminal is only valid in scanner state 'STRING'
+// This terminal is only valid in scanner state 'STRING'
+
     : <STRING>/[^"\\]+/
     ;
 
 StringDelimiter
-    // This terminal is valid in both scanner states INITIAL and 'STRING'
+// This terminal is valid in both scanner states INITIAL and 'STRING'
+
     : <STRING, INITIAL>'"'
     ;

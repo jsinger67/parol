@@ -11,7 +11,7 @@ use super::super::comments::Comments;
 use super::super::fmt_options::FmtOptions;
 use super::super::{context::FormatterContext, line::Line};
 use super::dispatch::handle_symbol;
-use super::helpers::{comment_opts_right, format_comments_before_token};
+use super::helpers::{comment_opts_right, format_comments_before_token, format_trailing_comment};
 use super::production_fmt::{format_production_lhs_with_context, format_production_with_context};
 use super::traits::Fmt;
 use super::wrapping::{
@@ -270,10 +270,29 @@ impl Fmt for NonTerminal {
         if Line::ends_with_nl(&comments_before_identifier) {
             " ".repeat(START_LINE_OFFSET).clone_into(&mut delim);
         }
+        
+        // When leading_line_comments_on_own_line is enabled, extract trailing comments
+        // that immediately follow this token on the same line, so they stay with their token
+        let (trailing_comment_str, comments) = if options.leading_line_comments_on_own_line {
+            format_trailing_comment(
+                comments,
+                &self.identifier.identifier,
+                options,
+            )
+        } else {
+            (String::default(), comments)
+        };
+        
+        let trailing = if !trailing_comment_str.is_empty() && !trailing_comment_str.starts_with('\n') {
+            format!(" {}", trailing_comment_str)
+        } else {
+            trailing_comment_str
+        };
+        
         (
             format!(
-                "{}{}{}{}",
-                comments_before_identifier, delim, self.identifier.identifier, ast_control_str
+                "{}{}{}{}{}",
+                comments_before_identifier, delim, self.identifier.identifier, ast_control_str, trailing
             ),
             comments,
         )
