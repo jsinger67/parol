@@ -35,7 +35,12 @@ impl Comments {
 
         // Format trailing comments (keep on same line as the token)
         // Use original padding (typically Padding::Left which adds a space before)
-        let trailing_str = trailing_comments.handle_comments(options);
+        // Don't apply the line_comment policy that forces newlines for trailing comments
+        let trailing_str = if options.leading_line_comments_on_own_line {
+            trailing_comments.handle_comments_no_line_policy(options)
+        } else {
+            trailing_comments.handle_comments(options)
+        };
 
         // Format leading comments (should be on own line before the token)
         let leading_str =
@@ -115,6 +120,20 @@ impl Comments {
         }
     }
 
+    pub(crate) fn handle_comments_no_line_policy(self, options: &FmtOptions) -> String {
+        let comments_str = self.comments.iter().fold(String::new(), |mut acc, c| {
+            let text = c.text();
+            acc.push_str(text);
+            acc
+        });
+        if comments_str.is_empty() {
+            comments_str
+        } else {
+            // Don't apply the line_comment policy - just use the original line_end
+            options.apply_line_end_policy(comments_str, options.line_end)
+        }
+    }
+
     pub(crate) fn is_empty(&self) -> bool {
         self.comments.is_empty()
     }
@@ -125,9 +144,12 @@ impl Comments {
 
     fn split_comments(mut self, at: Rng) -> (Comments, Comments) {
         let mut left = VecDeque::new();
+        
         while let Some(comment) = self.comments.front() {
             let rng = Into::<Rng>::into(comment);
+            
             if rng.comes_before(&at) {
+                // Comment comes completely before the token
                 left.push_back(self.comments.pop_front().unwrap());
             } else {
                 break;

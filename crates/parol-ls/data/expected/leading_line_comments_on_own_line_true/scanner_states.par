@@ -12,7 +12,7 @@
 %scanner STRING {
     %auto_newline_off
     %auto_ws_off
-// When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
+    // When in scanner state 'STRING', on encountering a double quote, enter the scanner state INITIAL
     %on StringDelimiter %enter INITIAL
 }
 
@@ -24,10 +24,8 @@ Start
 
 Content
     : Identifier
-    | StringDelimiter 
-// Here the scanner switches to the scanner 'STRING'
-      StringContent StringDelimiter
-// Here the scanner switches back to the scanner INITIAL
+    | StringDelimiter // Here the scanner switches to the scanner 'STRING'
+      StringContent StringDelimiter // Here the scanner switches back to the scanner INITIAL
     ;
 
 StringContent
@@ -39,33 +37,28 @@ StringElement
     ;
 
 Identifier
-// This terminal is only valid in scanner state INITIAL (implicitly)
-
+    // This terminal is only valid in scanner state INITIAL (implicitly)
     : /[a-zA-Z_]\w*/
     ;
 
 Escaped
-// This terminal is only valid in scanner state 'STRING'
-
+    // This terminal is only valid in scanner state 'STRING'
     : <STRING>/\\["\\bfnt]/
     ;
 
 EscapedLineEnd
-// This terminal is only valid in scanner state 'STRING'
-// NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
-// Otherwise, the regex will greedily pickup newlines See issue #5
-
+    // This terminal is only valid in scanner state 'STRING'
+    // NOTE: [\s--\n\r] matches all whitespace characters *except* \r and \n
+    // Otherwise, the regex will greedily pickup newlines See issue #5
     : <STRING>/\\[\s--\n\r]*\r?\n/
     ;
 
 NoneQuote
-// This terminal is only valid in scanner state 'STRING'
-
+    // This terminal is only valid in scanner state 'STRING'
     : <STRING>/[^"\\]+/
     ;
 
 StringDelimiter
-// This terminal is valid in both scanner states INITIAL and 'STRING'
-
+    // This terminal is valid in both scanner states INITIAL and 'STRING'
     : <STRING, INITIAL>'"'
     ;
