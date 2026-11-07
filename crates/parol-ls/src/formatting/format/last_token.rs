@@ -1,14 +1,26 @@
 use crate::{
     parol_ls_grammar::OwnedToken,
     parol_ls_grammar_trait::{
-        ScannerDirectivesPercentOnIdentifierListScannerStateDirectives,
-        ScannerDirectivesPercentSkipIdentifierList, ScannerStateDirectives, TokenLiteral,
+        Identifier, ScannerDirectivesPercentOnIdentifierListScannerStateDirectives,
+        ScannerDirectivesPercentSkipIdentifierList, ScannerStateDirectives, String, TokenLiteral,
         UserTypeName,
     },
 };
 
 pub(super) trait LastToken {
     fn get_last_token(&self) -> &OwnedToken;
+}
+
+impl LastToken for Identifier {
+    fn get_last_token(&self) -> &OwnedToken {
+        &self.identifier
+    }
+}
+
+impl LastToken for String {
+    fn get_last_token(&self) -> &OwnedToken {
+        &self.string
+    }
 }
 
 impl LastToken for UserTypeName {

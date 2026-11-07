@@ -1,4 +1,4 @@
-%start Scanners// LC1
+%start Scanners // LC1
 %comment "Formatting test"
 // LC2
 %line_comment "#" // LC3

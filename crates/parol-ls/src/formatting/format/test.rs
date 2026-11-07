@@ -23,125 +23,46 @@ const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
 // Use this if you only want to debug a view tests
 const SELECTED_TESTS: &[&str] = &[]; //&["wrapped_group_alternatives.par"];
 
-const TEST_DATA: &[(FmtOptions, &str)] = &[
-    (
-        FmtOptions {
-            empty_line_after_prod: true,
-            prod_semicolon_on_nl: true,
-            max_line_length: 100,
-            padding: Padding::None,
-            line_end: LineEnd::Unchanged,
-            trimming: Trimming::Unchanged,
-            nesting_depth: 0,
-            indent_style: crate::formatting::fmt_options::IndentStyle::Spaces(4),
-            space_after_colon: true,
-            space_before_semicolon: false,
-            space_around_pipe: true,
-            space_around_equals: true,
-            scanner_brace_newline: false,
-            semicolon_end_of_line: false,
-            place_top_level_alternatives_on_new_line_each: false,
-            leading_line_comments_on_own_line: false,
-        },
-        concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/options_default"),
-    ),
-    (
-        FmtOptions {
-            empty_line_after_prod: true,
-            prod_semicolon_on_nl: true,
-            max_line_length: 100,
-            padding: Padding::None,
-            line_end: LineEnd::Unchanged,
-            trimming: Trimming::Unchanged,
-            nesting_depth: 0,
-            indent_style: crate::formatting::fmt_options::IndentStyle::Spaces(4),
-            space_after_colon: true,
-            space_before_semicolon: false,
-            space_around_pipe: true,
-            space_around_equals: true,
-            scanner_brace_newline: true,
-            semicolon_end_of_line: false,
-            place_top_level_alternatives_on_new_line_each: false,
-            leading_line_comments_on_own_line: false,
-        },
-        concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/data/expected/scanner_brace_newline_true"
-        ),
-    ),
-    (
-        FmtOptions {
-            empty_line_after_prod: true,
-            prod_semicolon_on_nl: false,
-            max_line_length: 100,
-            padding: Padding::None,
-            line_end: LineEnd::Unchanged,
-            trimming: Trimming::Unchanged,
-            nesting_depth: 0,
-            indent_style: crate::formatting::fmt_options::IndentStyle::Spaces(4),
-            space_after_colon: true,
-            space_before_semicolon: false,
-            space_around_pipe: true,
-            space_around_equals: true,
-            scanner_brace_newline: false,
-            semicolon_end_of_line: false,
-            place_top_level_alternatives_on_new_line_each: false,
-            leading_line_comments_on_own_line: false,
-        },
-        concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/data/expected/prod_semicolon_on_nl_false"
-        ),
-    ),
-    (
-        FmtOptions {
-            empty_line_after_prod: false,
-            prod_semicolon_on_nl: true,
-            max_line_length: 100,
-            padding: Padding::None,
-            line_end: LineEnd::Unchanged,
-            trimming: Trimming::Unchanged,
-            nesting_depth: 0,
-            indent_style: crate::formatting::fmt_options::IndentStyle::Spaces(4),
-            space_after_colon: true,
-            space_before_semicolon: false,
-            space_around_pipe: true,
-            space_around_equals: true,
-            scanner_brace_newline: false,
-            semicolon_end_of_line: false,
-            place_top_level_alternatives_on_new_line_each: false,
-            leading_line_comments_on_own_line: false,
-        },
-        concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/data/expected/empty_line_after_prod_false"
-        ),
-    ),
-    (
-        FmtOptions {
-            empty_line_after_prod: true,
-            prod_semicolon_on_nl: true,
-            max_line_length: 100,
-            padding: Padding::None,
-            line_end: LineEnd::Unchanged,
-            trimming: Trimming::Unchanged,
-            nesting_depth: 0,
-            indent_style: crate::formatting::fmt_options::IndentStyle::Spaces(4),
-            space_after_colon: true,
-            space_before_semicolon: false,
-            space_around_pipe: true,
-            space_around_equals: true,
-            scanner_brace_newline: false,
-            semicolon_end_of_line: false,
-            place_top_level_alternatives_on_new_line_each: false,
-            leading_line_comments_on_own_line: true,
-        },
-        concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/data/expected/leading_line_comments_on_own_line_true"
-        ),
-    ),
+const TEST_DATA_CONFIG: &[(
+    bool, // empty_line_after_prod
+    bool, // prod_semicolon_on_nl
+    bool, // scanner_brace_newline
+    bool, // leading_line_comments_on_own_line
+    &str, // expected folder
+)] = &[
+    (true, true, false, false, concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/options_default")),
+    (true, true, true, false, concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/scanner_brace_newline_true")),
+    (true, false, false, false, concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/prod_semicolon_on_nl_false")),
+    (false, true, false, false, concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/empty_line_after_prod_false")),
+    (true, true, false, true, concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/leading_line_comments_on_own_line_true")),
 ];
+
+fn make_fmt_options(
+    empty_line_after_prod: bool,
+    prod_semicolon_on_nl: bool,
+    scanner_brace_newline: bool,
+    leading_line_comments_on_own_line: bool,
+) -> FmtOptions {
+    FmtOptions {
+        empty_line_after_prod,
+        prod_semicolon_on_nl,
+        max_line_length: 100,
+        padding: Padding::None,
+        line_end: LineEnd::Unchanged,
+        trimming: Trimming::Unchanged,
+        nesting_depth: 0,
+        indent_style: crate::formatting::fmt_options::IndentStyle::Spaces(4),
+        space_after_colon: true,
+        space_before_semicolon: false,
+        space_around_pipe: true,
+        space_around_equals: true,
+        scanner_brace_newline,
+        semicolon_end_of_line: false,
+        place_top_level_alternatives_on_new_line_each: false,
+        leading_line_comments_on_own_line,
+        comment_classifications: std::collections::HashMap::new(),
+    }
+}
 
 #[test]
 // #[ignore = "Not ready yet"]
@@ -149,7 +70,11 @@ fn test_formatting() {
     let mut error_count = 0;
     let mut tests_run = 0;
 
-    for (fmt_options, expected_folder) in TEST_DATA {
+    for (empty_line_after_prod, prod_semicolon_on_nl, scanner_brace_newline, leading_line_comments_on_own_line, expected_folder) in TEST_DATA_CONFIG {
+        let mut fmt_options = make_fmt_options(*empty_line_after_prod, *prod_semicolon_on_nl, *scanner_brace_newline, *leading_line_comments_on_own_line);
+        // Initialize empty comment classifications for const data
+        fmt_options.comment_classifications = std::collections::HashMap::new();
+        
         eprintln!("from folder {INPUT_FOLDER}:");
         for entry in std::path::Path::new(INPUT_FOLDER)
             .read_dir()
@@ -160,8 +85,8 @@ fn test_formatting() {
                 continue;
             }
             if entry.path().extension().unwrap().to_str().unwrap() == "par" {
-                eprintln!("\nParsing {}...", entry.path().display());
-                if !process_single_file(entry.file_name().as_os_str(), fmt_options, expected_folder)
+                eprintln!("\nParsing {} in config {}", entry.path().display(), expected_folder);
+                if !process_single_file(entry.file_name().as_os_str(), &fmt_options, expected_folder)
                 {
                     error_count += 1;
                 }
@@ -263,6 +188,7 @@ fn test_leading_comments_option() {
         semicolon_end_of_line: false,
         place_top_level_alternatives_on_new_line_each: false,
         leading_line_comments_on_own_line: true, // ENABLE THE OPTION
+        comment_classifications: std::collections::HashMap::new(),
     };
 
     let (formatted, _) = grammar

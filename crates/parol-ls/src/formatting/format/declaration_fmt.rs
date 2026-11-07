@@ -24,10 +24,15 @@ pub(super) fn format_declaration_with_context(
             let context = context_for_declaration(context, &comments_before_token);
             let delim = declaration_delimiter(&context);
             let (str, comments) = title.string.txt(context.policy(), comments);
+            let (following_comment, comments) = format_trailing_comment(
+                comments,
+                title.string.get_last_token(),
+                &comment_opts_left_force_remove(context.policy()),
+            );
             (
                 format!(
-                    "{}{}{} {}",
-                    comments_before_token, delim, title.percent_title, str
+                    "{}{}{} {}{}",
+                    comments_before_token, delim, title.percent_title, str, following_comment
                 ),
                 comments,
             )

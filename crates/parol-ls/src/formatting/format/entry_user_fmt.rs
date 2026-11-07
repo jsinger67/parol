@@ -21,6 +21,9 @@ impl Fmt for Declaration {
 
 impl Fmt for StartDeclaration {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
+        use super::helpers::comment_opts_left_force_remove;
+        use super::last_token::LastToken;
+        
         let (comments_before_start, comments) = format_comments_before_token(
             comments,
             &self.percent_start,
@@ -28,10 +31,15 @@ impl Fmt for StartDeclaration {
         );
 
         let (identifier, comments) = self.identifier.txt(options, comments);
+        let (following_comment, comments) = super::helpers::format_trailing_comment(
+            comments,
+            self.identifier.get_last_token(),
+            &comment_opts_left_force_remove(options),
+        );
         (
             format!(
-                "{}{} {}",
-                comments_before_start, self.percent_start, identifier,
+                "{}{} {}{}",
+                comments_before_start, self.percent_start, identifier, following_comment,
             ),
             comments,
         )

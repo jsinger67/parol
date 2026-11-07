@@ -1,5 +1,7 @@
 use super::{FormattingSettings, Line};
 use lsp_types::FormattingOptions;
+use std::collections::HashMap;
+use crate::parol_ls_grammar::{CommentClassification, OwnedToken};
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 #[allow(dead_code)]
@@ -88,6 +90,9 @@ pub(crate) struct FmtOptions {
     pub(crate) place_top_level_alternatives_on_new_line_each: bool,
     /// Keep leading line comments on their own line
     pub(crate) leading_line_comments_on_own_line: bool,
+    /// Classifications of comments (trailing vs leading, nesting level)
+    /// Keyed by comment location (line, column)
+    pub(crate) comment_classifications: HashMap<(u32, u32), CommentClassification>,
 }
 
 #[allow(unused)]
@@ -126,6 +131,12 @@ impl FmtOptions {
     pub(crate) fn next_depth(mut self) -> Self {
         self.nesting_depth += 1;
         self
+    }
+
+    /// Look up the classification of a comment
+    pub(crate) fn get_comment_classification(&self, comment: &OwnedToken) -> Option<CommentClassification> {
+        let key = (comment.location.start_line, comment.location.start_column);
+        self.comment_classifications.get(&key).copied()
     }
 
     pub(crate) fn apply_formatting(&self, line: String) -> String {
