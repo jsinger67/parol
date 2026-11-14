@@ -640,7 +640,7 @@ impl ParolLsGrammar {
     }
 
     /// Classifies comments as trailing or leading based on their position in the source.
-    /// 
+    ///
     /// Comments are simple to classify based on which line they're on relative to tokens.
     /// A comment is trailing if it's on the same line as a token that precedes it.
     /// For simplicity, we'll need to enhance this with more context.
@@ -654,7 +654,7 @@ impl ParolLsGrammar {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum CommentClassification {
     /// Comment is on the same line as a token (trailing)
-    Trailing { preceding_token_line: u32 },
+    //Trailing { preceding_token_line: u32 },
     /// Comment is on its own line (leading) with a specific nesting level
     Leading { nesting_level: u32 },
 }
