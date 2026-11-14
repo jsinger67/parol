@@ -1139,6 +1139,13 @@ impl ParolGrammar<'_> {
                         &mut member_name,
                     );
                 }
+                if user_type_name.is_none() {
+                    // If no local user type is defined, check if a global user type is defined
+                    // for all terminals and use it.
+                    if let Some(defined_type) = self.t_type_def.as_ref() {
+                        user_type_name = Some(defined_type.clone());
+                    }
+                }
                 let (content, kind) = Self::measure_token_literal(
                     &token_with_states
                         .token_with_states
