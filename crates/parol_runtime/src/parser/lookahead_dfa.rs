@@ -93,8 +93,8 @@ impl LookaheadDFA {
 
             // Filter the transitions with the matching from-state
             let mut any_matching_found = false;
-            for i in 0..self.transitions.len() {
-                let current_transition = &self.transitions[i];
+            for item in self.transitions.iter().take(self.transitions.len()) {
+                let current_transition = item;
 
                 if current_transition.0 != state {
                     if any_matching_found {

@@ -64,11 +64,14 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
 
     grammar_config.t_type_def = parol_grammar.t_type_def.map(|t| t.to_string());
 
-    for s in 1..parol_grammar.scanner_configurations.len() {
-        grammar_config = grammar_config.add_scanner(try_from_scanner_config(
-            &parol_grammar.scanner_configurations[s],
-            s,
-        )?);
+    for (s, item) in parol_grammar
+        .scanner_configurations
+        .iter()
+        .enumerate()
+        .take(parol_grammar.scanner_configurations.len())
+        .skip(1)
+    {
+        grammar_config = grammar_config.add_scanner(try_from_scanner_config(item, s)?);
     }
 
     let terminal_resolver = grammar_config.cfg.get_terminal_index_function();
